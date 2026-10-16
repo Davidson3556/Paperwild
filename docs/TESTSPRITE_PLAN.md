@@ -2,7 +2,9 @@
 
 ## Execution status
 
-**Portal 3.0 suite creation, execution, and GitHub App integration are pending.** This file is a test specification. It does not claim that TestSprite has run or passed these scenarios.
+**A six-case native TestSprite MCP run completed on October 17, 2026.** Its raw result was 2 passed / 4 failed; review of the returned code left all six intended gameplay scenarios inconclusive. The scripts largely check only a nonempty URL, and several fail before reaching their target feature. [The audited run report](TESTSPRITE_RUN_2026-10-17.md) contains the exact per-case portal links, local evidence links, and failure analysis. No product defect was confirmed from this cloud run alone.
+
+This file remains the acceptance specification for broader testing; the complete 18-scenario plan has not run. **Dedicated Portal 3.0 suite validation and GitHub App integration remain pending.**
 
 The separate local engine suite currently passes **13 tests** with `npm test`. Those tests cover game-state integration, not browser layout or end-to-end behavior.
 
@@ -201,15 +203,15 @@ Before the [Season 4 hackathon](https://www.testsprite.com/hackathon-s4) submiss
 4. Configure the TestSprite GitHub App and demonstrate that a pull request triggers the expected check.
 5. Include real Portal run URLs and the demonstrated GitHub check in the submission. Testing has a stated 40% judging weight; the run evidence should show what the assertions verified.
 
-### Run record — fill only after execution
+### Native MCP run record — October 17, 2026
 
 | Item | Actual value |
 | --- | --- |
 | Public target URL | Pending |
 | Public repository / commit | Pending |
-| Portal suite link | Pending |
-| Portal run link and date | Pending |
-| Scenarios passed / failed / blocked | Pending |
-| Confirmed product defects and fixes | Pending |
-| Remaining limitations | Pending |
+| Portal suite link | Dedicated Portal 3.0 suite unverified; native per-case records are linked in the audited report. |
+| Portal run link and date | [Audited six-case run with result links](TESTSPRITE_RUN_2026-10-17.md), October 17, 2026, approximately 00:09–00:22 WAT. Target: production preview on port 4174, asset index-BqFG4EEx.js. |
+| Scenarios passed / failed / blocked | Native statuses: 2 passed / 4 failed. Audited feature coverage: all 6 inconclusive; the generated assertions do not establish the intended gameplay outcomes. |
+| Confirmed product defects and fixes | None confirmed from this cloud run; no subsequent source edit or rerun. |
+| Remaining limitations | Incomplete generated assertions, early browser interaction timeouts, and a later TestSprite DNS/backend interruption. The broader 18-scenario specification was not executed as a full suite. |
 | GitHub App check / PR link | Pending |

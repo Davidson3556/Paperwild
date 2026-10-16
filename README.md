@@ -8,7 +8,7 @@ Built for **[TestSprite Hackathon Season 4](https://www.testsprite.com/hackathon
 
 [Open the private preview](https://queens-conservatory-davidson.sweetbox2.chatgpt.site).
 
-This is a private development preview. A public hackathon URL and public repository are pending. TestSprite Portal 3.0 execution and GitHub App checks are also pending; the local automated tests described below have run successfully.
+This is a private development preview. A public hackathon URL and public repository are pending. A six-case native TestSprite run completed with raw statuses of 2 passed and 4 failed; review of the returned scripts left all six intended gameplay scenarios inconclusive. Dedicated Portal 3.0 suite validation and GitHub App checks remain pending.
 
 ## Play
 
@@ -55,7 +55,7 @@ The computer is a lightweight opponent for casual play. Saved games are local to
 
 `npm test` currently passes **13 local engine tests** covering illegal moves, castling, en passant, promotion, mate and stalemate, turn-aware undo, save restoration, repetition, invalid saves, reset, and legal computer responses.
 
-Browser and TestSprite acceptance scenarios are specified in [the TestSprite plan](docs/TESTSPRITE_PLAN.md). The plan is a specification, not evidence that Portal tests have run. Record actual run links, dates, failures, and fixes there when available.
+Browser and TestSprite acceptance scenarios are specified in [the TestSprite plan](docs/TESTSPRITE_PLAN.md). The [audited native run report](docs/TESTSPRITE_RUN_2026-10-17.md) records all six actual result links and explains why its raw 2/6 pass count does not establish gameplay coverage: the returned scripts largely assert only that a URL exists, and several interactions timed out. See [manual browser evidence](docs/VERIFICATION.md) for the separate smoke-test observations. No product defect was confirmed from the cloud run alone.
 
 See [product requirements](docs/PRODUCT_REQUIREMENTS.md) for implemented behavior, acceptance criteria, and submission work still outstanding.
 

@@ -75,7 +75,8 @@ Saves remain on the same browser and origin. There is no account system, server 
 ## Validation status
 
 - **Local engine tests:** 13 passing tests via `npm test`.
-- **TestSprite Portal 3.0:** suite creation and execution pending.
+- **TestSprite native MCP:** six-case run completed; raw 2 passed / 4 failed, with all six feature scenarios inconclusive after assertion audit. See [the audited report](TESTSPRITE_RUN_2026-10-17.md).
+- **Dedicated TestSprite Portal 3.0 suite:** configuration and meaningful acceptance validation pending.
 - **TestSprite GitHub App:** installation/configuration and pull-request checks pending.
 - **Public repository:** pending.
 - **Public hackathon deployment:** pending. The current private preview is https://queens-conservatory-davidson.sweetbox2.chatgpt.site.
