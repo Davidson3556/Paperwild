@@ -6,7 +6,7 @@ A woodland chess game on a cheerfully scribbled pencil page. The board has wobbl
 
 ![Paperwild: a scribbled pencil chessboard, woodland characters, and handwritten page doodles](docs/media/paperwild-preview.png)
 
-[Watch the actual movement preview](docs/media/paperwild-movement.gif). Enable **Sound on** in the game for the accompanying footsteps and woodland sounds.
+[Watch the actual movement preview](docs/media/paperwild-movement.gif) · [See the blinking and idle gestures](docs/media/paperwild-idle.gif). Enable **Sound on** in the game for the accompanying footsteps and woodland sounds.
 
 Built for **[TestSprite Hackathon Season 4](https://www.testsprite.com/hackathon-s4)** · [Source](https://github.com/Davidson3556/Paperwild)
 
@@ -18,6 +18,7 @@ Built for **[TestSprite Hackathon Season 4](https://www.testsprite.com/hackathon
 - **Complete chess:** legal moves, check, castling, en passant, four promotion choices, and standard draw conditions.
 - **Two ways to play:** take White/Amber against the computer at three bounded difficulty levels, or share the board with a friend.
 - **An illustrated cast:** acorn pawns, stump rooks, hare knights, moth bishops, fox queens, and badger kings, in Amber and Indigo palettes. Conventional role labels and a character guide keep the rules readable.
+- **Alive between turns:** individually fitted eyelids blink at different intervals, sometimes twice; hares twitch their ears, moths gently flutter, and foxes swish their tail tips. Captured friends blink on the sidelines, too. The cast rests with open eyes when motion is paused.
 - **Movement with character:** acorns walk on little pencil feet, hares crouch and leap, moths flap, stumps shuffle, foxes double-pounce, and badgers waddle. Drawn shadows, dust, and footprints ground the journey; captured friends arc into the sideline society.
 - **A little woodland Foley:** opt-in paper brushes, wooden taps, pawfalls, wing sounds, and plucked notes follow movement contacts, landings, captures, promotion, check, and endings. No audio files or background music are downloaded.
 - **Life beyond the board:** a rocking tea balloon, cottage-carrying tortoise, sleepy cloud, and rabbit/hedgehog tea party share lighter paper with naive pencil doodles, resident greetings, drifting leaves, a passing shower, and Daydream/Moonlight treatments.

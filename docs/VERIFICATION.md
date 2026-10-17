@@ -2,6 +2,17 @@
 
 First build verification: October 17, 2026 (Africa/Lagos).
 
+## Blinking and idle expressions — October 17, 2026
+
+- Fitted feathered eyelids and pencil arcs to the eye positions of all twelve character illustrations. A temporary, unshipped browser review showed each pair closed at large scale, including the badgers' glasses. The original painted eyes remain visible between blinks.
+- Added staggered CSS blink cycles of 4.8–9 seconds, occasional double blinks, and separate clipped hare-ear, moth-wing, and fox-tail-tip gestures. Complementary masks keep the original part from appearing underneath its animated copy. Artwork stays intact until every replacement image is ready.
+- Chrome on the active board observed 32 distinct blink durations and ten ready idle-articulation groups. A 36-frame, 4.856-second recording captured at least one closed-eye pose in 25 sampled frames and changing ear transforms; `paperwild-idle.gif` preserves the actual browser frames with timestamp-derived delays.
+- A knight move hid the idle copies and restored open eyes during its leap. The computer completed exactly one reply and returned settled control. A completed capture produced one ready, blinking sideline character.
+- Promotion kept the acorn face during travel, then replaced it with the hare face and idle ears on landing. Undo restored the acorn face. Pausing motion produced zero-duration blink animations and open eyes; resuming restored staggered cycles.
+- At 390 × 844, the face and artwork bounding boxes matched, all 64 semantic squares remained available, and the page had no horizontal overflow. The inspected Chrome console contained no warnings or errors.
+- The production preview loaded all 32 ready faces and ten ready idle-articulation groups with active blink cycles and no console warnings/errors. Its saved game was preserved.
+- All 24 existing engine, audio-lifecycle, and movement-invariant tests pass; strict TypeScript and the production build pass. These tests do not assess eyelid alignment or visual quality; those observations come from the browser checks above. No new TestSprite cloud run is claimed.
+
 ## Child's pencil-page interface — October 17, 2026
 
 - Replaced the formal typography and panel treatment with Schoolbell/Gloria handwriting, individually tilted coloured title letters, hand-pencilled circles/frames, and lighter paper. Informal annotations replace the tiny editorial labels; conventional chess labels and control accessible names remain available.

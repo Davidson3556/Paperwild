@@ -3,6 +3,8 @@ import type { Conservatory, ConservatoryOptions, CreatureName, LastMove, SquareP
 import type { Capture, Color, PieceSymbol, Square } from './game.ts';
 import { getPieceMotion } from './piece-motion.ts';
 import type { PieceMotionPlan } from './piece-motion.ts';
+import { createCharacterFace } from './character-face.ts';
+import { createCharacterIdle } from './character-idle.ts';
 
 export interface SketchMotionEvent {
   id: number;
@@ -39,6 +41,9 @@ interface Sprite {
   limbs: SVGSVGElement;
   parts: Map<string, HTMLElement | SVGElement>;
   fragments: HTMLImageElement[];
+  face: SVGSVGElement;
+  idle: HTMLDivElement | null;
+  idleSeed: number;
   pendingArtwork: boolean;
   square: Square;
   color: Color;
@@ -212,9 +217,11 @@ export function createSketchScene(container: HTMLElement, { onSquare, onCreature
     sprite.element.style.zIndex = String(20 + 8 - Number(square[1])); sprite.element.dataset.square = square;
   }
   function artwork(image: HTMLImageElement, color: Color, type: PieceSymbol, fallback: HTMLElement) {
+    const holder = image.parentElement!;
+    holder.dataset.artwork = 'loading';
     image.hidden = false; fallback.hidden = true;
-    image.onload = () => { if (!destroyed) { image.hidden = false; fallback.hidden = true; } };
-    image.onerror = () => { if (!destroyed) { image.hidden = true; fallback.hidden = false; } };
+    image.onload = () => { if (!destroyed) { image.hidden = false; fallback.hidden = true; holder.dataset.artwork = 'ready'; } };
+    image.onerror = () => { if (!destroyed) { image.hidden = true; fallback.hidden = false; holder.dataset.artwork = 'missing'; } };
     image.src = `/art/pieces/${color}${type}.png`;
   }
   function createSprite(piece: BoardPiece) {
@@ -226,14 +233,22 @@ export function createSketchScene(container: HTMLElement, { onSquare, onCreature
     const shadow = svg('svg', { viewBox: '0 0 100 100', preserveAspectRatio: 'none', class: 'sketch-ground-shadow' });
     shadow.append(svg('ellipse', { cx: 50, cy: 89, rx: 24, ry: 3, fill: '#706b48', opacity: .18 }), svg('path', { d: 'M30 89q20 3 39-1m-34 4 28-1', fill: 'none', stroke: '#746e4c', 'stroke-width': .7, opacity: .3 }));
     const limbs = svg('svg', { viewBox: '0 0 100 100', preserveAspectRatio: 'none', class: 'sketch-moving-limbs' });
-    body.append(image, fallback); element.append(shadow, limbs, body, emote); cast.append(element);
-    const sprite: Sprite = { element, body, image, fallback, emote, shadow, limbs, parts: new Map(), fragments: [], pendingArtwork: false, square: piece.square, color: piece.color, type: piece.type };
+    const idleSeed = (FILES.indexOf(piece.square[0]) + Number(piece.square[1]) * 8) * 37 + (piece.color === 'b' ? 17 : 0);
+    const face = createCharacterFace(piece.color, piece.type, idleSeed);
+    body.append(image, fallback, face); element.append(shadow, limbs, body, emote); cast.append(element);
+    const sprite: Sprite = { element, body, image, fallback, emote, shadow, limbs, face, idle: null, idleSeed, parts: new Map(), fragments: [], pendingArtwork: false, square: piece.square, color: piece.color, type: piece.type };
     element.style.setProperty('--idle-delay', `${-((piece.square.charCodeAt(0) + Number(piece.square[1]) * 3) % 17) / 3}s`);
     artwork(image, piece.color, piece.type, fallback); articulate(sprite); locate(sprite, piece.square); return sprite;
   }
   function articulate(sprite: Sprite) {
     for (const fragment of sprite.fragments) fragment.remove();
     sprite.fragments.length = 0; sprite.parts.clear(); sprite.limbs.replaceChildren();
+    sprite.idle?.remove();
+    const idle = createCharacterIdle(sprite.color, sprite.type, sprite.idleSeed);
+    sprite.idle = idle?.element ?? null;
+    sprite.element.classList.toggle('has-idle-parts', !!idle);
+    if (idle) { sprite.body.style.setProperty('--idle-cutout', idle.mask); sprite.body.append(idle.element); }
+    else sprite.body.style.removeProperty('--idle-cutout');
     const type = sprite.type;
     const joint = (name: string, x: number, y: number, parent: SVGElement = sprite.limbs) => {
       const group = svg('g', { class: `sketch-joint sketch-joint-${name}` });
@@ -277,6 +292,7 @@ export function createSketchScene(container: HTMLElement, { onSquare, onCreature
   function refreshArtwork(sprite: Sprite) {
     sprite.element.className = `sketch-piece sketch-${sprite.type}`; sprite.pendingArtwork = false;
     sprite.element.dataset.color = sprite.color; sprite.fallback.textContent = SYMBOLS[sprite.color][sprite.type];
+    sprite.face.remove(); sprite.face = createCharacterFace(sprite.color, sprite.type, sprite.idleSeed); sprite.body.append(sprite.face);
     artwork(sprite.image, sprite.color, sprite.type, sprite.fallback); articulate(sprite);
   }
   function updatePiece(sprite: Sprite, piece: BoardPiece) {
@@ -418,7 +434,8 @@ export function createSketchScene(container: HTMLElement, { onSquare, onCreature
       item.style.setProperty('--sit-angle', `${index % 2 ? 4 : -5}deg`);
       const image = document.createElement('img'); image.alt = ''; image.draggable = false;
       const fallback = document.createElement('span'); fallback.className = 'sketch-sideline-fallback'; fallback.textContent = SYMBOLS[capture.color][capture.type]; fallback.hidden = true;
-      item.append(image, fallback); collection.append(item); artwork(image, capture.color, capture.type, fallback);
+      const face = createCharacterFace(capture.color, capture.type, index * 127 + 41);
+      item.append(image, fallback, face); collection.append(item); artwork(image, capture.color, capture.type, fallback);
       if (animate && oldCount >= 0 && index >= oldCount) track(item.animate([{ opacity: 0, transform: 'translate(-50%,-50%) scale(.1)' }, { opacity: 1, transform: 'translate(-50%,-50%) scale(1)' }], { duration: 400, delay: 760, fill: 'backwards', easing: 'ease-out' }));
     });
     previousCaptures = captures.length;

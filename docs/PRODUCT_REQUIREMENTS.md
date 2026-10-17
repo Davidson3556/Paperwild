@@ -4,7 +4,7 @@
 
 Make a child's pencil-page imagination feel inhabited: a hand-wobbled graphite chessboard, uneven colored-pencil shading, informal handwritten notes, and cheerful little doodles on light paper. The woodland cast and living margins should belong to that page. This is a deliberate drawing style; the chess geometry, readable role labels, input targets, motion, audio, and saved games remain dependable.
 
-The active implementation uses `src/main.ts`, `src/game.ts`, `src/sketch-scene.ts`, `src/piece-motion.ts`, `src/sketch-margins.ts`, and `src/sound.ts`. The older Three.js scene, wildlife, and atmosphere modules are retained source history, not the active runtime.
+The active implementation uses `src/main.ts`, `src/game.ts`, `src/sketch-scene.ts`, `src/piece-motion.ts`, `src/character-face.ts`, `src/character-idle.ts`, `src/sketch-margins.ts`, and `src/sound.ts`. The older Three.js scene, wildlife, and atmosphere modules are retained source history, not the active runtime.
 
 ## Illustrated world
 
@@ -16,6 +16,7 @@ The active implementation uses `src/main.ts`, `src/game.ts`, `src/sketch-scene.t
 | First-board drawing | The main graphite lines reveal once when the board is first rendered. Reduced motion skips this introduction. | The reveal does not hold the board busy, block the first move, restart during selection renders, or alter chess state. Cancel/settle and resize leave complete grid lines visible. |
 | Woodland cast | Pawn = acorn sprite; rook = stump; knight = hare; bishop = moth; queen = fox; king = badger. Twelve assets provide Amber/White and Indigo/Black variants. | Each board image matches its chess role and side; help explains every mapping. |
 | Character motion | Acorns walk with articulated pencil feet; hares anticipate, leap, and land; moths flap; stumps shuffle; foxes double-pounce; badgers waddle. Drawn shadows, dust, and footprints follow the choreography. | Inspect an intermediate pose as well as the final square. Motion must show the role's gait, agree with its ground contacts, and leave no duplicate sprites, feet, or effects after settling. |
+| Idle expressions | All twelve illustrations have fitted eyelids with staggered single/double blinks. Hare ears twitch, moth wings flutter gently, and fox tail tips swish. Captured characters also blink. | Overlays align with the original artwork at desktop and phone sizes. Idle articulation yields to movement, promotion changes faces on arrival, loading/fallback keeps intact artwork, and paused/reduced motion leaves eyes open and parts at rest. |
 | Turn choreography | The board is busy during a core move/capture sequence; the computer waits for settlement before replying. | A second board move cannot interrupt the first. Undo, a new game, and story replacement can cancel safely; canceled work must not produce a late move, landing cue, or result. |
 | Sideline society | Captured characters remain visible off the board and in the journal. | Their number, side, and role match legal capture history. Undo and restore derive the same collection. |
 | Margin residents | A tea balloon carried by leaves, a cloud with dangling boots, a cottage-carrying tortoise, and a rabbit/hedgehog tea party inhabit the page. | Decorations leave game controls usable and do not intercept chess input. |

@@ -1,0 +1,27 @@
+.character-face{position:absolute;inset:0;width:100%;height:100%;overflow:visible;pointer-events:none;z-index:5;visibility:hidden}
+[data-artwork=ready]>.character-face{visibility:visible}
+.character-blink{opacity:0;animation:character-eye-blink var(--blink-duration,6.5s) linear infinite;animation-delay:var(--blink-delay,0s)}
+.character-face-double .character-blink{animation-name:character-eye-double-blink}
+.sketch-scene[data-atmosphere=dusk] .character-face{filter:brightness(.95)}
+
+/* Leave the actual, open painted eyes visible when motion is switched off.
+   Pausing an animation halfway through a blink would leave a sleepy mask. */
+.sketch-scene[data-motion=still] .character-blink,
+.sketch-scene[data-paused=true] .character-blink,
+.sketch-piece.is-moving .character-blink{animation:none!important;opacity:0!important}
+.sketch-piece-body:has(.sketch-piece-art[hidden]) .character-face,
+.sketch-piece-body:has(.sketch-piece-fallback:not([hidden])) .character-face{display:none}
+
+@keyframes character-eye-blink{
+  0%,69.5%{opacity:0}
+  70.05%,71.55%{opacity:1}
+  72.2%,100%{opacity:0}
+}
+@keyframes character-eye-double-blink{
+  0%,65.35%{opacity:0}
+  65.9%,67.25%{opacity:1}
+  67.9%,70%{opacity:0}
+  70.55%,71.9%{opacity:1}
+  72.55%,100%{opacity:0}
+}
+@media(prefers-reduced-motion:reduce){.character-blink{animation:none!important;opacity:0!important}}
