@@ -1,32 +1,42 @@
-# The Queen’s Conservatory
+# The Marginwood Club
 
-A playable chess garden in a sunlit, miniature glasshouse. Porcelain pieces sit on a ceramic board framed in brass and walnut. Each captured piece adds a flower to the surrounding garden.
+**Meet you in the margins.** A playable chess sketchbook with a woodland cast and a little world carrying on around the game.
+
+Acorns take the first step. Hares hop, moths drift, and bookish badgers guard their kingside. Captured characters join the sideline society instead of disappearing. Beyond the board, a leaf-lifted tea balloon wanders past a sleepy cloud, a tortoise carries its cottage home, and a rabbit and hedgehog share a pot of tea.
 
 Built for **[TestSprite Hackathon Season 4](https://www.testsprite.com/hackathon-s4)**.
 
 ## Preview
 
-[Open the private preview](https://queens-conservatory-davidson.sweetbox2.chatgpt.site).
+[Open the private development preview](https://queens-conservatory-davidson.sweetbox2.chatgpt.site).
 
-This is a private development preview. A public hackathon URL and public repository are pending. A six-case native TestSprite run completed with raw statuses of 2 passed and 4 failed; review of the returned scripts left all six intended gameplay scenarios inconclusive. Dedicated Portal 3.0 suite validation and GitHub App checks remain pending.
+The hosting address retains the prototype’s original name. A public repository, public playable URL, TestSprite Portal 3.0 suite, and verified GitHub App checks remain submission work. No submission has been made.
 
 ## Play
 
-- **Play the keeper:** control White against the browser’s computer opponent. Choose Seedling, Gardener, or Wildwood.
-- **With a friend:** play both sides on one device.
-- Select a piece, then a marked destination. Use the promotion dialog to choose a queen, rook, bishop, or knight.
-- Captures add flowers to the garden and journal. Undo restores the board, move history, and capture count together.
-- Explore three **Garden studies**: a capture on d5, promotion on a8, and checkmate on g7.
-- Change between morning and evening light, perspective and overhead views, and gentle or reduced motion. Sound starts off and can be enabled with the speaker button.
-- Meet the residents: tap the robin or snail, or use **Say hello** with a keyboard. The robin changes perches, the snail wanders along the rim, and a bee and butterfly visit the plants and new capture flowers.
-- **Let it rain** changes the light and shelters the insects. Evening brings out fireflies and lantern light. Moving leaf shadows, drifting sunlight, and occasional falling leaves continue around the game.
-- The game and settings save in this browser. Download the game as PGN from the Field notes panel.
+- **Against the club:** play Amber (White) against Indigo (Black). Choose Sleepy, Thoughtful, or Mischievous.
+- **With a friend:** take turns on the same device.
+- Choose a character, then a marked destination. Standard chess rules apply, including castling, en passant, and all four promotion choices.
+- Captured characters travel to the sidelines. Undo restores the board, history, and sideline society together.
+- Open **Little chess stories** for **Tea on the sidelines** (capture on d5), **Room to become** (promotion on a8), or **One final move** (checkmate on g7). Each story preselects its starting piece.
+- Turn Daydream into Moonlight, invite a little rain, or **Say hello** to the residents. The margin drawings respond without changing the chess position.
+- Pause the wandering for reduced motion. Sound is off until enabled.
+- Your game and preferences save in this browser. Download the moves as PGN from **Field notes**.
 
-Arrow keys explore the board; Enter chooses a square; Escape clears selection; **U** undoes a turn. A flat board is used when the 3D scene cannot initialize.
+Arrow keys explore the board; Enter chooses a square; Escape clears selection; **U** undoes a turn. Coordinate, color, and conventional chess-role labels remain available even though the pieces are woodland characters. **Who’s who in the club?** explains the cast.
+
+| Chess role | Club character |
+| --- | --- |
+| Pawn | Acorn sprite |
+| Rook | Tree stump |
+| Knight | Hare |
+| Bishop | Moth |
+| Queen | Fox |
+| King | Badger |
 
 ## Run locally
 
-Use Node.js 22.18+ and npm. The tests run the TypeScript sources directly through Node's built-in type stripping.
+Use **Node.js 22.18+** and npm. Tests run the TypeScript sources through Node’s built-in type stripping.
 
 ```sh
 npm ci
@@ -42,31 +52,33 @@ npm run build
 npm run preview
 ```
 
-`npm run preview` serves the production build on port 4173; stop the development server first. No backend, account, API key, or environment file is required.
+Development and preview both use port 4173; stop one before starting the other. No backend, account, API key, or environment file is needed to run the game.
 
-## Implementation
+## How it is built
 
-- **Vite and strict TypeScript** provide the browser application and build. `npm run build` type-checks with `tsc` before bundling.
-- **Three.js** renders the scene. The board, pieces, plants, and materials are generated in code.
-- TypeScript modules keep the chess engine, wildlife, and room atmosphere separate. Animation pauses in hidden tabs; reduced motion freezes the decorative world while chess remains playable.
-- **chess.js** supplies legal moves, game history, special moves, and game termination.
-- The computer uses bounded alpha-beta search at depths 1, 2, and 3. Search normally runs in a Web Worker and has a synchronous fallback.
-- `localStorage` stores the starting position and complete move history. Restoration replays the history to retain repetition detection and undo.
+- **Vite and strict TypeScript:** the production build type-checks before bundling.
+- **DOM, SVG, and original transparent PNG artwork:** a flat illustrated board, twelve woodland character assets in Amber and Indigo palettes, textured paper, and fine pencil-style margin drawings. There is no WebGL dependency in the active renderer.
+- **CSS and Web Animations:** gentle idle gestures, movement suited to each character, capture arcs, drifting leaves, rising tea steam, and resident greetings. Reduced motion settles the action; hidden-page animations pause.
+- **chess.js:** legal moves, complete history, special moves, game termination, undo, and PGN.
+- **A bounded computer search:** three search depths run in a worker with a synchronous fallback. These are casual difficulty levels, not claimed Elo ratings.
+- **Validated local saves:** the starting position and full history are replayed on restore to preserve undo and repetition detection.
 
-The computer is a lightweight opponent for casual play. Saved games are local to the current browser and origin. Local two-player play shares one device; network multiplayer is outside this version’s scope.
+See [art provenance and exact generation prompts](docs/ART_PROMPTS.md) for the original character and paper assets. The earlier prototype’s `scene.ts`, `wildlife.ts`, and `atmosphere.ts` remain in the source tree but are not imported by the current application entry point.
 
-## Validation
+Saved games stay on the current browser and origin. Two-player mode shares one device; network multiplayer and cloud accounts are outside this version’s scope.
 
-`npm test` currently passes **13 local engine tests** covering illegal moves, castling, en passant, promotion, mate and stalemate, turn-aware undo, save restoration, repetition, invalid saves, reset, and legal computer responses.
+## Validation and submission
 
-Browser and TestSprite acceptance scenarios are specified in [the TestSprite plan](docs/TESTSPRITE_PLAN.md). The [audited native run report](docs/TESTSPRITE_RUN_2026-10-17.md) records all six actual result links and explains why its raw 2/6 pass count does not establish gameplay coverage: the returned scripts largely assert only that a URL exists, and several interactions timed out. See [manual browser evidence](docs/VERIFICATION.md) for the separate smoke-test observations. No product defect was confirmed from the cloud run alone.
+The local engine suite passes **13 tests**, and strict TypeScript checking passes. These checks cover game-state behavior and types; they do not establish browser animation, layout, or cloud acceptance coverage. Current browser and build evidence belongs in [the verification record](docs/VERIFICATION.md).
 
-See [product requirements](docs/PRODUCT_REQUIREMENTS.md) for implemented behavior, acceptance criteria, and submission work still outstanding.
+**The illustrated Marginwood interface has not yet had a TestSprite cloud run.** The [historical audited native run](docs/TESTSPRITE_RUN_2026-10-17.md) targeted the earlier 3D prototype: raw statuses were 2 passed / 4 failed, but all six intended gameplay scenarios were inconclusive after reviewing the generated assertions. That run is not validation of this interface.
 
-## Submission work remaining
+The [current acceptance plan](docs/TESTSPRITE_PLAN.md) specifies meaningful board, role-image, history, capture, persistence, and accessibility assertions for the next run. See also [product requirements](docs/PRODUCT_REQUIREMENTS.md) and [the one-minute demo](docs/DEMO_SCRIPT.md).
 
-- Publish a public repository and public deployment URL.
-- Create and execute the project’s suite in TestSprite Portal 3.0.
-- Install/configure the TestSprite GitHub App and verify checks trigger for each pull request.
-- Attach real test results and a short demonstration to the hackathon submission.
-- Confirm the final deadline and schedule in the event Discord before submitting. The official Season 4 page lists October 22, 2026 at 11:59 PM Pacific Time; judging weights are 40% product quality, 40% testing, and 20% innovation.
+Before hackathon submission:
+
+- Publish a public repository and a public playable deployment.
+- Create and execute the required suite in TestSprite Portal 3.0; retain real assertions, failures, fixes, and rerun evidence.
+- Configure the TestSprite GitHub App and demonstrate an actual pull-request check.
+- Attach the public links, test evidence, and a short demonstration.
+- Confirm the final schedule and submission instructions in the event Discord.

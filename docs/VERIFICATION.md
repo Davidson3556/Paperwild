@@ -2,7 +2,24 @@
 
 First build verification: October 17, 2026 (Africa/Lagos).
 
-## Living-world revision — October 17, 2026
+## Current illustrated Marginwood revision — October 17, 2026
+
+The active renderer is now DOM/SVG with original transparent character illustrations, pencil-style margin drawings, and paper texture. The strict TypeScript chess engine and existing save keys are preserved. The earlier 3D observations below are historical evidence for previous versions, not validation of this renderer.
+
+- `npm test`: all 13 engine tests passed. `npm run build`: strict TypeScript and the production Vite build passed. The current entry bundle is `index-D6Na7teX.js`; no Three.js code is included in the active entry bundle.
+- Chrome at 1440 × 1000: all 32 starting character PNGs decoded; pointer selection exposed legal destinations; e2–e4 committed and the computer replied `Nc6`.
+- Castling through the actual interface moved the badger from e1 to g1 and the tree stump from h1 to f1. Undo returned both illustrated characters to their original squares.
+- En passant (`e5×d6`) removed the Black pawn from d5, retained the White pawn on d6, and added the Indigo acorn to the illustrated sideline collection. Departing animation elements were removed after completion.
+- Promotion cancellation preserved the pawn on a7. Choosing knight on a8 displayed the hare and the correct insufficient-material result; undo restored the acorn. Promotion chooser artwork now follows the promoting pawn's color.
+- The mate story produced `Qg7#`, the fox queen on g7, and the matching White-wins result.
+- Reload retained the game (`e4 Nc6`), Moonlight, and rain. The restored pawn's image matched its semantic square. **Say hello** triggered the tea balloon's greeting without a chess move.
+- Chrome at 390 × 844: document width stayed 390 px after resizing; d2–d4 committed, the computer replied `Nf6`, and full-turn undo restored d2 and the preceding history. Responsive hit-target bounds are clipped while resize measurements catch up; animations finish at their canonical destinations when dimensions change.
+- Reduced motion produced byte-identical consecutive full-page screenshots after transient toast text settled. No browser warnings or errors appeared in the inspected session.
+- Captured actual browser screenshots and a short animated preview of the running application; these are rendered-app evidence, not generated interface mockups.
+
+This is focused Chrome verification, not an exhaustive browser certification. The illustrated interface has not had a new TestSprite cloud run. The historical cloud run below remains inconclusive; Portal 3.0 suite execution and GitHub App checks remain submission work.
+
+## Historical 3D living-world revision — October 17, 2026
 
 Preserved the user's strict TypeScript migration. `npm test` passed all 13 engine tests; `npm run build` passed TypeScript checking and the production build.
 
@@ -19,7 +36,7 @@ Actual Chrome checks at 1440 × 1000 and 390 × 844:
 
 The wildlife implementation also passed a separate 200-second Three.js simulation with capture interruptions: creature roots stayed outside the playable board, shelter states held, and positions remained static under reduced motion. This is geometry/state evidence, not a substitute for visual QA. No new TestSprite cloud run was requested for this revision; the earlier inconclusive results below remain unchanged.
 
-## Passed locally
+## Historical first 3D build: passed locally
 
 - Production build: `npm run build`.
 - Engine integration suite: `npm test`, 13 tests passed.
@@ -65,4 +82,4 @@ The workflow recovered by supplying the app’s product requirements through the
 
 The runner also recorded a control websocket disconnect, repeated `ENOTFOUND control.tun.testsprite.com`, and backend response failures beginning around 00:20 WAT. The run still completed and released its lock; it did not end through its timeout path. No rerun or source edit followed. The dashboard process was stopped after retaining the artifacts.
 
-The [audited report](TESTSPRITE_RUN_2026-10-17.md) links each actual TestSprite result and the retained local scripts/raw report. The [18-scenario acceptance specification](TESTSPRITE_PLAN.md) remains the broader testing plan. Dedicated Portal 3.0 suite validation, public hackathon deployment, public GitHub repository, GitHub App PR checks, and Discord submission remain pending. The private Sites preview is available at https://queens-conservatory-davidson.sweetbox2.chatgpt.site.
+The [audited report](TESTSPRITE_RUN_2026-10-17.md) links each actual TestSprite result and the retained local scripts/raw report. The [current 17-scenario acceptance specification](TESTSPRITE_PLAN.md) covers the illustrated version. Dedicated Portal 3.0 suite validation, public hackathon deployment, public GitHub repository, GitHub App PR checks, and Discord submission remain pending. The private Sites preview is available at https://queens-conservatory-davidson.sweetbox2.chatgpt.site.

@@ -1,0 +1,40 @@
+.sketch-scene{position:absolute;inset:0;isolation:isolate;user-select:none;-webkit-user-select:none;touch-action:manipulation;--sketch-ink:#534f3d;--sketch-amber:#ba834c;--sketch-sage:#8e9b6f}
+.sketch-board-ink,.sketch-cast,.sketch-sidelines,.sketch-departures{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.sketch-board-ink{overflow:visible;z-index:0}
+.sketch-cast{z-index:2}.sketch-departures{z-index:4}.sketch-sidelines{z-index:1}
+.sketch-coordinates{font-family:'Patrick Hand','Caveat','Comic Sans MS',cursive;font-size:28px;fill:#77715a;text-anchor:middle;font-weight:400}
+.sketch-selected-mark{stroke:#b47f45;stroke-width:3.2;stroke-linecap:round;stroke-linejoin:round;opacity:.88}
+.sketch-selected-mark.second-pass{stroke-width:1.2;opacity:.6}
+.sketch-legal-mark{stroke:#7d8f59;stroke-width:2.5;stroke-linejoin:round;opacity:.68}
+.sketch-last-mark{stroke:#bca262;stroke-width:8;stroke-linecap:round;opacity:.32}
+.sketch-check-mark{stroke:#ab5f48;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;opacity:.9}
+.sketch-piece{position:absolute;width:12%;height:14.2%;transform:translate(-50%,-57%);pointer-events:none;will-change:left,top;overflow:visible}
+.sketch-piece-body{position:relative;width:100%;height:100%;transform-origin:50% 87%;animation:sketch-resident-breathe 6.2s ease-in-out infinite;animation-delay:var(--idle-delay,0s)}
+.sketch-piece-art{display:block;width:100%;height:100%;object-fit:contain;object-position:center bottom;filter:drop-shadow(0 3px 1px #6a624012);pointer-events:none}
+.sketch-piece-fallback{display:flex;width:100%;height:100%;align-items:center;justify-content:center;padding-top:13%;font-family:Georgia,serif;font-size:clamp(28px,5vw,74px);color:#b59161;text-shadow:1px 1px 0 #675c3b,-1px -1px 0 #675c3b}
+.sketch-piece[data-color=b] .sketch-piece-fallback{color:#67795d;text-shadow:1px 1px 0 #34452e,-1px -1px 0 #34452e}
+.sketch-piece-emote{position:absolute;right:5%;top:-9%;font-family:'Patrick Hand','Caveat',cursive;font-size:clamp(20px,3vw,38px);line-height:1;color:#9e6f3e;opacity:0;transform:rotate(-8deg);pointer-events:none}
+.sketch-piece.sketch-n .sketch-piece-body{animation-name:sketch-hare-listen;animation-duration:7.8s}
+.sketch-piece.sketch-k .sketch-piece-body{animation-name:sketch-king-think;animation-duration:9.2s}
+.sketch-piece.sketch-q .sketch-piece-body{animation-duration:5.7s}
+.sketch-piece.sketch-r .sketch-piece-body{animation-duration:8.4s}
+.sketch-piece.sketch-b .sketch-piece-body{animation-name:sketch-bishop-wonder;animation-duration:8s}
+.sketch-piece.is-selected .sketch-piece-body{animation-name:sketch-piece-attentive;animation-duration:2.4s}
+.sketch-sideline-piece{position:absolute;width:4.5%;height:5.4%;transform:translate(-50%,-50%) rotate(var(--sit-angle,-4deg));pointer-events:none;filter:saturate(.8);opacity:.82}
+.sketch-sideline-piece img{width:100%;height:100%;object-fit:contain;object-position:center bottom}
+.sketch-sideline-fallback{font-family:Georgia,serif;font-size:28px;color:#7c855f}
+.sketch-hello{position:absolute;right:1.4%;top:6%;opacity:0;color:#9c7c47;font:32px/1 'Patrick Hand','Caveat',cursive;transform:rotate(-8deg);pointer-events:none;z-index:5}
+.sketch-scene[data-atmosphere=dusk]{--sketch-ink:#48516f}
+.sketch-scene[data-atmosphere=dusk] .sketch-board-grid>path{stroke:#48516f}
+.sketch-scene[data-atmosphere=dusk] .sketch-coordinates{fill:#697292}
+.sketch-scene[data-atmosphere=dusk] .sketch-board-tiles{opacity:.82}
+.sketch-scene[data-atmosphere=dusk] .sketch-piece-art{filter:brightness(.95) drop-shadow(0 3px 1px #30384a18)}
+.sketch-scene[data-weather=rain] .sketch-board-tiles{opacity:.8}
+.sketch-scene[data-motion=still] .sketch-piece-body,.sketch-scene[data-paused=true] .sketch-piece-body{animation-play-state:paused}
+@keyframes sketch-resident-breathe{0%,100%{transform:rotate(-.45deg) scaleY(1)}46%{transform:rotate(.5deg) scaleY(1.012)}74%{transform:rotate(.15deg) scaleY(.997)}}
+@keyframes sketch-hare-listen{0%,65%,100%{transform:rotate(0deg)}70%{transform:rotate(-2.7deg) translateY(-.5%)}76%{transform:rotate(1.6deg)}82%{transform:rotate(-.8deg)}}
+@keyframes sketch-king-think{0%,60%,100%{transform:rotate(-.5deg) scaleY(1)}68%,76%{transform:rotate(1.5deg) scaleY(1.01)}84%{transform:rotate(-1deg)}}
+@keyframes sketch-bishop-wonder{0%,72%,100%{transform:rotate(.4deg)}80%{transform:rotate(-2deg) translateY(-.5%)}88%{transform:rotate(1.2deg)}}
+@keyframes sketch-piece-attentive{0%,100%{transform:translateY(-1.5%) rotate(-.5deg)}50%{transform:translateY(-3.5%) rotate(1deg)}}
+@media(max-width:720px){.sketch-piece-fallback{font-size:clamp(25px,7.8vw,50px)}.sketch-piece-emote{font-size:25px}.sketch-hello{font-size:23px}}
+@media(prefers-reduced-motion:reduce){.sketch-piece-body{animation:none!important}}

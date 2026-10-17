@@ -1,97 +1,80 @@
-# Product requirements: The Queen’s Conservatory
+# Product requirements: The Marginwood Club
 
-## Product intent
+## Intent
 
-Create a distinctive, dependable browser chess game whose board sits inside a miniature botanical conservatory. Captures accumulate flowers, giving the player a visible record of the match. The visual treatment should invite a slower, thoughtful game while keeping every piece, destination, turn, and result clear.
+Make a chess sketchbook feel inhabited. The game is a clear, usable flat board; the original pencil-and-wash woodland cast and the life in the page margins make it distinctive. Motion should suggest small creatures with their own habits while preserving readable squares, conventional chess roles, and dependable rules.
 
-This document describes the current implementation in `src/main.ts`, `src/game.ts`, and `src/scene.ts`. Planned submission tasks are identified separately.
+The active implementation uses `src/main.ts`, `src/game.ts`, `src/sketch-scene.ts`, and `src/sketch-margins.ts`. The older Three.js scene, wildlife, and atmosphere modules are retained source history, not the active runtime.
 
-## Current product
+## Illustrated world
 
-### Chess and controls
-
-| Capability | Implemented behavior | Acceptance criterion |
+| Element | Implemented behavior | Acceptance requirement |
 | --- | --- | --- |
-| Standard chess | Legal moves and turn order are enforced through chess.js. | Illegal moves leave all board, history, and capture state unchanged. |
-| Computer opponent | The player controls White; the keeper controls Black. | One legal Black reply follows each unfinished White turn. |
-| Difficulty | Seedling, Gardener, and Wildwood map to bounded search depths 1, 2, and 3. | Every selection produces legal moves; changing difficulty cancels an obsolete pending reply. |
-| Local play | “With a friend” allows both sides on the same device. | White and Black alternate without an automatic reply. |
-| Selection | Click/tap a piece and then a legal destination. | The selected square and legal destinations are indicated; capture targets use rings. |
-| Special moves | Castling, en passant, and promotion are supported. | Board, captures, history, persistence, and undo agree after each special move. |
-| Promotion | Choose queen, rook, bishop, or knight in a dialog. | The pawn remains unmoved until a choice is made; canceling leaves the position unchanged. |
-| Endings | Check, checkmate, stalemate, repetition, insufficient material, and the fifty-move rule are reported. | Terminal positions reject additional moves and identify a winner only for checkmate. |
-| Result | A result dialog appears after a completed move ends the game. | The description agrees with the status; the move statistic counts plies and the flower statistic counts captures. |
-| Undo | In computer mode undo a White move awaiting a reply, or the completed White/Black pair. In local mode undo one ply. | Undo also restores capture count, available moves, history, and terminal status. Pending computer work cannot reapply an undone move. |
-| New game | Starting again clears the board history and garden. A game with history prompts for confirmation from the main new-game button. | Cancel preserves the current game; confirm returns to standard chess and retains the current mode/difficulty. |
+| Flat sketchbook board | DOM/SVG rendering places transparent character images on an eight-by-eight board. | Visible squares, pointer targets, coordinates, and accessible labels agree after resize. |
+| Woodland cast | Pawn = acorn sprite; rook = stump; knight = hare; bishop = moth; queen = fox; king = badger. Twelve assets provide Amber/White and Indigo/Black variants. | Each board image matches its chess role and side; help explains every mapping. |
+| Character motion | Idle gestures and move styles differ by role; captured characters arc toward the sidelines. | Movement never changes the legal outcome, hides the chosen destination, or leaves duplicate pieces after settling. |
+| Sideline society | Captured characters remain visible off the board and in the journal. | Their number, side, and role match legal capture history. Undo and restore derive the same collection. |
+| Margin residents | A tea balloon carried by leaves, a cloud with dangling boots, a cottage-carrying tortoise, and a rabbit/hedgehog tea party inhabit the page. | Decorations leave game controls usable and do not intercept chess input. |
+| Ambient life | Birds, a moth, dragonfly, floating leaves, cottage smoke, and tea steam move around the page edges. | The page feels active without obscuring the board or making text difficult to read. |
+| Daydream / Moonlight | Warm cream paper changes to pale cool paper with indigo ink and warm small lights. | Labels and saved preferences match the current treatment; contrast remains usable. |
+| Rain | A passing shower changes the margin mood and opens the tea-party umbrella. | Weather control label, pressed state, and restored preference agree; chess state is unchanged. |
+| Greetings | Say hello cycles through resident reactions and updates a textual observation. | A greeting produces the matching response without committing a move or changing captures. |
+| Reduced motion | The initial preference respects the system setting; the user can pause wandering. | Ambient loops stop and active game movement settles. Keyboard and pointer chess continue to work. |
+| Hidden page | CSS and tracked Web Animations pause when the page is hidden. | Returning does not duplicate animations, moves, or capture reactions. |
+| Asset failure | A character whose image cannot load has a conventional chess-symbol fallback. | The position stays readable and playable even if a PNG fails. |
 
-Selecting a study replaces the current position and starts local play. The studies dialog explicitly states that it replaces the current game. “Return to a full game” resets directly to a standard position.
+Artwork provenance and exact generation prompts are in [ART_PROMPTS.md](ART_PROMPTS.md).
 
-### Garden studies
+## Chess and controls
 
-The study’s starting piece is already selected when the study opens.
-
-| Study | Starting position and interaction | Required result |
+| Capability | Implemented behavior | Acceptance requirement |
 | --- | --- | --- |
-| The first bloom | White pawn e4 captures Black pawn d5. | White pawn on d5; e4 empty; one capture, one flower, and `exd5` in Field notes. |
-| Room to become | White pawn a7 advances to a8. | Promotion dialog offers all four pieces. A queen promotes to a playable queen position; a knight produces a draw by insufficient material. |
-| One final move | White queen g6 moves to g7, protected by the king on f6. | Checkmate; White wins; no further move is accepted. |
+| Standard chess | chess.js enforces legal moves, turns, check, and endings. | Illegal and wrong-side moves leave board, history, and captures unchanged. |
+| Against the club | The player controls Amber/White; the computer controls Indigo/Black. | Exactly one legal Black reply follows an unfinished White turn. |
+| Difficulty | Sleepy, Thoughtful, and Mischievous use bounded search depths 1, 2, and 3. | All produce legal responses within the browser timeout; no fixed response or Elo is promised. |
+| With a friend | Two people alternate on one device. | No automatic reply is made in local mode. |
+| Selection | Choose a piece, then a marked legal destination. | Selected and legal states agree with the rules engine and accessible labels. |
+| Special moves | Castling, en passant, and four promotion choices are supported. | Board images, history, captures, save, and undo agree after each move. |
+| Promotion | Queen, rook, bishop, and knight are chosen in a dialog. | No move commits before a choice; cancellation preserves the position. The promoted image matches its new role. |
+| Endings | Checkmate, stalemate, repetition, insufficient material, and fifty-move draws are recognized. | Terminal moves are rejected; only checkmate declares a winner. |
+| Result | A result dialog reports the ending, recorded plies, and captured friends. | Dialog and status agree with the actual history. |
+| Undo | Local mode removes one ply; computer mode removes a pending White move or the completed White/Black pair. | Board, history, side to move, captures, and terminal status restore atomically. Canceled computer work cannot reapply an undone move. |
+| A fresh page | The accessible name is Begin a new game. A game with history asks for confirmation. | Cancel preserves the game; confirm clears history and sidelines, keeps mode/difficulty, and cancels obsolete work. |
+| Keyboard | Arrows explore squares; Enter chooses; Escape clears selection; U undoes. | Each interaction commits at most one move and retains a visible focus indicator. |
+| Sound | Audio begins off and requires opt-in. | The control and saved setting agree; a clean load is silent. |
 
-### Scene, preferences, and accessibility
+## Little chess stories
 
-| Capability | Implemented behavior | Acceptance criterion |
+Opening a story replaces the current position and uses local mode. Its starting piece is selected. The dialog discloses replacement; Return to a full game resets directly to the standard position.
+
+| Story | Interaction | Required result |
 | --- | --- | --- |
-| Conservatory | A procedurally modeled scene contains ceramic tiles, recognizable porcelain chess pieces, plants, glass, brass, and walnut. | The scene is readable and usable on desktop and narrow mobile screens. |
-| Capture garden | Each capture adds one flower to the scene and one token to the growing-garden journal. | Garden count always matches captured-piece history; undo removes the corresponding flower. |
-| Lighting | Morning and evening treatments can be toggled. | The controls update their accessible label and retain the chosen setting after reload. |
-| View | Perspective and overhead views are available. | Controls and board square targets remain aligned and usable after the view changes or viewport resizes. |
-| Motion | Gentle motion can be reduced; the system’s reduced-motion preference is the initial default. | Reduced motion stops scene ambient movement and settles active animations. |
-| Sound | Audio is off by default and enabled explicitly. | No sound plays on a clean initial load; the sound button reflects the saved setting. |
-| Keyboard | Arrow keys navigate squares; Enter selects; Escape clears selection; U undoes. | Square labels identify coordinates, color, piece, and legal destinations; keyboard interactions produce the same chess state as pointer input. |
-| Status | Turn, check, result, and transient feedback are exposed as text and live regions. | Core game state remains understandable without reading the 3D artwork. |
-| Flat fallback | If creation of the WebGL scene throws, the app displays a flat Unicode chess board. | Legal play, studies, promotion, undo, persistence, and export continue to work. |
+| Tea on the sidelines | White pawn e4 captures Black pawn d5. | White acorn at d5; e4 empty; `exd5` in Field notes; one captured Black acorn in the society. Undo restores both pawns and no recorded captures. |
+| Room to become | White pawn a7 advances to a8; choose a role. | The chosen role and image replace the pawn. A knight produces an insufficient-material draw; a queen leaves a playable position. Cancel commits nothing. |
+| One final move | White queen g6 moves to g7, protected by king f6. | `Qg7#`, White wins, and additional moves are blocked. Undo restores the fox on g6 and an unfinished game. |
 
-Flower placement and appearance depend on capture order, captured piece type and color, and the capture’s move number. Undo restores the garden derived from the remaining legal history.
+## Persistence and export
 
-### Persistence and export
+- Store starting FEN, complete move history, mode, difficulty, and study identifier in `queens-conservatory.game.v1`. The legacy key preserves compatible local games from the earlier prototype.
+- Store sound, atmosphere, weather, motion, and the retained compatibility view setting in `queens-conservatory.preferences.v1`. The active board is flat; the view control is hidden.
+- Restore by validating and replaying the history so undo and repetition remain correct. A study banner is restored only when its starting FEN matches the restored game.
+- Recover from malformed saves with a usable fresh game. Failed storage writes must not prevent play; show the unavailable-storage state.
+- Export PGN as `a-marginwood-game.pgn`, including The Marginwood Club event, player headers, moves, and setup FEN where needed. Export is disabled before a move.
 
-- Save the complete legal move history, starting FEN, mode, difficulty, and study identifier under `queens-conservatory.game.v1`.
-- Save sound, atmosphere, view, and reduced-motion settings under `queens-conservatory.preferences.v1`.
-- Restore positions by replaying validated history so repetition and undo remain correct.
-- Recover from malformed saved game data with a fresh game. Unavailable storage must not prevent in-tab play; show the storage-unavailable message when a save fails.
-- Export a PGN download with the app’s Event, White, and Black headers. Export is disabled before any move.
+Saves remain local to the same browser and origin. There are no accounts, network multiplayer, or cloud synchronization.
 
-Saves remain on the same browser and origin. There is no account system, server synchronization, network multiplayer, or cloud storage.
+## Quality and evidence
 
-## Quality criteria
+1. Visible characters, square labels, history, turn, captures, and the rules engine must describe the same position.
+2. Undo, restart, study selection, and mode/difficulty changes must safely cancel obsolete computer work.
+3. Motion must stay decorative: reduced motion, image loading failure, hidden-page transitions, and resize must preserve play.
+4. Test assertions must check complete feature outcomes. A screenshot, nonempty URL, or successful button click alone does not prove correct chess.
+5. Build and strict type checking must succeed; local engine tests must pass before release.
 
-1. Every visible interaction must agree with the underlying chess state.
-2. A pending computer turn must be canceled safely by undo, restart, study selection, or mode changes.
-3. Loading, saving, and restoring must preserve moves, captures, turn, preferences, and game-over state.
-4. All three studies must be usable as short, repeatable demonstrations of the product.
-5. Essential play must remain accessible with a keyboard and through the flat fallback.
-6. Production builds must succeed and local engine tests must pass before release.
-7. Browser tests must verify semantic outcomes as well as the displayed interface. A screenshot alone is insufficient evidence of legal chess behavior.
+Current evidence: **13 local engine tests pass, and strict TypeScript checking passes.** Build and browser observations are recorded separately in [VERIFICATION.md](VERIFICATION.md). No TestSprite cloud run has yet targeted the illustrated Marginwood interface.
 
-## Validation status
+The [historical October 17 native run](TESTSPRITE_RUN_2026-10-17.md) targeted the earlier 3D prototype. Raw 2 passed / 4 failed became all six intended feature scenarios inconclusive after assertion review. It establishes no acceptance coverage for the current UI. The [current TestSprite plan](TESTSPRITE_PLAN.md) is a specification, not an executed suite.
 
-- **Local engine tests:** 13 passing tests via `npm test`.
-- **TestSprite native MCP:** six-case run completed; raw 2 passed / 4 failed, with all six feature scenarios inconclusive after assertion audit. See [the audited report](TESTSPRITE_RUN_2026-10-17.md).
-- **Dedicated TestSprite Portal 3.0 suite:** configuration and meaningful acceptance validation pending.
-- **TestSprite GitHub App:** installation/configuration and pull-request checks pending.
-- **Public repository:** pending.
-- **Public hackathon deployment:** pending. The current private preview is https://queens-conservatory-davidson.sweetbox2.chatgpt.site.
+## Submission work
 
-The [TestSprite plan](TESTSPRITE_PLAN.md) contains the acceptance scenarios and evidence requirements. Do not treat the planned suite as executed coverage.
-
-## Hackathon submission checklist
-
-The [official Season 4 brief](https://www.testsprite.com/hackathon-s4) calls for a public repository, a public playable URL, a TestSprite Portal 3.0 suite, and the TestSprite GitHub App running checks on every pull request. The stated judging weights are **40% product quality, 40% testing, and 20% innovation**.
-
-The listed deadline is **October 22, 2026 at 11:59 PM Pacific Time**. Confirm the final schedule and submission instructions in the event Discord before submitting. Add the final submission links to the repository once available.
-
-Submission evidence still to produce:
-
-- Public source and deployment links that judges can open.
-- A real TestSprite run with clear assertions, recorded findings, fixes, and rerun results.
-- A pull request demonstrating the configured GitHub App check.
-- A short demo covering the first bloom, a full turn against the keeper, promotion, checkmate, undo, and saved-game restoration.
+The current private preview address remains https://queens-conservatory-davidson.sweetbox2.chatgpt.site. Public source and deployment, a meaningful TestSprite Portal 3.0 suite, a demonstrated GitHub App pull-request check, and the actual hackathon submission remain pending. Retain real failing assertions, fixes, and successful reruns; do not present planned cases as passing evidence.

@@ -1,0 +1,147 @@
+.sketch-margins {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+  color: #6f563e;
+  contain: layout paint;
+  --margin-ink: #6f563e;
+}
+.sketch-margins .margin-definitions { position: absolute; }
+.sketch-margins .margin-art { position: absolute; overflow: visible; }
+.sketch-margins .pencil-line { stroke: var(--margin-ink); stroke-width: 1.05; stroke-linecap: round; stroke-linejoin: round; }
+.sketch-margins .pencil-light { stroke: #8b8066; stroke-width: .7; stroke-linecap: round; stroke-linejoin: round; }
+.sketch-margins .pencil-echo { stroke: #9e9277; stroke-width: .65; stroke-linecap: round; opacity: .68; }
+.sketch-margins .pencil-dark { stroke: #6f563e; stroke-width: 1.7; stroke-linecap: round; }
+.sketch-margins .margin-balloon { width: clamp(145px, 15.3vw, 235px); top: 55px; left: -21px; }
+.sketch-margins .margin-cloud { width: clamp(175px, 19.5vw, 290px); top: 7px; right: -17px; }
+.sketch-margins .margin-turtle { width: clamp(220px, 23.5vw, 340px); bottom: -9px; left: -35px; }
+.sketch-margins .margin-tea-party { width: clamp(270px, 28vw, 400px); bottom: -12px; right: -22px; }
+.sketch-margins .margin-wanderers { inset: 0; width: 100%; height: 100%; }
+.sketch-margins .margin-art g { transform-box: fill-box; }
+.sketch-margins .balloon-drift { transform-origin: 50% 20%; animation: margin-balloon-drift 15s ease-in-out infinite; }
+.sketch-margins .balloon-leaves { transform-origin: 50% 100%; animation: margin-leaf-breath 9s ease-in-out infinite; }
+.sketch-margins .balloon-letter { transform-origin: 0 0; animation: margin-letter-float 11s ease-in-out infinite; }
+.sketch-margins .traveler-wave { transform-origin: 0 100%; animation: margin-tiny-wave 13s ease-in-out infinite; }
+.sketch-margins .cloud-drift { animation: margin-cloud-drift 19s ease-in-out infinite; }
+.sketch-margins .cloud-boots { transform-origin: 50% 0; animation: margin-boot-swing 7.7s ease-in-out infinite; }
+.sketch-margins .resident-blink { transform-origin: 50% 50%; animation: margin-blink 8.4s linear infinite; }
+.sketch-margins .cloud-eyes { animation-delay: -3.3s; }
+.sketch-margins .moon-moth { transform-origin: 50% 50%; animation: margin-moon-moth 15s ease-in-out infinite; }
+.sketch-margins .moon-moth>path:first-child { transform-origin: 50% 50%; animation: margin-moth-wing 2.6s ease-in-out infinite; }
+.sketch-margins .fern-sway { transform-origin: 60% 100%; animation: margin-fern-sway 12s ease-in-out infinite; }
+.sketch-margins .turtle-head { transform-origin: 0 50%; animation: margin-turtle-peek 17s ease-in-out infinite; }
+.sketch-margins .cottage-smoke { animation: margin-smoke 6.7s ease-out infinite; }
+.sketch-margins .tea-rabbit { transform-origin: 55% 100%; animation: margin-rabbit-listens 18s ease-in-out infinite; }
+.sketch-margins .rabbit-sip { transform-origin: 0 90%; animation: margin-rabbit-sip 15s ease-in-out infinite; }
+.sketch-margins .tea-hedgehog { transform-origin: 50% 100%; animation: margin-hedgehog-listens 18s ease-in-out infinite; }
+.sketch-margins .tea-steam { animation: margin-tea-steam 5.7s ease-out infinite; }
+.sketch-margins .tea-steam-second { animation-delay: -2.6s; }
+.sketch-margins .tea-grass { transform-origin: 50% 100%; animation: margin-grass-sway 8.2s ease-in-out infinite; }
+.sketch-margins .tea-umbrella { opacity: 0; transform: translateY(7px); transition: opacity 1s, transform 1s; }
+.sketch-margins[data-weather=rain] .tea-umbrella { opacity: 1; transform: none; }
+.sketch-margins .margin-rain { opacity: 0; stroke: #7f9b9b; stroke-width: .8; stroke-linecap: round; transition: opacity .8s; }
+.sketch-margins[data-weather=rain] .margin-rain { opacity: .55; }
+.sketch-margins .margin-rain path { animation: margin-raindrops 1.9s linear infinite; }
+.sketch-margins .margin-rain path+path { animation-delay: -.8s; }
+.sketch-margins .margin-night-stars { fill: #d0b164; stroke: #bba36a; stroke-width: .6; opacity: 0; transition: opacity 1.8s; }
+.sketch-margins[data-atmosphere=dusk] .margin-night-stars { opacity: .8; animation: margin-star-glimmer 6s ease-in-out infinite; }
+.sketch-margins .margin-fireflies { fill: #d3b86b; opacity: 0; transition: opacity 1.8s; }
+.sketch-margins[data-atmosphere=dusk] .margin-fireflies { opacity: .8; }
+.sketch-margins .margin-fireflies circle { animation: margin-firefly-glimmer 4.9s ease-in-out infinite; filter: drop-shadow(0 0 3px #d8b866); }
+.sketch-margins .margin-fireflies circle:nth-child(2n) { animation-delay: -2.3s; }
+.sketch-margins .margin-fireflies circle:nth-child(3n) { animation-delay: -1.1s; }
+.sketch-margins .margin-bird { opacity: .65; }
+.sketch-margins .bird-one { animation: margin-bird-one 34s linear infinite; }
+.sketch-margins .bird-two { animation: margin-bird-two 41s linear infinite; }
+.sketch-margins .margin-dragonfly { animation: margin-dragonfly 27s ease-in-out infinite; }
+.sketch-margins .margin-floating-leaf { animation: margin-floating-leaf 31s ease-in-out infinite; }
+.sketch-margins .capture-moth { opacity: 0; }
+.sketch-margins.is-celebrating .capture-moth-one { animation: margin-capture-moth-one 2.8s ease-out both; }
+.sketch-margins.is-celebrating .capture-moth-two { animation: margin-capture-moth-two 2.8s .12s ease-out both; }
+.sketch-margins.is-celebrating .capture-moth-three { animation: margin-capture-moth-three 2.7s .18s ease-out both; }
+.sketch-margins.is-celebrating .turtle-head { animation: margin-happy-turtle 2.6s ease-in-out both; }
+.sketch-margins.is-celebrating .tea-steam { animation-duration: 1.8s; }
+.sketch-margins.is-greeting[data-greeting=robin] .traveler-wave { animation: margin-greeting-wave .45s ease-in-out 4; }
+.sketch-margins.is-greeting[data-greeting=robin] .balloon-drift { animation: margin-greeting-balloon 1.8s ease-in-out both; }
+.sketch-margins.is-greeting[data-greeting=snail] .turtle-head { animation: margin-happy-turtle 1.8s ease-in-out both; }
+.sketch-margins.is-greeting[data-greeting=butterfly] .moon-moth { animation: margin-greeting-moth 1.8s ease-in-out both; }
+.sketch-margins.is-greeting[data-greeting=butterfly] .moon-moth>path:first-child { animation: margin-moth-wing .3s ease-in-out 6; }
+.sketch-margins.is-greeting[data-greeting=bee] .rabbit-sip { animation: margin-cheers 1.8s ease-in-out both; }
+.sketch-margins.is-greeting[data-greeting=bee] .tea-steam { animation-duration: 1.2s; }
+.sketch-margins[data-atmosphere=dusk] { --margin-ink: #46516c; }
+.sketch-margins[data-atmosphere=dusk] .pencil-light { stroke: #778395; }
+.sketch-margins[data-atmosphere=dusk] .pencil-echo { stroke: #8d94a0; }
+.sketch-margins[data-atmosphere=dusk] .pencil-dark { stroke: #38466a; }
+.sketch-margins[data-atmosphere=dusk] .margin-cloud { filter: saturate(.75); }
+.sketch-margins[data-atmosphere=dusk] .moon-moth { filter: drop-shadow(0 0 4px #cfb46f33); }
+.sketch-margins.is-hidden *, .sketch-margins.is-hidden *::before, .sketch-margins.is-hidden *::after { animation-play-state: paused !important; }
+.sketch-margins.is-still * { animation: none !important; transition: none !important; }
+.sketch-margins.is-still .bird-one { transform: translate(320px, 42px) rotate(-6deg); }
+.sketch-margins.is-still .bird-two { transform: translate(1080px, 57px) rotate(9deg); }
+.sketch-margins.is-still .margin-dragonfly { transform: translate(1373px, 477px) rotate(-18deg); }
+.sketch-margins.is-still .margin-floating-leaf { transform: translate(51px, 470px) rotate(25deg); }
+
+@keyframes margin-balloon-drift { 0%,100% { transform: translate(0,0) rotate(-2deg); } 50% { transform: translate(5px,-9px) rotate(1.6deg); } }
+@keyframes margin-leaf-breath { 0%,100% { transform: rotate(-1deg) scaleX(1); } 50% { transform: rotate(1.3deg) scaleX(.985); } }
+@keyframes margin-letter-float { 0%,100% { transform: translate(0,0) rotate(-8deg); } 50% { transform: translate(-8px,8px) rotate(9deg); } }
+@keyframes margin-tiny-wave { 0%,75%,100% { transform: rotate(0); } 79%,87% { transform: rotate(-18deg); } 83%,91% { transform: rotate(9deg); } }
+@keyframes margin-cloud-drift { 0%,100% { transform: translate(0,0); } 50% { transform: translate(-9px,5px); } }
+@keyframes margin-boot-swing { 0%,100% { transform: rotate(3deg); } 50% { transform: rotate(-4deg); } }
+@keyframes margin-blink { 0%,39%,41%,81%,83%,100% { transform: scaleY(1); } 40%,82% { transform: scaleY(.12); } }
+@keyframes margin-moon-moth { 0%,100% { transform: translate(0,0) rotate(-8deg); } 35% { transform: translate(-8px,-11px) rotate(7deg); } 70% { transform: translate(5px,-5px) rotate(-4deg); } }
+@keyframes margin-moth-wing { 0%,100% { transform: scaleX(1); } 50% { transform: scaleX(.7); } }
+@keyframes margin-fern-sway { 0%,100% { transform: rotate(-1deg); } 50% { transform: rotate(2deg); } }
+@keyframes margin-turtle-peek { 0%,30%,100% { transform: translate(0,0) rotate(0); } 50%,70% { transform: translate(3px,-2px) rotate(-5deg); } }
+@keyframes margin-smoke { 0% { opacity: 0; transform: translate(0,4px) scale(.8); } 30% { opacity: .55; } 100% { opacity: 0; transform: translate(-5px,-14px) scale(1.2); } }
+@keyframes margin-rabbit-listens { 0%,43%,100% { transform: rotate(0); } 50%,65% { transform: rotate(1.9deg); } 56%,71% { transform: rotate(-.8deg); } }
+@keyframes margin-rabbit-sip { 0%,23%,67%,100% { transform: rotate(0); } 35%,52% { transform: rotate(-12deg) translate(-1px,-2px); } }
+@keyframes margin-hedgehog-listens { 0%,23%,70%,100% { transform: rotate(0); } 34%,56% { transform: rotate(-2deg); } 40%,62% { transform: rotate(.5deg); } }
+@keyframes margin-tea-steam { 0% { opacity: 0; transform: translateY(4px) scale(.85); } 25% { opacity: .75; } 100% { opacity: 0; transform: translate(-3px,-15px) scale(1.12); } }
+@keyframes margin-grass-sway { 0%,100% { transform: rotate(-1deg); } 50% { transform: rotate(1.8deg); } }
+@keyframes margin-raindrops { 0% { opacity: 0; transform: translate(2px,-6px); } 20%,70% { opacity: 1; } 100% { opacity: 0; transform: translate(-5px,15px); } }
+@keyframes margin-star-glimmer { 0%,100% { opacity: .5; } 50% { opacity: .9; } }
+@keyframes margin-firefly-glimmer { 0%,100% { opacity: .1; transform: translate(0,0); } 50% { opacity: .95; transform: translate(3px,-7px); } }
+@keyframes margin-bird-one { 0% { opacity: 0; transform: translate(240px,86px) rotate(-9deg); } 7%,85% { opacity: .6; } 40% { transform: translate(650px,33px) rotate(1deg); } 75% { transform: translate(1090px,59px) rotate(8deg); } 100% { opacity: 0; transform: translate(1480px,118px) rotate(12deg); } }
+@keyframes margin-bird-two { 0% { opacity: 0; transform: translate(1350px,110px) rotate(170deg); } 9%,88% { opacity: .5; } 55% { transform: translate(620px,17px) rotate(179deg); } 100% { opacity: 0; transform: translate(-70px,94px) rotate(190deg); } }
+@keyframes margin-dragonfly { 0%,100% { opacity: .1; transform: translate(1400px,460px) rotate(-18deg); } 20% { opacity: .65; transform: translate(1360px,370px) rotate(-31deg); } 55% { opacity: .6; transform: translate(1390px,640px) rotate(14deg); } 80% { opacity: .2; transform: translate(1420px,780px) rotate(27deg); } }
+@keyframes margin-floating-leaf { 0% { opacity: 0; transform: translate(9px,280px) rotate(0); } 12%,80% { opacity: .6; } 30% { transform: translate(58px,440px) rotate(65deg); } 65% { transform: translate(22px,650px) rotate(135deg); } 100% { opacity: 0; transform: translate(64px,900px) rotate(220deg); } }
+@keyframes margin-capture-moth-one { 0% { opacity: 0; transform: translate(1260px,915px) rotate(-15deg) scale(.6); } 15%,65% { opacity: .85; } 100% { opacity: 0; transform: translate(1150px,685px) rotate(27deg) scale(1); } }
+@keyframes margin-capture-moth-two { 0% { opacity: 0; transform: translate(1200px,940px) rotate(12deg) scale(.5); } 15%,65% { opacity: .8; } 100% { opacity: 0; transform: translate(1340px,670px) rotate(-28deg) scale(.85); } }
+@keyframes margin-capture-moth-three { 0% { opacity: 0; transform: translate(250px,920px) rotate(-10deg) scale(.6); } 15%,65% { opacity: .75; } 100% { opacity: 0; transform: translate(105px,690px) rotate(30deg) scale(.9); } }
+@keyframes margin-happy-turtle { 0%,100% { transform: translate(0,0); } 20%,55% { transform: translate(3px,-4px) rotate(-7deg); } 38%,73% { transform: translate(0,-1px) rotate(2deg); } }
+@keyframes margin-greeting-wave { 0%,100% { transform: rotate(4deg); } 50% { transform: rotate(-22deg); } }
+@keyframes margin-cheers { 0%,100% { transform: rotate(0); } 30%,65% { transform: rotate(-18deg) translate(0,-4px); } }
+@keyframes margin-greeting-balloon { 0%,100% { transform: translate(0,0) rotate(-2deg); } 35% { transform: translate(3px,-15px) rotate(3deg); } 65% { transform: translate(1px,-7px) rotate(-3deg); } }
+@keyframes margin-greeting-moth { 0%,100% { transform: translate(0,0) rotate(-8deg); } 30% { transform: translate(-17px,-13px) rotate(-24deg); } 65% { transform: translate(-6px,-18px) rotate(18deg); } }
+
+@media (min-width: 1750px) {
+  .sketch-margins .margin-balloon { left: max(0px, calc((100vw - 1770px)/2)); }
+  .sketch-margins .margin-cloud { right: max(0px, calc((100vw - 1780px)/2)); }
+  .sketch-margins .margin-turtle { left: max(-15px, calc((100vw - 1840px)/2)); }
+  .sketch-margins .margin-tea-party { right: max(-10px, calc((100vw - 1800px)/2)); }
+}
+@media (max-width: 1199px) {
+  .sketch-margins .margin-balloon { width: 150px; left: -43px; top: 64px; opacity: .7; }
+  .sketch-margins .margin-cloud { width: 193px; right: -55px; top: 30px; opacity: .65; }
+  .sketch-margins .margin-turtle { width: 235px; left: -62px; opacity: .8; }
+  .sketch-margins .margin-tea-party { width: 275px; right: -67px; opacity: .8; }
+}
+@media (max-width: 899px) {
+  .sketch-margins .margin-balloon { width: 113px; left: -37px; top: 90px; opacity: .42; }
+  .sketch-margins .margin-cloud { width: 155px; right: -49px; top: 84px; opacity: .4; }
+  .sketch-margins .margin-turtle { width: 170px; left: -63px; bottom: -17px; opacity: .35; }
+  .sketch-margins .margin-tea-party { width: 205px; right: -80px; bottom: -13px; opacity: .35; }
+  .sketch-margins .margin-wanderers { opacity: .35; }
+}
+@media (max-width: 600px) {
+  .sketch-margins .margin-balloon { display: none; }
+  .sketch-margins .margin-cloud { width: 130px; right: -53px; top: 52px; opacity: .25; }
+  .sketch-margins .margin-turtle { width: 132px; left: -59px; opacity: .22; }
+  .sketch-margins .margin-tea-party { width: 155px; right: -75px; opacity: .22; }
+  .sketch-margins .margin-wanderers { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .sketch-margins * { animation-duration: .001ms !important; animation-iteration-count: 1 !important; transition: none !important; }
+}
