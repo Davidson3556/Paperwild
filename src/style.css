@@ -2,6 +2,7 @@
 
 /* Keep stale projected hit-target bounds inside the page during responsive resizes. */
 .app-shell,.game-space{overflow-x:clip}
+.header-actions .sound-button{width:auto;gap:6px;padding:3px 7px;border-radius:3px;font-size:14px;white-space:nowrap}.sound-button svg{width:18px;height:18px}.sound-button[aria-pressed=true]{color:var(--forest);background:#a5b38518;border-color:var(--line)}
 .board-access{max-width:calc(100% + 22px);overflow:clip}
 
 :root{font-family:'Patrick Hand',cursive;color:#5c4a37;background:#f2ecd9;font-synthesis:none;--paper:#f2ecd9;--ink:#5c4a37;--muted:#87775c;--faint:#a09274;--line:#c7b992;--forest:#6c8055;--gold:#b69343;--card:#f4eddc;--rose:#b1664b;--serif:'Caveat',cursive;color-scheme:light}

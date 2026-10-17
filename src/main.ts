@@ -2,13 +2,11 @@ import './style.css';
 import { createGame, restoreGame, chooseComputerMove, isDifficulty, isGameMode, PIECE_NAMES } from './game.ts';
 import type { Color, MoveCoordinates, MoveInput, PieceSymbol, PromotionPiece, Square } from './game.ts';
 import { createSketchScene } from './sketch-scene.ts';
-import type { Atmosphere, Conservatory, View } from './scene.ts';
+import type { SketchMotionEvent, SketchScene } from './sketch-scene.ts';
+import type { Atmosphere, View } from './scene.ts';
+import { createPaperwildSound } from './sound.ts';
 import type { ComputerRequest, ComputerResponse } from './ai.worker.ts';
 import { createSketchMargins } from './sketch-margins.ts';
-
-declare global {
-  interface Window { webkitAudioContext?: typeof AudioContext }
-}
 
 interface Preferences { atmosphere: Atmosphere; weather: 'clear' | 'rain'; sound: boolean; view: View; reducedMotion: boolean }
 interface Study { id: string; name: string; label: string; description: string; fen: string; focus: Square }
@@ -53,8 +51,9 @@ let worker: Worker | null = null;
 let computerTimer: ReturnType<typeof setTimeout> | undefined;
 let computerEpoch = 0;
 let toastTimer: ReturnType<typeof setTimeout> | undefined;
-let scene: Conservatory | undefined;
-let audio: AudioContext | undefined;
+let scene: SketchScene | undefined;
+let moving = false;
+let feedbackEpoch = 0;
 let pendingPromotion: MoveInput | null = null;
 let resultDismissed = false;
 let resizeFrame = 0;
@@ -64,7 +63,7 @@ document.querySelector('#app')!.innerHTML = `
     <header class="masthead">
       <a class="brand" href="/" aria-label="Paperwild home"><span class="brand-mark">${leaf}</span><span>Paperwild<strong>Chess, drawn to life.</strong></span></a>
       <div class="masthead-note"><span class="small-star">✧</span> Good company. Questionable strategies.</div>
-      <div class="header-actions"><button class="icon-button" id="sound" aria-label="Turn sound on" title="Sound">${icon('mute')}</button><button class="icon-button" id="help" aria-label="How to play" title="How to play">${icon('help')}</button><span class="edition">FIELD BOOK No. 01</span></div>
+      <div class="header-actions"><button class="icon-button sound-button" id="sound" aria-label="Turn sound on" title="Hear the little footsteps">${icon('mute')}<span>Sound off</span></button><button class="icon-button" id="help" aria-label="How to play" title="How to play">${icon('help')}</button><span class="edition">FIELD BOOK No. 01</span></div>
     </header>
     <main class="experience">
       <aside class="invitation">
@@ -110,6 +109,10 @@ const $ = <T extends HTMLElement = HTMLElement>(s: string) => document.querySele
 const dialog = (s: string) => $<HTMLDialogElement>(s);
 const button = (s: string) => $<HTMLButtonElement>(s);
 const all = <T extends HTMLElement = HTMLButtonElement>(s: string) => document.querySelectorAll<T>(s);
+const sound = createPaperwildSound({onUnavailable:()=>{
+  prefs.sound=false;applyPreferences();
+  showToast('Sound is unavailable here. The little world is still yours to explore.');
+}});
 const atmosphere = createSketchMargins(document.body, prefs);
 const squareButtons = new Map<Square, HTMLButtonElement>();
 const fallbackButtons = new Map<Square, HTMLButtonElement>();
@@ -144,18 +147,12 @@ function persist() {
   catch { $('#saved-note').textContent='Storage unavailable. Keep this tab open to continue.'; }
 }
 function savePreferences() { try {localStorage.setItem(PREF_KEY,JSON.stringify(prefs));} catch {} }
-function playTone(capture=false) {
-  if (!prefs.sound) return;
-  try {
-    const AudioContextClass = window.AudioContext || window.webkitAudioContext;
-    audio ||= new AudioContextClass();audio.resume();
-    const now=audio.currentTime;
-    for (const [i,f] of (capture ? [523.25,659.25,783.99] : [392,523.25]).entries()) {
-      const oscillator=audio.createOscillator(),gain=audio.createGain();oscillator.type='sine';oscillator.frequency.value=f;
-      gain.gain.setValueAtTime(0,now+i*.07);gain.gain.linearRampToValueAtTime(.035,now+i*.07+.015);gain.gain.exponentialRampToValueAtTime(.0001,now+i*.07+.75);
-      oscillator.connect(gain);gain.connect(audio.destination);oscillator.start(now+i*.07);oscillator.stop(now+i*.07+.8);
-    }
-  } catch { prefs.sound=false;applyPreferences(); }
+function onMotion(event: SketchMotionEvent) {
+  if(event.phase==='start')sound.moveStart(event.type,{durationMs:event.durationMs,contactTimesMs:event.contactTimesMs});
+  if(event.phase==='cancel')sound.cancel();
+}
+function cancelFeedback() {
+  feedbackEpoch++;moving=false;sound.cancel();scene?.settle();
 }
 function cancelComputer() {
   computerEpoch++;clearTimeout(computerTimer);computerTimer=undefined;worker?.terminate();worker=null;thinking=false;
@@ -179,6 +176,7 @@ function queueComputer() {
   },prefs.reducedMotion ? 150 : 650);
 }
 function selectSquare(square: Square) {
+  if(moving)return;
   if (thinking) {showToast('The club is considering a move.');return;}
   if (game.status().over) {showToast('This chapter is complete. Begin a new game to play again.');return;}
   if (game.mode==='computer'&&game.chess.turn()!=='w') return;
@@ -200,28 +198,38 @@ function selectSquare(square: Square) {
     }
     if (!piece||piece.color!==game.chess.turn()) {showToast('That square isn’t a legal move. Follow the marked possibilities.');return;}
   }
-  if (piece?.color===game.chess.turn()) {selected=square;focusedSquare=square;render();}
+  if (piece?.color===game.chess.turn()) {selected=square;focusedSquare=square;render();sound.select(piece.type);}
   else {selected=null;render();}
 }
 function commitMove(input: MoveInput) {
   const move=game.move(input);if(!move)return;
-  selected=null;pendingPromotion=null;resultDismissed=false;persist();render();playTone(!!move.captured);
+  const epoch=++feedbackEpoch,fen=game.chess.fen();
+  sound.cancel();moving=true;
+  selected=null;pendingPromotion=null;resultDismissed=false;persist();render();
   if(move.captured){
     atmosphere.celebrateCapture();
     $('#garden-observation').textContent='One more friend for tea on the sidelines.';
     showToast(`${clubNames[move.captured]} joins the sideline society.`);
   }
-  if(game.status().over) setTimeout(()=>{if(game.status().over&&!resultDismissed&&!dialog('#result-dialog').open)dialog('#result-dialog').showModal();},prefs.reducedMotion?0:1100);
-  else queueComputer();
+  void (scene?.whenSettled() ?? Promise.resolve()).then(()=>{
+    if(epoch!==feedbackEpoch||fen!==game.chess.fen())return;
+    moving=false;
+    const status=game.status();
+    sound.land(move.promotion ?? move.piece,{capture:!!move.captured,promotion:!!move.promotion,check:status.check,ending:status.over?(status.checkmate?'win':'draw'):undefined});
+    render();
+    if(status.over){
+      if(!resultDismissed&&!dialog('#result-dialog').open)dialog('#result-dialog').showModal();
+    }else queueComputer();
+  });
 }
 function undo() {
-  cancelComputer();const undone=game.undoTurn();selected=null;pendingPromotion=null;resultDismissed=true;
+  cancelFeedback();cancelComputer();const undone=game.undoTurn();selected=null;pendingPromotion=null;resultDismissed=true;
   if(dialog('#result-dialog').open)dialog('#result-dialog').close();
   if(!undone.length){showToast('The story is still at its beginning.');return;}
-  persist();render();showToast('A little room to reconsider. Your last turn is undone.');queueComputer();
+  persist();render();sound.undo();showToast('A little room to reconsider. Your last turn is undone.');queueComputer();
 }
 function newGame() {
-  cancelComputer();activeStudy=null;selected=null;resultDismissed=false;game.reset();focusedSquare='e2';
+  cancelFeedback();cancelComputer();activeStudy=null;selected=null;resultDismissed=false;game.reset();focusedSquare='e2';
   for(const d of all<HTMLDialogElement>('dialog[open]'))d.close();persist();render();$('#garden-observation').textContent='The best things happen between the lines.';showToast('A fresh page. A whole little world.');
 }
 const directions: Record<string, [number, number]> = {ArrowUp:[0,1],ArrowDown:[0,-1],ArrowLeft:[-1,0],ArrowRight:[1,0]};
@@ -252,6 +260,7 @@ function render() {
   const legal=selected?game.moves(selected).map(m=>m.to):[];
   const checkSquare=status.check?game.chess.board().flat().find(p=>p?.type==='k'&&p.color===status.turn)?.square ?? null:null;
   scene?.sync({board:game.chess.board(),selected,legal,lastMove:last||null,captures,checkSquare});
+  $('#board-access').setAttribute('aria-busy',String(moving));
   for(const [square,button] of squareButtons){
     const piece=game.chess.get(square),label=`${square}, ${piece?`${piece.color==='w'?'White':'Black'} ${PIECE_NAMES[piece.type]}`:'empty'}${legal.includes(square)?', legal destination':''}`;
     button.setAttribute('aria-label',label);button.setAttribute('aria-pressed',String(selected===square));button.dataset.piece=piece?`${piece.color}${piece.type}`:'';
@@ -260,7 +269,7 @@ function render() {
   updateSquareFocus();positionSquares();
   const statusText=status.over?status.text:thinking?'A little thinking…':status.check?'Oh, a check!':game.mode==='computer'?'Your move.':`${status.turn==='w'?'Amber':'Indigo'} to move.`;
   $('#game-status').textContent=statusText;
-  $('#game-status').dataset.turn=status.turn;$('#game-status').dataset.gameOver=String(status.over);$('#game-status').dataset.thinking=String(thinking);
+  $('#game-status').dataset.turn=status.turn;$('#game-status').dataset.gameOver=String(status.over);$('#game-status').dataset.thinking=String(thinking);$('#game-status').dataset.moving=String(moving);
   $('#turn-token').classList.toggle('ink',status.turn==='b');$('#turn-token').classList.toggle('thinking',thinking);
   const selectedType=selected?game.chess.get(selected)?.type:undefined;
   $('#turn-description').textContent=status.over?'A chapter for the club book. Time for tea?':status.check?`${status.turn==='w'?'White’s':'Black’s'} king is in check. Find a safe move.`:thinking?'Even daydreamers need a moment.':selected?`${selectedType?clubNames[selectedType]:'A friend'} on ${selected}. Choose a marked square.`:'Choose a little character to see its possibilities.';
@@ -285,7 +294,8 @@ function render() {
 function applyPreferences() {
   document.documentElement.dataset.atmosphere=prefs.atmosphere;
   document.documentElement.classList.toggle('reduced-motion',!!prefs.reducedMotion);
-  $('#sound').innerHTML=icon(prefs.sound?'sound':'mute');$('#sound').setAttribute('aria-label',prefs.sound?'Turn sound off':'Turn sound on');$('#sound').setAttribute('aria-pressed',String(!!prefs.sound));
+  $('#sound').innerHTML=`${icon(prefs.sound?'sound':'mute')}<span>Sound ${prefs.sound?'on':'off'}</span>`;$('#sound').setAttribute('aria-label',prefs.sound?'Turn sound off':'Turn sound on');$('#sound').setAttribute('aria-pressed',String(!!prefs.sound));
+  void sound.setEnabled(!!prefs.sound);
   $('#atmosphere').innerHTML=`${icon(prefs.atmosphere==='day'?'sun':'moon')}<span>${prefs.atmosphere==='day'?'Daydream':'Moonlight'}</span>`;
   $('#atmosphere').setAttribute('aria-label',prefs.atmosphere==='day'?'Switch to evening light':'Switch to morning light');
   $('#view').setAttribute('aria-label',prefs.view==='perspective'?'Switch to overhead view':'Switch to perspective view');
@@ -305,19 +315,19 @@ button('#new-game').onclick=()=>game.chess.history().length?dialog('#new-game-di
 button('#confirm-new').onclick=newGame;button('#result-new').onclick=newGame;button('#leave-study').onclick=newGame;
 button('#undo').onclick=undo;button('#help').onclick=()=>dialog('#help-dialog').showModal();button('#studies').onclick=()=>dialog('#studies-dialog').showModal();
 button('#meet').onclick=()=>dialog('#help-dialog').showModal();
-button('#sound').onclick=()=>{prefs.sound=!prefs.sound;applyPreferences();if(prefs.sound)playTone(true);};
+button('#sound').onclick=()=>{prefs.sound=!prefs.sound;applyPreferences();if(prefs.sound)void sound.unlock().then(ready=>{if(ready&&prefs.sound)sound.toggle();});};
 button('#atmosphere').onclick=()=>{prefs.atmosphere=prefs.atmosphere==='day'?'dusk':'day';applyPreferences();$('#garden-observation').textContent=prefs.atmosphere==='dusk'?'The paper turns blue. The moths take the next watch.':'Another golden afternoon between the lines.';};
 button('#weather').onclick=()=>{prefs.weather=prefs.weather==='clear'?'rain':'clear';applyPreferences();$('#garden-observation').textContent=prefs.weather==='rain'?'A passing shower. The tea tastes even better.':'The shower passes. The little world wakes again.';};
 button('#view').onclick=()=>{prefs.view=prefs.view==='perspective'?'overhead':'perspective';applyPreferences();};
 button('#motion').onclick=()=>{prefs.reducedMotion=!prefs.reducedMotion;applyPreferences();};
-button('#greet').onclick=()=>scene?.greetResident();
-$<HTMLSelectElement>('#difficulty').onchange=e=>{const value=(e.currentTarget as HTMLSelectElement).value;if(!isDifficulty(value))return;cancelComputer();game.difficulty=value;persist();render();queueComputer();};
-for(const b of all('[data-mode]'))b.onclick=()=>{const mode=b.dataset.mode;if(!isGameMode(mode))return;cancelComputer();game.mode=mode;selected=null;persist();render();queueComputer();};
+button('#greet').onclick=()=>{scene?.greetResident();sound.greeting();};
+$<HTMLSelectElement>('#difficulty').onchange=e=>{const value=(e.currentTarget as HTMLSelectElement).value;if(!isDifficulty(value))return;cancelFeedback();cancelComputer();game.difficulty=value;persist();render();queueComputer();};
+for(const b of all('[data-mode]'))b.onclick=()=>{const mode=b.dataset.mode;if(!isGameMode(mode))return;cancelFeedback();cancelComputer();game.mode=mode;selected=null;persist();render();queueComputer();};
 for(const b of all('[data-close]'))b.onclick=()=>b.closest('dialog')?.close();
 for(const d of all<HTMLDialogElement>('dialog')){d.addEventListener('click',e=>{if(e.target===d){const r=d.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)d.close();}});d.addEventListener('close',()=>{if(d.id==='promotion-dialog')pendingPromotion=null;if(d.id==='result-dialog')resultDismissed=true;});}
 for(const b of all('[data-study]'))b.onclick=()=>{
   const study=studies.find(s=>s.id===b.dataset.study);if(!study)return;
-  cancelComputer();activeStudy=study;game.reset({fen:study.fen,mode:'local'});selected=study.focus;focusedSquare=study.focus;resultDismissed=false;
+  cancelFeedback();cancelComputer();activeStudy=study;game.reset({fen:study.fen,mode:'local'});selected=study.focus;focusedSquare=study.focus;resultDismissed=false;
   dialog('#studies-dialog').close();persist();render();showToast(study.description);
 };
 for(const b of all('[data-promotion]'))b.onclick=()=>{const move=pendingPromotion;if(!move)return;dialog('#promotion-dialog').close();commitMove({...move,promotion:b.dataset.promotion as PromotionPiece});};
@@ -327,7 +337,7 @@ button('#export').onclick=()=>{
 };
 document.addEventListener('keydown',e=>{if(e.key.toLowerCase()==='u'&&!document.querySelector('dialog[open]')&&!['INPUT','TEXTAREA','SELECT'].includes((e.target as HTMLElement).tagName)&&!e.ctrlKey&&!e.metaKey){if(!e.defaultPrevented){e.preventDefault();undo();}}});
 try {
-  scene=createSketchScene($('#scene'),{onSquare:selectSquare,reducedMotion:prefs.reducedMotion,onCreature:creature=>{
+  scene=createSketchScene($('#scene'),{onSquare:selectSquare,onMotion,reducedMotion:prefs.reducedMotion,onCreature:creature=>{
     atmosphere.greetResident(creature);
     const observations={robin:'The tea balloon is taking the scenic route.',snail:'The cottage tortoise is in no particular hurry.',butterfly:'A moth has a little moonlight to share.',bee:'The tea party raises a cup to your next move.'};
     $('#garden-observation').textContent=observations[creature];
@@ -339,5 +349,12 @@ try {
 }
 const observer=new ResizeObserver(()=>{cancelAnimationFrame(resizeFrame);resizeFrame=requestAnimationFrame(()=>{scene?.resize();positionSquares();});});observer.observe($('.game-space'));
 applyPreferences();render();queueComputer();
-window.addEventListener('pagehide',()=>{persist();cancelComputer();});
+for(const eventName of ['pointerdown','keydown'])document.addEventListener(eventName,event=>{if(event.isTrusted&&prefs.sound)void sound.unlock();},{capture:true});
+window.addEventListener('pagehide',event=>{
+  persist();cancelFeedback();cancelComputer();
+  if(!event.persisted){
+    observer.disconnect();cancelAnimationFrame(resizeFrame);clearTimeout(toastTimer);
+    sound.destroy();scene?.destroy();atmosphere.destroy();
+  }
+});
 window.addEventListener('pageshow',event=>{if(event.persisted){scene?.resize();render();queueComputer();}});

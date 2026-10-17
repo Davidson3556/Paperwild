@@ -2,7 +2,9 @@
 
 ## Execution status
 
-**This is the acceptance specification for the illustrated DOM/SVG interface. It has not been cloud-executed.** The current local engine suite passes 13 tests and strict TypeScript checking passes. Actual build and manual browser observations belong in [VERIFICATION.md](VERIFICATION.md), not in this planned suite.
+**This is the 19-scenario acceptance specification for the illustrated DOM/SVG interface. It has not been cloud-executed.** All **24 local tests pass: 13 engine, 8 mocked Web Audio lifecycle, and 3 motion invariant tests**. Strict TypeScript checking and the production build pass.
+
+Focused current Chrome QA observed the six active gait profiles, recorded intermediate hare/pawn poses, simultaneous castling, capture interruption/undo cleanup, promotion's arrival-time image change, sequential human/computer movement, sound toggle/save behavior, reduced motion, and usable 320/390 px layouts, without observed warnings/errors. Audio initialized without availability errors, but audible quality was not assessed. These observations do not mark this entire specification as executed. Exact browser evidence and limitations belong in [VERIFICATION.md](VERIFICATION.md).
 
 The [historical native run](TESTSPRITE_RUN_2026-10-17.md) targeted the earlier 3D prototype. Its raw result was 2 passed / 4 failed, but all six intended gameplay scenarios were inconclusive after auditing the generated assertions. It is retained as historical evidence, not coverage of Paperwild. TestSprite Portal 3.0 validation and GitHub App integration remain pending.
 
@@ -25,6 +27,7 @@ The [historical native run](TESTSPRITE_RUN_2026-10-17.md) targeted the earlier 3
 | Selection / destinations | Source `aria-pressed="true"`; destination accessible name contains `legal destination`. |
 | Role artwork | Active board `.sketch-piece` images use the role/side asset `/art/pieces/{w\|b}{p\|r\|n\|b\|q\|k}.png`. Match the current square and verify image decoding; distinguish these from captured images. |
 | Turn / terminal state | `#game-status` exposes `data-turn`, `data-thinking`, and `data-game-over`. |
+| Movement busy state | `#board-access` exposes `aria-busy`. Wait for false before committing the next turn; assert true during a non-reduced move/capture sequence. |
 | History | `#move-history` contains the expected SAN in order. |
 | Captures | `#bloom-count` and `#bloom-display` retain legacy IDs; they now describe captured characters in The sideline society, not flowers. Captured images have conventional-role alt text. |
 | Modes | `[data-mode="computer"]` / `[data-mode="local"]`, with `aria-pressed`. |
@@ -32,6 +35,7 @@ The [historical native run](TESTSPRITE_RUN_2026-10-17.md) targeted the earlier 3
 | Stories | Accessible name Explore the chess studies; visible text Little chess stories; then `[data-study="bloom"]`, `promotion`, or `mate`. |
 | Promotion | `#promotion-dialog`; choices `[data-promotion="q"]`, `r`, `b`, `n`. |
 | Weather / light / motion | `#weather`, `#atmosphere`, `#motion`; check the label/pressed state and saved preference. |
+| Sound | `#sound`; visible Sound off/on text, accessible Turn sound on/off label, and `aria-pressed` must agree with the saved preference. |
 
 Each story preselects its starting piece. Assert that state, then activate its destination directly. Clicking the selected source again deselects it. Use semantic button activation or keyboard Enter; character animation must not determine which square a test means to choose.
 
@@ -95,8 +99,8 @@ Each story preselects its starting piece. Assert that state, then activate its d
 
 For Sleepy, Thoughtful, and Mischievous, use a fresh Against the club game:
 
-1. Play e4; observe pending Black turn. Attempt a premature White move and confirm it is rejected.
-2. Wait until thinking is false and White is to move, using a 10-second timeout.
+1. Play e4; observe the movement busy state and pending Black turn. Attempt a premature White move and confirm it is rejected. Verify Black does not start moving before White's core movement/capture sequence settles.
+2. Wait until movement busy and thinking are false and White is to move, using a 10-second timeout.
 3. Assert exactly two legal plies, one Black reply, matching images, and no worker exception. Do not require a particular Black move.
 4. Export/replay the PGN when supported; it must reach the displayed position.
 
@@ -140,13 +144,13 @@ For Sleepy, Thoughtful, and Mischievous, use a fresh Against the club game:
 1. Snapshot board/history/captures/turn. Cycle Say hello through four observations; assert each text changes and the snapshot remains identical. Manually inspect balloon, tortoise, moth, and tea-party greetings.
 2. Toggle A little rain / Clear skies and Daydream / Moonlight. Assert accessible labels, weather pressed state, document treatment, saved preferences, and unchanged chess state.
 3. Manually inspect cloud rain, tea umbrella, paper/ink contrast, stars, and warm fireflies. Decorations must not block text or square targets.
-4. Confirm sound starts off in a clean context; opt in/out and check its saved state. Assess audible output manually if the runner cannot inspect it.
+4. Confirm sound starts off in a clean context; the visible Sound off/on text and accessible name must agree. Sound acceptance is expanded in MC-19; assess audible output manually if the runner cannot inspect it.
 
 ### MC-16 — Reduced motion and hidden-page lifecycle
 
 1. Start with system reduced motion; assert paused initial setting. Confirm consecutive settled frames have no ambient wandering, idle movement, or long move/capture arc.
-2. Make a legal move/capture while paused; assert correct final board/sidelines and usable keyboard input.
-3. Enable movement and manually inspect resumed life. Hide the page during an animation, then return; assert no duplicate pieces, moves, or captured characters.
+2. Make a legal move/capture while paused; assert correct final board/sidelines, no long movement arc, usable keyboard input, and opted-in sound still available. Busy state must release even when animation is omitted.
+3. Enable movement and manually inspect resumed life. Hide the page during an animation, then return; assert no duplicate pieces, moves, captured characters, or replayed stale sound.
 4. Confirm reduced-motion preference survives reload. No ongoing JavaScript frame loop should be needed for the margin’s CSS decorations.
 
 ### MC-17 — Missing image and mobile integrity
@@ -154,6 +158,26 @@ For Sleepy, Thoughtful, and Mischievous, use a fresh Against the club game:
 1. Block one character PNG in a separate context. Assert its chess-symbol fallback appears; square role/side remains available; a legal move still works.
 2. At 390×844 and 1440×1000, assert no horizontal overflow, usable board/control targets, reachable journal, and dialogs that fit.
 3. Resize with a selection active, then move and capture. Assert visible cells and semantic targets agree. Check that mobile margin art stays clear of essential controls.
+
+### MC-18 — Six gaits, landing order, and safe interruption
+
+1. Use legal local sequences to move each role. Capture a mid-movement observation and a settled observation: acorn walk/alternating pencil feet, hare crouch/leap/landing, moth flap, stump shuffle, fox double-pounce, and badger waddle. Inspect grounding shadows, contact dust, and footprints; a start/end screenshot pair alone is insufficient to establish a gait.
+2. Assert busy state during each core sequence. Attempt another square move before it settles; assert no extra history entry or board mutation. After settlement, the next legal move must work.
+3. In Against the club, verify the White move and captured character's departure settle before Black starts. Then wait for Black's settlement before White can commit again. There must be one Black reply, with no truncation caused by status rerenders.
+4. Undo during a move and during a capture departure. Assert the correct board/history/captures immediately settle; no stale footstep, landing cue, departure element, or delayed result appears.
+5. Repeat interruption with A fresh page, story replacement, and mode changes. The scene must release its settlement waiters; no canceled computer turn may arrive later.
+6. Switch to reduced motion mid-move, then resize mid-move in a separate run. Assert canonical final positions, no orphaned effects, released busy state, and continued legal play. Distinguish intentional settling from a failed gait.
+
+### MC-19 — Procedural sound and gesture/mute lifecycle
+
+1. With clean storage, assert Sound off, Turn sound on, and `aria-pressed=false`. No audio should play on load. Opt in through pointer input; repeat in a separate context using keyboard activation. Confirm Sound on and the saved preference.
+2. Select and move each role. Manually hear the paper/wood/paw/wing/pluck character and verify contacts correspond to visible feet/wing beats, with an arrival cue at settlement. Record audible observation separately from mocked audio-node assertions.
+3. Exercise capture, castling, promotion, check, checkmate, draw, undo, greeting, and toggles. Verify the appropriate cue occurs once for the successful action. Selection rerenders, a canceled promotion dialog, save restore, and result-dialog reopening must not duplicate landing/promotion/ending cues.
+4. Mute during a moving gait and immediately before a scheduled contact. Current output and future scheduled voices must stop; Sound off and the saved preference must agree. Undo/reset/story interruption must also discard stale scheduled movement/arrival cues.
+5. Reload with sound enabled in storage. Assert the page remains silent until fresh trusted input; an automatically resumed computer turn must not unlock audio itself. After a gesture, new actions may sound, but old moves must not replay.
+6. Hide the page during scheduled sounds, then return. Verify immediate silence while hidden and no stale replay on return; a fresh gesture re-enables new sounds when the preference is on.
+7. In an isolated context, reject AudioContext resume or remove audio support. Assert a graceful unavailable state, no uncaught rejection, and fully usable chess. Repeated input must not create unbounded voices; destruction must release resources.
+8. Enable reduced motion while sound remains on. Assert the board stays static at final positions and concise move/capture feedback still works; motion preference must not silently mute audio.
 
 ## Release evidence
 

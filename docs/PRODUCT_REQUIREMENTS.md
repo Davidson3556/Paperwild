@@ -4,7 +4,7 @@
 
 Make a chess sketchbook feel inhabited. The game is a clear, usable flat board; the original pencil-and-wash woodland cast and the life in the page margins make it distinctive. Motion should suggest small creatures with their own habits while preserving readable squares, conventional chess roles, and dependable rules.
 
-The active implementation uses `src/main.ts`, `src/game.ts`, `src/sketch-scene.ts`, and `src/sketch-margins.ts`. The older Three.js scene, wildlife, and atmosphere modules are retained source history, not the active runtime.
+The active implementation uses `src/main.ts`, `src/game.ts`, `src/sketch-scene.ts`, `src/piece-motion.ts`, `src/sketch-margins.ts`, and `src/sound.ts`. The older Three.js scene, wildlife, and atmosphere modules are retained source history, not the active runtime.
 
 ## Illustrated world
 
@@ -12,14 +12,15 @@ The active implementation uses `src/main.ts`, `src/game.ts`, `src/sketch-scene.t
 | --- | --- | --- |
 | Flat sketchbook board | DOM/SVG rendering places transparent character images on an eight-by-eight board. | Visible squares, pointer targets, coordinates, and accessible labels agree after resize. |
 | Woodland cast | Pawn = acorn sprite; rook = stump; knight = hare; bishop = moth; queen = fox; king = badger. Twelve assets provide Amber/White and Indigo/Black variants. | Each board image matches its chess role and side; help explains every mapping. |
-| Character motion | Idle gestures and move styles differ by role; captured characters arc toward the sidelines. | Movement never changes the legal outcome, hides the chosen destination, or leaves duplicate pieces after settling. |
+| Character motion | Acorns walk with articulated pencil feet; hares anticipate, leap, and land; moths flap; stumps shuffle; foxes double-pounce; badgers waddle. Drawn shadows, dust, and footprints follow the choreography. | Inspect an intermediate pose as well as the final square. Motion must show the role's gait, agree with its ground contacts, and leave no duplicate sprites, feet, or effects after settling. |
+| Turn choreography | The board is busy during a core move/capture sequence; the computer waits for settlement before replying. | A second board move cannot interrupt the first. Undo, a new game, and story replacement can cancel safely; canceled work must not produce a late move, landing cue, or result. |
 | Sideline society | Captured characters remain visible off the board and in the journal. | Their number, side, and role match legal capture history. Undo and restore derive the same collection. |
 | Margin residents | A tea balloon carried by leaves, a cloud with dangling boots, a cottage-carrying tortoise, and a rabbit/hedgehog tea party inhabit the page. | Decorations leave game controls usable and do not intercept chess input. |
 | Ambient life | Birds, a moth, dragonfly, floating leaves, cottage smoke, and tea steam move around the page edges. | The page feels active without obscuring the board or making text difficult to read. |
 | Daydream / Moonlight | Warm cream paper changes to pale cool paper with indigo ink and warm small lights. | Labels and saved preferences match the current treatment; contrast remains usable. |
 | Rain | A passing shower changes the margin mood and opens the tea-party umbrella. | Weather control label, pressed state, and restored preference agree; chess state is unchanged. |
 | Greetings | Say hello cycles through resident reactions and updates a textual observation. | A greeting produces the matching response without committing a move or changing captures. |
-| Reduced motion | The initial preference respects the system setting; the user can pause wandering. | Ambient loops stop and active game movement settles. Keyboard and pointer chess continue to work. |
+| Reduced motion | The initial preference respects the system setting; the user can pause wandering. | Ambient loops stop and active game movement settles without a long gait or capture arc. Chess and opted-in sound remain usable; the computer is not stuck waiting for an omitted animation. |
 | Hidden page | CSS and tracked Web Animations pause when the page is hidden. | Returning does not duplicate animations, moves, or capture reactions. |
 | Asset failure | A character whose image cannot load has a conventional chess-symbol fallback. | The position stays readable and playable even if a PNG fails. |
 
@@ -41,7 +42,7 @@ Artwork provenance and exact generation prompts are in [ART_PROMPTS.md](ART_PROM
 | Undo | Local mode removes one ply; computer mode removes a pending White move or the completed White/Black pair. | Board, history, side to move, captures, and terminal status restore atomically. Canceled computer work cannot reapply an undone move. |
 | A fresh page | The accessible name is Begin a new game. A game with history asks for confirmation. | Cancel preserves the game; confirm clears history and sidelines, keeps mode/difficulty, and cancels obsolete work. |
 | Keyboard | Arrows explore squares; Enter chooses; Escape clears selection; U undoes. | Each interaction commits at most one move and retains a visible focus indicator. |
-| Sound | Audio begins off and requires opt-in. | The control and saved setting agree; a clean load is silent. |
+| Sound | A visible Sound off/on button controls remembered opt-in. Procedural Web Audio supplies paper brushes, wood, paws, wings, and plucks for selection, motion contacts, landing, captures, promotion, check/endings, undo, greetings, and controls. | A fresh or restored page is silent until a trusted input unlocks audio. Cues match successful actions and contact timing, with no duplicate landing/end cues on rerender, restore, or canceled promotion. Mute and page hiding stop current and scheduled voices immediately. |
 
 ## Little chess stories
 
@@ -63,6 +64,16 @@ Opening a story replaces the current position and uses local mode. Its starting 
 
 Saves remain local to the same browser and origin. There are no accounts, network multiplayer, or cloud synchronization.
 
+## Sound and movement lifecycle
+
+- The rules engine commits a legal move once. Its finite movement/capture sequence then owns the board's busy state; selection/status rerenders must not restart or truncate it.
+- Movement plans provide contact times to the sound score. Launch/contact and arrival sounds must follow the same choreography, rather than unrelated timers.
+- Promotion remains uncommitted until the choice is made. A settled promotion, check, or terminal move receives its appropriate feedback once; render and reload are silent state reconstruction.
+- Undo, restart, mode changes, and story replacement invalidate pending feedback as well as obsolete computer work. Intentional cancellation must settle the displayed board and release waiting tasks.
+- Sound uses browser-generated sources, a bounded voice pool, and a master mute. It needs no external audio assets or backend. A refused resume or unsupported audio must leave chess usable without an uncaught rejection.
+- An enabled saved preference does not authorize page-load autoplay. After hiding, sound requires a fresh trusted interaction and must not replay stale cues.
+- Reduced motion and sound are independent preferences. A static board can still provide concise feedback after the player opts into sound.
+
 ## Quality and evidence
 
 1. Visible characters, square labels, history, turn, captures, and the rules engine must describe the same position.
@@ -71,7 +82,9 @@ Saves remain local to the same browser and origin. There are no accounts, networ
 4. Test assertions must check complete feature outcomes. A screenshot, nonempty URL, or successful button click alone does not prove correct chess.
 5. Build and strict type checking must succeed; local engine tests must pass before release.
 
-Current evidence: **13 local engine tests pass, and strict TypeScript checking passes.** Build and browser observations are recorded separately in [VERIFICATION.md](VERIFICATION.md). No TestSprite cloud run has yet targeted the illustrated Paperwild interface.
+Current local evidence: **24 tests pass: 13 engine, 8 sound lifecycle, and 3 motion invariant tests.** Strict TypeScript checking and the production build pass. The sound tests use mocked Web Audio to verify unlock, cancellation, mute, hidden-page behavior, refusal handling, voice limits, and cleanup; they do not assess audible quality.
+
+Focused current Chrome checks observed all six active movement profiles, with intermediate hare anticipation/leap and articulated pawn-foot screenshots. Castling moved king and rook together. Undo during a capture removed departures, restored both pawns, and released busy state; a completed capture left one matching sideline image. Promotion retained the moving acorn until arrival, then displayed a knight and the correct draw. The computer began thinking after the human landed, made one legal reply, and returned control after settling. Sound toggle/reload persistence and reduced-motion movement were checked; 320/390 px layouts remained usable; no browser warnings/errors appeared. Audio initialized without availability errors, but its audible character and quality were not listened to or captured. See [VERIFICATION.md](VERIFICATION.md) for evidence and limits. No TestSprite cloud run has yet targeted the illustrated Paperwild interface.
 
 The [historical October 17 native run](TESTSPRITE_RUN_2026-10-17.md) targeted the earlier 3D prototype. Raw 2 passed / 4 failed became all six intended feature scenarios inconclusive after assertion review. It establishes no acceptance coverage for the current UI. The [current TestSprite plan](TESTSPRITE_PLAN.md) is a specification, not an executed suite.
 

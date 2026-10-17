@@ -2,6 +2,21 @@
 
 First build verification: October 17, 2026 (Africa/Lagos).
 
+## Character movement and sound — October 17, 2026
+
+- Added six motion plans with anticipation, articulated limbs/ears/wings/tails, grounded steps, leap arcs, and landing effects. Character motion and audio share contact timing. Actual movement and capture departure settle before another board move; undo/reset intentionally interrupt and cancel stale feedback.
+- Local suite: **24 tests pass** — 13 engine tests, eight mocked Web Audio lifecycle tests, and three choreography invariant tests. The latter check canonical endpoints, bounded and monotonic paths, mirrored directions, and contact timing across all six roles and multiple journeys.
+- Web Audio tests cover silent loading, immediate mute including scheduled contacts, stale asynchronous unlocks, interruption, hidden-page suspension, unsupported/rejected audio, bounded voices, and cleanup. These validate scheduling/lifecycle with a fake context; they do not establish subjective sound quality.
+- Chrome desktop: observed all six active movement profiles, simultaneous king/rook castling, articulated pawn feet, and hare crouch/leap/landing. Recorded actual running-app frames for the movement preview.
+- Undo during an active capture cleared the moving state and departing node, restored the White pawn on e4 and Black pawn on d5, and restored zero captures. A completed capture retained exactly one sideline character and no departing node.
+- During promotion the moving artwork remained the acorn; after landing it became the chosen knight and displayed the insufficient-material result. Undo restored the acorn.
+- Against the computer, the human move initially reported moving=true and thinking=false; after landing, thinking=true; exactly one reply (`Nc6`) completed before White regained settled control.
+- The visible Sound on/off button enabled browser playback without an unavailable-audio notice or console error. Muting survived reload. No system-audio recording or subjective listening check was available, so audibility/volume across output devices remains a manual check.
+- At 390 × 844 and 320 × 740 the board and sound controls remained usable without horizontal page overflow. With reduced motion and Sound on, a move settled without animated piece elements and the computer still replied. No warnings or errors appeared in the inspected Chrome session.
+- Repeated the sound-toggle and hare-move smoke check against the production build: all 32 character images decoded, the leap settled into `Nf3`, and Sound on remained available without console errors. After reduced motion settled, no CSS animations or moving pieces remained and consecutive full-page screenshots were byte-identical.
+
+The current [19-scenario acceptance plan](TESTSPRITE_PLAN.md) remains a specification for the next TestSprite run. No new cloud run or GitHub App check is claimed by this revision.
+
 ## Paperwild repository release — October 17, 2026
 
 - Renamed the app, page metadata, package, favicon, and PGN export to Paperwild. Legacy browser save keys remain compatible.

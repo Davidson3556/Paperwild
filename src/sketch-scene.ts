@@ -1,6 +1,24 @@
 import './sketch-scene.css';
 import type { Conservatory, ConservatoryOptions, CreatureName, LastMove, SquareProjection, SyncOptions } from './scene.ts';
 import type { Capture, Color, PieceSymbol, Square } from './game.ts';
+import { getPieceMotion } from './piece-motion.ts';
+import type { PieceMotionPlan } from './piece-motion.ts';
+
+export interface SketchMotionEvent {
+  id: number;
+  phase: 'start' | 'land' | 'capture' | 'cancel';
+  type: PieceSymbol;
+  from: Square;
+  to: Square;
+  durationMs: number;
+  contactTimesMs: readonly number[];
+  capture: boolean;
+}
+export interface SketchSceneOptions extends ConservatoryOptions { onMotion?: (event: SketchMotionEvent) => void }
+export interface SketchScene extends Conservatory {
+  whenSettled(): Promise<void>;
+  settle(): void;
+}
 
 const SVG_NS = 'http://www.w3.org/2000/svg';
 const FILES = 'abcdefgh';
@@ -17,6 +35,11 @@ interface Sprite {
   image: HTMLImageElement;
   fallback: HTMLSpanElement;
   emote: HTMLSpanElement;
+  shadow: SVGSVGElement;
+  limbs: SVGSVGElement;
+  parts: Map<string, HTMLElement | SVGElement>;
+  fragments: HTMLImageElement[];
+  pendingArtwork: boolean;
   square: Square;
   color: Color;
   type: PieceSymbol;
@@ -37,7 +60,7 @@ function capturedPosition(index: number): Point {
 }
 
 /** A flat sheet of pencilled chess, with all input owned by the semantic board. */
-export function createSketchScene(container: HTMLElement, { onSquare, onCreature, onReady, reducedMotion = false }: ConservatoryOptions = {}): Conservatory {
+export function createSketchScene(container: HTMLElement, { onSquare, onCreature, onReady, onMotion, reducedMotion = false }: SketchSceneOptions = {}): SketchScene {
   const prefix = `marginwood-board-${++instance}`;
   const root = document.createElement('div'); root.className = 'sketch-scene';
   root.setAttribute('aria-hidden', 'true'); root.dataset.motion = reducedMotion ? 'still' : 'gentle';
@@ -48,7 +71,8 @@ export function createSketchScene(container: HTMLElement, { onSquare, onCreature
   const grid = svg('g', { class: 'sketch-board-grid', fill: 'none', 'stroke-linecap': 'round', 'stroke-linejoin': 'round' });
   const coordinates = svg('g', { class: 'sketch-coordinates' });
   const marks = svg('g', { class: 'sketch-board-marks' });
-  sheet.append(tiles, grid, coordinates, marks);
+  const traces = svg('g', { class: 'sketch-motion-traces' });
+  sheet.append(tiles, grid, coordinates, traces, marks);
   const cast = document.createElement('div'); cast.className = 'sketch-cast';
   const collection = document.createElement('div'); collection.className = 'sketch-sidelines';
   const flights = document.createElement('div'); flights.className = 'sketch-departures';
@@ -56,7 +80,10 @@ export function createSketchScene(container: HTMLElement, { onSquare, onCreature
   root.append(sheet, collection, cast, flights, hello); container.append(root);
   let width = 1, height = 1, destroyed = false, ready = false, signature = '', captureKey = '', previousCaptures = -1, resident = 0;
   const sprites = new Map<Square, Sprite>();
-  const running = new Map<Animation, (() => void) | undefined>();
+  const running = new Map<Animation, ((cancelled: boolean) => void) | undefined>();
+  const motions = new Set<Animation>();
+  const settlers = new Set<() => void>();
+  let motionId = 0;
 
   // The grid is drawn twice, imperfectly: the second pencil pass is lighter.
   // Every coloured square has individual wash edges and clipped pencil hatch.
@@ -89,18 +116,31 @@ export function createSketchScene(container: HTMLElement, { onSquare, onCreature
   // Little pencil corner flourishes tie the board to the surrounding notebook.
   grid.append(svg('path', { d: 'M53 65q-18-10-10-25q20 1 19 19m-7-5-8-9M939 894q19-1 22 17q-17 8-24-6m6 0 10 3', stroke: '#7e8a60', 'stroke-width': 1.7, opacity: .7 }));
 
-  function track(animation: Animation, cleanup?: () => void) {
+  function retire(animation: Animation, cancelled: boolean) {
+    if (!running.has(animation)) return;
+    const cleanup = running.get(animation); running.delete(animation);
+    cleanup?.(cancelled); animation.cancel();
+  }
+  function track(animation: Animation, cleanup?: (cancelled: boolean) => void) {
     running.set(animation, cleanup);
     if (document.hidden) animation.pause();
-    animation.finished.then(() => {
-      if (!running.has(animation)) return;
-      running.delete(animation); cleanup?.(); animation.cancel();
-    }, () => { running.delete(animation); });
+    animation.finished.then(() => retire(animation, false), () => retire(animation, true));
     return animation;
   }
   function finishAnimations() {
-    for (const [animation, cleanup] of running) { animation.cancel(); cleanup?.(); }
-    running.clear();
+    for (const animation of [...running.keys()]) retire(animation, true);
+  }
+  function trackMotion(animation: Animation, event: SketchMotionEvent, cleanup?: () => void) {
+    motions.add(animation);
+    track(animation, cancelled => {
+      cleanup?.(); motions.delete(animation);
+      onMotion?.({ ...event, phase: cancelled ? 'cancel' : 'land' });
+      if (!motions.size) { for (const settle of settlers) settle(); settlers.clear(); }
+    });
+    onMotion?.(event);
+  }
+  function whenSettled() {
+    return motions.size ? new Promise<void>(resolve => settlers.add(resolve)) : Promise.resolve();
   }
   function locate(sprite: Sprite, square: Square) {
     const p = position(square);
@@ -119,41 +159,180 @@ export function createSketchScene(container: HTMLElement, { onSquare, onCreature
     const image = document.createElement('img'); image.alt = ''; image.draggable = false; image.className = 'sketch-piece-art'; image.decoding = 'async';
     const fallback = document.createElement('span'); fallback.className = 'sketch-piece-fallback'; fallback.textContent = SYMBOLS[piece.color][piece.type]; fallback.hidden = true;
     const emote = document.createElement('span'); emote.className = 'sketch-piece-emote'; emote.textContent = '!';
-    body.append(image, fallback); element.append(body, emote); cast.append(element);
-    const sprite: Sprite = { element, body, image, fallback, emote, square: piece.square, color: piece.color, type: piece.type };
+    const shadow = svg('svg', { viewBox: '0 0 100 100', preserveAspectRatio: 'none', class: 'sketch-ground-shadow' });
+    shadow.append(svg('ellipse', { cx: 50, cy: 89, rx: 24, ry: 3, fill: '#706b48', opacity: .18 }), svg('path', { d: 'M30 89q20 3 39-1m-34 4 28-1', fill: 'none', stroke: '#746e4c', 'stroke-width': .7, opacity: .3 }));
+    const limbs = svg('svg', { viewBox: '0 0 100 100', preserveAspectRatio: 'none', class: 'sketch-moving-limbs' });
+    body.append(image, fallback); element.append(shadow, limbs, body, emote); cast.append(element);
+    const sprite: Sprite = { element, body, image, fallback, emote, shadow, limbs, parts: new Map(), fragments: [], pendingArtwork: false, square: piece.square, color: piece.color, type: piece.type };
     element.style.setProperty('--idle-delay', `${-((piece.square.charCodeAt(0) + Number(piece.square[1]) * 3) % 17) / 3}s`);
-    artwork(image, piece.color, piece.type, fallback); locate(sprite, piece.square); return sprite;
+    artwork(image, piece.color, piece.type, fallback); articulate(sprite); locate(sprite, piece.square); return sprite;
+  }
+  function articulate(sprite: Sprite) {
+    for (const fragment of sprite.fragments) fragment.remove();
+    sprite.fragments.length = 0; sprite.parts.clear(); sprite.limbs.replaceChildren();
+    const type = sprite.type;
+    const joint = (name: string, x: number, y: number, parent: SVGElement = sprite.limbs) => {
+      const group = svg('g', { class: `sketch-joint sketch-joint-${name}` });
+      group.style.transformOrigin = `${x}% ${y}%`; group.style.transformBox = 'view-box';
+      parent.append(group); sprite.parts.set(name, group); return group;
+    };
+    const fragment = (name: string, clip: string, origin: string) => {
+      const image = document.createElement('img'); image.alt = ''; image.draggable = false;
+      image.className = `sketch-art-fragment sketch-fragment-${name}`; image.src = sprite.image.src;
+      image.style.clipPath = clip; image.style.transformOrigin = origin;
+      sprite.body.append(image); sprite.fragments.push(image); sprite.parts.set(name, image);
+    };
+    if (type === 'p' || type === 'r' || type === 'k' || type === 'q') {
+      for (const [side, sign] of [['left', -1], ['right', 1]] as const) {
+        const x = type === 'r' ? 50 + sign * 20 : type === 'p' ? 49 + sign * 7 : 50 + sign * 12;
+        const hipY = type === 'k' ? 78 : 75;
+        const kneeX = x + sign * 2, footX = x + sign * 5;
+        const leg = joint(`${side}-leg`, x, hipY);
+        if (type === 'r') leg.append(svg('path', { d: `M${x - 5} ${hipY - 1}q8-1 10 4l-3 8-7 1q4-8 0-13`, class: 'sketch-root-leg' }));
+        else leg.append(svg('path', { d: `M${x} ${hipY}Q${x + sign * 3} 78 ${kneeX} 83`, class: `sketch-pencil-leg sketch-leg-${type}` }));
+        const shin = joint(`${side}-shin`, kneeX, 82, leg);
+        if (type === 'r') shin.append(svg('path', { d: `M${kneeX - 4} 81q-2 7 ${sign * 11} 12q${-sign * 8} 3 ${-sign * 14}-1l-4-2q7-2 8-9z`, class: 'sketch-root-foot' }));
+        else shin.append(svg('path', { d: `M${kneeX} 82q${sign * 2} 4 ${sign * 4} 8`, class: `sketch-pencil-leg sketch-leg-${type}` }));
+        const foot = joint(`${side}-foot`, footX, 91, shin);
+        if (type !== 'r') foot.append(svg('ellipse', { cx: footX, cy: 91, rx: type === 'k' ? 9 : type === 'q' ? 6 : 5, ry: type === 'k' ? 3.6 : 2.2, class: `sketch-pencil-foot sketch-foot-${type}` }));
+        if (type === 'k') foot.append(svg('path', { d: `M${footX - 4} 90v2m4-2v2m4-2v2`, class: 'sketch-paw-toes' }));
+      }
+    }
+    if (type === 'n') {
+      fragment('left-ear', 'polygon(28% 18%,57% 18%,64% 48%,34% 46%)', '56% 44%');
+      fragment('right-ear', 'polygon(56% 17%,76% 17%,78% 45%,58% 48%)', '64% 43%');
+      const tail = joint('tail', 30, 61);
+      tail.append(svg('path', { d: 'M24 57q-5-3-7 3q-4 3 1 7q3 6 9 1q6-1 4-7q0-4-7-4z', class: 'sketch-hare-tail' }));
+    }
+    if (type === 'b') {
+      fragment('left-wing', 'polygon(0% 46%,46% 43%,48% 96%,0% 96%)', '47% 62%');
+      fragment('right-wing', 'polygon(63% 44%,100% 44%,100% 96%,62% 96%)', '63% 62%');
+    }
+    if (type === 'q') fragment('fox-tail', 'polygon(53% 66%,100% 66%,100% 100%,53% 100%)', '57% 72%');
+  }
+  function refreshArtwork(sprite: Sprite) {
+    sprite.element.className = `sketch-piece sketch-${sprite.type}`; sprite.pendingArtwork = false;
+    sprite.element.dataset.color = sprite.color; sprite.fallback.textContent = SYMBOLS[sprite.color][sprite.type];
+    artwork(sprite.image, sprite.color, sprite.type, sprite.fallback); articulate(sprite);
   }
   function updatePiece(sprite: Sprite, piece: BoardPiece) {
     if (sprite.type === piece.type && sprite.color === piece.color) return;
-    sprite.type = piece.type; sprite.color = piece.color; sprite.element.className = `sketch-piece sketch-${piece.type}`;
-    sprite.element.dataset.color = piece.color; sprite.fallback.textContent = SYMBOLS[piece.color][piece.type];
-    artwork(sprite.image, piece.color, piece.type, sprite.fallback);
+    sprite.type = piece.type; sprite.color = piece.color;
+    if (sprite.element.classList.contains('is-moving')) sprite.pendingArtwork = true;
+    else refreshArtwork(sprite);
   }
   function move(sprite: Sprite, square: Square, animate: boolean) {
-    const from = position(sprite.square), to = position(square); locate(sprite, square);
+    const fromSquare = sprite.square, from = position(fromSquare), to = position(square);
+    const plan = getPieceMotion(sprite.type, fromSquare, square); locate(sprite, square);
     if (!animate) return;
-    track(sprite.element.animate([
-      { left: `${from.x / 10}%`, top: `${from.y / 10}%` },
-      { left: `${(from.x + to.x) / 20}%`, top: `${(from.y + to.y) / 20 - (sprite.type === 'n' ? 3 : 1.2)}%`, offset: .5 },
-      { left: `${to.x / 10}%`, top: `${to.y / 10}%` },
-    ], { duration: sprite.type === 'n' ? 620 : 540, easing: 'cubic-bezier(.22,.7,.22,1)' }));
-    track(sprite.body.animate([
-      { transform: 'rotate(0deg) scale(1)' },
-      { transform: `rotate(${to.x > from.x ? -4 : 4}deg) scale(1.025,.97)`, offset: .36 },
-      { transform: 'rotate(0deg) scale(1)' },
-    ], { duration: 560, easing: 'ease-in-out' }));
+    sprite.element.classList.add('is-moving'); sprite.element.dataset.locomotion = plan.type;
+    sprite.element.style.zIndex = '60';
+    const keyframes = plan.frames.map(pose => ({
+      offset: pose.offset,
+      left: `${(from.x + (to.x - from.x) * pose.progress) / 10}%`,
+      top: `${(from.y + (to.y - from.y) * pose.progress - pose.lift) / 10}%`,
+    }));
+    trackMotion(sprite.element.animate(keyframes, { duration: plan.durationMs, easing: 'linear' }), {
+      id: ++motionId, phase: 'start', type: plan.type, from: fromSquare, to: square,
+      durationMs: plan.durationMs, contactTimesMs: plan.contactTimesMs, capture: false,
+    }, () => {
+      sprite.element.classList.remove('is-moving'); delete sprite.element.dataset.locomotion;
+      locate(sprite, sprite.square);
+      if (sprite.pendingArtwork) refreshArtwork(sprite);
+    });
+    track(sprite.body.animate(plan.frames.map(pose => ({ offset: pose.offset, transform: `rotate(${pose.rotation}deg) scale(${pose.scaleX},${pose.scaleY})` })), { duration: plan.durationMs, easing: 'linear' }));
+    track(sprite.shadow.animate(plan.frames.map(pose => ({
+      offset: pose.offset,
+      transform: `translateY(${pose.lift * height / 1000}px) scaleX(${1 - pose.lift / 150})`,
+      opacity: 1 - pose.lift / 110,
+    })), { duration: plan.durationMs, easing: 'linear' }));
+    animateLimbs(sprite, plan);
+    drawFootsteps(plan, from, to);
+  }
+  function animatePart(sprite: Sprite, name: string, frames: Keyframe[], duration: number) {
+    const part = sprite.parts.get(name);
+    if (part) track(part.animate(frames, { duration, easing: 'linear' }));
+  }
+  function animateLimbs(sprite: Sprite, plan: PieceMotionPlan) {
+    if (plan.type === 'p' || plan.type === 'r' || plan.type === 'k') {
+      const swing = plan.type === 'r' ? 14 : plan.type === 'k' ? 19 : 29;
+      const firstPlant = plan.contacts[0].atMs / plan.durationMs;
+      const period = (plan.contacts[1].atMs - plan.contacts[0].atMs) / plan.durationMs * 2;
+      for (const [side, phase] of [['left', 0], ['right', Math.PI]] as const) {
+        const thigh: Keyframe[] = [], shin: Keyframe[] = [], foot: Keyframe[] = [];
+        for (let index = 0; index <= 20; index++) {
+          const offset = index / 20, active = Math.sin(Math.PI / 2 * Math.min(1, offset / .09)) * (offset > .92 ? (1 - offset) / .08 : 1);
+          const gait = Math.sin((offset - firstPlant) * Math.PI * 2 / period - Math.PI / 2 + phase);
+          const bend = Math.max(0, gait) * swing * 1.15;
+          thigh.push({ offset, transform: `rotate(${gait * swing * active}deg)` });
+          shin.push({ offset, transform: `rotate(${-bend * active}deg)` });
+          foot.push({ offset, transform: `rotate(${(bend - gait * swing) * active * .5}deg) translateY(${-Math.max(0, gait) * active * (plan.type === 'r' ? 2 : 4)}px)` });
+        }
+        animatePart(sprite, `${side}-leg`, thigh, plan.durationMs);
+        animatePart(sprite, `${side}-shin`, shin, plan.durationMs);
+        animatePart(sprite, `${side}-foot`, foot, plan.durationMs);
+      }
+    }
+    if (plan.type === 'q') {
+      for (const [side, sign] of [['left', -1], ['right', 1]] as const) {
+        animatePart(sprite, `${side}-leg`, plan.frames.map(pose => ({ offset: pose.offset, transform: `rotate(${sign * pose.lift * .6}deg)` })), plan.durationMs);
+        animatePart(sprite, `${side}-shin`, plan.frames.map(pose => ({ offset: pose.offset, transform: `rotate(${-sign * pose.lift * .8}deg)` })), plan.durationMs);
+      }
+    }
+    if (plan.type === 'n') {
+      const offsets = [0, .10, .17, .25, .43, .58, .73, .78, .88, 1];
+      const earAngles = [0, -13, -28, 13, 25, 18, -12, -32, 12, 0];
+      for (const [name, side] of [['left-ear', -1], ['right-ear', 1]] as const) animatePart(sprite, name, offsets.map((offset, index) => ({ offset, transform: `rotate(${earAngles[index] * (side < 0 ? .8 : 1.1)}deg)` })), plan.durationMs);
+      animatePart(sprite, 'tail', offsets.map((offset, index) => ({ offset, transform: `rotate(${earAngles[index] * -.55}deg) scale(${index === 3 || index === 4 ? .85 : 1})` })), plan.durationMs);
+    }
+    if (plan.type === 'b') {
+      for (const [name, sign] of [['left-wing', -1], ['right-wing', 1]] as const) {
+        const frames: Keyframe[] = [];
+        for (let index = 0; index <= 24; index++) {
+          const offset = index / 24, flutter = Math.sin(offset * Math.PI * 10);
+          frames.push({ offset, transform: `rotate(${sign * flutter * 14}deg) scaleX(${.70 + flutter * .40})` });
+        }
+        frames[0].transform = 'rotate(0deg) scaleX(1)'; frames.at(-1)!.transform = 'rotate(0deg) scaleX(1)';
+        animatePart(sprite, name, frames, plan.durationMs);
+      }
+    }
+    if (plan.type === 'q') animatePart(sprite, 'fox-tail', plan.frames.map(pose => ({ offset: pose.offset, transform: `rotate(${-pose.rotation * 1.7}deg) scaleX(${1 + pose.lift / 240})` })), plan.durationMs);
+  }
+  function drawFootsteps(plan: PieceMotionPlan, from: Point, to: Point) {
+    for (let index = 0; index < plan.contacts.length; index++) {
+      const contact = plan.contacts[index];
+      const pose = plan.frames.find(frame => Math.abs(frame.offset * plan.durationMs - contact.atMs) <= 2) ?? plan.frames.at(-1)!;
+      const x = from.x + (to.x - from.x) * pose.progress, y = from.y + (to.y - from.y) * pose.progress + 43;
+      const group = svg('g', { class: 'sketch-footstep', transform: `translate(${x} ${y})`, opacity: 0 });
+      if (plan.type === 'b') group.append(svg('path', { d: 'M-13-7q-7-4-10 1m34-2q8-5 12 0m-16 9q-6 4-13 0', class: 'sketch-flutter-trace', fill: 'none' }));
+      else {
+        for (const side of contact.foot === 'both' ? [-1, 1] : [contact.foot === 'left' ? -1 : 1]) {
+          group.append(svg('ellipse', { cx: side * 7, cy: side * 2, rx: plan.type === 'k' ? 5 : 3.5, ry: 2, class: 'sketch-footprint' }));
+          if (plan.type === 'k' || plan.type === 'q') group.append(svg('path', { d: `M${side * 7 - 3}-4v1m3-2v1m3-1v1`, class: 'sketch-paw-toes' }));
+        }
+      }
+      traces.append(group);
+      track(group.animate([{ opacity: 0 }, { opacity: .48, offset: .08 }, { opacity: .36, offset: .55 }, { opacity: 0 }], { duration: 850, delay: contact.atMs, fill: 'backwards', easing: 'ease-out' }), () => group.remove());
+    }
+    if (plan.type === 'n' || plan.type === 'q' || plan.type === 'r' || plan.type === 'k') {
+      const dust = svg('g', { class: 'sketch-landing-dust', transform: `translate(${to.x} ${to.y + 40})`, opacity: 0 });
+      dust.append(svg('path', { d: 'M-15 1q-8-6-14-2m46-1q9-7 16-2m-22 11 7-1m-32-2-7-1', fill: 'none', class: 'sketch-dust-line' })); traces.append(dust);
+      track(dust.animate([{ opacity: 0, scale: '.5' }, { opacity: .75, scale: '1.1', offset: .18 }, { opacity: 0, scale: '1.5' }], { duration: 430, delay: plan.landingTimeMs, fill: 'backwards', easing: 'ease-out' }), () => dust.remove());
+    }
   }
   function depart(sprite: Sprite, captureIndex: number, animate: boolean) {
     if (!animate) { sprite.element.remove(); return; }
     flights.append(sprite.element); sprite.element.style.zIndex = '70';
     const from = position(sprite.square), to = capturedPosition(captureIndex);
     const middleX = from.x + (from.x < 500 ? -110 : 110);
-    track(sprite.element.animate([
+    trackMotion(sprite.element.animate([
       { left: `${from.x / 10}%`, top: `${from.y / 10}%`, transform: 'translate(-50%,-57%) rotate(0deg) scale(1)', opacity: 1 },
       { left: `${middleX / 10}%`, top: `${(from.y - 150) / 10}%`, transform: 'translate(-50%,-57%) rotate(-11deg) scale(.72)', opacity: 1, offset: .42 },
       { left: `${to.x / 10}%`, top: `${to.y / 10}%`, transform: 'translate(-50%,-57%) rotate(7deg) scale(.33)', opacity: 0 },
-    ], { duration: 1000, easing: 'cubic-bezier(.2,.7,.3,1)' }), () => sprite.element.remove());
+    ], { duration: 1000, easing: 'cubic-bezier(.2,.7,.3,1)' }), {
+      id: ++motionId, phase: 'capture', type: sprite.type, from: sprite.square, to: sprite.square,
+      durationMs: 1000, contactTimesMs: [760], capture: true,
+    }, () => sprite.element.remove());
   }
   function emote(sprite: Sprite) {
     if (reducedMotion) return;
@@ -280,7 +459,7 @@ export function createSketchScene(container: HTMLElement, { onSquare, onCreature
     for (const image of root.querySelectorAll('img')) { image.onload = null; image.onerror = null; }
     root.remove(); sprites.clear();
   }
-  return { sync, projectSquare, pickSquare, resize, destroy, setReducedMotion, greetResident,
+  return { sync, projectSquare, pickSquare, resize, destroy, setReducedMotion, greetResident, whenSettled, settle: finishAnimations,
     setAtmosphere: mode => { root.dataset.atmosphere = mode; },
     setWeather: weather => { root.dataset.weather = weather; },
     setView: () => { /* This sketchbook is always a flat, readable chessboard. */ },
