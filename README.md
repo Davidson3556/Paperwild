@@ -10,7 +10,7 @@ A watercolor woodland chess game on a cheerfully scribbled pencil page. The boar
 
 Built for **[TestSprite Hackathon Season 4](https://www.testsprite.com/hackathon-s4)** · [Source](https://github.com/Davidson3556/Paperwild)
 
-**Public demo: [paperwild.vercel.app](https://paperwild.vercel.app/).** This revision includes the watercolor cast, autonomous gestures, and activity-based creature voices. Current TestSprite Portal results and a demonstrated GitHub App pull-request check are still pending. This repository is a work in progress, not a completed hackathon submission.
+**Public demo: [paperwild.vercel.app](https://paperwild.vercel.app/).** This revision includes the watercolor cast, autonomous gestures, and activity-based creature voices. The [TestSprite Portal record](docs/TESTSPRITE_PORTAL.md) tracks the first ten-case run, corrected-case reruns, and the remaining GitHub App PR-check setup. This repository is a work in progress, not a completed hackathon submission.
 
 ## A small game. A whole little world.
 
@@ -67,17 +67,18 @@ The main graphite lines draw themselves in once when the board first appears. Th
 | Character choreography tests | **3 passing motion invariant tests**; **34 local tests total** across engine, sound, PCM, and motion. |
 | Strict types and production build | Passed; reproduce with the commands above. |
 | Browser verification | Recorded Chrome checks cover all six active gait profiles, hare/pawn intermediate poses, castling, capture/undo interruption, promotion arrival, ordered computer replies, saved sound preference, reduced motion, and usable 320/390 px layouts. No warnings/errors were observed. Audio initialized without availability errors; audible quality was not assessed. The newest watercolor cast has [separate production-preview evidence](docs/WATERCOLOR_VERIFICATION_2026-10-17.md): all 32 characters blinked and breathed, all 158 painted parts moved without input, chess state stayed unchanged, and capture/promotion/undo/computer/castling/phone checks passed. |
-| Current illustrated UI in TestSprite | **Acceptance coverage pending.** A [current three-case MCP audit](docs/TESTSPRITE_CURRENT_RUN_2026-10-17.md) found two partial smoke tests and one invalid exported replay despite three service passes. The [20-scenario acceptance plan](docs/TESTSPRITE_PLAN.md) is not fully validated. |
-| GitHub App PR checks | **Pending setup and a demonstrated run.** |
+| TestSprite Portal 3.0 | Ten reviewed cases executed against the public app: **8 service passes / 2 failures** initially; both corrected cases then returned **PASS**. The suite now shows all ten passed across those executions. See the [Portal record, saved plan, and evidence limits](docs/TESTSPRITE_PORTAL.md). This is not deterministic replay or full coverage of the [20-scenario acceptance plan](docs/TESTSPRITE_PLAN.md). |
+| GitHub App PR checks | App connected for Paperwild only. The PR trigger has not been saved or run; the PR preview requires Vercel authentication. [PR #2](https://github.com/Davidson3556/Paperwild/pull/2) has passing ordinary CI, which is separate from a TestSprite check. |
 
-The [historical native TestSprite run](docs/TESTSPRITE_RUN_2026-10-17.md) tested an earlier 3D prototype. Raw statuses were 2 passed / 4 failed, but assertion review left **all six intended gameplay scenarios inconclusive**. Those results do not validate Paperwild’s illustrated interface.
+The [historical native TestSprite run](docs/TESTSPRITE_RUN_2026-10-17.md) tested an earlier 3D prototype. Raw statuses were 2 passed / 4 failed, but assertion review left **all six intended gameplay scenarios inconclusive**. A later [three-case native MCP audit](docs/TESTSPRITE_CURRENT_RUN_2026-10-17.md) found two partial smoke tests and one invalid exported replay despite three service passes. These are separate from the current Portal work.
 
 ## Hackathon release checklist
 
 Season 4 requires public source with a README describing the app, live URL, and suite coverage; a public deployed app; a suite generated in the TestSprite 3.0 portal; and at least one PR carrying a TestSprite comment or status check. Submit the PR link, live URL, and TestSprite account name/email in Discord’s `#hackathon-submissions`; a demo video is optional. The listed project deadline is **October 22, 2026, 11:59 PM Pacific**, with the final schedule confirmed in Discord. [Official Season 4 rules](https://www.testsprite.com/ja/hackathon-s4).
 
 - [x] Add the public live demo URL above and verify signed-out access.
-- [ ] Generate and run the current suite in TestSprite Portal 3.0; link real results.
+- [x] Generate and run ten reviewed cases in [TestSprite Portal 3.0](docs/TESTSPRITE_PORTAL.md); record the initial results and limits.
+- [x] Rerun the two corrected cases and record their service passes separately from the initial execution.
 - [ ] Configure [TestSprite’s GitHub integration](https://docs.testsprite.com/web-portal/integrations/github-integration) against working PR preview deployments and retain a real checked PR.
 - [ ] Triage confirmed defects, commit fixes, and retain the affected-case reruns.
 - [ ] Post the required entry details in the official Discord before the confirmed deadline.

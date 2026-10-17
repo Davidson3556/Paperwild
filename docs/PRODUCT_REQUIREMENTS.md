@@ -96,4 +96,4 @@ The [historical October 17 native run](TESTSPRITE_RUN_2026-10-17.md) targeted th
 
 ## Submission work
 
-The public source repository is [Davidson3556/Paperwild](https://github.com/Davidson3556/Paperwild). A public playable deployment, a meaningful TestSprite Portal 3.0 suite, a demonstrated GitHub App pull-request check, and the actual hackathon submission remain pending. Retain real failing assertions, fixes, and successful reruns; do not present planned cases as passing evidence.
+The public source repository is [Davidson3556/Paperwild](https://github.com/Davidson3556/Paperwild), and the public game is [paperwild.vercel.app](https://paperwild.vercel.app/). The [Portal evidence record](TESTSPRITE_PORTAL.md) links the ten-case execution and two corrected-case reruns, with their assertion limits. A demonstrated TestSprite GitHub App pull-request check and the actual hackathon submission remain pending. Retain real failing assertions, fixes, and successful reruns; do not present planned cases as passing evidence.

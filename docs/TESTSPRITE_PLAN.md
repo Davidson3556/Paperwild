@@ -6,15 +6,15 @@
 
 Focused current Chrome QA observed the six active gait profiles, recorded intermediate hare/pawn poses, simultaneous castling, capture interruption/undo cleanup, promotion's arrival-time image change, sequential human/computer movement, sound toggle/save behavior, reduced motion, and usable 320/390 px layouts, without observed warnings/errors. Audio initialized without availability errors, but audible quality was not assessed. These observations do not mark this entire specification as executed. Exact browser evidence and limitations belong in [VERIFICATION.md](VERIFICATION.md).
 
-The [historical native run](TESTSPRITE_RUN_2026-10-17.md) targeted the earlier 3D prototype. Its raw result was 2 passed / 4 failed, but all six intended gameplay scenarios were inconclusive after auditing the generated assertions. It is retained as historical evidence, not coverage of Paperwild. TestSprite Portal 3.0 validation and GitHub App integration remain pending.
+The [current Portal record](TESTSPRITE_PORTAL.md) tracks ten reviewed cases against the public app: initially eight service passes and two failures caused by incorrect test expectations, followed by service passes for both corrected cases. The suite now shows all ten passed across those executions. The saved [Portal YAML plan](testsprite/portal-plan.yaml) requires each execution's configured target origin; PR-preview execution remains unverified. The GitHub App is connected for Paperwild, but its PR trigger has not been saved or run. This does not establish full execution of this specification.
 
-The current [native MCP audit](TESTSPRITE_CURRENT_RUN_2026-10-17.md) records an eight-case attempt stopped after runner blockers and a three-case rerun against the local targeting correction. The service reported three passes; script audit established two partial smoke tests and one contradictory exported replay. No complete named acceptance scenario is certified. The candidate remains local and unpushed.
+The [historical native run](TESTSPRITE_RUN_2026-10-17.md) targeted the earlier 3D prototype; its six intended scenarios were inconclusive after assertion review. The later [native MCP audit](TESTSPRITE_CURRENT_RUN_2026-10-17.md) recorded two partial smoke tests and one contradictory exported replay despite three service passes. Those dated reports are separate evidence and do not certify this full specification.
 
 ## Targets and evidence
 
 - Local development: `http://127.0.0.1:4173`, using `npm run dev`.
 - Repository: [Davidson3556/Paperwild](https://github.com/Davidson3556/Paperwild).
-- Public hackathon deployment: pending. Use the public deployment for final Portal execution; a local or private preview is insufficient for submission.
+- Public deployment: [paperwild.vercel.app](https://paperwild.vercel.app/). PR-preview access is a separate integration requirement; the current preview requires Vercel authentication.
 - Record the exact commit/build, URL, viewport, browser, run link, assertions, console errors, and screenshots. Preserve failed assertions and rerun evidence.
 - Use an isolated browser context for independent cases. Clear only this app’s storage when a clean start is required.
 - Exercise desktop and mobile. Wait for observable game state and settled animation, not a fixed computer response or a screenshot alone.
@@ -198,4 +198,4 @@ For Sleepy, Thoughtful, and Mischievous, use a fresh Against the club game:
 
 Before calling the illustrated UI cloud-validated, run these cases with their substantive assertions against the exact current build. For each failure, retain reproduction, failing assertion, evidence, root cause, fix commit, and affected-case rerun. Distinguish confirmed product defects from test-generation, connectivity, and runner failures.
 
-Submission gates remain: public GitHub source, public playable deployment, the required TestSprite Portal 3.0 suite with real result links, and a demonstrated TestSprite GitHub App pull-request check. Do not mark these complete based on a planned scenario, local type check, or the historical prototype run.
+Public source, a public app, an initial Portal suite execution, and the two corrected-case service passes are recorded. An actual TestSprite GitHub App pull-request check and final submission remain pending; see the [Portal evidence record](TESTSPRITE_PORTAL.md). Do not mark these complete based on a planned scenario, ordinary CI, or a historical prototype run.

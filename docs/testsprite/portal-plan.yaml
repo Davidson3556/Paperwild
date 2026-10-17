@@ -1,0 +1,169 @@
+# TestSprite test plan
+#
+# How to edit:
+#   - Change a test case by editing its "name", "description", "priority" or "steps".
+#   - Add a test case by copying an existing one and removing its "id" line.
+#   - Remove a test case by deleting it from this file.
+#   - Steps: a plain line is an action, "assert: ..." checks the expected result.
+#   - Leave "id" and "slug" values as they are.
+#
+# Save when you are done to apply your changes.
+
+# ----------------------------------------------------------------------------
+
+useCases:
+  - useCase: Board Play
+    slug: BOAR
+    testCases:
+      - id: BOAR-001
+        priority: High
+        name: Illegal moves leave the board unchanged
+        description: Validates that wrong-side and illegal moves do not alter the board, history, captures, or turn.
+        steps:
+          - "Use this execution's configured target URL for the initial navigation and every later navigation or reload; retain that origin throughout the case. During PR runs use the PR preview. Assert the active origin matches the configured execution target before chess actions and after every reload. Open the current execution's configured target URL in a fresh isolated context. Select With a friend and start a fresh game if necessary."
+          - assert: Assert and retain a snapshot of all 64 square data-piece values, SAN history, capture count, data-turn, and data-game-over in the standard starting position.
+          - Press Escape to clear selection. Select square-e2, then attempt square-e5, which is not a legal pawn destination.
+          - assert: Assert every square, SAN history, capture count, turn, and terminal state exactly matches the starting snapshot after the illegal destination.
+          - Clear selection with Escape. Attempt square-e7 then square-e5 while it is still White to move.
+          - assert: Assert the complete starting snapshot remains unchanged after trying to move Black first.
+          - Clear selection with Escape. Play square-e2 to square-e4 and wait until movement and thinking are false. Then attempt square-d2 to square-d4 while Black has the turn.
+          - assert: "Assert only e2-e4 was committed: e2 empty, wp e4, wp still d2, d4 empty, all other pieces unchanged, exactly one SAN ply e4, Black turn, zero captures, unfinished game."
+      - id: BOAR-002
+        priority: High
+        name: Simple opening advances update history and turn
+        description: Validates that two legal opening pawn moves update the board, ordered move history, and turn without an automatic extra move.
+        steps:
+          - "Use this execution's configured target URL for the initial navigation and every later navigation or reload; retain that origin throughout the case. During PR runs use the PR preview. Assert the active origin matches the configured execution target before chess actions and after every reload. Navigate to the current execution's configured target URL in a fresh isolated browser context with no saved game or preferences."
+          - 'Choose With a friend ([data-mode="local"]). If necessary start A fresh page and confirm Begin again. Wait until #game-status data-moving=false and data-thinking=false.'
+          - assert: 'Assert all 64 #board-access [data-testid^="square-"] data-piece values match the standard chess position, White turn (data-turn=w), no SAN plies, #bloom-count=00, and disabled Undo last turn and Download game as PGN.'
+          - "Select square-e2, then square-e4. Wait for #board-access aria-busy=false and #game-status data-thinking=false."
+          - assert: Assert e2 is empty, e4 contains wp, history has exactly the SAN e4, Black is to move, and capture count is 00.
+          - "Select square-e7, then square-e5. Wait for #board-access aria-busy=false and #game-status data-thinking=false."
+          - assert: Assert e7 and e2 empty, wp on e4, bp on e5, all other squares unchanged from the standard position, exactly two SAN plies e4 then e5 in one full-move row, White turn, and zero captures.
+          - assert: Assert local mode remains selected, no computer thinking or third ply appears after settlement, exactly 32 active board pieces remain, and all twelve side/role watercolor images have decoded successfully.
+      - id: BOAR-003
+        priority: High
+        name: Undo restores a captured position atomically
+        description: Validates that undo after a capture restores both pieces, clears the history entry, resets capture count, and returns turn to White.
+        steps:
+          - "Use this execution's configured target URL for the initial navigation and every later navigation or reload; retain that origin throughout the case. During PR runs use the PR preview. Assert the active origin matches the configured execution target before chess actions and after every reload. Open the configured target URL in a fresh isolated browser context. Use the target URL configured for this execution; during PR runs use that PR preview, never a hardcoded production hostname."
+          - Open Explore the chess studies, then choose Tea on the sidelines ([data-study="bloom"]).
+          - assert: Assert wp e4 is initially selected, bp d5 exists, White turn, no SAN plies and capture count 00. Retain ONLY all 64 square data-piece values plus SAN history, turn and captures for later comparison. Exclude transient selection, aria-pressed, focus and hover from this snapshot; Undo intentionally clears selection.
+          - "Activate square-d5 directly; do not click the already-selected e4 source. Wait until #board-access aria-busy=false and #game-status data-moving=false, data-thinking=false."
+          - assert: "Assert e4 empty, wp on d5, Black turn, exactly one SAN exd5, #bloom-count=01, exactly one captured Black pawn portrait in #bloom-display and one corresponding .sketch-sideline-piece. No duplicate active pawn may remain at d5."
+          - Activate Undo last turn once, then wait until movement and thinking are false.
+          - assert: "Assert all 64 square data-piece values, SAN history, turn and capture count match the initial snapshot: wp e4, bp d5, White turn, no SAN plies, count 00, no captured portraits, no .sketch-sideline-piece and no departing flight. Assert selection is cleared (e4 aria-pressed=false); do NOT require the original study preselection to return."
+      - id: BOAR-004
+        priority: High
+        name: Promotion can be cancelled without committing a move
+        description: Validates that promotion selection opens the choice dialog and cancelling leaves the board and history unchanged.
+        steps:
+          - "Use this execution's configured target URL for the initial navigation and every later navigation or reload; retain that origin throughout the case. During PR runs use the PR preview. Assert the active origin matches the configured execution target before chess actions and after every reload. Open the current execution's configured target URL in a fresh context. Open Explore the chess studies, then Room to become ([data-study=\"promotion\"])."
+          - assert: Assert wp on a7 is preselected, a8 empty, White turn, no SAN plies, zero captures, unfinished game. Retain all 64 square values, turn/history/captures and terminal state.
+          - Activate square-a8 directly. Do not click the preselected pawn again.
+          - assert: "Assert #promotion-dialog is open with four choices q/r/b/n. Pawn remains on a7, a8 remains empty, no SAN ply is committed, and turn/captures match the snapshot."
+          - Activate Choose a different move to cancel the promotion dialog.
+          - assert: Assert the dialog is closed and every square, SAN history, capture count, turn and terminal state exactly matches the snapshot. No promoted piece may appear.
+      - id: BOAR-005
+        priority: High
+        name: Queen promotion settles as a playable checking position
+        description: Validates that choosing queen promotion updates the piece role, records the move, and leaves the game playable.
+        steps:
+          - "Use this execution's configured target URL for the initial navigation and every later navigation or reload; retain that origin throughout the case. During PR runs use the PR preview. Assert the active origin matches the configured execution target before chess actions and after every reload. Open the app in a fresh isolated context, then Explore the chess studies and Room to become."
+          - assert: Assert selected wp a7, empty a8, White turn, no SAN plies or captures, unfinished game. Retain the initial 64-square snapshot.
+          - Activate square-a8 directly.
+          - assert: Assert four promotion choices are displayed and no board/history change has been committed yet.
+          - 'Choose Promote to queen ([data-promotion="q"]). Wait for #board-access aria-busy=false and #game-status data-moving=false, data-thinking=false.'
+          - assert: Assert wq on a8 with decoded /art/watercolor/web/wq.png artwork, a7 empty, exactly one SAN a8=Q+, Black turn and check shown, zero captures, unfinished game, promotion dialog closed.
+          - assert: Assert exactly one active queen occupies a8 and no pawn or duplicate promotion sprite remains there.
+          - Activate Undo last turn once and wait for the board to settle.
+          - assert: Assert the initial 64-square snapshot is restored with wp a7, a8 empty, White turn, no SAN history, zero captures, unfinished game and no queen artwork left at a8.
+      - id: BOAR-006
+        priority: High
+        name: Knight promotion ends in an insufficient material draw
+        description: Validates that choosing knight promotion settles the new piece and triggers a terminal draw state.
+        steps:
+          - "Use this execution's configured target URL for the initial navigation and every later navigation or reload; retain that origin throughout the case. During PR runs use the PR preview. Assert the active origin matches the configured execution target before chess actions and after every reload. Open the app in a fresh context, then Explore the chess studies and Room to become."
+          - assert: Assert wp a7 is selected, a8 empty, White turn, no history/captures and unfinished game; retain the initial board snapshot.
+          - Activate a8 directly, then Promote to knight ([data-promotion="n"]). Wait until movement settles.
+          - assert: Assert wn a8 with hare artwork, a7 empty, one SAN a8=N, zero captures, data-game-over=true, and the result describes insufficient material with no winner. Retain this terminal board/history snapshot.
+          - Close the result, then attempt a Black king move from h8 to g8.
+          - assert: Assert the terminal board, history, captures and draw status remain unchanged after the attempted move.
+          - Activate Undo last turn once and wait for settlement.
+          - assert: Assert wp a7, a8 empty, all initial board values restored, White turn, no SAN plies, zero captures, unfinished game and result dialog closed.
+      - id: BOAR-007
+        priority: High
+        name: Checkmate story blocks further play after the winning move
+        description: Validates that the mate story ends with a White win and rejects additional moves after completion.
+        steps:
+          - "Use this execution's configured target URL for the initial navigation and every later navigation or reload; retain that origin throughout the case. During PR runs use the PR preview. Assert the active origin matches the configured execution target before chess actions and after every reload. Open the app in a fresh context, then Explore the chess studies and One final move ([data-study=\"mate\"])."
+          - assert: Assert wq g6 is preselected, wk f6, bk h8, White turn, no SAN history/captures, and unfinished game. Retain all 64 starting square values.
+          - Activate square-g7 directly. Wait until movement and thinking are false.
+          - assert: Assert wq g7, g6 empty, exactly one SAN Qg7#, White winner, data-game-over=true, zero captures, and result dialog reports Checkmate and White wins. Retain the terminal board/history snapshot.
+          - Close the result, then attempt to move the Black king from h8 to g8.
+          - assert: Assert board/history/captures and terminal result remain unchanged after the attempted move.
+          - Activate Undo last turn once and wait for settlement.
+          - assert: Assert the complete initial board is restored, queen on g6, White turn, empty SAN history, zero captures, unfinished game, and no result dialog remains open.
+      - id: BOAR-008
+        priority: Medium
+        name: Undo after a computer reply restores the starting position
+        description: Validates that undo in computer mode removes the completed White/Black pair and returns the game to the initial state.
+        steps:
+          - "Use this execution's configured target URL for the initial navigation and every later navigation or reload; retain that origin throughout the case. During PR runs use the PR preview. Assert the active origin matches the configured execution target before chess actions and after every reload. Open the app in a fresh isolated context. Select Against the club, choose Sleepy (#difficulty value seedling), and start a fresh game if necessary."
+          - assert: Assert all 64 squares match the standard start, White turn, empty SAN history, zero captures and no thinking/movement. Retain the standard board snapshot.
+          - Select square-e2, then square-e4.
+          - "Wait, with a ten-second timeout, until #game-status has data-moving=false, data-thinking=false, data-turn=w, and two completed SAN plies. Do not require a particular Black move."
+          - assert: Assert exactly one White e4 and exactly one legal Black reply are recorded in order; board pieces agree with those two plies, e2 is empty and wp is on e4, White has settled control, and no additional reply has been committed.
+          - Activate Undo last turn once.
+          - Wait until movement and thinking are false.
+          - assert: Assert every square matches the standard starting snapshot, no SAN plies remain, White turn, capture count 00, exactly 32 active pieces, and no departing/moving element remains.
+          - assert: Observe the restored state for at least two seconds and assert no delayed computer reply changes any board value, history, turn or captures. This observation checks stale work; it is not the synchronization used for the original computer response.
+  - useCase: Game Modes
+    slug: MODE
+    testCases: []
+  - useCase: Special Moves & Endings
+    slug: SPEC
+    testCases: []
+  - useCase: Stories & Studies
+    slug: STOR
+    testCases: []
+  - useCase: Preferences & Persistence
+    slug: PREF
+    testCases:
+      - id: PREF-001
+        priority: Medium
+        name: Restore a saved game after reload and continue with undo
+        description: Validates that a saved local game reloads with the same study context, board position, capture state, and undo behavior.
+        steps:
+          - "Use this execution's configured target URL for the initial navigation and every later navigation or reload; retain that origin throughout the case. During PR runs use the PR preview. Assert the active origin matches the configured execution target before chess actions and after every reload. Open the app in a fresh context, then Explore the chess studies and Tea on the sidelines. Use the target URL configured for this execution; during PR runs use that PR preview, never a hardcoded production hostname."
+          - assert: Assert wp e4 is preselected, bp d5, White turn, no SAN history and capture count 00. Snapshot ONLY square data-piece values, SAN history, turn, captures and terminal state; exclude selection/focus/hover because Undo clears selection.
+          - Activate d5 directly and wait for movement to settle.
+          - assert: Assert wp d5, e4 empty, exactly one exd5, Black turn, one captured Black pawn and capture count 01. Retain this board/history/capture snapshot.
+          - "Use the visible controls to set evening Moonlight, rain ON and wandering paused. Ensure html data-atmosphere=dusk, html data-weather=rain, #weather aria-pressed=true, and #motion aria-pressed=true before reloading. In this UI the rain-ON button says Clear skies / Let it clear, naming the action to turn rain off; it does NOT mean rain is absent."
+          - "Reload the current page in the same browser context without changing the configured target origin. Wait for the board and artwork to load, then assert the active origin still matches this execution target."
+          - assert: 'Assert all captured-position square data-piece values, exd5 history, Black turn, count 01, correct study banner and one captured Black pawn are restored. Assert html[data-atmosphere="dusk"], html[data-weather="rain"], #weather aria-pressed=true and #motion aria-pressed=true. The weather button should say Clear skies with accessible Let it clear while rain is ON; do not misread this action label as a cleared weather state.'
+          - Activate Undo last turn once and wait until movement/thinking are false.
+          - assert: "Assert the initial 64 data-piece values are restored, wp e4, bp d5, White turn, no SAN plies, count 00 and no captured portraits. Selection is intentionally cleared. Assert dusk, rain and paused motion persist using html data-atmosphere=dusk, data-weather=rain, #weather aria-pressed=true and #motion aria-pressed=true, not the weather action text."
+  - useCase: Sound & Voices
+    slug: SOUN
+    testCases:
+      - id: SOUN-001
+        priority: High
+        name: Enable sound from the character guide
+        description: Validates that trusted interaction turns sound on and enables the guide character voices.
+        steps:
+          - "Use this execution's configured target URL for the initial navigation and every later navigation or reload; retain that origin throughout the case. During PR runs use the PR preview. Assert the active origin matches the configured execution target before chess actions and after every reload. Open the current execution's configured target URL in a fresh isolated context. Select With a friend without making a move."
+          - assert: "Assert Sound off, accessible Turn sound on, #sound aria-pressed=false, and no scheduled character calls. Retain the 64-square/history/turn/capture snapshot."
+          - Open How to play or Who’s who in the club, then activate Hear the acorn ([data-voice="p"]).
+          - assert: "Assert #sound aria-pressed=true and Sound on, a scheduled p:greet exists in data-voice-events, the voice count increased, and the chess snapshot is unchanged. This checks scheduling, not physical playback."
+          - "Audition badger k, fox q, stump r, moth b and hare n using their named Hear the buttons. Immediately after each activation record the #sound voice count and role:greet event before proceeding to the next."
+          - assert: Assert each of the five chosen roles produced a new matching greeting and increased the scheduled-call count. Assert all board values, history, turn and captures remain unchanged. Do not claim audible quality from DOM callbacks.
+          - Close the guide, turn sound off, record the scheduled-call count, then activate Say hello while muted.
+          - assert: Assert Sound off, Turn sound on, aria-pressed=false, no additional scheduled character call after the muted greeting, and unchanged chess snapshot.
+          - "Reload the current page in the same browser context without changing the configured target origin. Wait for the board and artwork to load, then assert the active origin still matches this execution target."
+          - assert: Assert the saved preference remains Sound off and no character voice is scheduled during loading.
+          - Open the guide again and use keyboard Enter on Hear the hare to opt in.
+          - assert: Assert Sound on, aria-pressed=true, a new n:greet scheduled event, and unchanged chess board/history/turn/captures.
+  - useCase: Accessibility & Input
+    slug: A11Y
+    testCases: []
