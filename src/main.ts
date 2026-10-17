@@ -1,4 +1,5 @@
 import './style.css';
+import './child-sketch.css';
 import { createGame, restoreGame, chooseComputerMove, isDifficulty, isGameMode, PIECE_NAMES } from './game.ts';
 import type { Color, MoveCoordinates, MoveInput, PieceSymbol, PromotionPiece, Square } from './game.ts';
 import { createSketchScene } from './sketch-scene.ts';
@@ -61,41 +62,41 @@ let resizeFrame = 0;
 document.querySelector('#app')!.innerHTML = `
   <div class="app-shell">
     <header class="masthead">
-      <a class="brand" href="/" aria-label="Paperwild home"><span class="brand-mark">${leaf}</span><span>Paperwild<strong>Chess, drawn to life.</strong></span></a>
-      <div class="masthead-note"><span class="small-star">✧</span> Good company. Questionable strategies.</div>
-      <div class="header-actions"><button class="icon-button sound-button" id="sound" aria-label="Turn sound on" title="Hear the little footsteps">${icon('mute')}<span>Sound off</span></button><button class="icon-button" id="help" aria-label="How to play" title="How to play">${icon('help')}</button><span class="edition">FIELD BOOK No. 01</span></div>
+      <a class="brand" href="/" aria-label="Paperwild home"><span class="brand-mark">${leaf}</span><span><span class="brand-word">${[...'Paperwild'].map((letter,i)=>`<span style="--letter-tilt:${[-5,3,-3,5,-2,3,-4,4,-2][i]}deg;--letter-hop:${[0,-2,1,-1,2,0,-2,1,-1][i]}px">${letter}</span>`).join('')}</span><strong>Chess, drawn to life.</strong></span></a>
+      <div class="masthead-note"><span class="small-star">☆</span> i drew us a little world!</div>
+      <div class="header-actions"><button class="icon-button sound-button" id="sound" aria-label="Turn sound on" title="Hear the little footsteps">${icon('mute')}<span>Sound off</span></button><button class="icon-button" id="help" aria-label="How to play" title="How to play">${icon('help')}</button><span class="edition">my sketchbook ♡</span></div>
     </header>
     <main class="experience">
       <aside class="invitation">
-        <p class="eyebrow"><span></span> FOR THE DAYDREAMERS</p>
-        <h1>Meet you<br>in the <em>margins.</em></h1>
-        <p class="intro-copy">A small game. A whole little world.<br>Pull up a leaf and stay a while.</p>
+        <p class="eyebrow"><span></span> a page for daydreaming</p>
+        <h1>let's<br>play <em>chess!</em></h1>
+        <p class="intro-copy">i saved you a little spot.<br>pick a friend & make a move.</p>
         <div class="botanical-divider"><span></span>${leaf}<span></span></div>
         <div class="mode-selector" aria-label="Players"><button data-mode="computer" aria-pressed="true">Against the club</button><button data-mode="local" aria-pressed="false">With a friend</button></div>
         <p class="mode-description" id="mode-description">You play amber. The club plays indigo.</p>
-        <label class="field-label" for="difficulty">THE OPPONENT’S MOOD</label>
+        <label class="field-label" for="difficulty">how tricky shall we be?</label>
         <select id="difficulty"><option value="seedling">Sleepy · a gentle beginning</option><option value="garden">Thoughtful · a friendly challenge</option><option value="wildwood">Mischievous · a little untamed</option></select>
         <button class="primary-button" id="new-game" aria-label="Begin a new game">A fresh page ${icon('arrow')}</button>
         <button class="text-button studies-link" id="studies" aria-label="Explore the chess studies">Little chess stories <span>↗</span></button>
-        <div class="garden-note"><span class="note-number">A NOTE FROM THE CLUB</span><p>Off the board?<br>Put the kettle on.<br>You’re still one of us.</p><span class="note-flower" aria-hidden="true">✧</span></div>
+        <div class="garden-note"><span class="note-number">a little note for you</span><p>off the board?<br>tea + biscuits<br>are over here!</p><span class="note-flower" aria-hidden="true">♡</span></div>
       </aside>
       <section class="game-space" aria-label="Illustrated chess board">
-        <div class="scene-topline"><span><i></i> <span id="scene-label">THE CLUB IS IN SESSION</span></span><div class="scene-controls"><button id="atmosphere" aria-label="Switch to evening light">${icon('sun')}<span id="atmosphere-label">Daydream</span></button><button id="weather" aria-label="Let it rain" aria-pressed="false">${icon('rain')}<span>A little rain</span></button><button id="view" hidden aria-label="Flat sketchbook view">${icon('view')}</button></div></div>
+        <div class="scene-topline"><span><i></i> <span id="scene-label">our little chess club</span></span><div class="scene-controls"><button id="atmosphere" aria-label="Switch to evening light">${icon('sun')}<span id="atmosphere-label">Daydream</span></button><button id="weather" aria-label="Let it rain" aria-pressed="false">${icon('rain')}<span>A little rain</span></button><button id="view" hidden aria-label="Flat sketchbook view">${icon('view')}</button></div></div>
         <div id="scene" class="scene-stage"><div class="scene-loading">${leaf}<span>Waking the little inklings…</span></div></div>
         <div class="board-access" id="board-access" role="group" aria-label="Chess board"></div>
         <div id="scene-fallback" class="fallback-board" hidden></div>
-        <div class="scene-caption"><span class="caption-index">YOUR MOVE,<br>DAYDREAMER</span><p id="garden-observation">The best things happen between the lines.</p><span class="caption-seal" aria-hidden="true">✧</span></div>
+        <div class="scene-caption"><span class="caption-index">your turn,<br>daydreamer</span><p id="garden-observation">The best things happen between the lines.</p><span class="caption-seal" aria-hidden="true">☆</span></div>
         <div class="wildlife-note"><span class="wildlife-presence" aria-hidden="true"></span><span id="wildlife-hint">There’s a whole world in the margins.</span><button id="greet" class="resident-greeting">Say hello <span aria-hidden="true">↗</span></button></div>
         <div class="study-banner" id="study-banner" hidden><div><span class="eyebrow">A LITTLE CHESS STORY</span><h2 id="study-name"></h2><p id="study-description"></p></div><button id="leave-study" class="text-button">Return to a full game ${icon('arrow')}</button></div>
       </section>
       <aside class="game-journal">
-        <div class="turn-card"><span class="field-label">A FRIENDLY REMINDER</span><div class="turn-heading"><span id="turn-token" class="turn-token"></span><h2 id="game-status" role="status" aria-live="polite">Your move.</h2></div><p id="turn-description">Choose a little character to begin.</p><div class="turn-card-footer"><span id="move-counter">Move 01</span><button id="undo" aria-label="Undo last turn">${icon('undo')} Undo</button></div></div>
+        <div class="turn-card"><span class="field-label">psst... who's next?</span><div class="turn-heading"><span id="turn-token" class="turn-token"></span><h2 id="game-status" role="status" aria-live="polite">Your move.</h2></div><p id="turn-description">Choose a little character to begin.</p><div class="turn-card-footer"><span id="move-counter">Move 01</span><button id="undo" aria-label="Undo last turn">${icon('undo')} Undo</button></div></div>
         <section class="blooms-section" aria-labelledby="blooms-title"><div class="section-heading"><h2 id="blooms-title">The sideline society</h2><span id="bloom-count">00</span></div><div class="bloom-display" id="bloom-display" aria-label="No captures yet"><span class="empty-sprout">${leaf}</span><p>The kettle’s on.<br>Everyone is welcome.</p></div><p class="blooms-caption" id="blooms-caption">Captured pieces keep good company.</p></section>
         <section class="journal-section" aria-labelledby="journal-title"><div class="section-heading"><h2 id="journal-title">Field notes</h2><button class="icon-button compact" id="export" aria-label="Download game as PGN" title="Download game">${icon('download')}</button></div><ol id="move-history" class="move-history" aria-label="Move history"><li class="history-empty">Your story starts with a move.</li></ol></section>
         <button class="text-button meet-link" id="meet">Who’s who in the club? <span>↗</span></button><div class="saved-note" id="saved-note"><span></span> Your place in the story is saved.</div>
       </aside>
     </main>
-    <footer class="footer"><span>DRAW A BREATH. MAKE A MOVE.</span><div><button id="motion" aria-pressed="false">Let it wander</button><span>Made of paper, pencil & possibility.</span></div></footer>
+    <footer class="footer"><span>no erasers needed.</span><div><button id="motion" aria-pressed="false">Let it wander</button><span>p.s. the drawings are alive :)</span></div></footer>
   </div>
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
   <dialog id="help-dialog" class="modal"><button class="modal-close icon-button" data-close aria-label="Close instructions">${icon('close')}</button><p class="eyebrow">WELCOME TO THE CLUB</p><h2>Familiar chess.<br><em>Curious company.</em></h2><p>Standard chess, with a woodland cast. Amber is White, indigo is Black. Play the computer or take turns on the same device.</p><div class="character-legend">${(['k','q','r','b','n','p'] as const).map(p=>`<div><img src="/art/pieces/w${p}.png" alt="${clubNames[p]}" width="90" height="90"><strong>${PIECE_NAMES[p]}</strong><span>${clubNames[p]}</span></div>`).join('')}</div><div class="instruction-grid"><div><strong>Choose, then move</strong><p>Select a character, then a marked square. All the usual rules apply, including castling and en passant.</p></div><div><strong>Tea on the sidelines</strong><p>Captured characters leave the board and join the sidelines. Undo restores everyone to their place.</p></div><div><strong>The margins are alive</strong><p>Say hello to the little world, invite a shower, or turn the page toward moonlight.</p></div><div><strong>A quieter page</strong><p>Sound is off until you invite it in. Pause the wandering at the bottom of the page.</p></div></div><div class="keyboard-note"><kbd>↑</kbd><kbd>↓</kbd><kbd>←</kbd><kbd>→</kbd> explore · <kbd>Enter</kbd> choose · <kbd>Esc</kbd> release · <kbd>U</kbd> undo</div><button class="primary-button" data-close>Back to the story ${icon('arrow')}</button></dialog>
@@ -285,7 +286,7 @@ function render() {
   for(const b of all('[data-mode]'))b.setAttribute('aria-pressed',String(b.dataset.mode===game.mode));
   $('#mode-description').textContent=game.mode==='computer'?'You play amber. The computer plays indigo.':'One page. Two people. Take turns together.';
   const difficulty=$<HTMLSelectElement>('#difficulty');difficulty.value=game.difficulty;difficulty.disabled=game.mode==='local';
-  $('#study-banner').hidden=!activeStudy;$('#scene-label').textContent=activeStudy?'A LITTLE CHESS STORY':'THE CLUB IS IN SESSION';
+  $('#study-banner').hidden=!activeStudy;$('#scene-label').textContent=activeStudy?'a little chess story':'our little chess club';
   if(activeStudy){$('#study-name').textContent=activeStudy.name;$('#study-description').textContent=activeStudy.description;}
   $('#result-title').innerHTML=status.checkmate?'What a little<br><em>adventure.</em>':'A peaceful<br><em>ending.</em>';
   $('#result-description').textContent=`${status.text}. Every move left its mark.`;

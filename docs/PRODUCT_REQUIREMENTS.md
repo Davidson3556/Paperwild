@@ -2,7 +2,7 @@
 
 ## Intent
 
-Make a chess sketchbook feel inhabited. The game is a clear, usable flat board; the original pencil-and-wash woodland cast and the life in the page margins make it distinctive. Motion should suggest small creatures with their own habits while preserving readable squares, conventional chess roles, and dependable rules.
+Make a child's pencil-page imagination feel inhabited: a hand-wobbled graphite chessboard, uneven colored-pencil shading, informal handwritten notes, and cheerful little doodles on light paper. The woodland cast and living margins should belong to that page. This is a deliberate drawing style; the chess geometry, readable role labels, input targets, motion, audio, and saved games remain dependable.
 
 The active implementation uses `src/main.ts`, `src/game.ts`, `src/sketch-scene.ts`, `src/piece-motion.ts`, `src/sketch-margins.ts`, and `src/sound.ts`. The older Three.js scene, wildlife, and atmosphere modules are retained source history, not the active runtime.
 
@@ -10,7 +10,10 @@ The active implementation uses `src/main.ts`, `src/game.ts`, `src/sketch-scene.t
 
 | Element | Implemented behavior | Acceptance requirement |
 | --- | --- | --- |
-| Flat sketchbook board | DOM/SVG rendering places transparent character images on an eight-by-eight board. | Visible squares, pointer targets, coordinates, and accessible labels agree after resize. |
+| Pencil board | Three imperfect graphite passes draw the grid; uneven colored-pencil scribbles shade individual squares. DOM/SVG rendering places transparent characters on the underlying eight-by-eight geometry. | Visual wobble must not change square centers or hit targets. Coordinates, accessible labels, and pointer targets agree after resize; scribbles stay light enough to read the cast and legal marks. |
+| Childlike page lettering | Schoolbell/Gloria handwriting, uneven colorful title letters, informal labels, and penciled circles/frames replace the editorial treatment. | Functional text remains legible, controls preserve their semantic names and focus states, and the Sound/help header and dialogs remain usable at 320 px. |
+| Light paper and doodles | Lighter paper supports naive sun, star, heart, and daisy marks around the existing margin residents. | Doodles remain decorative and do not intercept input, obscure controls, or reduce board contrast. |
+| First-board drawing | The main graphite lines reveal once when the board is first rendered. Reduced motion skips this introduction. | The reveal does not hold the board busy, block the first move, restart during selection renders, or alter chess state. Cancel/settle and resize leave complete grid lines visible. |
 | Woodland cast | Pawn = acorn sprite; rook = stump; knight = hare; bishop = moth; queen = fox; king = badger. Twelve assets provide Amber/White and Indigo/Black variants. | Each board image matches its chess role and side; help explains every mapping. |
 | Character motion | Acorns walk with articulated pencil feet; hares anticipate, leap, and land; moths flap; stumps shuffle; foxes double-pounce; badgers waddle. Drawn shadows, dust, and footprints follow the choreography. | Inspect an intermediate pose as well as the final square. Motion must show the role's gait, agree with its ground contacts, and leave no duplicate sprites, feet, or effects after settling. |
 | Turn choreography | The board is busy during a core move/capture sequence; the computer waits for settlement before replying. | A second board move cannot interrupt the first. Undo, a new game, and story replacement can cancel safely; canceled work must not produce a late move, landing cue, or result. |
@@ -25,6 +28,8 @@ The active implementation uses `src/main.ts`, `src/game.ts`, `src/sketch-scene.t
 | Asset failure | A character whose image cannot load has a conventional chess-symbol fallback. | The position stays readable and playable even if a PNG fails. |
 
 Artwork provenance and exact generation prompts are in [ART_PROMPTS.md](ART_PROMPTS.md).
+
+The pencil-page revision changes presentation only. Piece roles, square geometry, semantic input, move choreography, procedural audio, storage keys, and chess behavior retain their existing contracts.
 
 ## Chess and controls
 
@@ -84,7 +89,7 @@ Saves remain local to the same browser and origin. There are no accounts, networ
 
 Current local evidence: **24 tests pass: 13 engine, 8 sound lifecycle, and 3 motion invariant tests.** Strict TypeScript checking and the production build pass. The sound tests use mocked Web Audio to verify unlock, cancellation, mute, hidden-page behavior, refusal handling, voice limits, and cleanup; they do not assess audible quality.
 
-Focused current Chrome checks observed all six active movement profiles, with intermediate hare anticipation/leap and articulated pawn-foot screenshots. Castling moved king and rook together. Undo during a capture removed departures, restored both pawns, and released busy state; a completed capture left one matching sideline image. Promotion retained the moving acorn until arrival, then displayed a knight and the correct draw. The computer began thinking after the human landed, made one legal reply, and returned control after settling. Sound toggle/reload persistence and reduced-motion movement were checked; 320/390 px layouts remained usable; no browser warnings/errors appeared. Audio initialized without availability errors, but its audible character and quality were not listened to or captured. See [VERIFICATION.md](VERIFICATION.md) for evidence and limits. No TestSprite cloud run has yet targeted the illustrated Paperwild interface.
+Recorded Chrome checks observed all six active movement profiles, with intermediate hare anticipation/leap and articulated pawn-foot screenshots. Castling moved king and rook together. Undo during a capture removed departures, restored both pawns, and released busy state; a completed capture left one matching sideline image. Promotion retained the moving acorn until arrival, then displayed a knight and the correct draw. The computer began thinking after the human landed, made one legal reply, and returned control after settling. Sound toggle/reload persistence and reduced-motion movement were checked; 320/390 px layouts remained usable; no browser warnings/errors appeared. Audio initialized without availability errors, but its audible character and quality were not listened to or captured. The newest pencil-page visual QA is recorded separately in [VERIFICATION.md](VERIFICATION.md); the existing 24 local tests do not establish that styling's visual quality. No TestSprite cloud run has yet targeted the illustrated Paperwild interface.
 
 The [historical October 17 native run](TESTSPRITE_RUN_2026-10-17.md) targeted the earlier 3D prototype. Raw 2 passed / 4 failed became all six intended feature scenarios inconclusive after assertion review. It establishes no acceptance coverage for the current UI. The [current TestSprite plan](TESTSPRITE_PLAN.md) is a specification, not an executed suite.
 

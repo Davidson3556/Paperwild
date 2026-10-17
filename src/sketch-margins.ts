@@ -19,21 +19,26 @@ export interface SketchMargins {
   destroy(): void;
 }
 
-// Each resident is a little drawing in the margin of the same notebook.
-// The lightly displaced second pencil line and transparent pigment hatching
-// deliberately keep the shapes imperfect rather than producing outlined icons.
+// A child has given the notebook's residents an extra pencil outline, a few
+// crooked crayon strokes, and some very proud little doodles in the margins.
 const svg = (className: string, viewBox: string, drawing: string) =>
   `<svg class="margin-art ${className}" viewBox="${viewBox}" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">${drawing}</svg>`;
 
 const definitions = `<svg class="margin-definitions" width="0" height="0" aria-hidden="true"><defs>
-  <filter id="margin-pencil" x="-8%" y="-8%" width="116%" height="116%"><feTurbulence type="fractalNoise" baseFrequency=".075" numOctaves="3" seed="11" result="grain"/><feDisplacementMap in="SourceGraphic" in2="grain" scale=".7" xChannelSelector="R" yChannelSelector="G"/></filter>
-  <pattern id="margin-sage" width="5" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(-24)"><path d="M1 0v6M3.6 1v4" stroke="#7f8b67" stroke-width=".5" opacity=".6"/></pattern>
-  <pattern id="margin-ochre" width="5" height="5" patternUnits="userSpaceOnUse" patternTransform="rotate(25)"><path d="M1 0v5M3 1v3" stroke="#b28d4b" stroke-width=".5" opacity=".55"/></pattern>
-  <pattern id="margin-blue" width="4" height="5" patternUnits="userSpaceOnUse" patternTransform="rotate(18)"><path d="M1 0v5" stroke="#778b9b" stroke-width=".6" opacity=".65"/></pattern>
-  <pattern id="margin-rose" width="4" height="5" patternUnits="userSpaceOnUse" patternTransform="rotate(-19)"><path d="M1 0v5" stroke="#b89189" stroke-width=".55" opacity=".6"/></pattern>
+  <filter id="margin-pencil" x="-8%" y="-8%" width="116%" height="116%"><feTurbulence type="fractalNoise" baseFrequency=".09" numOctaves="2" seed="11" result="grain"/><feDisplacementMap in="SourceGraphic" in2="grain" scale="1.15" xChannelSelector="R" yChannelSelector="G"/></filter>
+  <pattern id="margin-sage" width="8" height="9" patternUnits="userSpaceOnUse" patternTransform="rotate(-24)"><path d="m1-1 .6 5L.8 9M5 0l-.7 6 .6 4m-4-5 5 1" stroke="#829663" stroke-width=".72" opacity=".72"/></pattern>
+  <pattern id="margin-ochre" width="9" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(25)"><path d="m1-1 .6 5L.9 9M5 0l-.5 5 .9 4m-4-5 6 1" stroke="#c2a14f" stroke-width=".72" opacity=".7"/></pattern>
+  <pattern id="margin-blue" width="8" height="9" patternUnits="userSpaceOnUse" patternTransform="rotate(18)"><path d="m1-1 .4 6L.6 10M5 0l-.7 7m-4-4 6 1" stroke="#6b86a8" stroke-width=".75" opacity=".72"/></pattern>
+  <pattern id="margin-rose" width="8" height="9" patternUnits="userSpaceOnUse" patternTransform="rotate(-19)"><path d="m1-1 .5 6L.7 10M5 1l-.7 7m-4-3 6-1" stroke="#bd7975" stroke-width=".75" opacity=".7"/></pattern>
 </defs></svg>`;
 
 const balloon = svg('margin-balloon', '0 0 250 310', `
+  <g class="margin-child-doodle doodle-sun" transform="translate(27 33) rotate(-9)">
+    <path d="m-2-25 1 7m16-2-4 5m14-1-7 3m9 11-7-1m1 17-5-6M2 25l-1-8m-16 4 5-7m-15-2 8-4m-10-11 9 1m0-16 5 6" class="doodle-yellow"/>
+    <path d="M-14-4q3-13 15-11q16-1 14 15q3 13-12 15q-14 2-16-11Z" fill="url(#margin-ochre)" class="pencil-line"/>
+    <path d="m-9-8 2 12m3-16 1 24m5-22-1 23m6-20-1 15" class="doodle-yellow doodle-hatch"/>
+    <path d="m-5-2 .1.1m11-1 .1.1" class="pencil-dark"/><path d="M-4 6q6 6 11-1" class="pencil-line"/>
+  </g>
   <g class="balloon-drift" filter="url(#margin-pencil)">
     <g class="balloon-leaves">
       <path d="M113 134C56 117 51 51 70 19c35 20 66 69 43 115Z" fill="#b6bd91" fill-opacity=".23"/>
@@ -64,6 +69,13 @@ const balloon = svg('margin-balloon', '0 0 250 310', `
 
 const cloud = svg('margin-cloud', '0 0 300 260', `
   <g filter="url(#margin-pencil)">
+    <g class="margin-child-doodle doodle-cloud-notes">
+      <path d="m29 135 3 12 12-1-10 8 4 13-11-7-9 8 3-14-10-6 13-2Z" class="doodle-blue"/>
+      <path d="m23 141 7 14m-12-5 13-2m6 8-10 4" class="doodle-blue doodle-hatch"/>
+      <path d="M40 198c-13-16-25-5-18 5l20 16 16-20c7-13-12-17-18-1Z" class="doodle-red"/>
+      <path d="m27 198 7 12m-3-15 11 17m2-19 3 12m4-13-1 7" class="doodle-red doodle-hatch"/>
+      <path d="m264 130 2 7 8 1-7 4 1 8-6-5-6 4 2-8-6-4 8-1Z" class="doodle-yellow"/>
+    </g>
     <g class="cloud-drift">
       <path d="M63 89c-20-13-12-41 11-40-3-29 30-40 48-19 12-25 50-16 53 9 27-12 49 7 45 29 25-1 36 26 19 40-25 10-146 9-176-19Z" fill="#c2d0cf" fill-opacity=".18"/>
       <path d="M63 89c-20-13-12-41 11-40-3-29 30-40 48-19 12-25 50-16 53 9 27-12 49 7 45 29 25-1 36 26 19 40-25 10-146 9-176-19Z" class="pencil-line"/>
@@ -92,9 +104,9 @@ const turtle = svg('margin-turtle', '0 0 330 260', `
   <g filter="url(#margin-pencil)">
     <path d="M5 236c53-7 114-3 168-5s98 3 146-2M27 242c49-2 115 0 162-1" class="pencil-light"/>
     <g class="fern-sway">
-      <path d="M57 222C36 178 27 99 48 42M47 44C45 67 45 93 50 119" class="pencil-line"/>
-      <path d="M45 56c-9-3-15-10-13-16 10 1 14 8 13 16Zm-2 15c-12-2-22-13-19-20 13 3 20 11 19 20Zm-2 17C27 87 18 78 18 68c15 2 22 11 23 20Zm0 20C25 108 11 98 12 88c17 2 27 10 29 20Zm3 22C24 130 12 120 9 108c18 1 32 9 35 22Zm4 22C29 154 14 144 10 132c19-1 31 5 38 20Zm6 24C34 180 17 170 13 157c21-1 34 6 41 19Zm-8-113c2-13 9-21 19-22 0 12-9 20-19 22Zm-2 21c5-16 14-24 25-24-1 14-13 23-25 24Zm0 23c6-18 17-27 29-28-2 16-13 25-29 28Zm3 23c5-18 18-29 30-29-1 16-15 29-30 29Zm5 22c6-20 20-30 34-30-4 18-17 28-34 30Zm6 24c7-20 23-31 36-30-5 18-17 28-36 30Z" fill="#9aa47c" fill-opacity=".23" stroke="#8a906d" stroke-width=".7"/>
-      <path d="m44 71-18-17m17 35L20 72m23 37L14 92m33 39-34-19m37 40-35-15m39 39-36-13M45 84l20-21m-19 45 23-25m-19 47 23-24m-19 46 28-26m-24 49 30-25" class="pencil-light"/>
+      <path d="m56 223-8-34 2-29-8-29 3-30-3-25 6-35M47 49l-2 59 5 53 8 60" class="pencil-line"/>
+      <path d="M44 74Q12 78 17 50q25-3 27 24Zm2 28q-4-31 25-34q7 26-25 34Zm-2 33Q8 139 10 109q28-5 34 26Zm5 29q-3-31 34-31q5 27-34 31Zm3 29Q15 203 13 169q29-8 39 24Zm4 20q-1-27 36-31q9 29-36 31Z" fill="url(#margin-sage)" class="pencil-line"/>
+      <path d="m21 55 22 19m-19-9 4-10m2 16 4-9m15 38 18-27m-13 21 9 1M15 114l28 20m-19-12 3-9m25 49 26-25m-20 20 10 1m-50 16 31 18m-23-13 3-7m29 40 27-26m-20 20 12 1" class="pencil-light"/>
     </g>
     <g class="turtle-resident">
       <path d="m115 215-3 14c2 7 21 7 24 0l1-14m63 0 3 15c2 5 21 4 21-1l-9-15" fill="#b6bd98" fill-opacity=".3" class="pencil-line"/>
@@ -119,7 +131,8 @@ const turtle = svg('margin-turtle', '0 0 330 260', `
         <g class="cottage-smoke"><path d="M185 47c-11-12 14-11 3-24m0 18c10-8-11-13-1-24" class="pencil-echo"/></g>
       </g>
     </g>
-    <g class="margin-tiny-flower"><path d="m286 231-1-30m1 21c7-10 12-9 12-9-1 8-7 10-12 9m-1-9c-9-7-14-4-14-4 4 8 9 8 14 8" class="pencil-line"/><path d="M285 200c-11-8-10-15-5-14 4 0 6 5 6 8-2-12 4-16 7-12 3 3-1 9-4 13 9-6 15-2 12 2-2 5-9 4-13 3 8 7 4 12 0 11-5 0-5-7-3-11Z" fill="#d4b888" fill-opacity=".4" class="pencil-line"/></g>
+    <g class="margin-tiny-flower"><path d="m286 233-3-20 2-13m0 22q13-17 15-7-3 10-15 7m-2-8q-19-14-14-3 3 10 15 7" class="pencil-line"/><path d="M284 199q-19-5-12-14 7-7 13 8-4-23 7-19 9 3-3 20 22-15 23-3 0 10-22 7 18 13 6 17-8 2-10-14-8 19-15 10-6-8 13-12Z" fill="url(#margin-rose)" class="doodle-red"/><path d="M281 198q4-5 9-1 5 5-2 8-8 2-7-7Z" fill="#d6bb59" class="pencil-line"/></g>
+    <path d="m101 93 2 8 8 1-7 4 1 9-6-6-7 4 3-9-6-4 9-1Z" class="doodle-blue"/>
   </g>
 `);
 
@@ -163,6 +176,7 @@ const teaParty = svg('margin-tea-party', '0 0 390 285', `
       <path d="m237 238-7 5m14-5-7 7m47 9 15-1m-74-2 11 1" class="pencil-light"/>
     </g>
     <g class="tea-grass"><path d="m338 254-6-28m6 28 8-35m-8 27 18-16m-14 8 10-2m-17 4-11-8M30 253l-5-20m6 20 7-28m-6 18 14-6" class="pencil-line"/><path d="M349 219c-8-8-2-14 1-7 1-11 9-9 5-2 10-4 12 3 3 6 6 5 2 10-3 5-1 7-7 6-6-2Z" fill="#cda68d" fill-opacity=".5" class="pencil-line"/></g>
+    <g class="margin-child-doodle doodle-tea-notes"><path d="M345 162q-14-21-23-8-5 8 22 26 28-24 16-28-10-3-15 10Z" class="doodle-red"/><path d="m330 155 10 17m-3-16 8 15m7-15-4 13" class="doodle-red doodle-hatch"/><path d="m39 162 2 9 10 1-8 6 2 10-8-7-8 5 3-10-8-5 11-1Z" class="doodle-yellow"/></g>
   </g>
 `);
 
@@ -184,6 +198,16 @@ export function createSketchMargins(container: HTMLElement, options: SketchMargi
   root.className = 'sketch-margins';
   root.setAttribute('aria-hidden', 'true');
   root.innerHTML = `${definitions}${balloon}${cloud}${turtle}${teaParty}${wanderers}`;
+  // An off-register second attempt is drawn inside the same moving groups.
+  // It is deliberately static geometry: no filter or JS animation on the page.
+  for (const line of root.querySelectorAll<SVGElement>('.margin-art .pencil-line')) {
+    if (line.classList.contains('traveler-wave') || line.parentElement?.classList.contains('moon-moth')) continue;
+    const echo = line.cloneNode(false) as SVGElement;
+    echo.setAttribute('class', 'pencil-backline');
+    echo.setAttribute('fill', 'none');
+    echo.setAttribute('transform', 'translate(.85 -.55)');
+    line.after(echo);
+  }
   container.prepend(root);
   let captureTimer: ReturnType<typeof setTimeout> | undefined;
   let greetingTimer: ReturnType<typeof setTimeout> | undefined;

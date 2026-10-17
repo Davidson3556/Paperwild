@@ -84,37 +84,84 @@ export function createSketchScene(container: HTMLElement, { onSquare, onCreature
   const motions = new Set<Animation>();
   const settlers = new Set<() => void>();
   let motionId = 0;
+  let gridIntroduced = false;
 
-  // The grid is drawn twice, imperfectly: the second pencil pass is lighter.
-  // Every coloured square has individual wash edges and clipped pencil hatch.
+  // A child has coloured these in, gone over the lines, and missed a few bits.
+  // The nominal grid remains exact underneath the wavering pencil marks.
+  const pencilRandom = (seed: number) => {
+    let state = seed;
+    return () => { state = (Math.imul(state, 1664525) + 1013904223) >>> 0; return state / 4294967296; };
+  };
   for (let row = 0; row < 8; row++) for (let file = 0; file < 8; file++) {
     const x = LEFT + file * CELL, y = TOP + row * CELL;
-    const jitter = (file * 7 + row * 11) % 5;
+    const random = pencilRandom(83 + row * 479 + file * 83);
     const dark = (file + 8 - row) % 2 === 1;
     const clip = svg('clipPath', { id: `${prefix}-${row}-${file}` });
-    const outline = `M${x + 2},${y + 2 + jitter * .3} L${x + CELL - 2},${y + 1} L${x + CELL - 1 - jitter * .3},${y + CELL - 2} L${x + 1},${y + CELL - 1} Z`;
+    const outline = `M${x + 3},${y + 2 + random() * 3} Q${x + CELL * .5},${y + random() * 4} ${x + CELL - 2},${y + 4} L${x + CELL - 3},${y + CELL - 3} Q${x + CELL * .5},${y + CELL - random() * 4} ${x + 2},${y + CELL - 4} Z`;
     clip.append(svg('path', { d: outline })); defs.append(clip);
-    tiles.append(svg('path', { d: outline, fill: dark ? '#aebc96' : '#f2e7ca', opacity: dark ? .55 : .20 }));
+    tiles.append(svg('path', { d: outline, class: dark ? 'sketch-square-wash' : 'sketch-paper-wash', opacity: dark ? .075 + random() * .035 : .035 }));
     if (dark) {
-      const hatch = svg('g', { 'clip-path': `url(#${prefix}-${row}-${file})`, stroke: '#70825b', 'stroke-width': 1.2, opacity: .34 });
-      for (let line = -8; line < 15; line++) hatch.append(svg('path', { d: `M${x + line * 12},${y + CELL} l${CELL + 3},${-CELL - 2}` }));
-      tiles.append(hatch);
+      const scribbles = svg('g', { 'clip-path': `url(#${prefix}-${row}-${file})`, class: 'sketch-square-scribbles', fill: 'none', 'stroke-linecap': 'round', 'stroke-linejoin': 'round' });
+      // Long, slightly scruffy strokes run in different directions on each
+      // square. Their lengths and pressure leave paper showing between them.
+      const backwards = random() > .5;
+      for (let line = -6; line < 24; line++) {
+        const startX = x + line * 5.3 + random() * 4;
+        const startY = y + CELL - 4 - random() * 17;
+        const length = 49 + random() * 69;
+        const rise = length * (.72 + random() * .38);
+        const endX = startX + (backwards ? -length : length), endY = startY - rise;
+        scribbles.append(svg('path', {
+          d: `M${startX} ${startY} Q${(startX + endX) / 2 + (random() - .5) * 7} ${(startY + endY) / 2 + (random() - .5) * 6} ${endX} ${endY}`,
+          class: line % 5 === 0 ? 'sketch-pencil-colour second-colour' : 'sketch-pencil-colour',
+          'stroke-width': .85 + random() * 1.8, opacity: .16 + random() * .28,
+        }));
+        if (line % 4 === 0) scribbles.append(svg('path', { d: `M${startX + 1.6} ${startY - 2} l${(backwards ? -1 : 1) * length * .53} ${-rise * .53}`, class: 'sketch-pencil-colour', 'stroke-width': .65, opacity: .16 }));
+      }
+      // A few back-and-forth scrubs show where the pencil changed grip.
+      for (let scrub = 0; scrub < 4; scrub++) {
+        const sx = x + 8 + random() * 36, sy = y + 12 + random() * 76, reach = 20 + random() * 43;
+        scribbles.append(svg('path', { d: `M${sx} ${sy} q${reach * .5} -4 ${reach} 1 l${-reach + 4} 5 q${reach * .6} -3 ${reach - 2} 1 l${-reach + 10} 5`, class: 'sketch-pencil-colour soft-scrub', 'stroke-width': .9 + random() * 1.2, opacity: .12 + random() * .12 }));
+      }
+      tiles.append(scribbles);
     }
   }
-  for (let index = 0; index <= 8; index++) {
-    const v = LEFT + index * CELL, h = TOP + index * CELL;
-    const bend = index % 2 ? 3.2 : -3;
-    grid.append(svg('path', { d: `M${v},${TOP - 1} Q${v + bend},${TOP + 310} ${v - 1.4},${TOP + 600} T${v + .7},${TOP + CELL * 8 + 2}`, stroke: '#5e5947', 'stroke-width': index === 0 || index === 8 ? 2.1 : 1.75, opacity: .81 }));
-    grid.append(svg('path', { d: `M${LEFT - 2},${h} Q${LEFT + 330},${h + bend} ${LEFT + 610},${h - 1.6} T${LEFT + CELL * 8 + 1},${h + .7}`, stroke: '#5e5947', 'stroke-width': index === 0 || index === 8 ? 2 : 1.65, opacity: .81 }));
-    grid.append(svg('path', { d: `M${v + 1.5},${TOP + 3} L${v + .8},${TOP + CELL * 8 - 3} M${LEFT + 4},${h + 1.4} L${LEFT + CELL * 8 - 2},${h + 1.1}`, stroke: '#786f55', 'stroke-width': .65, opacity: .26 }));
+  for (let index = 0; index <= 8; index++) for (const vertical of [true, false]) {
+    const nominal = (vertical ? LEFT : TOP) + index * CELL;
+    for (let pass = 0; pass < 3; pass++) {
+      const random = pencilRandom(349 + index * 739 + pass * 191 + (vertical ? 10007 : 0));
+      const nodes: Point[] = [];
+      for (let node = 0; node <= 8; node++) {
+        const wobble = (random() - .5) * (pass === 0 ? 7 : 9);
+        const along = (vertical ? TOP : LEFT) + node * CELL + (node === 0 ? -random() * 5 : node === 8 ? random() * 5 : (random() - .5) * 3);
+        nodes.push(vertical ? { x: nominal + wobble, y: along } : { x: along, y: nominal + wobble });
+      }
+      let line = `M${nodes[0].x} ${nodes[0].y}`;
+      for (let node = 1; node < nodes.length; node++) {
+        const a = nodes[node - 1], b = nodes[node];
+        const bend = nominal + (random() - .5) * 9;
+        line += vertical ? ` Q${bend} ${(a.y + b.y) / 2} ${b.x} ${b.y}` : ` Q${(a.x + b.x) / 2} ${bend} ${b.x} ${b.y}`;
+      }
+      grid.append(svg('path', {
+        d: line, class: `sketch-graphite-pass graphite-${pass}`,
+        'stroke-width': pass === 0 ? 1.55 + random() * .7 : pass === 1 ? .72 + random() * .45 : .55,
+        opacity: pass === 0 ? .62 + random() * .14 : pass === 1 ? .28 : .24,
+        'stroke-dasharray': pass === 0 ? `${87 + index * 5} 1.3 ${65 + index * 3} 2.2 109 .7` : pass === 1 ? 'none' : '13 83 31 128 9 94 26 116',
+      }));
+    }
   }
   for (let index = 0; index < 8; index++) {
-    const file = svg('text', { x: LEFT + (index + .5) * CELL, y: 940, transform: `rotate(${index % 2 ? -3 : 2} ${LEFT + (index + .5) * CELL} 940)` }); file.textContent = FILES[index];
-    const rank = svg('text', { x: 42, y: TOP + (index + .5) * CELL + 7, transform: `rotate(${index % 2 ? 3 : -3} 42 ${TOP + (index + .5) * CELL})` }); rank.textContent = String(8 - index);
+    const random = pencilRandom(617 + index * 911);
+    const fx = LEFT + (index + .5) * CELL + (random() - .5) * 8, fy = 939 + (random() - .5) * 8;
+    const rx = 40 + (random() - .5) * 5, ry = TOP + (index + .5) * CELL + 9 + (random() - .5) * 8;
+    const file = svg('text', { x: fx, y: fy, class: index % 3 ? 'pencil-blue' : 'pencil-red', 'font-size': 30 + random() * 8, transform: `rotate(${(random() - .5) * 20} ${fx} ${fy})` }); file.textContent = FILES[index];
+    const rank = svg('text', { x: rx, y: ry, class: index % 3 ? 'pencil-red' : 'pencil-blue', 'font-size': 29 + random() * 9, transform: `rotate(${(random() - .5) * 22} ${rx} ${ry})` }); rank.textContent = String(8 - index);
     coordinates.append(file, rank);
   }
-  // Little pencil corner flourishes tie the board to the surrounding notebook.
-  grid.append(svg('path', { d: 'M53 65q-18-10-10-25q20 1 19 19m-7-5-8-9M939 894q19-1 22 17q-17 8-24-6m6 0 10 3', stroke: '#7e8a60', 'stroke-width': 1.7, opacity: .7 }));
+  const doodles = svg('g', { class: 'sketch-board-doodles', fill: 'none', 'stroke-linecap': 'round', 'stroke-linejoin': 'round' });
+  doodles.append(svg('path', { d: 'M29 33 40 10 45 37 21 22 52 23 29 33m6 4 6-15m914 3 5-16 5 19-16-10 23-1-17 8', class: 'pencil-blue', 'stroke-width': 1.5, opacity: .57 }));
+  doodles.append(svg('path', { d: 'm948 906 13 2-12 4 17 1-14 4 15 2m-648 32 23 2-19 3 30-1', class: 'pencil-red', 'stroke-width': 1.35, opacity: .40 }));
+  sheet.append(doodles);
 
   function retire(animation: Animation, cancelled: boolean) {
     if (!running.has(animation)) return;
@@ -129,6 +176,23 @@ export function createSketchScene(container: HTMLElement, { onSquare, onCreature
   }
   function finishAnimations() {
     for (const animation of [...running.keys()]) retire(animation, true);
+  }
+  function revealPencilGrid() {
+    if (gridIntroduced || destroyed) return;
+    gridIntroduced = true;
+    if (reducedMotion) return;
+    grid.querySelectorAll<SVGPathElement>('.graphite-0').forEach((path, index) => {
+      const length = path.getTotalLength();
+      if (!Number.isFinite(length) || length <= 0) return;
+      const pressure = path.getAttribute('stroke-dasharray');
+      path.setAttribute('stroke-dasharray', `${length} ${length}`);
+      track(path.animate([{ strokeDashoffset: String(length) }, { strokeDashoffset: '0' }], {
+        duration: 720, delay: index * 35, fill: 'backwards', easing: 'cubic-bezier(.3,.08,.6,.98)',
+      }), () => {
+        if (pressure === null) path.removeAttribute('stroke-dasharray');
+        else path.setAttribute('stroke-dasharray', pressure);
+      });
+    });
   }
   function trackMotion(animation: Animation, event: SketchMotionEvent, cleanup?: () => void) {
     motions.add(animation);
@@ -362,15 +426,16 @@ export function createSketchScene(container: HTMLElement, { onSquare, onCreature
   function circle(square: string, kind: 'selected' | 'legal' | 'last' | 'check', occupied = false) {
     const p = position(square);
     if (kind === 'last') {
-      marks.append(svg('path', { d: `M${p.x - 42},${p.y + 34} q35 6 84 -2 M${p.x - 39},${p.y + 39} l74 -1`, class: 'sketch-last-mark', fill: 'none' })); return;
+      marks.append(svg('path', { d: `M${p.x - 38} ${p.y + 35}l63-2-59 7 70-4-67 9 59-4 M${p.x - 29} ${p.y + 33}q29 3 59-1`, class: 'sketch-last-mark', fill: 'none' })); return;
     }
     if (kind === 'check') {
       const x = p.x + 35, y = p.y - 38;
-      marks.append(svg('path', { d: `M${x} ${y - 15}l4 11 12-3-8 9 8 8-12-1-4 12-4-11-12 2 8-9-8-8 12 2z M${x + 18} ${y - 14}l6-7 M${x + 23} ${y + 4}l8 1`, class: 'sketch-check-mark', fill: 'none' })); return;
+      marks.append(svg('path', { d: `M${x - 14} ${y + 11}L${x + 1} ${y - 16}l7 29-25-17 35-2-32 17 M${x - 12} ${y + 10}l14-24m18-1 5-7m-2 21 9 2`, class: 'sketch-check-mark', fill: 'none' })); return;
     }
     const radius = kind === 'selected' ? 43 : occupied ? 44 : 13;
-    marks.append(svg('path', { d: `M${p.x - radius} ${p.y + 1} C${p.x - radius - 3} ${p.y - radius * 1.34},${p.x + radius + 5} ${p.y - radius * 1.25},${p.x + radius} ${p.y + 2} C${p.x + radius - 2} ${p.y + radius * 1.33},${p.x - radius + 1} ${p.y + radius * 1.25},${p.x - radius} ${p.y + 1}`, class: `sketch-${kind}-mark`, fill: kind === 'legal' && !occupied ? '#9b9e6b' : 'none' }));
-    if (kind === 'selected') marks.append(svg('path', { d: `M${p.x - 40} ${p.y + 18}q-11-60 45-58q58 6 31 65q-18 28-56 14`, class: 'sketch-selected-mark second-pass', fill: 'none' }));
+    marks.append(svg('path', { d: `M${p.x - radius} ${p.y + 3}q-3 ${-radius * .83} ${radius * .62} ${-radius * 1.01}q${radius * .8} ${-radius * .38} ${radius * 1.23} ${radius * .14}q${radius * .43} ${radius * .61} ${radius * .14} ${radius * 1.19}q${-radius * .27} ${radius * .86} ${-radius * 1.04} ${radius * .72}q${-radius * 1.03} ${-radius * .02} ${-radius * .96} ${-radius * 1.04}`, class: `sketch-${kind}-mark`, fill: 'none' }));
+    if (kind === 'selected' || occupied) marks.append(svg('path', { d: `M${p.x - radius + 6} ${p.y + 19}q-13 ${-radius * 1.38} ${radius + 4} ${-radius - 17}q${radius * 1.31} 8 ${radius * .77} ${radius * 1.51}q-17 ${radius * .62} ${-radius * 1.39} ${radius * .21}`, class: `sketch-${kind}-mark second-pass`, fill: 'none' }));
+    else marks.append(svg('path', { d: `M${p.x - 6} ${p.y - 3}l10-2-12 8 14-4-10 7`, class: 'sketch-legal-mark pencil-dot', fill: 'none' }));
   }
   function sync({ board = [], selected = null, legal = [], lastMove = null, captures = [], checkSquare = null, animate = true }: SyncOptions = {}) {
     const pieces = board.flat().filter(piece => piece !== null);
@@ -410,6 +475,7 @@ export function createSketchScene(container: HTMLElement, { onSquare, onCreature
     for (const item of legal) { const square = typeof item === 'string' ? item : item.to; circle(square, 'legal', desired.has(square as Square)); }
     for (const [square, sprite] of sprites) sprite.element.classList.toggle('is-selected', square === selected);
     showCaptures(captures, shouldAnimate);
+    if (pieces.length) revealPencilGrid();
   }
   function castleRook(lastMove: LastMove, animate: boolean) {
     const kingSide = lastMove.to[0] === 'g', rank = lastMove.from[1];

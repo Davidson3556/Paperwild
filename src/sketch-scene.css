@@ -2,12 +2,18 @@
 .sketch-board-ink,.sketch-cast,.sketch-sidelines,.sketch-departures{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
 .sketch-board-ink{overflow:visible;z-index:0}
 .sketch-cast{z-index:2}.sketch-departures{z-index:4}.sketch-sidelines{z-index:1}
-.sketch-coordinates{font-family:'Patrick Hand','Caveat','Comic Sans MS',cursive;font-size:28px;fill:#77715a;text-anchor:middle;font-weight:400}
-.sketch-selected-mark{stroke:#b47f45;stroke-width:3.2;stroke-linecap:round;stroke-linejoin:round;opacity:.88}
-.sketch-selected-mark.second-pass{stroke-width:1.2;opacity:.6}
-.sketch-legal-mark{stroke:#7d8f59;stroke-width:2.5;stroke-linejoin:round;opacity:.68}
-.sketch-last-mark{stroke:#bca262;stroke-width:8;stroke-linecap:round;opacity:.32}
-.sketch-check-mark{stroke:#ab5f48;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;opacity:.9}
+.sketch-square-wash{fill:#90a4aa}.sketch-paper-wash{fill:#efd9b4}
+.sketch-pencil-colour{stroke:#8a9e92}.sketch-pencil-colour.second-colour{stroke:#7d94a9}.sketch-pencil-colour.soft-scrub{stroke:#9aa678}
+.sketch-graphite-pass{stroke:#68665e}.sketch-graphite-pass.graphite-1{stroke:#8e8375}.sketch-graphite-pass.graphite-2{stroke:#5e625f}
+.sketch-coordinates{font-family:'Schoolbell','Gloria Hallelujah','Patrick Hand','Comic Sans MS',cursive;font-size:32px;text-anchor:middle;font-weight:400;opacity:.86}
+.sketch-coordinates .pencil-blue{fill:#66829a}.sketch-coordinates .pencil-red{fill:#b07964}
+.sketch-board-doodles .pencil-blue{stroke:#718ba4}.sketch-board-doodles .pencil-red{stroke:#b58570}
+.sketch-selected-mark{stroke:#ba8067;stroke-width:2.7;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:57 1.1 29 .7;opacity:.86}
+.sketch-selected-mark.second-pass{stroke-width:1.15;opacity:.58}
+.sketch-legal-mark{stroke:#668c96;stroke-width:2.15;stroke-linecap:round;stroke-linejoin:round;opacity:.76}
+.sketch-legal-mark.second-pass{stroke-width:.95;opacity:.48}.sketch-legal-mark.pencil-dot{stroke-width:2.4;opacity:.56}
+.sketch-last-mark{stroke:#c9ab70;stroke-width:3.1;stroke-linecap:round;stroke-linejoin:round;opacity:.28}
+.sketch-check-mark{stroke:#b36e60;stroke-width:2.3;stroke-linecap:round;stroke-linejoin:round;opacity:.9;stroke-dasharray:38 .8 16 1.3}
 .sketch-piece{position:absolute;width:12%;height:14.2%;transform:translate(-50%,-57%);pointer-events:none;will-change:left,top;overflow:visible}
 .sketch-piece-body{position:relative;z-index:2;width:100%;height:100%;transform-origin:50% 87%;animation:sketch-resident-breathe 6.2s ease-in-out infinite;animation-delay:var(--idle-delay,0s)}
 .sketch-piece-art{display:block;width:100%;height:100%;object-fit:contain;object-position:center bottom;filter:drop-shadow(0 3px 1px #6a624012);pointer-events:none}
@@ -50,8 +56,10 @@
 .sketch-sideline-fallback{font-family:Georgia,serif;font-size:28px;color:#7c855f}
 .sketch-hello{position:absolute;right:1.4%;top:6%;opacity:0;color:#9c7c47;font:32px/1 'Patrick Hand','Caveat',cursive;transform:rotate(-8deg);pointer-events:none;z-index:5}
 .sketch-scene[data-atmosphere=dusk]{--sketch-ink:#48516f}
-.sketch-scene[data-atmosphere=dusk] .sketch-board-grid>path{stroke:#48516f}
-.sketch-scene[data-atmosphere=dusk] .sketch-coordinates{fill:#697292}
+.sketch-scene[data-atmosphere=dusk] .sketch-graphite-pass{stroke:#5f6579}
+.sketch-scene[data-atmosphere=dusk] .sketch-graphite-pass.graphite-1{stroke:#7e8292}
+.sketch-scene[data-atmosphere=dusk] .sketch-coordinates .pencil-blue{fill:#617b9c}
+.sketch-scene[data-atmosphere=dusk] .sketch-coordinates .pencil-red{fill:#a47a79}
 .sketch-scene[data-atmosphere=dusk] .sketch-board-tiles{opacity:.82}
 .sketch-scene[data-atmosphere=dusk] .sketch-piece-art{filter:brightness(.95) drop-shadow(0 3px 1px #30384a18)}
 .sketch-scene[data-atmosphere=dusk] .sketch-art-fragment{filter:brightness(.95)}

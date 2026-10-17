@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 160" preserveAspectRatio="none" fill="none">
+  <g stroke="#69636a" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke">
+    <path d="M5 9Q83 3 165 7T314 6L312 60 316 116 311 153Q232 157 155 153T6 155L8 106 4 53Z" stroke-width="1.4" vector-effect="non-scaling-stroke" opacity=".8"/>
+    <path d="M8 6Q101 8 182 5L309 9M315 17l-1 57 2 62M302 156l-96-1-87 2-108-5M5 148l2-61-3-62" stroke-width=".7" opacity=".45" vector-effect="non-scaling-stroke"/>
+    <path d="M13 11l38-1m56-3 26 1m87-1 49 2M9 149l49 2m132 2 39 1m82-51 1-22" stroke-width=".5" opacity=".35" vector-effect="non-scaling-stroke"/>
+  </g>
+</svg>

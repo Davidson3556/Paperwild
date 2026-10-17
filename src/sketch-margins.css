@@ -4,20 +4,28 @@
   z-index: 0;
   overflow: hidden;
   pointer-events: none;
-  color: #6f563e;
+  color: #625a49;
   contain: layout paint;
-  --margin-ink: #6f563e;
+  --margin-ink: #625a49;
 }
 .sketch-margins .margin-definitions { position: absolute; }
 .sketch-margins .margin-art { position: absolute; overflow: visible; }
-.sketch-margins .pencil-line { stroke: var(--margin-ink); stroke-width: 1.05; stroke-linecap: round; stroke-linejoin: round; }
-.sketch-margins .pencil-light { stroke: #8b8066; stroke-width: .7; stroke-linecap: round; stroke-linejoin: round; }
-.sketch-margins .pencil-echo { stroke: #9e9277; stroke-width: .65; stroke-linecap: round; opacity: .68; }
-.sketch-margins .pencil-dark { stroke: #6f563e; stroke-width: 1.7; stroke-linecap: round; }
-.sketch-margins .margin-balloon { width: clamp(145px, 15.3vw, 235px); top: 55px; left: -21px; }
-.sketch-margins .margin-cloud { width: clamp(175px, 19.5vw, 290px); top: 7px; right: -17px; }
-.sketch-margins .margin-turtle { width: clamp(220px, 23.5vw, 340px); bottom: -9px; left: -35px; }
-.sketch-margins .margin-tea-party { width: clamp(270px, 28vw, 400px); bottom: -12px; right: -22px; }
+.sketch-margins .pencil-line { stroke: var(--margin-ink); stroke-width: 1.35; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 47 .8 19 .55; }
+.sketch-margins .pencil-light { stroke: #82775f; stroke-width: .9; stroke-linecap: round; stroke-linejoin: round; }
+.sketch-margins .pencil-echo { stroke: #8f826b; stroke-width: .82; stroke-linecap: round; opacity: .76; }
+.sketch-margins .pencil-backline { stroke: var(--margin-ink); stroke-width: .75; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 11 1.4 6 .8; opacity: .37; }
+.sketch-margins .pencil-dark { stroke: #574e40; stroke-width: 1.95; stroke-linecap: round; }
+.sketch-margins .doodle-blue,.sketch-margins .doodle-red,.sketch-margins .doodle-yellow { stroke-width: 1.45; stroke-linecap: round; stroke-linejoin: round; }
+.sketch-margins .doodle-blue { stroke: #7189aa; }
+.sketch-margins .doodle-red { stroke: #bd7972; }
+.sketch-margins .doodle-yellow { stroke: #bea047; }
+.sketch-margins .doodle-hatch { opacity: .57; stroke-width: 1.1; }
+.sketch-margins .doodle-sun { opacity: .88; }
+.sketch-margins .doodle-cloud-notes,.sketch-margins .doodle-tea-notes { opacity: .8; }
+.sketch-margins .margin-balloon { width: 150px; top: 55px; left: -12px; }
+.sketch-margins .margin-cloud { width: 195px; top: 85px; right: -7px; }
+.sketch-margins .margin-turtle { width: 230px; bottom: -9px; left: -90px; }
+.sketch-margins .margin-tea-party { width: 260px; bottom: -12px; right: -100px; }
 .sketch-margins .margin-wanderers { inset: 0; width: 100%; height: 100%; }
 .sketch-margins .margin-art g { transform-box: fill-box; }
 .sketch-margins .balloon-drift { transform-origin: 50% 20%; animation: margin-balloon-drift 15s ease-in-out infinite; }
@@ -70,10 +78,13 @@
 .sketch-margins.is-greeting[data-greeting=butterfly] .moon-moth>path:first-child { animation: margin-moth-wing .3s ease-in-out 6; }
 .sketch-margins.is-greeting[data-greeting=bee] .rabbit-sip { animation: margin-cheers 1.8s ease-in-out both; }
 .sketch-margins.is-greeting[data-greeting=bee] .tea-steam { animation-duration: 1.2s; }
-.sketch-margins[data-atmosphere=dusk] { --margin-ink: #46516c; }
-.sketch-margins[data-atmosphere=dusk] .pencil-light { stroke: #778395; }
-.sketch-margins[data-atmosphere=dusk] .pencil-echo { stroke: #8d94a0; }
+.sketch-margins[data-atmosphere=dusk] { --margin-ink: #48516d; }
+.sketch-margins[data-atmosphere=dusk] .pencil-light { stroke: #68758e; }
+.sketch-margins[data-atmosphere=dusk] .pencil-echo { stroke: #7f889b; }
 .sketch-margins[data-atmosphere=dusk] .pencil-dark { stroke: #38466a; }
+.sketch-margins[data-atmosphere=dusk] .doodle-blue { stroke: #5d729b; }
+.sketch-margins[data-atmosphere=dusk] .doodle-red { stroke: #ae777f; }
+.sketch-margins[data-atmosphere=dusk] .doodle-yellow { stroke: #bba45f; }
 .sketch-margins[data-atmosphere=dusk] .margin-cloud { filter: saturate(.75); }
 .sketch-margins[data-atmosphere=dusk] .moon-moth { filter: drop-shadow(0 0 4px #cfb46f33); }
 .sketch-margins.is-hidden *, .sketch-margins.is-hidden *::before, .sketch-margins.is-hidden *::after { animation-play-state: paused !important; }
@@ -129,17 +140,17 @@
   .sketch-margins .margin-tea-party { width: 275px; right: -67px; opacity: .8; }
 }
 @media (max-width: 899px) {
-  .sketch-margins .margin-balloon { width: 113px; left: -37px; top: 90px; opacity: .42; }
-  .sketch-margins .margin-cloud { width: 155px; right: -49px; top: 84px; opacity: .4; }
-  .sketch-margins .margin-turtle { width: 170px; left: -63px; bottom: -17px; opacity: .35; }
-  .sketch-margins .margin-tea-party { width: 205px; right: -80px; bottom: -13px; opacity: .35; }
-  .sketch-margins .margin-wanderers { opacity: .35; }
+  .sketch-margins .margin-balloon { width: 113px; left: -37px; top: 90px; opacity: .62; }
+  .sketch-margins .margin-cloud { width: 155px; right: -49px; top: 84px; opacity: .58; }
+  .sketch-margins .margin-turtle { width: 170px; left: -63px; bottom: -17px; opacity: .5; }
+  .sketch-margins .margin-tea-party { width: 205px; right: -80px; bottom: -13px; opacity: .5; }
+  .sketch-margins .margin-wanderers { opacity: .5; }
 }
 @media (max-width: 600px) {
   .sketch-margins .margin-balloon { display: none; }
-  .sketch-margins .margin-cloud { width: 130px; right: -53px; top: 52px; opacity: .25; }
-  .sketch-margins .margin-turtle { width: 132px; left: -59px; opacity: .22; }
-  .sketch-margins .margin-tea-party { width: 155px; right: -75px; opacity: .22; }
+  .sketch-margins .margin-cloud { width: 130px; right: -53px; top: 52px; opacity: .36; }
+  .sketch-margins .margin-turtle { width: 132px; left: -59px; opacity: .34; }
+  .sketch-margins .margin-tea-party { width: 155px; right: -75px; opacity: .34; }
   .sketch-margins .margin-wanderers { display: none; }
 }
 @media (prefers-reduced-motion: reduce) {

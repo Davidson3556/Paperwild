@@ -2,9 +2,9 @@
 
 ### Chess, drawn to life.
 
-A woodland chess game on a living sketchbook page. Acorns advance, hares hop, moths drift, and bookish badgers protect their crowns. Captured characters leave the board for tea on the sidelines. Around them, a leaf-lifted tea balloon rocks, a tortoise carries its cottage, and a rabbit and hedgehog keep the kettle warm.
+A woodland chess game on a cheerfully scribbled pencil page. The board has wobbly graphite lines and uneven colored-pencil squares, surrounded by handwritten notes and little sun, star, heart, and daisy doodles. Acorns advance, hares hop, moths drift, and bookish badgers protect their crowns. Captured characters leave the board for tea on the sidelines.
 
-![Paperwild: illustrated chess, woodland characters, and a living pencil-drawn world](docs/media/paperwild-preview.png)
+![Paperwild: a scribbled pencil chessboard, woodland characters, and handwritten page doodles](docs/media/paperwild-preview.png)
 
 [Watch the actual movement preview](docs/media/paperwild-movement.gif). Enable **Sound on** in the game for the accompanying footsteps and woodland sounds.
 
@@ -14,12 +14,13 @@ Built for **[TestSprite Hackathon Season 4](https://www.testsprite.com/hackathon
 
 ## A small game. A whole little world.
 
+- **A page drawn with enthusiasm:** three imperfect graphite passes form the board, colored-pencil scribbles fill its squares, and Schoolbell/Gloria handwriting, uneven colorful title letters, penciled circles, and small doodles give the interface a child's sketchbook spirit. The underlying square targets stay exact.
 - **Complete chess:** legal moves, check, castling, en passant, four promotion choices, and standard draw conditions.
 - **Two ways to play:** take White/Amber against the computer at three bounded difficulty levels, or share the board with a friend.
 - **An illustrated cast:** acorn pawns, stump rooks, hare knights, moth bishops, fox queens, and badger kings, in Amber and Indigo palettes. Conventional role labels and a character guide keep the rules readable.
 - **Movement with character:** acorns walk on little pencil feet, hares crouch and leap, moths flap, stumps shuffle, foxes double-pounce, and badgers waddle. Drawn shadows, dust, and footprints ground the journey; captured friends arc into the sideline society.
 - **A little woodland Foley:** opt-in paper brushes, wooden taps, pawfalls, wing sounds, and plucked notes follow movement contacts, landings, captures, promotion, check, and endings. No audio files or background music are downloaded.
-- **Life beyond the board:** fine pencil-style margin drawings, resident greetings, drifting leaves, tea steam, a passing shower, and Daydream/Moonlight paper treatments.
+- **Life beyond the board:** a rocking tea balloon, cottage-carrying tortoise, sleepy cloud, and rabbit/hedgehog tea party share lighter paper with naive pencil doodles, resident greetings, drifting leaves, a passing shower, and Daydream/Moonlight treatments.
 - **A thoughtful pace:** keyboard play, visible legal destinations, a visible Sound off/on control, reduced motion, and hidden-page animation pausing. The computer waits for a character to settle before replying; undo and restart can interrupt safely.
 - **A place in the story:** local save/resume, full move history, PGN download, and three short capture, promotion, and checkmate stories.
 
@@ -53,6 +54,8 @@ Development and preview both use port 4173; stop one before starting the other. 
 
 Original AI-generated character and paper artwork is combined with code-drawn SVG margin residents. [Art provenance and generation prompts](docs/ART_PROMPTS.md) document the assets. Saved games stay in the current browser and origin; multiplayer means two people on one device.
 
+The main graphite lines draw themselves in once when the board first appears. This introduction skips reduced motion and never blocks chess input. The pencil-page styling preserves the same board geometry, move choreography, sound, and saved games.
+
 ## Testing and verification
 
 | Layer | Recorded status and scope |
@@ -61,7 +64,7 @@ Original AI-generated character and paper artwork is combined with code-drawn SV
 | Sound lifecycle suite | **8 passing tests** with mocked Web Audio: gesture-only unlock, immediate mute/cancellation, stale-unlock protection, hidden-page cleanup, rejected/unsupported audio, bounded voices, and destruction. These do not establish audible quality. |
 | Character choreography tests | **3 passing motion invariant tests**; **24 local tests total** across engine, sound, and motion. |
 | Strict types and production build | Passed; reproduce with the commands above. |
-| Browser verification | Current Chrome checks cover all six active gait profiles, recorded hare/pawn intermediate poses, castling, capture/undo interruption, promotion arrival, ordered computer replies, saved sound preference, reduced motion, and usable 320/390 px layouts. No warnings/errors were observed. Audio initialized without availability errors; audible quality was not assessed. [Evidence and limits](docs/VERIFICATION.md). |
+| Browser verification | Recorded Chrome checks cover all six active gait profiles, hare/pawn intermediate poses, castling, capture/undo interruption, promotion arrival, ordered computer replies, saved sound preference, reduced motion, and usable 320/390 px layouts. No warnings/errors were observed. Audio initialized without availability errors; audible quality was not assessed. The newest pencil-page visual QA is tracked separately in [the verification record](docs/VERIFICATION.md). |
 | Current illustrated UI in TestSprite | **Pending.** The [19-scenario acceptance plan](docs/TESTSPRITE_PLAN.md) requires board, role-image, history, capture, persistence, accessibility, movement sequencing, and sound assertions. |
 | GitHub App PR checks | **Pending setup and a demonstrated run.** |
 

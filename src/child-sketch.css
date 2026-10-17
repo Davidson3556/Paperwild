@@ -1,0 +1,174 @@
+/* A child's pencil page. The regular layout underneath still owns hit areas. */
+:root {
+  --paper:#faf7eb; --ink:#55525b; --muted:#75717b; --faint:#99919a;
+  --line:#c6c0b8; --forest:#7d946a; --gold:#c7a74f; --card:#fbf8ed;
+  --rose:#b96d68; --serif:'Gloria Hallelujah','Schoolbell',cursive;
+  font-family:'Schoolbell','Patrick Hand',cursive;
+  color:var(--ink); background:var(--paper);
+}
+body {
+  background:linear-gradient(#fffdf4d9,#fbf9f0d4),url('/art/sketchbook-paper.jpg') center top/1536px auto;
+}
+body::after { box-shadow:none; background:none; }
+.masthead::after { opacity:.45; height:12px; background:url('/ui/pencil-underline.svg') center/100% 100% no-repeat; }
+.brand { font:32px/1 'Schoolbell',cursive; transform:rotate(-2deg); min-width:0; }
+.brand strong { font:14px/1.3 'Schoolbell',cursive; letter-spacing:0; margin-top:8px; color:var(--muted); }
+.brand-mark { width:29px; color:#86956e; }
+.brand-word { white-space:nowrap; }
+.brand-word>span { display:inline-block; transform:translateY(var(--letter-hop)) rotate(var(--letter-tilt)); }
+.brand-word>span:nth-child(3n+1) { color:#65769f; }
+.brand-word>span:nth-child(3n+2) { color:#b9706b; }
+.brand-word>span:nth-child(3n) { color:#8a9b6e; }
+.masthead-note { font:19px/1.5 'Schoolbell',cursive; color:#92916f; transform:rotate(-2deg); }
+.small-star { color:#d1b355; font-size:37px; transform:rotate(13deg); }
+.edition,.eyebrow,.field-label,.note-number,.scene-topline,.caption-index,.footer,.result-stats span {
+  font-family:'Schoolbell','Patrick Hand',cursive; font-weight:400; letter-spacing:0; text-transform:none;
+}
+.edition { font-size:13px; color:#a39b8c; transform:rotate(4deg); }
+.eyebrow { font-size:14px; line-height:1.4; margin-bottom:17px; color:#928a92; }
+.eyebrow>span:empty { width:7px; height:7px; border-radius:40% 60% 54% 45%; background:#d1b767; }
+h1 { font:44px/1.25 var(--serif); letter-spacing:-1px; transform:rotate(-3deg); margin-bottom:23px; }
+h1 em { position:relative; color:#a75f63; margin-top:0; transform:rotate(3deg); }
+h1 em::after { content:''; position:absolute; left:-5px; right:-12px; height:12px; bottom:-7px; background:url('/ui/pencil-underline.svg') center/100% 100%; }
+.intro-copy { font-size:17px; line-height:1.5; color:#807a80; }
+.botanical-divider { margin:22px 0 17px; }
+.botanical-divider span { background:none; border-bottom:1px dashed #b6b2a3; transform:rotate(-2deg); }
+.botanical-divider svg { color:#99a177; }
+.mode-selector { border:0; padding:4px 0; gap:7px; }
+.mode-selector button { position:relative; min-height:44px; font-size:16px; padding:10px 2px; border-radius:0; }
+.mode-selector button[aria-pressed=true] { background:none; color:#65759f; box-shadow:none; }
+.mode-selector button[aria-pressed=true]::after { content:''; position:absolute; inset:0 -5px; background:url('/ui/pencil-circle.svg') center/100% 100% no-repeat; pointer-events:none; }
+.mode-description { font-size:14px; line-height:1.4; margin:12px 0 22px; }
+.field-label { font-size:14px; line-height:1.4; color:#96888e; }
+select { font-family:'Schoolbell',cursive; font-size:16px; padding:12px 17px 12px 0; border-bottom:1px dashed #aaa5a7; }
+.primary-button,.secondary-button,.sound-button,.study-options>button,.promotion-options button { position:relative; isolation:isolate; }
+.primary-button { border:0; background:none; border-radius:0; box-shadow:none; min-height:48px; padding:13px 14px; font:23px/1.2 'Schoolbell',cursive; color:#667c55; }
+.primary-button::before { content:''; position:absolute; z-index:-1; inset:5px; background:repeating-linear-gradient(112deg,#9caf7833 0 1.2px,transparent 1.2px 4px); clip-path:polygon(1% 5%,97% 0,100% 91%,4% 100%); }
+.primary-button::after,.secondary-button::after,.study-options>button::after,.promotion-options button::after { content:''; position:absolute; inset:0; background:url('/ui/pencil-frame.svg') center/100% 100% no-repeat; pointer-events:none; }
+.primary-button:hover:not(:disabled) { background:none; color:#526d46; transform:rotate(-1deg); }
+.secondary-button { border:0; border-radius:0; font-size:17px; }
+.text-button { font-size:16px; color:#76758b; }
+.text-button span { color:#a76e72; }
+.garden-note { border:0; border-radius:0; box-shadow:none; background:#fffdf45c; padding:20px 14px; transform:rotate(-4deg); }
+.garden-note::after { content:''; position:absolute; inset:0; background:url('/ui/pencil-frame.svg') center/100% 100%; pointer-events:none; }
+.garden-note::before { background:repeating-linear-gradient(100deg,#d0c58a40 0 1px,#d0c58a2a 1px 5px); }
+.note-number { font-size:13px; color:#8f98aa; }
+.garden-note p { font:21px/1.5 'Schoolbell',cursive; color:#7b806b; margin:10px 0 1px; }
+.note-flower { color:#bd8583; right:10px; bottom:8px; font:32px/1 'Schoolbell',cursive; transform:rotate(12deg); }
+.scene-topline { font-size:13px; line-height:1.4; color:#8b8591; padding-top:4px; height:40px; }
+.scene-topline i { display:none; }
+.scene-controls button { font:16px/1.1 'Schoolbell',cursive; min-height:40px; }
+.scene-caption::before { background:none; border-top:1px dashed #c8c0ba; }
+.caption-index { font-size:12px; line-height:1.35; min-width:68px; color:#928c9b; }
+.scene-caption p { font:19px/1.6 'Schoolbell',cursive; color:#89828e; }
+.caption-seal { color:#ceaf5d; transform:rotate(13deg); }
+.wildlife-note { font-size:14px; color:#8d8794; }
+.resident-greeting { font-size:16px; border-bottom:1px dashed #9b90b1; }
+.study-banner .eyebrow { font:13px/1.4 'Schoolbell',cursive; }
+.study-banner h2 { font:27px/1.4 'Schoolbell',cursive; }
+.study-banner p { font-size:16px; line-height:1.5; }
+.study-banner .text-button { font-size:15px; }
+.turn-card { border:0; border-radius:0; background:none; padding:16px 7px 0; transform:none; }
+.turn-card::after { border:0; border-radius:0; background:none; }
+.turn-heading { position:relative; margin-top:14px; gap:8px; padding:13px 7px 15px; }
+.turn-heading::after { content:''; position:absolute; inset:-3px -11px; background:url('/ui/pencil-circle.svg') center/100% 100% no-repeat; pointer-events:none; transform:rotate(-4deg); opacity:.7; }
+.turn-heading h2 { font:28px/1.35 'Schoolbell',cursive; color:#697aa0; letter-spacing:0; }
+.turn-token { width:9px; height:10px; border-radius:45% 55% 53% 41%; }
+.turn-card>p { font-size:16px; line-height:1.5; margin:12px 0 17px; }
+.turn-card-footer { border-top:1px dashed #bbb8bb; font-size:14px; padding:10px 0; }
+.turn-card-footer button { font-size:16px; min-height:34px; }
+.section-heading h2 { font:23px/1.5 'Schoolbell',cursive; color:#8b727e; }
+.section-heading>span { font-size:16px; border:0; color:#7384a3; transform:rotate(8deg); }
+.blooms-section { transform:rotate(-1deg); }
+.bloom-display { border-bottom:1px dashed #c4c0b6; }
+.bloom-display p { font:19px/1.5 'Schoolbell',cursive; color:#9a91a0; }
+.blooms-caption { font-size:14px; line-height:1.5; }
+.journal-section .section-heading { border-bottom:0; padding-bottom:4px; }
+.move-history { background:repeating-linear-gradient(transparent 0 35px,#c4cdd442 35px 36px); min-height:112px; padding-top:0; }
+.move-history li { font:18px/36px 'Schoolbell',cursive; padding:0 3px; border-radius:0; }
+.move-history li.latest { background:#ddd4971a; }
+.move-number { font-size:15px; color:#ab8893; transform:rotate(-6deg); }
+.move-history li.history-empty { font:18px/1.7 'Schoolbell',cursive; padding:17px 3px; }
+.saved-note { font-size:13px; border-top:0; color:#a298a1; }
+.footer { font-size:13px; border-top:1px dashed #cac3be; line-height:1.5; color:#9b8e9b; }
+.footer>div>span { font:17px/1.5 'Schoolbell',cursive; }
+.footer button { font:16px/1.4 'Schoolbell',cursive; }
+.header-actions .sound-button { border:0; font:15px/1 'Schoolbell',cursive; min-height:40px; gap:5px; padding:5px; border-radius:0; color:#8b7a90; }
+.sound-button[aria-pressed=true] { background:none; color:#74895f; }
+.header-actions .sound-button[aria-pressed=true]::after { content:''; position:absolute; inset:1px -3px; background:url('/ui/pencil-circle.svg') center/100% 100% no-repeat; opacity:.6; pointer-events:none; }
+dialog { border:0; background:linear-gradient(#fffdf4ec,#faf7ebed),url('/art/sketchbook-paper.jpg') center/1200px; border-radius:0; box-shadow:4px 6px 0 #78717d13; outline:1px solid #aaa1ab; outline-offset:-6px; }
+.modal h2 { font:36px/1.4 var(--serif); letter-spacing:-1px; }
+.modal .eyebrow { font:14px/1.4 'Schoolbell',cursive; }
+.modal>p:not(.eyebrow) { font:18px/1.5 'Patrick Hand',cursive; }
+.instruction-grid strong { font-family:'Schoolbell',cursive; font-size:19px; }
+.instruction-grid p { font:16px/1.5 'Patrick Hand',cursive; }
+.character-legend span { font:16px/1.5 'Schoolbell',cursive; }
+.study-options>button,.promotion-options button { border:0; border-radius:0; }
+.study-options strong { font:24px/1.4 'Schoolbell',cursive; }
+.study-options small { font-size:15px; }
+.study-index { font-size:17px; color:#b4828b; transform:rotate(-6deg); }
+.result-stats strong { font:42px/1.4 'Schoolbell',cursive; }
+.result-stats span { font-size:12px; line-height:1.5; }
+[data-atmosphere=dusk] { --paper:#ebedf4; --ink:#545c7b; --muted:#797f99; --faint:#9ba0b6; --line:#b8bfd0; --card:#f0f0f5; --rose:#a17d95; }
+[data-atmosphere=dusk] body { background-image:linear-gradient(#e9edf9db,#ecedf7d6),url('/art/sketchbook-paper.jpg'); }
+[data-atmosphere=dusk] .turn-card { background:none; }
+[data-atmosphere=dusk] .primary-button { background:none; color:#6b7797; border:0; }
+[data-atmosphere=dusk] .primary-button:hover:not(:disabled) { background:none; }
+[data-atmosphere=dusk] .mode-selector button[aria-pressed=true] { background:none; box-shadow:none; }
+[data-atmosphere=dusk] .garden-note { background:#f6f4fb55; }
+@media(min-width:1650px) { h1 { font-size:50px; } .scene-caption p { font-size:22px; } .turn-heading h2 { font-size:32px; } }
+@media(max-width:1279px) { h1 { font-size:38px; } .scene-topline { font-size:11px; } .scene-controls button { font-size:14px; } .section-heading h2 { font-size:22px; } }
+@media(max-width:1000px) {
+  .invitation h1 { font-size:38px; line-height:1.3; letter-spacing:-1px; }
+  .invitation h1 br { display:none; }
+  .intro-copy { font-size:16px; }
+  .mode-description { font-size:14px; }
+  .masthead-note { font-size:17px; }
+}
+@media(max-width:720px) {
+  .brand { font-size:27px; gap:5px; }
+  .brand strong { font-size:12px; letter-spacing:0; margin-top:5px; }
+  .brand-mark { width:23px; }
+  .header-actions .sound-button { font-size:13px; gap:3px; padding:3px; }
+  .sound-button svg { width:16px; height:16px; }
+  .invitation .eyebrow { font-size:12px; letter-spacing:0; margin-bottom:13px; }
+  .invitation h1 { font:34px/1.3 var(--serif); letter-spacing:-1px; max-width:200px; margin-bottom:14px; }
+  .invitation h1 br { display:block; }
+  .intro-copy { font-size:14px; line-height:1.5; }
+  .mode-selector button { font-size:15px; min-height:44px; padding:7px 3px; }
+  .primary-button#new-game { font:21px/1.2 'Schoolbell',cursive; min-height:48px; padding:10px; }
+  .studies-link { font-size:15px; margin-top:16px; }
+  .scene-topline { font-size:11px; letter-spacing:0; height:43px; padding:0 2px; }
+  .scene-controls { gap:8px; }
+  .scene-controls button { font-size:14px; gap:3px; }
+  .scene-controls button svg { width:13px; height:13px; }
+  .scene-caption p { font:17px/1.6 'Schoolbell',cursive; max-width:70%; }
+  .caption-index { font-size:10px; min-width:63px; }
+  .wildlife-note { font-size:12px; line-height:1.5; margin-left:5px; margin-right:5px; }
+  .resident-greeting { font-size:14px; }
+  .turn-card { padding:14px 15px 0; }
+  .turn-heading { margin-top:6px; padding:11px 7px; }
+  .turn-heading::after { inset:0 -3px; }
+  .turn-heading h2 { font-size:29px; }
+  .turn-card>p { font-size:16px; }
+  .section-heading h2 { font-size:22px; }
+  .blooms-caption { font-size:13px; }
+  .bloom-display p { font-size:17px; }
+  .move-history li { font-size:17px; line-height:36px; padding:0 2px; }
+  .move-history li.history-empty { font-size:17px; }
+  .footer { font-size:12px; }
+  .footer>div>span { font-size:15px; }
+  .modal h2 { font-size:30px; }
+  .modal>p:not(.eyebrow) { font-size:17px; }
+  .result-stats span { font-size:11px; }
+}
+@media(max-width:370px) {
+  .brand { font-size:24px; gap:4px; }
+  .brand strong { font-size:11px; }
+  .brand-mark { width:19px; }
+  .header-actions { gap:1px; }
+  .header-actions .sound-button { font-size:12px; }
+  .scene-topline { font-size:10px; }
+  .scene-controls button { font-size:12px; }
+  .invitation h1 { font-size:29px; }
+}

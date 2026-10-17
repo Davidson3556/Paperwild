@@ -2,6 +2,18 @@
 
 First build verification: October 17, 2026 (Africa/Lagos).
 
+## Child's pencil-page interface — October 17, 2026
+
+- Replaced the formal typography and panel treatment with Schoolbell/Gloria handwriting, individually tilted coloured title letters, hand-pencilled circles/frames, and lighter paper. Informal annotations replace the tiny editorial labels; conventional chess labels and control accessible names remain available.
+- Grid lines now use independent, wavering graphite passes with pressure gaps and small overshoots. Dark squares contain uneven coloured-pencil strokes and partial scribbles. Nominal square geometry, piece positions, and pointer targets remain unchanged.
+- A one-time grid reveal draws the 18 primary pencil lines over 1.315 seconds. It stays outside the movement lock, pauses when hidden, skips reduced motion, and restores the normal grid if interrupted. Chrome observed all 18 strokes actively drawing immediately after reload and zero unfinished strokes after a move.
+- Added naive sun/star/heart/daisy doodles and roughened the existing margin residents. Desktop illustrations were repositioned away from the header and game controls.
+- Chrome at 1440 × 1000 loaded both new fonts and all 64 semantic squares. Actual pointer e2–e4 exposed the legal destination, committed once, and received one computer reply (`Nc6`); Sound on remained available. The character guide displayed all six role images.
+- Chrome at 390 × 844 supported pointer d2–d4 and one computer reply (`Nf6`), with readable Moonlight/rain controls and no horizontal page overflow. At 320 × 740 the study dialog and close control remained usable with document width 320 px.
+- The README still image and movement GIF were replaced with actual captures of the new interface, including the pencil reveal, pawn walk, and computer hare reply.
+
+This is a visual revision. The existing 24-test suite covers game, audio lifecycle, and movement invariants; it is not a claim of additional cloud or cross-browser acceptance coverage.
+
 ## Character movement and sound — October 17, 2026
 
 - Added six motion plans with anticipation, articulated limbs/ears/wings/tails, grounded steps, leap arcs, and landing effects. Character motion and audio share contact timing. Actual movement and capture departure settle before another board move; undo/reset intentionally interrupt and cancel stale feedback.
