@@ -2,21 +2,78 @@ import * as THREE from 'three';
 import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
+import type { Chess } from 'chess.js';
+import type { Capture, Color, PieceSymbol, Square } from './game.ts';
+import { createWildlife } from './wildlife.ts';
+import type { Creature, Weather } from './wildlife.ts';
+
+export type CreatureName = Creature;
+export type { Weather } from './wildlife.ts';
+
+type Vec2 = [number, number];
+type Vec3 = [number, number, number];
+type BoardState = ReturnType<Chess['board']>;
+type Botanical = 'fern' | 'rubber' | 'flowers' | 'lavender';
+type MarkerKind = 'selected' | 'check' | 'last' | 'legal';
+export type Atmosphere = 'day' | 'dusk';
+export type View = 'perspective' | 'overhead';
+
+interface Timing { group: THREE.Object3D; start: number; duration: number }
+type Animation =
+  | Timing & { kind: 'move'; from: THREE.Vector3; to: THREE.Vector3; knight: boolean }
+  | Timing & { kind: 'seed'; from: THREE.Vector3; to: THREE.Vector3 }
+  | Timing & { kind: 'remove' | 'appear' | 'bloom' };
+
+export interface LastMove { from: string; to: string; promotion?: string }
+export interface SyncOptions {
+  board?: BoardState;
+  selected?: Square | null;
+  legal?: (string | { to: string })[];
+  lastMove?: LastMove | null;
+  captures?: readonly Capture[];
+  checkSquare?: Square | null;
+  animate?: boolean;
+}
+export interface ConservatoryOptions {
+  onSquare?: (square: Square) => void;
+  onCreature?: (creature: CreatureName) => void;
+  onReady?: () => void;
+  reducedMotion?: boolean;
+}
+export interface SquareProjection {
+  x: number; y: number; width: number; height: number;
+  points: { x: number; y: number }[];
+  centerX: number; centerY: number;
+}
+export interface Conservatory {
+  sync(options?: SyncOptions): void;
+  setAtmosphere(mode: Atmosphere): void;
+  setWeather(weather: Weather): void;
+  greetResident(): CreatureName;
+  setReducedMotion(value: boolean): void;
+  setView(view: View): void;
+  projectSquare(square: Square): SquareProjection;
+  pickSquare(clientX: number, clientY: number): Square | null;
+  resize(): void;
+  destroy(): void;
+}
 
 // All of the artwork in the conservatory is modeled here. No external assets are
 // required: porcelain, turned walnut, leaves, flowers, glass, and brass are native geometry.
 const BOARD_Y = 0.235;
 const FILES = 'abcdefgh';
 const COLORS = { cream: 0xf4efe2, ivory: 0xe6dcc4, spruce: 0x163c32, brass: 0xb39155 };
-const ease = t => 1 - (1 - t) ** 3;
-const clamp = (n, a, b) => Math.max(a, Math.min(b, n));
-const squarePosition = square => new THREE.Vector3(FILES.indexOf(square[0]) - 3.5, BOARD_Y, 4.5 - Number(square[1]));
-const seeded = seed => { let n = seed; return () => { n = (n * 1664525 + 1013904223) >>> 0; return n / 4294967296; }; };
+const ease = (t: number) => 1 - (1 - t) ** 3;
+const clamp = (n: number, a: number, b: number) => Math.max(a, Math.min(b, n));
+const squarePosition = (square: string) => new THREE.Vector3(FILES.indexOf(square[0]) - 3.5, BOARD_Y, 4.5 - Number(square[1]));
+const seeded = (seed: number) => { let n = seed; return () => { n = (n * 1664525 + 1013904223) >>> 0; return n / 4294967296; }; };
 
-function canvasTexture(width, height, draw) {
+function canvasTexture(width: number, height: number, draw: (ctx: CanvasRenderingContext2D, w: number, h: number) => void) {
   const canvas = document.createElement('canvas');
   canvas.width = width; canvas.height = height;
-  draw(canvas.getContext('2d'), width, height);
+  const context = canvas.getContext('2d');
+  if (!context) throw new Error('Canvas 2D is unavailable.');
+  draw(context, width, height);
   const texture = new THREE.CanvasTexture(canvas);
   texture.colorSpace = THREE.SRGBColorSpace;
   texture.anisotropy = 4;
@@ -38,7 +95,7 @@ function woodTexture() {
   });
 }
 
-function tileTexture(dark) {
+function tileTexture(dark: boolean) {
   return canvasTexture(128, 128, (ctx, w, h) => {
     ctx.fillStyle = dark ? '#6c8c77' : '#e8e1ce'; ctx.fillRect(0, 0, w, h);
     const rand = seeded(dark ? 80 : 69);
@@ -60,7 +117,7 @@ function radialTexture() {
   });
 }
 
-export function createConservatory(container, { onSquare, onReady, reducedMotion = false } = {}) {
+export function createConservatory(container: HTMLElement, { onSquare, onCreature, onReady, reducedMotion = false }: ConservatoryOptions = {}): Conservatory {
   const scene = new THREE.Scene();
   const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: 'high-performance' });
   renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.75));
@@ -77,8 +134,8 @@ export function createConservatory(container, { onSquare, onReady, reducedMotion
 
   const camera = new THREE.PerspectiveCamera(36, 1, .1, 100);
   const target = new THREE.Vector3(0, .10, .05);
-  let view = 'perspective';
-  let width = 1, height = 1, stopped = false, frame = 0, mode = 'day';
+  let view: View = 'perspective';
+  let width = 1, height = 1, stopped = false, frame = 0, mode = 'day', weather: Weather = 'clear';
   let lastTime = performance.now(), elapsed = 0;
   const pmrem = new THREE.PMREMGenerator(renderer);
   const room = new RoomEnvironment();
@@ -120,60 +177,60 @@ export function createConservatory(container, { onSquare, onReady, reducedMotion
     tile: new RoundedBoxGeometry(.981, .145, .981, 2, .025),
   };
   const contact = radialTexture();
-  const pieceGroups = new Map();
-  const raycastTiles = [];
-  const animations = [];
-  const swaying = [];
-  const transient = [];
+  const pieceGroups = new Map<string, THREE.Group>();
+  const raycastTiles: THREE.Mesh[] = [];
+  const animations: Animation[] = [];
+  const swaying: { group: THREE.Group; phase: number; amount: number }[] = [];
 
-  function mesh(geometry, material, parent, x = 0, y = 0, z = 0, shadow = true) {
+  function mesh(geometry: THREE.BufferGeometry, material: THREE.Material, parent: THREE.Object3D, x = 0, y = 0, z = 0, shadow = true) {
     const m = new THREE.Mesh(geometry, material);
     m.position.set(x, y, z); m.castShadow = shadow; m.receiveShadow = shadow;
     parent.add(m); return m;
   }
-  function box(parent, sx, sy, sz, x, y, z, material, radius = 0) {
+  function box(parent: THREE.Object3D, sx: number, sy: number, sz: number, x: number, y: number, z: number, material: THREE.Material, radius = 0) {
     return mesh(radius ? new RoundedBoxGeometry(sx, sy, sz, 2, radius) : new THREE.BoxGeometry(sx, sy, sz), material, parent, x, y, z);
   }
-  function sphere(parent, r, x, y, z, material, scale) {
+  function sphere(parent: THREE.Object3D, r: number, x: number, y: number, z: number, material: THREE.Material, scale?: Vec3) {
     const m = mesh(geometries.sphere, material, parent, x, y, z);
     m.scale.set(r, r, r); if (scale) m.scale.multiply(new THREE.Vector3(...scale)); return m;
   }
-  function lathe(parent, points, material, segments = 40) {
+  function lathe(parent: THREE.Object3D, points: Vec2[], material: THREE.Material, segments = 40) {
     return mesh(new THREE.LatheGeometry(points.map(p => new THREE.Vector2(...p)), segments), material, parent);
   }
-  function ring(parent, radius, tube, y, material = materials.brass) {
+  function ring(parent: THREE.Object3D, radius: number, tube: number, y: number, material: THREE.Material = materials.brass) {
     const m = mesh(new THREE.TorusGeometry(radius, tube, 8, 48), material, parent, 0, y, 0);
     m.rotation.x = Math.PI / 2; return m;
   }
-  function tube(parent, points, radius, material, segments = 24) {
+  function tube(parent: THREE.Object3D, points: Vec3[], radius: number, material: THREE.Material, segments = 24) {
     return mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(points.map(p => new THREE.Vector3(...p))), segments, radius, 6, false), material, parent);
   }
-  function leaf(parent, x, y, z, length, angle, material = materials.leaf, tilt = 0) {
+  function leaf(parent: THREE.Object3D, x: number, y: number, z: number, length: number, angle: number, material: THREE.Material = materials.leaf, tilt = 0) {
     const m = mesh(geometries.leaf, material, parent, x, y, z);
     m.scale.set(length * .35, length, length * .085);
     m.rotation.set(tilt, angle * .3, angle); return m;
   }
-  function shadow(parent, size, y, opacity = .5) {
+  function shadow(parent: THREE.Object3D, size: number, y: number, opacity = .5) {
     const material = new THREE.MeshBasicMaterial({ map: contact, transparent: true, opacity, depthWrite: false });
     const m = mesh(new THREE.PlaneGeometry(size, size), material, parent, 0, y, 0, false);
     m.rotation.x = -Math.PI / 2; return m;
   }
   // Bake the small sculptural details into one draw call per glaze. This keeps
   // the diorama light enough for mobile without simplifying its silhouettes.
-  function batchSculpture(group) {
+  function batchSculpture(group: THREE.Object3D) {
     group.updateMatrixWorld(true);
     const inverse = group.matrixWorld.clone().invert();
-    const batches = new Map();
-    const originals = [];
+    const batches = new Map<THREE.Material, THREE.BufferGeometry[]>();
+    const originals: THREE.Mesh[] = [];
     group.traverse(object => {
-      if (!object.isMesh || !object.geometry || Array.isArray(object.material)) return;
-      const key = object.material;
-      if (!batches.has(key)) batches.set(key, []);
+      if (!(object instanceof THREE.Mesh) || !object.geometry || Array.isArray(object.material)) return;
+      const key: THREE.Material = object.material;
+      let parts = batches.get(key);
+      if (!parts) batches.set(key, parts = []);
       const geometry = object.geometry.index ? object.geometry.toNonIndexed() : object.geometry.clone();
       geometry.applyMatrix4(new THREE.Matrix4().multiplyMatrices(inverse, object.matrixWorld));
-      batches.get(key).push(geometry); originals.push(object);
+      parts.push(geometry); originals.push(object);
     });
-    const shared = new Set(Object.values(geometries));
+    const shared = new Set<THREE.BufferGeometry>(Object.values(geometries));
     for (const original of originals) {
       original.removeFromParent();
       if (!shared.has(original.geometry)) original.geometry.dispose();
@@ -183,10 +240,10 @@ export function createConservatory(container, { onSquare, onReady, reducedMotion
       parts.forEach(part => part.dispose());
       if (!geometry) continue;
       const combined = mesh(geometry, material, group);
-      if (material.map === contact) { combined.castShadow = false; combined.receiveShadow = false; }
+      if ('map' in material && material.map === contact) { combined.castShadow = false; combined.receiveShadow = false; }
     }
   }
-  function label(text, size, color = '#2b4234') {
+  function label(text: string, size: number, color = '#2b4234') {
     const texture = canvasTexture(96, 96, (ctx, w, h) => {
       ctx.fillStyle = color; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
       ctx.font = '500 56px Georgia, serif'; ctx.fillText(text, w / 2, h / 2 + 1);
@@ -204,7 +261,7 @@ export function createConservatory(container, { onSquare, onReady, reducedMotion
   sun.shadow.bias = -.00032; sun.shadow.normalBias = .025; sun.shadow.radius = 3;
   lighting.add(sun);
   const fill = new THREE.DirectionalLight(0xe0ede4, .78); fill.position.set(5, 6, -7); lighting.add(fill);
-  const lanternLights = [];
+  const lanternLights: THREE.PointLight[] = [];
 
   // The cabinet is built like a small heirloom chess table: inset ceramic tiles,
   // a brass fillet, rounded walnut sides, and small turned feet.
@@ -226,8 +283,8 @@ export function createConservatory(container, { onSquare, onReady, reducedMotion
   }
   for (const x of [-4.584, 4.584]) box(cabinet, .012, .014, 8.82, x, -.17, 0, materials.brass);
   // A cabinetmaker's small oval emblem on the front apron.
-  const plaque = sphere(cabinet, 1, 0, -.11, 4.594, materials.brass, [.32, .11, .014]);
-  const plaqueInset = sphere(cabinet, 1, 0, -.11, 4.612, materials.spruce, [.265, .071, .008]);
+  sphere(cabinet, 1, 0, -.11, 4.594, materials.brass, [.32, .11, .014]);
+  sphere(cabinet, 1, 0, -.11, 4.612, materials.spruce, [.265, .071, .008]);
   for (const x of [-.31, .31]) sphere(cabinet, .014, x, -.11, 4.615, materials.darkBrass);
   leaf(cabinet, -.035, -.11, 4.625, .039, -.6, materials.brass);
   leaf(cabinet, .035, -.11, 4.625, .039, .6, materials.brass);
@@ -248,13 +305,13 @@ export function createConservatory(container, { onSquare, onReady, reducedMotion
     const corner = new THREE.Group(); corner.position.set(x, .185, z); cabinet.add(corner);
     const ornament = new THREE.Mesh(new THREE.TorusGeometry(.115, .008, 5, 24), materials.brass);
     ornament.rotation.x = -Math.PI / 2; corner.add(ornament);
-    const dot = sphere(corner, .026, 0, .003, 0, materials.brass, [1, .25, 1]);
+    sphere(corner, .026, 0, .003, 0, materials.brass, [1, .25, 1]);
   }
   const floor = new THREE.Mesh(new THREE.PlaneGeometry(60, 60), new THREE.ShadowMaterial({ opacity: .16 }));
   floor.rotation.x = -Math.PI / 2; floor.position.y = -.66; floor.receiveShadow = true; scene.add(floor);
   const broadShadow = shadow(scene, 13.5, -.657, .4); broadShadow.scale.z = .87;
 
-  function makePiece(type, color) {
+  function makePiece(type: PieceSymbol, color: Color) {
     const group = new THREE.Group();
     const porcelain = color === 'w' ? materials.ivory : materials.spruce;
     const detail = color === 'w' ? materials.ivoryDetail : materials.spruceDetail;
@@ -270,7 +327,7 @@ export function createConservatory(container, { onSquare, onReady, reducedMotion
     } else if (type === 'r') {
       lathe(group, [[0, .18], [.245, .18], [.227, .24], [.17, .31], [.17, .72], [.225, .77], [.255, .8], [.255, .91], [0, .91]], porcelain);
       ring(group, .224, .011, .782);
-      const top = mesh(new THREE.CylinderGeometry(.208, .208, .025, 32), detail, group, 0, .935, 0);
+      mesh(new THREE.CylinderGeometry(.208, .208, .025, 32), detail, group, 0, .935, 0);
       for (let i = 0; i < 6; i++) {
         const angle = i * Math.PI / 3;
         const battlement = box(group, .15, .17, .13, Math.sin(angle) * .213, .987, Math.cos(angle) * .213, porcelain, .016);
@@ -289,7 +346,7 @@ export function createConservatory(container, { onSquare, onReady, reducedMotion
       shape.quadraticCurveTo(-.34, .78, -.29, .57);
       shape.quadraticCurveTo(-.21, .27, -.25, 0);
       const geo = new THREE.ExtrudeGeometry(shape, { depth: .22, steps: 1, bevelEnabled: true, bevelThickness: .04, bevelSize: .035, bevelSegments: 3, curveSegments: 10 });
-      const horse = mesh(geo, porcelain, group, 0, .32, -.11);
+      mesh(geo, porcelain, group, 0, .32, -.11);
       for (const side of [-1, 1]) {
         sphere(group, .021, .095, 1.19, side * .153, materials.brass);
         sphere(group, .009, .25, 1.035, side * .148, detail);
@@ -302,7 +359,7 @@ export function createConservatory(container, { onSquare, onReady, reducedMotion
     } else if (type === 'b') {
       lathe(group, [[0, .18], [.24, .18], [.21, .26], [.14, .39], [.102, .74], [.155, .82], [.215, .85], [.215, .895], [.165, .93], [.12, .965], [0, .965]], porcelain);
       ring(group, .20, .01, .87);
-      const mitre = lathe(group, [[0, .94], [.10, .94], [.18, 1.01], [.198, 1.12], [.16, 1.24], [.07, 1.37], [0, 1.43]], porcelain);
+      lathe(group, [[0, .94], [.10, .94], [.18, 1.01], [.198, 1.12], [.16, 1.24], [.07, 1.37], [0, 1.43]], porcelain);
       // The mitre's diagonal incision is recessed into the glazed front and back.
       for (const side of [-1, 1]) {
         const notch = box(group, .038, .225, .024, .032, 1.231, side * .137, color === 'w' ? materials.spruce : materials.ivoryDetail, .008);
@@ -339,14 +396,14 @@ export function createConservatory(container, { onSquare, onReady, reducedMotion
       leaf(group, .038, y + .045, z + .005, .039, .8, materials.brass);
     }
     batchSculpture(group);
-    group.traverse(child => { if (child.isMesh) child.userData.pieceRoot = group; });
+    group.traverse(child => { if (child instanceof THREE.Mesh) child.userData.pieceRoot = group; });
     return group;
   }
 
   // The surrounding collection is intentionally botanical, with different leaf
   // silhouettes and ceramic planters rather than repeated identical shrubs.
   const garden = new THREE.Group(); scene.add(garden);
-  function pot(parent, x, z, scale = 1, material = materials.terracotta) {
+  function pot(parent: THREE.Object3D, x: number, z: number, scale = 1, material: THREE.Material = materials.terracotta) {
     const group = new THREE.Group(); group.position.set(x, -.61, z); group.scale.setScalar(scale); parent.add(group);
     lathe(group, [[0, 0], [.24, 0], [.265, .045], [.30, .45], [.325, .49], [.327, .55], [.272, .55], [.267, .49], [.23, .13], [0, .13]], material, 32);
     ring(group, .308, .018, .49, material);
@@ -354,15 +411,15 @@ export function createConservatory(container, { onSquare, onReady, reducedMotion
     shadow(group, .95, .012, .4);
     return group;
   }
-  function stalk(parent, endpoint, bending = .12, color = materials.leafDark) {
+  function stalk(parent: THREE.Object3D, endpoint: Vec3, bending = .12, color: THREE.Material = materials.leafDark) {
     return tube(parent, [[0, .49, 0], [endpoint[0] * .5 + bending, endpoint[1] * .7, endpoint[2] * .5], endpoint], .012, color, 12);
   }
-  function botanical(parent, type, seed) {
+  function botanical(parent: THREE.Object3D, type: Botanical, seed: number) {
     const rand = seeded(seed);
     if (type === 'fern') {
       for (let j = 0; j < 7; j++) {
         const a = j / 7 * Math.PI * 2 + rand() * .3;
-        const tip = [.6 * Math.sin(a), 1.22 + rand() * .28, .6 * Math.cos(a)];
+        const tip: Vec3 = [.6 * Math.sin(a), 1.22 + rand() * .28, .6 * Math.cos(a)];
         stalk(parent, tip, 0);
         for (let i = 1; i < 7; i++) {
           const t = i / 7;
@@ -378,7 +435,7 @@ export function createConservatory(container, { onSquare, onReady, reducedMotion
     } else if (type === 'rubber') {
       for (let j = 0; j < 6; j++) {
         const a = j * 2.4, h = .9 + j * .105;
-        const tip = [Math.sin(a) * .27, h, Math.cos(a) * .27];
+        const tip: Vec3 = [Math.sin(a) * .27, h, Math.cos(a) * .27];
         stalk(parent, tip, -.05);
         const m = leaf(parent, tip[0] * 1.4, h, tip[2] * 1.4, .31, Math.sin(a) * .6, j % 2 ? materials.leafDark : materials.leaf, .35);
         m.rotation.y = a; m.rotation.x = .5;
@@ -390,7 +447,7 @@ export function createConservatory(container, { onSquare, onReady, reducedMotion
         const h = .9 + rand() * .53;
         const x = Math.sin(a) * (.15 + rand() * .23), z = Math.cos(a) * (.15 + rand() * .23);
         stalk(parent, [x, h, z], .03);
-        const lm = leaf(parent, x * .5 + .055, h * .66, z * .6, .16, .8, materials.leaf, .3);
+        leaf(parent, x * .5 + .055, h * .66, z * .6, .16, .8, materials.leaf, .3);
         flower(parent, x, h, z, .13 + rand() * .025, i % 3 === 0 ? materials.petalIvory : materials.pink, i % 2 ? 6 : 5);
       }
     } else {
@@ -409,7 +466,7 @@ export function createConservatory(container, { onSquare, onReady, reducedMotion
       }
     }
   }
-  function flower(parent, x, y, z, size, material, count = 6) {
+  function flower(parent: THREE.Object3D, x: number, y: number, z: number, size: number, material: THREE.Material, count = 6) {
     const group = new THREE.Group(); group.position.set(x, y, z); group.rotation.x = -.18; parent.add(group);
     for (let p = 0; p < count; p++) {
       const a = p * Math.PI * 2 / count;
@@ -437,17 +494,17 @@ export function createConservatory(container, { onSquare, onReady, reducedMotion
   // Slender arched greenhouse windows rise behind the board without crossing
   // the playing surface. The pale panes cast only a whisper of color.
   const greenhouse = new THREE.Group(); scene.add(greenhouse);
-  const archPoints = [];
+  const archPoints: Vec3[] = [];
   for (let i = 0; i <= 40; i++) {
     const t = i / 40 * Math.PI;
     archPoints.push([-4.77 * Math.cos(t), -.53 + 2.85 * Math.sin(t), -4.96]);
   }
   tube(greenhouse, archPoints, .029, materials.brass, 60);
-  tube(greenhouse, archPoints.map(([x, y, z]) => [x * .978, y - .075, z]), .012, materials.brass, 60);
+  tube(greenhouse, archPoints.map(([x, y, z]): Vec3 => [x * .978, y - .075, z]), .012, materials.brass, 60);
   // A second arch and delicate glazed roof ribs give the glasshouse real depth.
-  const backArch = archPoints.map(([x, y]) => [x * 1.025, y + .13, -5.62]);
+  const backArch = archPoints.map(([x, y]): Vec3 => [x * 1.025, y + .13, -5.62]);
   tube(greenhouse, backArch, .023, materials.brass, 60);
-  const roofVertices = [];
+  const roofVertices: number[] = [];
   for (let i = 0; i < archPoints.length - 1; i++) {
     roofVertices.push(...archPoints[i], ...archPoints[i + 1], ...backArch[i + 1], ...archPoints[i], ...backArch[i + 1], ...backArch[i]);
   }
@@ -468,7 +525,7 @@ export function createConservatory(container, { onSquare, onReady, reducedMotion
   const archShape = new THREE.Shape(); archShape.moveTo(-4.74, -.53);
   for (let i = 0; i <= 40; i++) { const t = i / 40 * Math.PI; archShape.lineTo(-4.74 * Math.cos(t), -.53 + 2.81 * Math.sin(t)); }
   archShape.lineTo(-4.74, -.53);
-  const windowPane = mesh(new THREE.ShapeGeometry(archShape), materials.glass, greenhouse, 0, 0, -4.974, false);
+  mesh(new THREE.ShapeGeometry(archShape), materials.glass, greenhouse, 0, 0, -4.974, false);
   for (const x of [-4.77, 4.77]) {
     sphere(greenhouse, .073, x, -.43, -4.96, materials.brass);
     box(greenhouse, .24, .08, .32, x, -.59, -4.96, materials.darkBrass, .02);
@@ -476,7 +533,7 @@ export function createConservatory(container, { onSquare, onReady, reducedMotion
   // Vines climb the outer uprights and stop short of the central view.
   for (const sign of [-1, 1]) {
     const vine = new THREE.Group(); greenhouse.add(vine);
-    const pts = [];
+    const pts: Vec3[] = [];
     for (let i = 0; i < 15; i++) {
       const a = i / 14 * .7;
       const x = sign * (4.77 * Math.cos(a) + Math.sin(i * 1.7) * .055);
@@ -489,9 +546,10 @@ export function createConservatory(container, { onSquare, onReady, reducedMotion
       if (i === 8 || i === 12) flower(vine, x, y, -4.84, .09, materials.petalIvory, 5);
     }
     tube(vine, pts, .013, materials.leafDark, 24);
+    swaying.push({ group: vine, phase: sign < 0 ? .7 : 3.1, amount: .0018 });
   }
   // Hanging lanterns become small pools of candlelight in the evening.
-  function lantern(x, y, z) {
+  function lantern(x: number, y: number, z: number) {
     const group = new THREE.Group(); group.position.set(x, y, z); greenhouse.add(group);
     tube(group, [[0, .4, 0], [0, .56, 0], [.09, .62, 0], [.16, .55, 0]], .012, materials.darkBrass, 8);
     box(group, .28, .035, .28, 0, 0, 0, materials.brass, .018);
@@ -503,15 +561,16 @@ export function createConservatory(container, { onSquare, onReady, reducedMotion
   }
   lantern(-4.0, .8, -4.7); lantern(4.0, .8, -4.7);
   for (const sign of [-1, 1]) {
+    const suspension = new THREE.Group(); suspension.position.set(sign * 3.56, 1.50, -5.45); greenhouse.add(suspension);
     const hanging = new THREE.Group();
-    hanging.position.set(sign * 3.56, .52, -5.45); greenhouse.add(hanging);
+    hanging.position.set(0, -.98, 0); suspension.add(hanging);
     lathe(hanging, [[0, 0], [.12, 0], [.16, .06], [.19, .25], [.195, .29], [.16, .29], [.13, .08], [0, .08]], sign < 0 ? materials.terracotta : materials.glazedPot, 24);
     mesh(new THREE.CylinderGeometry(.16, .16, .015, 20), materials.soil, hanging, 0, .264, 0);
     ring(hanging, .187, .012, .26, materials.brass);
     for (let j = 0; j < 3; j++) {
       const a = j * Math.PI * 2 / 3;
       tube(hanging, [[Math.sin(a) * .18, .26, Math.cos(a) * .18], [0, .98, 0]], .006, materials.brass, 2);
-      const vine = [];
+      const vine: Vec3[] = [];
       for (let i = 0; i < 9; i++) {
         const x = Math.sin(a) * .17 + Math.sin(i * .8 + a) * .055;
         const z = Math.cos(a) * .17 + Math.cos(i * .9 + a) * .05;
@@ -523,14 +582,15 @@ export function createConservatory(container, { onSquare, onReady, reducedMotion
       tube(hanging, vine, .007, materials.leaf, 12);
     }
     batchSculpture(hanging);
+    swaying.push({ group: suspension, phase: sign < 0 ? 1.8 : 4.9, amount: .035 });
   }
 
   const captureGarden = new THREE.Group(); scene.add(captureGarden);
   let captureCount = -1;
   let captureKey = '';
-  function updateCaptureGarden(captures, lastMove, animate) {
-    const count = Array.isArray(captures) ? captures.length : typeof captures === 'number' ? captures : Object.values(captures || {}).reduce((sum, value) => sum + (Array.isArray(value) ? value.length : 0), 0);
-    const key = Array.isArray(captures) ? captures.map(c => `${c.color}${c.type}${c.by}${c.moveNumber}`).join('|') : String(count);
+  function updateCaptureGarden(captures: readonly Capture[], lastMove: LastMove | null, animate: boolean) {
+    const count = captures.length;
+    const key = captures.map(c => `${c.color}${c.type}${c.by}${c.moveNumber}`).join('|');
     if (count === captureCount && key === captureKey) return;
     const previousCount = captureCount;
     captureCount = count; captureKey = key;
@@ -542,18 +602,18 @@ export function createConservatory(container, { onSquare, onReady, reducedMotion
     }
     while (captureGarden.children.length) {
       const child = captureGarden.children[0]; captureGarden.remove(child);
-      child.traverse(obj => { if (obj.geometry && !Object.values(geometries).includes(obj.geometry)) obj.geometry.dispose(); });
+      child.traverse(obj => { if (obj instanceof THREE.Mesh && !Object.values<THREE.BufferGeometry>(geometries).includes(obj.geometry)) obj.geometry.dispose(); });
     }
     const sides = { left: 0, right: 0 };
     for (let i = 0; i < Math.min(count, 30); i++) {
-      const captured = Array.isArray(captures) ? captures[i] : {};
+      const captured = captures[i];
       const fingerprint = `${captured.color}${captured.type}${captured.by}${captured.moveNumber}${i}`;
       const random = seeded([...fingerprint].reduce((sum, char) => sum * 31 + char.charCodeAt(0), 17) >>> 0);
-      const side = captured?.color ? captured.color === 'w' ? -1 : 1 : i % 2 ? 1 : -1;
+      const side = captured.color === 'w' ? -1 : 1;
       const n = side < 0 ? sides.left++ : sides.right++;
       const x = side * (4.8 + (n % 3) * .19 + random() * .08), z = -1.05 + Math.floor(n / 3) * .39 + random() * .12;
       const stem = new THREE.Group(); stem.position.set(x, -.62, z); captureGarden.add(stem);
-      const significance = ({ p: 0, n: 1, b: 1.5, r: 2, q: 3 })[captured?.type] || 0;
+      const significance = ({ p: 0, n: 1, b: 1.5, r: 2, q: 3, k: 0 })[captured.type];
       const h = .29 + significance * .055 + random() * .15;
       tube(stem, [[0, 0, 0], [.035, h * .5, 0], [0, h, 0]], .008, materials.leaf, 5);
       const palette = side < 0 ? [materials.peach, materials.petalIvory] : [materials.pink, materials.lavender];
@@ -563,6 +623,7 @@ export function createConservatory(container, { onSquare, onReady, reducedMotion
       if (animate && previousCount >= 0 && i >= previousCount) {
         stem.scale.setScalar(.001);
         animations.push({ group: stem, start: elapsed + .42, duration: .85, kind: 'bloom' });
+        if (i === count - 1) wildlife.onCapture(x, -.62 + h, z, elapsed);
         if (lastMove?.to) {
           const seed = new THREE.Group();
           sphere(seed, .053, 0, 0, 0, materials.brass, [.7, 1.4, .7]);
@@ -582,8 +643,8 @@ export function createConservatory(container, { onSquare, onReady, reducedMotion
   const legalMaterial = new THREE.MeshBasicMaterial({ color: 0x375b44, transparent: true, opacity: .48, depthWrite: false });
   const captureMaterial = new THREE.MeshBasicMaterial({ color: 0xc59653, transparent: true, opacity: .82, depthWrite: false });
   const checkMaterial = new THREE.MeshBasicMaterial({ color: 0xbf6b57, transparent: true, opacity: .42, depthWrite: false });
-  function marker(square, kind, occupied = false) {
-    const p = squarePosition(square); let geometry, material;
+  function marker(square: string, kind: MarkerKind, occupied = false) {
+    const p = squarePosition(square); let geometry: THREE.BufferGeometry, material: THREE.Material;
     if (kind === 'selected') { geometry = new THREE.RingGeometry(.374, .403, 56); material = selectedMaterial; }
     else if (kind === 'check') { geometry = new THREE.PlaneGeometry(.94, .94); material = checkMaterial; }
     else if (kind === 'last') { geometry = new THREE.PlaneGeometry(.945, .945); material = moveMaterial; }
@@ -592,44 +653,38 @@ export function createConservatory(container, { onSquare, onReady, reducedMotion
     indicators.add(m); return m;
   }
   function clearIndicators() {
-    while (indicators.children.length) { const child = indicators.children[0]; indicators.remove(child); child.geometry.dispose(); }
+    while (indicators.children.length) { const child = indicators.children[0] as THREE.Mesh; indicators.remove(child); child.geometry.dispose(); }
   }
 
-  // Floating pollen is barely perceptible in daylight, and catches the lantern
-  // light at dusk. A single butterfly visits the far edge of the conservatory.
+  // Dust floats through shifting sunlight; actual residents have places to go,
+  // flowers to visit, a border to explore, and a sheltered evening home.
   const pollenGeometry = new THREE.BufferGeometry();
-  const pollenPositions = new Float32Array(45 * 3); const pollenBase = [];
+  const pollenPositions = new Float32Array(45 * 3); const pollenBase: Vec3[] = [];
   const rand = seeded(153);
   for (let i = 0; i < 45; i++) {
-    const p = [(rand() - .5) * 11, .3 + rand() * 3.6, (rand() - .5) * 10];
+    const p: Vec3 = [(rand() - .5) * 11, .3 + rand() * 3.6, (rand() - .5) * 10];
     pollenBase.push(p); pollenPositions.set(p, i * 3);
   }
   pollenGeometry.setAttribute('position', new THREE.BufferAttribute(pollenPositions, 3));
   const pollenMaterial = new THREE.PointsMaterial({ color: 0xcfb778, size: .026, transparent: true, opacity: .46, depthWrite: false, sizeAttenuation: true });
   const pollen = new THREE.Points(pollenGeometry, pollenMaterial); scene.add(pollen);
-  const butterfly = new THREE.Group(); butterfly.position.set(-4.8, 1.7, -2.8); scene.add(butterfly);
-  const wings = [];
-  for (const sign of [-1, 1]) {
-    const wing = new THREE.Group(); butterfly.add(wing); wings.push({ wing, sign });
-    const upper = sphere(wing, 1, sign * .085, .025, 0, materials.peach, [.10, .018, .145]);
-    upper.rotation.y = sign * -.35;
-    sphere(wing, 1, sign * .063, .02, .11, materials.pollen, [.074, .012, .085]);
-    sphere(wing, .025, sign * .1, .044, -.02, materials.darkBrass, [1, .2, 1]);
-  }
-  sphere(butterfly, 1, 0, .02, .03, materials.darkBrass, [.013, .018, .16]);
+  const wildlife = createWildlife(scene);
+  wildlife.setMood(false, weather, elapsed, reducedMotion);
+  wildlife.update(elapsed, reducedMotion);
+  let nextResident = 0;
 
   let boardSignature = '';
-  function sync({ board = [], selected = null, legal = [], lastMove = null, captures = [], checkSquare = null, animate = true } = {}) {
-    const entries = board.flat().filter(Boolean);
-    const desired = new Map(entries.map(piece => [piece.square, piece]));
+  function sync({ board = [], selected = null, legal = [], lastMove = null, captures = [], checkSquare = null, animate = true }: SyncOptions = {}) {
+    const entries = board.flat().filter(piece => piece !== null);
+    const desired = new Map<string, NonNullable<BoardState[number][number]>>(entries.map(piece => [piece.square, piece]));
     const signature = entries.map(p => `${p.square}${p.color}${p.type}`).sort().join('|');
     const shouldAnimate = animate && !reducedMotion && boardSignature !== '';
     if (signature !== boardSignature) {
       // Follow chess identities rather than recreating every mesh on every move.
-      if (lastMove?.from && lastMove?.to && pieceGroups.has(lastMove.from)) {
-        const moving = pieceGroups.get(lastMove.from);
+      const moving = lastMove?.from && lastMove.to ? pieceGroups.get(lastMove.from) : undefined;
+      if (lastMove && moving) {
         const destination = desired.get(lastMove.to);
-        if (destination?.color === moving.userData.color && (destination.type === moving.userData.type || lastMove.promotion)) {
+        if (destination && destination.color === moving.userData.color && (destination.type === moving.userData.type || lastMove.promotion)) {
           const captured = pieceGroups.get(lastMove.to);
           if (captured && captured !== moving) { pieceGroups.delete(lastMove.to); removePiece(captured, shouldAnimate); }
           pieceGroups.delete(lastMove.from); pieceGroups.set(lastMove.to, moving);
@@ -672,24 +727,24 @@ export function createConservatory(container, { onSquare, onReady, reducedMotion
     updateCaptureGarden(captures, lastMove, shouldAnimate);
     render();
   }
-  function movePiece(group, square, animate) {
+  function movePiece(group: THREE.Group, square: string, animate: boolean) {
     for (let i = animations.length - 1; i >= 0; i--) if (animations[i].group === group) animations.splice(i, 1);
     group.scale.setScalar(1);
     const destination = squarePosition(square);
     if (!animate) { group.position.copy(destination); return; }
     animations.push({ group, from: group.position.clone(), to: destination, start: elapsed, duration: .52, kind: 'move', knight: group.userData.type === 'n' });
   }
-  function removePiece(group, animate) {
+  function removePiece(group: THREE.Group, animate: boolean) {
     for (let i = animations.length - 1; i >= 0; i--) if (animations[i].group === group) animations.splice(i, 1);
     if (!animate) { scene.remove(group); disposePiece(group); return; }
     animations.push({ group, start: elapsed, duration: .28, kind: 'remove' });
   }
-  function disposePiece(group) {
-    const shared = new Set(Object.values(geometries));
+  function disposePiece(group: THREE.Object3D) {
+    const shared = new Set<THREE.BufferGeometry>(Object.values(geometries));
     group.traverse(object => {
-      if (object.isMesh) {
+      if (object instanceof THREE.Mesh) {
         if (!shared.has(object.geometry)) object.geometry.dispose();
-        if (object.material.map === contact) object.material.dispose();
+        if (object.material instanceof THREE.MeshBasicMaterial && object.material.map === contact) object.material.dispose();
       }
     });
   }
@@ -728,7 +783,7 @@ export function createConservatory(container, { onSquare, onReady, reducedMotion
     width = Math.max(1, bounds.width); height = Math.max(1, bounds.height);
     renderer.setSize(width, height, false); updateCamera(); render();
   }
-  function projectSquare(square) {
+  function projectSquare(square: string): SquareProjection {
     const p = squarePosition(square);
     const corners = [[-.5, -.5], [.5, -.5], [.5, .5], [-.5, .5]];
     const points = corners.map(([x, z]) => {
@@ -739,20 +794,28 @@ export function createConservatory(container, { onSquare, onReady, reducedMotion
     const right = Math.max(...points.map(p => p.x)), bottom = Math.max(...points.map(p => p.y));
     return { x, y, width: right - x, height: bottom - y, points, centerX: points.reduce((s, p) => s + p.x, 0) / 4, centerY: points.reduce((s, p) => s + p.y, 0) / 4 };
   }
-  function setAtmosphere(nextMode) {
+  function setAtmosphere(nextMode: Atmosphere) {
     mode = nextMode === 'dusk' ? 'dusk' : 'day';
     const dusk = mode === 'dusk';
+    const rain = weather === 'rain';
     ambient.color.set(dusk ? 0xc5d4ed : 0xfffaeb); ambient.groundColor.set(dusk ? 0x667b86 : 0x879f88); ambient.intensity = dusk ? .95 : 1.45;
-    sun.color.set(dusk ? 0xffb883 : 0xffe7bc); sun.intensity = dusk ? 1.45 : 2.55;
+    sun.color.set(rain ? 0xc3d5df : dusk ? 0xffb883 : 0xffe7bc); sun.intensity = rain ? .75 : dusk ? 1.45 : 2.55;
     fill.color.set(dusk ? 0x9eb7ed : 0xe0ede4); fill.intensity = dusk ? 1.25 : .78;
     scene.environmentIntensity = dusk ? .35 : .43;
     renderer.toneMappingExposure = dusk ? 1.0 : 1.02;
-    materials.lanternGlass.emissiveIntensity = dusk ? 2.8 : .12;
-    lanternLights.forEach(light => { light.intensity = dusk ? 3.2 : 0; });
-    pollenMaterial.color.set(dusk ? 0xffd88f : 0xcfb778); pollenMaterial.opacity = dusk ? .72 : .46;
+    materials.lanternGlass.emissiveIntensity = dusk ? 2.8 : rain ? 1.2 : .12;
+    lanternLights.forEach(light => { light.intensity = dusk ? 3.2 : rain ? 1.2 : 0; });
+    pollenMaterial.color.set(dusk ? 0xffd88f : 0xcfb778); pollenMaterial.opacity = rain ? .08 : dusk ? .55 : .40;
+    wildlife.setMood(dusk, weather, elapsed, reducedMotion); wildlife.update(elapsed, reducedMotion);
     render();
   }
-  function setReducedMotion(value) {
+  function setWeather(nextWeather: Weather) { weather = nextWeather === 'rain' ? 'rain' : 'clear'; setAtmosphere(mode === 'dusk' ? 'dusk' : 'day'); }
+  function greetResident(): CreatureName {
+    const residents: CreatureName[] = ['robin', 'snail', 'butterfly', 'bee'];
+    const resident = residents[nextResident++ % residents.length];
+    wildlife.greet(resident, elapsed, reducedMotion); onCreature?.(resident); render(); return resident;
+  }
+  function setReducedMotion(value: boolean) {
     reducedMotion = !!value;
     if (reducedMotion) {
       cancelAnimationFrame(frame); frame = 0;
@@ -763,38 +826,48 @@ export function createConservatory(container, { onSquare, onReady, reducedMotion
       }
       animations.length = 0;
       swaying.forEach(({ group }) => { group.rotation.z = 0; });
-      wings.forEach(({ wing }) => { wing.rotation.z = 0; });
-    } else if (!frame && !stopped) {
+    } else if (!frame && !stopped && !document.hidden) {
       lastTime = performance.now(); frame = requestAnimationFrame(tick);
     }
+    wildlife.setMood(mode === 'dusk', weather, elapsed, reducedMotion); wildlife.update(elapsed, reducedMotion);
     render();
   }
-  function setView(nextView) { view = nextView === 'overhead' ? 'overhead' : 'perspective'; updateCamera(); render(); }
-  function render() { if (!stopped) renderer.render(scene, camera); }
+  function setView(nextView: View) { view = nextView === 'overhead' ? 'overhead' : 'perspective'; updateCamera(); render(); }
+  function render() { if (!stopped && !document.hidden) renderer.render(scene, camera); }
 
   const raycaster = new THREE.Raycaster();
-  const pointer = new THREE.Vector2(); let pointerDown = null;
-  function squareAt(event) {
+  const pointer = new THREE.Vector2(); let pointerDown: { x: number; y: number } | null = null;
+  function squareAt(event: { clientX: number; clientY: number }): Square | null {
     const bounds = renderer.domElement.getBoundingClientRect();
     pointer.set((event.clientX - bounds.left) / bounds.width * 2 - 1, -(event.clientY - bounds.top) / bounds.height * 2 + 1);
     raycaster.setFromCamera(pointer, camera);
     const hit = raycaster.intersectObjects([...pieceGroups.values(), ...raycastTiles], true)[0];
     return hit?.object.userData.pieceRoot?.userData.square || hit?.object.userData.square || null;
   }
-  function pointerdown(event) { pointerDown = { x: event.clientX, y: event.clientY }; }
-  function pointerup(event) {
+  function pointerdown(event: PointerEvent) { pointerDown = { x: event.clientX, y: event.clientY }; }
+  function pointerup(event: PointerEvent) {
     if (!pointerDown || Math.hypot(event.clientX - pointerDown.x, event.clientY - pointerDown.y) > 8) return;
-    pointerDown = null; const square = squareAt(event); if (square) onSquare?.(square);
+    pointerDown = null; const square = squareAt(event);
+    if (square) onSquare?.(square);
+    else { const resident = wildlife.interact(raycaster, elapsed, reducedMotion); if (resident) onCreature?.(resident); }
   }
-  function pointermove(event) { renderer.domElement.style.cursor = squareAt(event) ? 'pointer' : 'default'; }
+  function pointermove(event: PointerEvent) { renderer.domElement.style.cursor = squareAt(event) || wildlife.atRay(raycaster) ? 'pointer' : 'default'; }
   renderer.domElement.addEventListener('pointerdown', pointerdown);
   renderer.domElement.addEventListener('pointerup', pointerup);
   renderer.domElement.addEventListener('pointermove', pointermove);
   const resizeObserver = new ResizeObserver(resize); resizeObserver.observe(container);
   resize();
+  function visibilitychange() {
+    if (document.hidden) { cancelAnimationFrame(frame); frame = 0; }
+    else if (!stopped) {
+      lastTime = performance.now(); render();
+      if (!frame && !reducedMotion) frame = requestAnimationFrame(tick);
+    }
+  }
+  document.addEventListener('visibilitychange', visibilitychange);
 
-  function tick(time) {
-    if (stopped) return;
+  function tick(time: number) {
+    if (stopped || document.hidden) { frame = 0; return; }
     const dt = Math.min((time - lastTime) / 1000, .06); lastTime = time; elapsed += dt;
     for (let i = animations.length - 1; i >= 0; i--) {
       const a = animations[i], t = clamp((elapsed - a.start) / a.duration, 0, 1), e = ease(t);
@@ -808,34 +881,44 @@ export function createConservatory(container, { onSquare, onReady, reducedMotion
       }
     }
     if (!reducedMotion) {
-      swaying.forEach(({ group, phase, amount }) => { group.rotation.z = Math.sin(elapsed * .7 + phase) * amount; });
+      swaying.forEach(({ group, phase, amount }) => {
+        const breeze = Math.sin(elapsed * .7 + phase) + Math.sin(elapsed * 1.9 + phase * 2.2) * .22;
+        group.rotation.z = breeze * amount * (weather === 'rain' ? 1.7 : 1);
+      });
       for (let i = 0; i < pollenBase.length; i++) {
         const p = pollenBase[i]; pollenPositions[i * 3] = p[0] + Math.sin(elapsed * .22 + i) * .18;
         pollenPositions[i * 3 + 1] = p[1] + Math.sin(elapsed * .3 + i * .8) * .16;
       }
       pollenGeometry.attributes.position.needsUpdate = true;
-      butterfly.position.set(-4.65 + Math.sin(elapsed * .22) * .23, 1.65 + Math.sin(elapsed * .65) * .16, -2.8 + Math.cos(elapsed * .23) * .2);
-      butterfly.rotation.y = -.3 + Math.sin(elapsed * .24) * .6;
-      wings.forEach(({ wing, sign }) => { wing.rotation.z = sign * Math.sin(elapsed * 9) * .65; });
+      wildlife.update(elapsed, false);
+      sun.position.x = -5.5 + Math.sin(elapsed * .045) * .55;
+      sun.position.z = 2.5 + Math.sin(elapsed * .033) * .4;
+      if (mode === 'dusk' || weather === 'rain') {
+        const candle = 1 + Math.sin(elapsed * 6.1) * .025 + Math.sin(elapsed * 9.7) * .018;
+        materials.lanternGlass.emissiveIntensity = (mode === 'dusk' ? 2.8 : 1.2) * candle;
+        lanternLights.forEach((light, i) => { light.intensity = (mode === 'dusk' ? 3.2 : 1.2) * (candle + Math.sin(elapsed * 4.7 + i * 2) * .018); });
+      }
     }
     if (!reducedMotion || animations.length) render();
     frame = !reducedMotion || animations.length ? requestAnimationFrame(tick) : 0;
   }
-  if (!reducedMotion) frame = requestAnimationFrame(tick);
+  if (!reducedMotion && !document.hidden) frame = requestAnimationFrame(tick);
   queueMicrotask(() => { if (!stopped) onReady?.(); });
 
   function destroy() {
     stopped = true; cancelAnimationFrame(frame); resizeObserver.disconnect();
+    document.removeEventListener('visibilitychange', visibilitychange);
     renderer.domElement.removeEventListener('pointerdown', pointerdown);
     renderer.domElement.removeEventListener('pointerup', pointerup);
     renderer.domElement.removeEventListener('pointermove', pointermove);
-    const seenGeometry = new Set(), seenMaterial = new Set(), seenTexture = new Set();
+    const seenGeometry = new Set<THREE.BufferGeometry>(), seenMaterial = new Set<THREE.Material>(), seenTexture = new Set<THREE.Texture>();
     scene.traverse(object => {
-      if (object.geometry && !seenGeometry.has(object.geometry)) { seenGeometry.add(object.geometry); object.geometry.dispose(); }
-      const mats = Array.isArray(object.material) ? object.material : object.material ? [object.material] : [];
+      if (!(object instanceof THREE.Mesh || object instanceof THREE.Points)) return;
+      if (!seenGeometry.has(object.geometry)) { seenGeometry.add(object.geometry); object.geometry.dispose(); }
+      const mats: THREE.Material[] = Array.isArray(object.material) ? object.material : [object.material];
       for (const material of mats) {
         if (seenMaterial.has(material)) continue; seenMaterial.add(material);
-        for (const value of Object.values(material)) if (value?.isTexture && !seenTexture.has(value)) { seenTexture.add(value); value.dispose(); }
+        for (const value of Object.values(material)) if (value instanceof THREE.Texture && !seenTexture.has(value)) { seenTexture.add(value); value.dispose(); }
         material.dispose();
       }
     });
@@ -847,7 +930,7 @@ export function createConservatory(container, { onSquare, onReady, reducedMotion
   }
 
   return {
-    sync, setAtmosphere, setReducedMotion, setView, projectSquare,
+    sync, setAtmosphere, setWeather, greetResident, setReducedMotion, setView, projectSquare,
     pickSquare: (clientX, clientY) => squareAt({ clientX, clientY }),
     resize, destroy,
   };

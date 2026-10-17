@@ -1,5 +1,13 @@
 # TestSprite acceptance plan
 
+## Living-world acceptance additions (not cloud-executed)
+
+- **Residents:** activate Say hello using Enter; assert the observation changes and board pieces, turn, move history, and flower count remain unchanged. Repeat for the four residents. Directly tapping a resident should invoke its matching response.
+- **Weather:** toggle Let it rain / Let it clear; assert aria-pressed, accessible label, saved weather, and reloaded weather agree. Board state must remain unchanged. Visually inspect shelter behavior and rain outside the controls.
+- **Evening:** toggle evening and morning; assert the saved theme and control label. Visually inspect lanterns/fireflies and sleeping/waking residents.
+- **Reduced motion:** enable it; assert the control's pressed state and static consecutive scene frames while legal keyboard chess remains usable. Re-enable motion and inspect resumed movement.
+- **Capture reaction:** start First bloom, activate d5 with Enter, and assert White pawn d5, `exd5`, one captured Black pawn, and one flower. Inspect pollinators visiting the new bloom. Undo must restore both pawns and zero flowers; selection/reload/undo must not create extra capture reactions.
+
 ## Execution status
 
 **A six-case native TestSprite MCP run completed on October 17, 2026.** Its raw result was 2 passed / 4 failed; review of the returned code left all six intended gameplay scenarios inconclusive. The scripts largely check only a nonempty URL, and several fail before reaching their target feature. [The audited run report](TESTSPRITE_RUN_2026-10-17.md) contains the exact per-case portal links, local evidence links, and failure analysis. No product defect was confirmed from this cloud run alone.

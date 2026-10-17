@@ -2,6 +2,23 @@
 
 First build verification: October 17, 2026 (Africa/Lagos).
 
+## Living-world revision — October 17, 2026
+
+Preserved the user's strict TypeScript migration. `npm test` passed all 13 engine tests; `npm run build` passed TypeScript checking and the production build.
+
+Actual Chrome checks at 1440 × 1000 and 390 × 844:
+
+- Robin flight, snail crawling, pollinator movement, shifting shadows, rain, dusk fireflies, and lantern light were inspected in the rendered scene.
+- Both the semantic **Say hello** control (including Enter) and directly tapping the visible robin triggered resident responses without changing chess state.
+- Weather preference and a captured study position survived reopening the page. Undo restored the White pawn on e4, Black pawn on d5, and zero flowers.
+- The first-bloom capture still produced `exd5`, a White pawn on d5, one flower, and a matching garden observation.
+- Mobile document width remained 390 px at a 390 px viewport; weather, study, and resident controls remained available.
+- On the mobile overhead board, e2–e4 produced one computer reply (`Nc6`), then full-turn undo restored White's pawn to e2 and cleared both plies.
+- Reduced motion displayed the correct state and produced byte-identical consecutive full-page screenshots of the static garden.
+- No browser warnings or errors appeared in the observed desktop session.
+
+The wildlife implementation also passed a separate 200-second Three.js simulation with capture interruptions: creature roots stayed outside the playable board, shelter states held, and positions remained static under reduced motion. This is geometry/state evidence, not a substitute for visual QA. No new TestSprite cloud run was requested for this revision; the earlier inconclusive results below remain unchanged.
+
 ## Passed locally
 
 - Production build: `npm run build`.

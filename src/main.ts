@@ -1,6 +1,17 @@
 import './style.css';
-import { createGame, restoreGame, chooseComputerMove, PIECE_NAMES } from './game.js';
-import { createConservatory } from './scene.js';
+import { createGame, restoreGame, chooseComputerMove, isDifficulty, isGameMode, PIECE_NAMES } from './game.ts';
+import type { Color, MoveCoordinates, MoveInput, PieceSymbol, PromotionPiece, Square } from './game.ts';
+import { createConservatory } from './scene.ts';
+import type { Atmosphere, Conservatory, View } from './scene.ts';
+import type { ComputerRequest, ComputerResponse } from './ai.worker.ts';
+import { createAtmosphere } from './atmosphere.ts';
+
+declare global {
+  interface Window { webkitAudioContext?: typeof AudioContext }
+}
+
+interface Preferences { atmosphere: Atmosphere; weather: 'clear' | 'rain'; sound: boolean; view: View; reducedMotion: boolean }
+interface Study { id: string; name: string; label: string; description: string; fen: string; focus: Square }
 
 const leaf = '<svg viewBox="0 0 40 48" fill="none" aria-hidden="true"><path d="M20 43V21M20 33C6 34 4 18 7 11c12 0 17 10 13 22ZM20 27C34 26 37 12 33 5c-12 1-17 11-13 22Z" stroke="currentColor" stroke-width="1.4"/><path d="M12 43h16" stroke="currentColor" stroke-width="1.4"/></svg>';
 const icons = {
@@ -14,38 +25,40 @@ const icons = {
   view: '<path d="m12 3 10 6-10 6L2 9l10-6ZM2 14l10 6 10-6"/>',
   close: '<path d="m6 6 12 12M18 6 6 18"/>',
   download: '<path d="M12 3v12m-5-5 5 5 5-5M4 16v5h16v-5"/>',
+  rain: '<path d="M6 15a4 4 0 0 1-.5-8A6 6 0 0 1 17 6a4.5 4.5 0 0 1 1 9M8 18l-1 3m6-3-1 3m6-3-1 3"/>',
 };
-const icon = (name) => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${icons[name]}</svg>`;
-const glyphs = { w: { k:'♔',q:'♕',r:'♖',b:'♗',n:'♘',p:'♙' }, b: { k:'♚',q:'♛',r:'♜',b:'♝',n:'♞',p:'♟' } };
+const icon = (name: keyof typeof icons) => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${icons[name]}</svg>`;
+const glyphs: Record<Color, Record<PieceSymbol, string>> = { w: { k:'♔',q:'♕',r:'♖',b:'♗',n:'♘',p:'♙' }, b: { k:'♚',q:'♛',r:'♜',b:'♝',n:'♞',p:'♟' } };
 const SAVE_KEY = 'queens-conservatory.game.v1';
 const PREF_KEY = 'queens-conservatory.preferences.v1';
-const studies = [
+const studies: Study[] = [
   { id:'bloom', name:'The first bloom', label:'A lesson in captures', description:'White’s pawn on e4 can capture the pawn on d5. Watch what happens in the garden.', fen:'rnbqkbnr/ppp1pppp/8/3p4/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 0 2', focus:'e4' },
   { id:'promotion', name:'Room to become', label:'A lesson in promotion', description:'Guide White’s pawn from a7 to a8. Choose what it becomes.', fen:'7k/P7/8/8/8/8/8/7K w - - 0 1', focus:'a7' },
   { id:'mate', name:'One final move', label:'A checkmate in one', description:'White to move. Find the queen move that leaves Black’s king with nowhere to go.', fen:'7k/8/5KQ1/8/8/8/8/8 w - - 0 1', focus:'g6' },
 ];
-const read = (key) => { try { return JSON.parse(localStorage.getItem(key)); } catch { return null; } };
-const prefs = { atmosphere:'day', sound:false, view:'perspective', reducedMotion:matchMedia('(prefers-reduced-motion: reduce)').matches, ...read(PREF_KEY) };
+const read = (key: string): unknown => { try { return JSON.parse(localStorage.getItem(key) ?? 'null'); } catch { return null; } };
+const prefs: Preferences = { atmosphere:'day', weather:'clear', sound:false, view:'perspective', reducedMotion:matchMedia('(prefers-reduced-motion: reduce)').matches, ...(read(PREF_KEY) as Partial<Preferences> | null) };
 if (!['day','dusk'].includes(prefs.atmosphere)) prefs.atmosphere = 'day';
+if (!['clear','rain'].includes(prefs.weather)) prefs.weather = 'clear';
 if (!['perspective','overhead'].includes(prefs.view)) prefs.view = 'perspective';
-const saved = read(SAVE_KEY);
+const saved = read(SAVE_KEY) as { game?: unknown; study?: unknown } | null;
 const restoredGame = restoreGame(saved?.game);
 let game = restoredGame || createGame();
-let activeStudy = restoredGame ? studies.find(s => s.id === saved?.study && s.fen === saved.game.initialFen) || null : null;
-let selected = null;
-let focusedSquare = 'e2';
+let activeStudy: Study | null = restoredGame ? studies.find(s => s.id === saved?.study && s.fen === restoredGame.serialize().initialFen) || null : null;
+let selected: Square | null = null;
+let focusedSquare: Square = 'e2';
 let thinking = false;
-let worker = null;
-let computerTimer = null;
+let worker: Worker | null = null;
+let computerTimer: ReturnType<typeof setTimeout> | undefined;
 let computerEpoch = 0;
-let toastTimer;
-let scene;
-let audio;
-let pendingPromotion = null;
+let toastTimer: ReturnType<typeof setTimeout> | undefined;
+let scene: Conservatory | undefined;
+let audio: AudioContext | undefined;
+let pendingPromotion: MoveInput | null = null;
 let resultDismissed = false;
-let resizeFrame;
+let resizeFrame = 0;
 
-document.querySelector('#app').innerHTML = `
+document.querySelector('#app')!.innerHTML = `
   <div class="app-shell">
     <header class="masthead">
       <a class="brand" href="/" aria-label="The Queen’s Conservatory home"><span class="brand-mark">${leaf}</span><span>The Queen’s<br><strong>Conservatory</strong></span></a>
@@ -56,7 +69,7 @@ document.querySelector('#app').innerHTML = `
       <aside class="invitation">
         <p class="eyebrow"><span></span> A LIVING CHESS GARDEN</p>
         <h1>Every game,<br>a <em>garden.</em></h1>
-        <p class="intro-copy">Make a move. Plant a possibility.<br>Leave something beautiful behind.</p>
+        <p class="intro-copy">Make a move. Stay a little.<br>The garden has a life of its own.</p>
         <div class="botanical-divider"><span></span>${leaf}<span></span></div>
         <div class="mode-selector" aria-label="Players"><button data-mode="computer" aria-pressed="true">Play the keeper</button><button data-mode="local" aria-pressed="false">With a friend</button></div>
         <p class="mode-description" id="mode-description">You are ivory. The keeper plays ink.</p>
@@ -67,11 +80,12 @@ document.querySelector('#app').innerHTML = `
         <div class="garden-note"><span class="note-number">FIELD NOTE No. 01</span><p>Nothing is lost here.<br>Every captured piece<br>becomes a flower.</p><span class="note-flower" aria-hidden="true">✳</span></div>
       </aside>
       <section class="game-space" aria-label="Chess conservatory">
-        <div class="scene-topline"><span><i></i> <span id="scene-label">THE GLASSHOUSE</span></span><div class="scene-controls"><button id="atmosphere" aria-label="Switch to evening light">${icon('sun')}<span id="atmosphere-label">Morning light</span></button><button id="view" aria-label="Switch to overhead view">${icon('view')}</button></div></div>
+        <div class="scene-topline"><span><i></i> <span id="scene-label">THE GLASSHOUSE</span></span><div class="scene-controls"><button id="atmosphere" aria-label="Switch to evening light">${icon('sun')}<span id="atmosphere-label">Morning light</span></button><button id="weather" aria-label="Let it rain" aria-pressed="false">${icon('rain')}<span>Let it rain</span></button><button id="view" aria-label="Switch to overhead view">${icon('view')}</button></div></div>
         <div id="scene" class="scene-stage"><div class="scene-loading">${leaf}<span>Opening the glasshouse…</span></div></div>
         <div class="board-access" id="board-access" role="group" aria-label="Chess board"></div>
         <div id="scene-fallback" class="fallback-board" hidden></div>
-        <div class="scene-caption"><span class="caption-index">01 / 01</span><p>Take your time. Good things grow slowly.</p><span class="caption-seal" aria-hidden="true">✳</span></div>
+        <div class="scene-caption"><span class="caption-index">A WORLD<br>OF ITS OWN</span><p id="garden-observation">Take your time. The garden is keeping you company.</p><span class="caption-seal" aria-hidden="true">✳</span></div>
+        <div class="wildlife-note"><span class="wildlife-presence" aria-hidden="true"></span><span id="wildlife-hint">Meet the little residents. Try tapping the robin or the snail.</span><button id="greet" class="resident-greeting">Say hello <span aria-hidden="true">↗</span></button></div>
         <div class="study-banner" id="study-banner" hidden><div><span class="eyebrow">GARDEN STUDY</span><h2 id="study-name"></h2><p id="study-description"></p></div><button id="leave-study" class="text-button">Return to a full game ${icon('arrow')}</button></div>
       </section>
       <aside class="game-journal">
@@ -84,19 +98,23 @@ document.querySelector('#app').innerHTML = `
     <footer class="footer"><span>THE ART OF THINKING, GROWING & BEGINNING AGAIN.</span><div><button id="motion" aria-pressed="false">Gentle motion</button><span>Crafted for a slower moment.</span></div></footer>
   </div>
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
-  <dialog id="help-dialog" class="modal"><button class="modal-close icon-button" data-close aria-label="Close instructions">${icon('close')}</button><span class="modal-mark">${leaf}</span><p class="eyebrow">WELCOME TO YOUR GLASSHOUSE</p><h2>A little room<br>to <em>think.</em></h2><p>Play a complete game of chess against the keeper, or share the board with a friend. You play the ivory pieces against the computer.</p><div class="instruction-grid"><div><strong>Choose, then move</strong><p>Select a piece, then one of its marked squares. A ring means you can capture.</p></div><div><strong>Make something grow</strong><p>Every capture plants a flower around the board. Undo a turn and that flower returns to a seed.</p></div><div><strong>Take the scenic route</strong><p>Try a garden study for captures, promotion, or a checkmate in one.</p></div><div><strong>A quieter experience</strong><p>Sound is off until you invite it in. Switch the light or reduce motion at any time.</p></div></div><div class="keyboard-note"><kbd>↑</kbd><kbd>↓</kbd><kbd>←</kbd><kbd>→</kbd> explore · <kbd>Enter</kbd> choose · <kbd>Esc</kbd> release · <kbd>U</kbd> undo</div><button class="primary-button" data-close>Back to the garden ${icon('arrow')}</button></dialog>
+  <dialog id="help-dialog" class="modal"><button class="modal-close icon-button" data-close aria-label="Close instructions">${icon('close')}</button><span class="modal-mark">${leaf}</span><p class="eyebrow">WELCOME TO YOUR GLASSHOUSE</p><h2>A little room<br>to <em>think.</em></h2><p>Play a complete game of chess against the keeper, or share the board with a friend. You play the ivory pieces against the computer.</p><div class="instruction-grid"><div><strong>Choose, then move</strong><p>Select a piece, then one of its marked squares. A ring means you can capture.</p></div><div><strong>Make something grow</strong><p>Every capture plants a flower around the board. Undo a turn and that flower returns to a seed.</p></div><div><strong>Life beyond the board</strong><p>Tap the robin or the snail. Let it rain, or stay for evening, when the fireflies come out. Pollinators visit the flowers your game creates.</p></div><div><strong>A quieter experience</strong><p>Sound is off until you invite it in. Switch the light or reduce motion at any time.</p></div></div><div class="keyboard-note"><kbd>↑</kbd><kbd>↓</kbd><kbd>←</kbd><kbd>→</kbd> explore · <kbd>Enter</kbd> choose · <kbd>Esc</kbd> release · <kbd>U</kbd> undo</div><button class="primary-button" data-close>Back to the garden ${icon('arrow')}</button></dialog>
   <dialog id="studies-dialog" class="modal studies-modal"><button class="modal-close icon-button" data-close aria-label="Close garden studies">${icon('close')}</button><p class="eyebrow">SMALL MOMENTS. NEW POSSIBILITIES.</p><h2>Garden <em>studies.</em></h2><p>Three little positions to explore. Both sides are yours to move.</p><div class="study-options">${studies.map((s,i)=>`<button data-study="${s.id}"><span class="study-index">0${i+1}</span><span><strong>${s.name}</strong><small>${s.label}</small></span>${icon('arrow')}</button>`).join('')}</div><p class="fine-print">Opening a study replaces the current game.</p></dialog>
   <dialog id="new-game-dialog" class="modal small-modal"><span class="modal-mark">${leaf}</span><p class="eyebrow">A FRESH PATCH OF POSSIBILITY</p><h2>Begin <em>again?</em></h2><p>Your current game and its garden will be cleared.</p><div class="modal-actions"><button class="secondary-button" data-close>Keep playing</button><button class="primary-button" id="confirm-new">Plant a new beginning ${icon('arrow')}</button></div></dialog>
-  <dialog id="promotion-dialog" class="modal small-modal"><p class="eyebrow">ROOM TO BECOME</p><h2>A new <em>possibility.</em></h2><p>Choose a piece for your pawn.</p><div class="promotion-options">${['q','r','b','n'].map(p=>`<button data-promotion="${p}" aria-label="Promote to ${PIECE_NAMES[p]}"><span>${glyphs.w[p]}</span>${PIECE_NAMES[p]}</button>`).join('')}</div><button class="text-button" data-close>Choose a different move</button></dialog>
+  <dialog id="promotion-dialog" class="modal small-modal"><p class="eyebrow">ROOM TO BECOME</p><h2>A new <em>possibility.</em></h2><p>Choose a piece for your pawn.</p><div class="promotion-options">${(['q','r','b','n'] as const).map(p=>`<button data-promotion="${p}" aria-label="Promote to ${PIECE_NAMES[p]}"><span>${glyphs.w[p]}</span>${PIECE_NAMES[p]}</button>`).join('')}</div><button class="text-button" data-close>Choose a different move</button></dialog>
   <dialog id="result-dialog" class="modal result-modal"><button class="modal-close icon-button" data-close aria-label="Close result">${icon('close')}</button><div class="result-flower" aria-hidden="true">✳</div><p class="eyebrow">SOMETHING BEAUTIFUL WAS MADE</p><h2 id="result-title">A garden,<br><em>complete.</em></h2><p id="result-description"></p><div class="result-stats"><div><strong id="result-moves"></strong><span>MOVES PLAYED</span></div><div><strong id="result-blooms"></strong><span>FLOWERS PLANTED</span></div></div><button class="primary-button" id="result-new">Grow another garden ${icon('arrow')}</button><button class="text-button" data-close>Stay a little longer</button></dialog>
 `;
 
-const $ = (s) => document.querySelector(s);
-const squareButtons = new Map();
-const fallbackButtons = new Map();
+const $ = <T extends HTMLElement = HTMLElement>(s: string) => document.querySelector<T>(s)!;
+const dialog = (s: string) => $<HTMLDialogElement>(s);
+const button = (s: string) => $<HTMLButtonElement>(s);
+const all = <T extends HTMLElement = HTMLButtonElement>(s: string) => document.querySelectorAll<T>(s);
+const atmosphere = createAtmosphere(document.body, prefs);
+const squareButtons = new Map<Square, HTMLButtonElement>();
+const fallbackButtons = new Map<Square, HTMLButtonElement>();
 for (let rank = 8; rank >= 1; rank--) {
   for (const file of 'abcdefgh') {
-    const square = `${file}${rank}`;
+    const square = `${file}${rank}` as Square;
     const button = document.createElement('button');
     button.className = 'square-hit'; button.dataset.square = square; button.dataset.testid = `square-${square}`;
     button.tabIndex = square === focusedSquare ? 0 : -1;
@@ -117,7 +135,7 @@ for (let rank = 8; rank >= 1; rank--) {
   }
 }
 
-function showToast(message) {
+function showToast(message: string) {
   clearTimeout(toastTimer); $('#toast').textContent=message;$('#toast').classList.add('visible');
   toastTimer=setTimeout(()=>$('#toast').classList.remove('visible'),3500);
 }
@@ -129,7 +147,8 @@ function savePreferences() { try {localStorage.setItem(PREF_KEY,JSON.stringify(p
 function playTone(capture=false) {
   if (!prefs.sound) return;
   try {
-    audio ||= new (window.AudioContext || window.webkitAudioContext)();audio.resume();
+    const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+    audio ||= new AudioContextClass();audio.resume();
     const now=audio.currentTime;
     for (const [i,f] of (capture ? [523.25,659.25,783.99] : [392,523.25]).entries()) {
       const oscillator=audio.createOscillator(),gain=audio.createGain();oscillator.type='sine';oscillator.frequency.value=f;
@@ -139,67 +158,72 @@ function playTone(capture=false) {
   } catch { prefs.sound=false;applyPreferences(); }
 }
 function cancelComputer() {
-  computerEpoch++;clearTimeout(computerTimer);computerTimer=null;worker?.terminate();worker=null;thinking=false;
+  computerEpoch++;clearTimeout(computerTimer);computerTimer=undefined;worker?.terminate();worker=null;thinking=false;
 }
 function queueComputer() {
   if (game.mode!=='computer'||game.chess.turn()!=='b'||game.status().over||thinking) return;
   thinking=true;selected=null;render();
   const id=++computerEpoch,fen=game.chess.fen();
-  const complete=(move)=>{
+  const complete=(move: MoveCoordinates | null)=>{
     if (id!==computerEpoch||fen!==game.chess.fen()) return;
     worker?.terminate();worker=null;thinking=false;
     if (move) commitMove(move); else {render();showToast('The keeper paused. Undo the turn or begin again.');}
   };
   computerTimer=setTimeout(()=>{
     try {
-      worker=new Worker(new URL('./ai.worker.js',import.meta.url),{type:'module'});
-      worker.onmessage=({data})=>complete(data.move);
+      worker=new Worker(new URL('./ai.worker.ts',import.meta.url),{type:'module'});
+      worker.onmessage=({data}: MessageEvent<ComputerResponse>)=>complete(data.move);
       worker.onerror=()=>complete(chooseComputerMove(fen,game.difficulty));
-      worker.postMessage({fen,difficulty:game.difficulty,id});
+      worker.postMessage({fen,difficulty:game.difficulty,id} satisfies ComputerRequest);
     } catch {complete(chooseComputerMove(fen,game.difficulty));}
   },prefs.reducedMotion ? 150 : 650);
 }
-function selectSquare(square) {
+function selectSquare(square: Square) {
   if (thinking) {showToast('The keeper is considering a move.');return;}
   if (game.status().over) {showToast('This garden is complete. Begin a new game to play again.');return;}
   if (game.mode==='computer'&&game.chess.turn()!=='w') return;
   const piece=game.chess.get(square);
   if (selected===square) {selected=null;render();return;}
   if (selected) {
-    const legal=game.moves(selected).filter(m=>m.to===square);
+    const from=selected,legal=game.moves(from).filter(m=>m.to===square);
     if (legal.length) {
-      if (legal.some(m=>m.promotion)) {pendingPromotion={from:selected,to:square};$('#promotion-dialog').showModal();return;}
-      commitMove({from:selected,to:square});return;
+      if (legal.some(m=>m.promotion)) {pendingPromotion={from,to:square};dialog('#promotion-dialog').showModal();return;}
+      commitMove({from,to:square});return;
     }
     if (!piece||piece.color!==game.chess.turn()) {showToast('That square isn’t a legal move. Follow the marked possibilities.');return;}
   }
   if (piece?.color===game.chess.turn()) {selected=square;focusedSquare=square;render();}
   else {selected=null;render();}
 }
-function commitMove(input) {
+function commitMove(input: MoveInput) {
   const move=game.move(input);if(!move)return;
   selected=null;pendingPromotion=null;resultDismissed=false;persist();render();playTone(!!move.captured);
-  if(move.captured)showToast(`A ${PIECE_NAMES[move.captured]} becomes a flower. ${game.captures().length} growing in your garden.`);
-  if(game.status().over) setTimeout(()=>{if(game.status().over&&!resultDismissed&&!$('#result-dialog').open)$('#result-dialog').showModal();},prefs.reducedMotion?0:1100);
+  if(move.captured){
+    atmosphere.celebrateCapture();
+    $('#garden-observation').textContent='A new bloom. A small invitation to the bees.';
+    showToast(`A ${PIECE_NAMES[move.captured]} becomes a flower. ${game.captures().length} growing in your garden.`);
+  }
+  if(game.status().over) setTimeout(()=>{if(game.status().over&&!resultDismissed&&!dialog('#result-dialog').open)dialog('#result-dialog').showModal();},prefs.reducedMotion?0:1100);
   else queueComputer();
 }
 function undo() {
   cancelComputer();const undone=game.undoTurn();selected=null;pendingPromotion=null;resultDismissed=true;
-  if($('#result-dialog').open)$('#result-dialog').close();
+  if(dialog('#result-dialog').open)dialog('#result-dialog').close();
   if(!undone.length){showToast('The garden is still at its beginning.');return;}
   persist();render();showToast('A little room to reconsider. Your last turn is undone.');queueComputer();
 }
 function newGame() {
   cancelComputer();activeStudy=null;selected=null;resultDismissed=false;game.reset();focusedSquare='e2';
-  for(const d of document.querySelectorAll('dialog[open]'))d.close();persist();render();showToast('A fresh garden. A world of possibilities.');
+  for(const d of all<HTMLDialogElement>('dialog[open]'))d.close();persist();render();showToast('A fresh garden. A world of possibilities.');
 }
-function boardKeyboard(event,square) {
-  const directions={ArrowUp:[0,1],ArrowDown:[0,-1],ArrowLeft:[-1,0],ArrowRight:[1,0]};
-  if(directions[event.key]) {
-    event.preventDefault();const [dx,dy]=directions[event.key];
+const directions: Record<string, [number, number]> = {ArrowUp:[0,1],ArrowDown:[0,-1],ArrowLeft:[-1,0],ArrowRight:[1,0]};
+function boardKeyboard(event: KeyboardEvent,square: Square) {
+  const direction=directions[event.key];
+  if(direction) {
+    event.preventDefault();const [dx,dy]=direction;
     const file=Math.max(0,Math.min(7,square.charCodeAt(0)-97+dx)),rank=Math.max(1,Math.min(8,Number(square[1])+dy));
-    focusedSquare=`${String.fromCharCode(97+file)}${rank}`;updateSquareFocus();
-    ($('#scene-fallback').hidden?squareButtons:fallbackButtons).get(focusedSquare).focus();
+    focusedSquare=`${String.fromCharCode(97+file)}${rank}` as Square;updateSquareFocus();
+    ($('#scene-fallback').hidden?squareButtons:fallbackButtons).get(focusedSquare)?.focus();
   } else if(event.key==='Escape'){event.preventDefault();selected=null;render();}
   else if(event.key.toLowerCase()==='u'){event.preventDefault();undo();}
 }
@@ -210,44 +234,45 @@ function positionSquares() {
   const sr=stage.getBoundingClientRect(),pr=space.getBoundingClientRect();
   const layer=$('#board-access');layer.style.top=`${sr.top-pr.top}px`;layer.style.left=`${sr.left-pr.left}px`;layer.style.width=`${sr.width}px`;layer.style.height=`${sr.height}px`;
   for(const [square,button] of squareButtons){
-    const p=scene.projectSquare(square);if(!p)continue;
+    const p=scene.projectSquare(square);
     Object.assign(button.style,{left:`${p.x}px`,top:`${p.y}px`,width:`${p.width}px`,height:`${p.height}px`});
-    if(p.points?.length)button.style.clipPath=`polygon(${p.points.map(v=>`${((v.x-p.x)/p.width)*100}% ${((v.y-p.y)/p.height)*100}%`).join(',')})`;
+    if(p.points.length)button.style.clipPath=`polygon(${p.points.map(v=>`${((v.x-p.x)/p.width)*100}% ${((v.y-p.y)/p.height)*100}%`).join(',')})`;
   }
 }
 function render() {
   const status=game.status(),history=game.chess.history({verbose:true}),last=history.at(-1),captures=game.captures();
   const legal=selected?game.moves(selected).map(m=>m.to):[];
-  const checkSquare=status.check?game.chess.board().flat().find(p=>p?.type==='k'&&p.color===status.turn)?.square:null;
+  const checkSquare=status.check?game.chess.board().flat().find(p=>p?.type==='k'&&p.color===status.turn)?.square ?? null:null;
   scene?.sync({board:game.chess.board(),selected,legal,lastMove:last||null,captures,checkSquare});
   for(const [square,button] of squareButtons){
     const piece=game.chess.get(square),label=`${square}, ${piece?`${piece.color==='w'?'White':'Black'} ${PIECE_NAMES[piece.type]}`:'empty'}${legal.includes(square)?', legal destination':''}`;
     button.setAttribute('aria-label',label);button.setAttribute('aria-pressed',String(selected===square));button.dataset.piece=piece?`${piece.color}${piece.type}`:'';
-    const flat=fallbackButtons.get(square);flat.textContent=piece?glyphs[piece.color][piece.type]:'';flat.setAttribute('aria-label',label);flat.classList.toggle('selected',selected===square);flat.classList.toggle('legal',legal.includes(square));flat.tabIndex=square===focusedSquare?0:-1;
+    const flat=fallbackButtons.get(square)!;flat.textContent=piece?glyphs[piece.color][piece.type]:'';flat.setAttribute('aria-label',label);flat.classList.toggle('selected',selected===square);flat.classList.toggle('legal',legal.includes(square));flat.tabIndex=square===focusedSquare?0:-1;
   }
   updateSquareFocus();positionSquares();
   const statusText=status.over?status.text:thinking?'The keeper thinks.':status.check?'A little caution.':game.mode==='computer'?'Your move.':`${status.turn==='w'?'Ivory':'Ink'} to move.`;
   $('#game-status').textContent=statusText;
   $('#game-status').dataset.turn=status.turn;$('#game-status').dataset.gameOver=String(status.over);$('#game-status').dataset.thinking=String(thinking);
   $('#turn-token').classList.toggle('ink',status.turn==='b');$('#turn-token').classList.toggle('thinking',thinking);
-  $('#turn-description').textContent=status.over?'This chapter is complete. Its garden stays with you.':status.check?`${status.turn==='w'?'White’s':'Black’s'} king is in check. Find a safe move.`:thinking?'A moment of thought, then a possibility.':selected?`${PIECE_NAMES[game.chess.get(selected)?.type] ?? 'Piece'} on ${selected}. Choose a marked square.`:'Choose a piece to see its possibilities.';
+  const selectedType=selected?game.chess.get(selected)?.type:undefined;
+  $('#turn-description').textContent=status.over?'This chapter is complete. Its garden stays with you.':status.check?`${status.turn==='w'?'White’s':'Black’s'} king is in check. Find a safe move.`:thinking?'A moment of thought, then a possibility.':selected?`${selectedType?PIECE_NAMES[selectedType]:'Piece'} on ${selected}. Choose a marked square.`:'Choose a piece to see its possibilities.';
   $('#move-counter').textContent=`Move ${String(Number(game.chess.fen().split(' ')[5])).padStart(2,'0')}`;
-  $('#undo').disabled=!history.length;$('#export').disabled=!history.length;
+  button('#undo').disabled=!history.length;button('#export').disabled=!history.length;
   $('#bloom-count').textContent=String(captures.length).padStart(2,'0');
   $('#bloom-display').setAttribute('aria-label',`${captures.length} captured ${captures.length===1?'piece':'pieces'}, ${captures.length} ${captures.length===1?'flower':'flowers'}`);
   $('#bloom-display').innerHTML=captures.length?`<div class="bloom-collection">${captures.map((c,i)=>`<span class="bloom-token bloom-${i%4}" title="${c.color==='w'?'White':'Black'} ${PIECE_NAMES[c.type]} captured" aria-label="${c.color==='w'?'White':'Black'} ${PIECE_NAMES[c.type]} captured">✳</span>`).join('')}</div>`:`<span class="empty-sprout">${leaf}</span><p>A little space for<br>what comes next.</p>`;
   $('#blooms-caption').textContent=captures.length?`${captures.length} ${captures.length===1?'flower':'flowers'}. A garden only this game could grow.`:'A bloom for every captured piece.';
-  const rows=[];for(const m of history){const n=Number(m.before.split(' ')[5]);let row=rows.at(-1);if(!row||row.n!==n){row={n,w:'',b:''};rows.push(row);}row[m.color]=m.san;}
+  const rows: {n:number;w:string;b:string}[]=[];for(const m of history){const n=Number(m.before.split(' ')[5]);let row=rows.at(-1);if(!row||row.n!==n){row={n,w:'',b:''};rows.push(row);}row[m.color]=m.san;}
   $('#move-history').innerHTML=rows.length?rows.map((row,i)=>`<li${i===rows.length-1?' class="latest"':''}><span class="move-number">${row.n}.</span><span>${row.w||'…'}</span><span>${row.b||'—'}</span></li>`).join(''):'<li class="history-empty">Your story starts with a move.</li>';
   $('#move-history').scrollTop=$('#move-history').scrollHeight;
-  for(const b of document.querySelectorAll('[data-mode]'))b.setAttribute('aria-pressed',String(b.dataset.mode===game.mode));
+  for(const b of all('[data-mode]'))b.setAttribute('aria-pressed',String(b.dataset.mode===game.mode));
   $('#mode-description').textContent=game.mode==='computer'?'You are ivory. The keeper plays ink.':'One board. Two people. Take turns together.';
-  $('#difficulty').value=game.difficulty;$('#difficulty').disabled=game.mode==='local';
+  const difficulty=$<HTMLSelectElement>('#difficulty');difficulty.value=game.difficulty;difficulty.disabled=game.mode==='local';
   $('#study-banner').hidden=!activeStudy;$('#scene-label').textContent=activeStudy?'A GARDEN STUDY':'THE GLASSHOUSE';
   if(activeStudy){$('#study-name').textContent=activeStudy.name;$('#study-description').textContent=activeStudy.description;}
   $('#result-title').innerHTML=status.checkmate?'A garden,<br><em>complete.</em>':'A peaceful<br><em>ending.</em>';
   $('#result-description').textContent=`${status.text}. Every move left its mark.`;
-  $('#result-moves').textContent=history.length;$('#result-blooms').textContent=captures.length;
+  $('#result-moves').textContent=String(history.length);$('#result-blooms').textContent=String(captures.length);
 }
 function applyPreferences() {
   document.documentElement.dataset.atmosphere=prefs.atmosphere;
@@ -256,36 +281,51 @@ function applyPreferences() {
   $('#atmosphere').innerHTML=`${icon(prefs.atmosphere==='day'?'sun':'moon')}<span>${prefs.atmosphere==='day'?'Morning light':'Evening light'}</span>`;
   $('#atmosphere').setAttribute('aria-label',prefs.atmosphere==='day'?'Switch to evening light':'Switch to morning light');
   $('#view').setAttribute('aria-label',prefs.view==='perspective'?'Switch to overhead view':'Switch to perspective view');
+  $('#weather').innerHTML=`${icon(prefs.weather==='rain'?'sun':'rain')}<span>${prefs.weather==='rain'?'Let it clear':'Let it rain'}</span>`;
+  $('#weather').setAttribute('aria-label',prefs.weather==='rain'?'Let it clear':'Let it rain');
+  $('#weather').setAttribute('aria-pressed',String(prefs.weather==='rain'));
+  document.documentElement.dataset.weather=prefs.weather;
   $('#motion').setAttribute('aria-pressed',String(!!prefs.reducedMotion));$('#motion').textContent=prefs.reducedMotion?'Motion reduced':'Gentle motion';
-  scene?.setAtmosphere(prefs.atmosphere);scene?.setReducedMotion(!!prefs.reducedMotion);scene?.setView(prefs.view);positionSquares();savePreferences();
+  scene?.setAtmosphere(prefs.atmosphere);scene?.setWeather(prefs.weather);scene?.setReducedMotion(!!prefs.reducedMotion);scene?.setView(prefs.view);
+  atmosphere.setAtmosphere(prefs.atmosphere);atmosphere.setWeather(prefs.weather);atmosphere.setReducedMotion(!!prefs.reducedMotion);
+  $('#wildlife-hint').textContent=!scene?'The garden keeps growing, one capture at a time.':prefs.reducedMotion?'A still garden. Turn on gentle motion to watch it wander.':'Meet the little residents. Try tapping the robin or the snail.';
+  button('#greet').hidden=!scene;
+  positionSquares();savePreferences();
 }
 
-$('#new-game').onclick=()=>game.chess.history().length?$('#new-game-dialog').showModal():newGame();
-$('#confirm-new').onclick=newGame;$('#result-new').onclick=newGame;$('#leave-study').onclick=newGame;
-$('#undo').onclick=undo;$('#help').onclick=()=>$('#help-dialog').showModal();$('#studies').onclick=()=>$('#studies-dialog').showModal();
-$('#sound').onclick=()=>{prefs.sound=!prefs.sound;applyPreferences();if(prefs.sound)playTone(true);};
-$('#atmosphere').onclick=()=>{prefs.atmosphere=prefs.atmosphere==='day'?'dusk':'day';applyPreferences();};
-$('#view').onclick=()=>{prefs.view=prefs.view==='perspective'?'overhead':'perspective';applyPreferences();};
-$('#motion').onclick=()=>{prefs.reducedMotion=!prefs.reducedMotion;applyPreferences();};
-$('#difficulty').onchange=e=>{cancelComputer();game.difficulty=e.target.value;persist();render();queueComputer();};
-for(const b of document.querySelectorAll('[data-mode]'))b.onclick=()=>{cancelComputer();game.mode=b.dataset.mode;selected=null;persist();render();queueComputer();};
-for(const b of document.querySelectorAll('[data-close]'))b.onclick=()=>b.closest('dialog').close();
-for(const d of document.querySelectorAll('dialog')){d.addEventListener('click',e=>{if(e.target===d){const r=d.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)d.close();}});d.addEventListener('close',()=>{if(d.id==='promotion-dialog')pendingPromotion=null;if(d.id==='result-dialog')resultDismissed=true;});}
-for(const b of document.querySelectorAll('[data-study]'))b.onclick=()=>{
-  cancelComputer();activeStudy=studies.find(s=>s.id===b.dataset.study);game.reset({fen:activeStudy.fen,mode:'local'});selected=activeStudy.focus;focusedSquare=activeStudy.focus;resultDismissed=false;
-  $('#studies-dialog').close();persist();render();showToast(activeStudy.description);
+button('#new-game').onclick=()=>game.chess.history().length?dialog('#new-game-dialog').showModal():newGame();
+button('#confirm-new').onclick=newGame;button('#result-new').onclick=newGame;button('#leave-study').onclick=newGame;
+button('#undo').onclick=undo;button('#help').onclick=()=>dialog('#help-dialog').showModal();button('#studies').onclick=()=>dialog('#studies-dialog').showModal();
+button('#sound').onclick=()=>{prefs.sound=!prefs.sound;applyPreferences();if(prefs.sound)playTone(true);};
+button('#atmosphere').onclick=()=>{prefs.atmosphere=prefs.atmosphere==='day'?'dusk':'day';applyPreferences();$('#garden-observation').textContent=prefs.atmosphere==='dusk'?'The lanterns wake. The fireflies take their turn.':'The morning returns. A robin has the best seat in the house.';};
+button('#weather').onclick=()=>{prefs.weather=prefs.weather==='clear'?'rain':'clear';applyPreferences();$('#garden-observation').textContent=prefs.weather==='rain'?'Rain on the glass. A little shelter from the world.':'The shower passes. The little world wakes again.';};
+button('#view').onclick=()=>{prefs.view=prefs.view==='perspective'?'overhead':'perspective';applyPreferences();};
+button('#motion').onclick=()=>{prefs.reducedMotion=!prefs.reducedMotion;applyPreferences();};
+button('#greet').onclick=()=>scene?.greetResident();
+$<HTMLSelectElement>('#difficulty').onchange=e=>{const value=(e.currentTarget as HTMLSelectElement).value;if(!isDifficulty(value))return;cancelComputer();game.difficulty=value;persist();render();queueComputer();};
+for(const b of all('[data-mode]'))b.onclick=()=>{const mode=b.dataset.mode;if(!isGameMode(mode))return;cancelComputer();game.mode=mode;selected=null;persist();render();queueComputer();};
+for(const b of all('[data-close]'))b.onclick=()=>b.closest('dialog')?.close();
+for(const d of all<HTMLDialogElement>('dialog')){d.addEventListener('click',e=>{if(e.target===d){const r=d.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)d.close();}});d.addEventListener('close',()=>{if(d.id==='promotion-dialog')pendingPromotion=null;if(d.id==='result-dialog')resultDismissed=true;});}
+for(const b of all('[data-study]'))b.onclick=()=>{
+  const study=studies.find(s=>s.id===b.dataset.study);if(!study)return;
+  cancelComputer();activeStudy=study;game.reset({fen:study.fen,mode:'local'});selected=study.focus;focusedSquare=study.focus;resultDismissed=false;
+  dialog('#studies-dialog').close();persist();render();showToast(study.description);
 };
-for(const b of document.querySelectorAll('[data-promotion]'))b.onclick=()=>{const move=pendingPromotion;if(!move)return;$('#promotion-dialog').close();commitMove({...move,promotion:b.dataset.promotion});};
-$('#export').onclick=()=>{
+for(const b of all('[data-promotion]'))b.onclick=()=>{const move=pendingPromotion;if(!move)return;dialog('#promotion-dialog').close();commitMove({...move,promotion:b.dataset.promotion as PromotionPiece});};
+button('#export').onclick=()=>{
   game.chess.header('Event','The Queen’s Conservatory','White',game.mode==='computer'?'You':'Ivory','Black',game.mode==='computer'?'The keeper':'Ink');
   const url=URL.createObjectURL(new Blob([game.chess.pgn()],{type:'application/x-chess-pgn'}));const a=document.createElement('a');a.href=url;a.download='a-conservatory-game.pgn';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
 };
-document.addEventListener('keydown',e=>{if(e.key.toLowerCase()==='u'&&!document.querySelector('dialog[open]')&&!['INPUT','TEXTAREA','SELECT'].includes(e.target.tagName)&&!e.ctrlKey&&!e.metaKey){if(!e.defaultPrevented){e.preventDefault();undo();}}});
+document.addEventListener('keydown',e=>{if(e.key.toLowerCase()==='u'&&!document.querySelector('dialog[open]')&&!['INPUT','TEXTAREA','SELECT'].includes((e.target as HTMLElement).tagName)&&!e.ctrlKey&&!e.metaKey){if(!e.defaultPrevented){e.preventDefault();undo();}}});
 try {
-  scene=createConservatory($('#scene'),{onSquare:selectSquare,reducedMotion:prefs.reducedMotion,onReady:()=>queueMicrotask(()=>{document.querySelector('.scene-loading')?.remove();render();})});
+  scene=createConservatory($('#scene'),{onSquare:selectSquare,reducedMotion:prefs.reducedMotion,onCreature:creature=>{
+    const observations={robin:'The robin has somewhere else to be. For a moment.',snail:'The snail considers your invitation. Slowly.',butterfly:'A butterfly follows a different possibility.',bee:'The bee has a rather busy afternoon.'};
+    $('#garden-observation').textContent=observations[creature];
+  },onReady:()=>queueMicrotask(()=>{document.querySelector('.scene-loading')?.remove();render();})});
   document.querySelector('.scene-loading')?.remove();
 } catch(error) {
-  console.warn('Using the accessible flat chess board:',error.message);$('#scene').hidden=true;$('#board-access').hidden=true;$('#scene-fallback').hidden=false;
+  console.warn('Using the accessible flat chess board:',error instanceof Error ? error.message : error);$('#scene').hidden=true;$('#board-access').hidden=true;$('#scene-fallback').hidden=false;
+  $('#wildlife-hint').textContent='The garden keeps growing, one capture at a time.';
   showToast('Your browser is using our quiet, flat board. All chess features are available.');
 }
 const observer=new ResizeObserver(()=>{cancelAnimationFrame(resizeFrame);resizeFrame=requestAnimationFrame(()=>{scene?.resize();positionSquares();});});observer.observe($('.game-space'));

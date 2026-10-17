@@ -1,6 +1,55 @@
 import { Chess } from 'chess.js';
+import type { Color, Move, PieceSymbol, Square } from 'chess.js';
 
-export const PIECE_NAMES = Object.freeze({
+export type { Color, Move, PieceSymbol, Square };
+export type GameMode = 'computer' | 'local';
+export type Difficulty = 'seedling' | 'garden' | 'wildwood';
+export type PromotionPiece = 'q' | 'r' | 'b' | 'n';
+
+export interface MoveInput {
+  from: string;
+  to: string;
+  promotion?: string;
+}
+
+export interface MoveCoordinates {
+  from: Square;
+  to: Square;
+  promotion?: PieceSymbol;
+}
+
+export interface GameOptions {
+  fen?: string;
+  mode?: GameMode;
+  difficulty?: Difficulty;
+}
+
+export interface GameStatus {
+  turn: Color;
+  over: boolean;
+  check: boolean;
+  checkmate: boolean;
+  stalemate: boolean;
+  draw: boolean;
+  winner: Color | null;
+  text: string;
+}
+
+export interface Capture {
+  color: Color;
+  type: PieceSymbol;
+  by: Color;
+  moveNumber: number;
+}
+
+export interface SavedGame {
+  initialFen: string;
+  history: MoveCoordinates[];
+  mode: GameMode;
+  difficulty: Difficulty;
+}
+
+export const PIECE_NAMES: Readonly<Record<PieceSymbol, string>> = Object.freeze({
   p: 'pawn',
   n: 'knight',
   b: 'bishop',
@@ -9,30 +58,35 @@ export const PIECE_NAMES = Object.freeze({
   k: 'king',
 });
 
-const MODES = new Set(['computer', 'local']);
-const DEPTHS = Object.freeze({ seedling: 1, garden: 2, wildwood: 3 });
-const PROMOTIONS = new Set(['q', 'r', 'b', 'n']);
+const MODES: ReadonlySet<string> = new Set<GameMode>(['computer', 'local']);
+const DEPTHS: Readonly<Record<Difficulty, number>> = Object.freeze({ seedling: 1, garden: 2, wildwood: 3 });
+const PROMOTIONS: ReadonlySet<string> = new Set<PromotionPiece>(['q', 'r', 'b', 'n']);
 const SQUARE = /^[a-h][1-8]$/;
 
-function validatePreferences(mode, difficulty) {
-  if (!MODES.has(mode)) throw new TypeError(`Unknown game mode: ${mode}`);
-  if (!Object.hasOwn(DEPTHS, difficulty)) {
-    throw new TypeError(`Unknown difficulty: ${difficulty}`);
+export const isGameMode = (value: unknown): value is GameMode => typeof value === 'string' && MODES.has(value);
+export const isDifficulty = (value: unknown): value is Difficulty => typeof value === 'string' && Object.hasOwn(DEPTHS, value);
+const isSquare = (value: unknown): value is Square => typeof value === 'string' && SQUARE.test(value);
+
+function validatePreferences(mode: unknown, difficulty: unknown): void {
+  if (!isGameMode(mode)) throw new TypeError(`Unknown game mode: ${String(mode)}`);
+  if (!isDifficulty(difficulty)) {
+    throw new TypeError(`Unknown difficulty: ${String(difficulty)}`);
   }
 }
 
-function moveCoordinates(move) {
-  const result = { from: move.from, to: move.to };
+function moveCoordinates(move: Move): MoveCoordinates {
+  const result: MoveCoordinates = { from: move.from, to: move.to };
   if (move.promotion) result.promotion = move.promotion;
   return result;
 }
 
-class ConservatoryGame {
-  #initialFen;
-  #mode;
-  #difficulty;
+export class ConservatoryGame {
+  chess: Chess;
+  #initialFen: string;
+  #mode: GameMode;
+  #difficulty: Difficulty;
 
-  constructor({ fen, mode = 'computer', difficulty = 'garden' } = {}) {
+  constructor({ fen, mode = 'computer', difficulty = 'garden' }: GameOptions = {}) {
     validatePreferences(mode, difficulty);
     this.chess = new Chess(fen);
     this.#initialFen = this.chess.fen();
@@ -40,30 +94,31 @@ class ConservatoryGame {
     this.#difficulty = difficulty;
   }
 
-  get mode() { return this.#mode; }
-  set mode(value) {
+  get mode(): GameMode { return this.#mode; }
+  set mode(value: GameMode) {
     validatePreferences(value, this.#difficulty);
     this.#mode = value;
   }
 
-  get difficulty() { return this.#difficulty; }
-  set difficulty(value) {
+  get difficulty(): Difficulty { return this.#difficulty; }
+  set difficulty(value: Difficulty) {
     validatePreferences(this.#mode, value);
     this.#difficulty = value;
   }
 
-  moves(square) {
-    if (square !== undefined && (typeof square !== 'string' || !SQUARE.test(square))) return [];
+  moves(square?: unknown): Move[] {
+    if (square !== undefined && !isSquare(square)) return [];
     if (this.chess.isGameOver()) return [];
-    return this.chess.moves({ ...(square === undefined ? {} : { square }), verbose: true });
+    return square === undefined
+      ? this.chess.moves({ verbose: true })
+      : this.chess.moves({ square, verbose: true });
   }
 
-  move(input) {
+  move(input: unknown): Move | null {
     if (!input || typeof input !== 'object' || this.chess.isGameOver()) return null;
-    const { from, to, promotion } = input;
-    if (typeof from !== 'string' || !SQUARE.test(from)
-      || typeof to !== 'string' || !SQUARE.test(to)
-      || (promotion !== undefined && !PROMOTIONS.has(promotion))) return null;
+    const { from, to, promotion } = input as Partial<Record<keyof MoveInput, unknown>>;
+    if (!isSquare(from) || !isSquare(to)
+      || (promotion !== undefined && (typeof promotion !== 'string' || !PROMOTIONS.has(promotion)))) return null;
     try {
       // Queen is the default for callers without a promotion chooser.
       return this.chess.move({ from, to, promotion: promotion ?? 'q' });
@@ -72,11 +127,11 @@ class ConservatoryGame {
     }
   }
 
-  undoTurn() {
+  undoTurn(): Move[] {
     const last = this.chess.history({ verbose: true }).at(-1);
     if (!last) return [];
     const count = this.#mode === 'computer' && last.color === 'b' ? 2 : 1;
-    const undone = [];
+    const undone: Move[] = [];
     for (let i = 0; i < count; i += 1) {
       const move = this.chess.undo();
       if (move) undone.push(move);
@@ -84,7 +139,7 @@ class ConservatoryGame {
     return undone;
   }
 
-  reset({ fen, mode = this.#mode, difficulty = this.#difficulty } = {}) {
+  reset({ fen, mode = this.#mode, difficulty = this.#difficulty }: GameOptions = {}): this {
     validatePreferences(mode, difficulty);
     // Validate everything before replacing a game that might be in progress.
     const replacement = new Chess(fen);
@@ -95,15 +150,15 @@ class ConservatoryGame {
     return this;
   }
 
-  status() {
+  status(): GameStatus {
     const turn = this.chess.turn();
     const check = this.chess.isCheck();
     const checkmate = this.chess.isCheckmate();
     const stalemate = this.chess.isStalemate();
     const draw = this.chess.isDraw();
     const over = this.chess.isGameOver();
-    const winner = checkmate ? (turn === 'w' ? 'b' : 'w') : null;
-    let text;
+    const winner: Color | null = checkmate ? (turn === 'w' ? 'b' : 'w') : null;
+    let text: string;
     if (checkmate) text = `Checkmate · ${winner === 'w' ? 'White' : 'Black'} wins`;
     else if (stalemate) text = 'Draw · stalemate';
     else if (this.chess.isThreefoldRepetition()) text = 'Draw · threefold repetition';
@@ -114,9 +169,9 @@ class ConservatoryGame {
     return { turn, over, check, checkmate, stalemate, draw, winner, text };
   }
 
-  captures() {
+  captures(): Capture[] {
     return this.chess.history({ verbose: true })
-      .filter((move) => move.captured)
+      .filter((move): move is Move & { captured: PieceSymbol } => Boolean(move.captured))
       .map((move) => ({
         color: move.color === 'w' ? 'b' : 'w',
         type: move.captured,
@@ -125,7 +180,7 @@ class ConservatoryGame {
       }));
   }
 
-  serialize() {
+  serialize(): SavedGame {
     return {
       initialFen: this.#initialFen,
       history: this.chess.history({ verbose: true }).map(moveCoordinates),
@@ -135,17 +190,18 @@ class ConservatoryGame {
   }
 }
 
-export function createGame(options) {
+export function createGame(options?: GameOptions): ConservatoryGame {
   return new ConservatoryGame(options);
 }
 
-export function restoreGame(data) {
+export function restoreGame(data: unknown): ConservatoryGame | null {
   try {
-    if (!data || typeof data !== 'object' || Array.isArray(data)
-      || typeof data.initialFen !== 'string' || !Array.isArray(data.history)
-      || !MODES.has(data.mode) || !Object.hasOwn(DEPTHS, data.difficulty)) return null;
-    const game = createGame({ fen: data.initialFen, mode: data.mode, difficulty: data.difficulty });
-    for (const move of data.history) {
+    if (!data || typeof data !== 'object' || Array.isArray(data)) return null;
+    const { initialFen, history, mode, difficulty } = data as Partial<Record<keyof SavedGame, unknown>>;
+    if (typeof initialFen !== 'string' || !Array.isArray(history)
+      || !isGameMode(mode) || !isDifficulty(difficulty)) return null;
+    const game = createGame({ fen: initialFen, mode, difficulty });
+    for (const move of history) {
       if (!move || typeof move !== 'object' || Array.isArray(move) || !game.move(move)) return null;
     }
     return game;
@@ -154,11 +210,11 @@ export function restoreGame(data) {
   }
 }
 
-const VALUES = Object.freeze({ p: 100, n: 320, b: 335, r: 500, q: 900, k: 0 });
+const VALUES: Readonly<Record<PieceSymbol, number>> = Object.freeze({ p: 100, n: 320, b: 335, r: 500, q: 900, k: 0 });
 const MATE = 100_000;
 const SEARCH_LIMIT = Symbol('search limit');
 
-function evaluate(chess) {
+function evaluate(chess: Chess): number {
   const board = chess.board();
   let material = 0;
   for (const row of board) {
@@ -195,8 +251,8 @@ function evaluate(chess) {
   return score * (chess.turn() === 'w' ? 1 : -1);
 }
 
-function orderMoves(moves) {
-  const priority = (move) => (move.captured ? 10 * VALUES[move.captured] - VALUES[move.piece] : 0)
+function orderMoves(moves: Move[]): Move[] {
+  const priority = (move: Move) => (move.captured ? 10 * VALUES[move.captured] - VALUES[move.piece] : 0)
     + (move.promotion ? VALUES[move.promotion] : 0)
     + (move.san.includes('+') || move.san.includes('#') ? 45 : 0)
     + (move.flags.includes('k') || move.flags.includes('q') ? 25 : 0);
@@ -204,17 +260,17 @@ function orderMoves(moves) {
 }
 
 /** Returns a legal move from an isolated position, with a bounded alpha-beta search. */
-export function chooseComputerMove(fen, difficulty = 'garden') {
-  let chess;
+export function chooseComputerMove(fen: string, difficulty: Difficulty = 'garden'): MoveCoordinates | null {
+  let chess: Chess;
   try { chess = new Chess(fen); } catch { return null; }
   if (chess.isGameOver()) return null;
   const targetDepth = DEPTHS[difficulty] ?? DEPTHS.garden;
   const candidates = orderMoves(chess.moves({ verbose: true }));
-  let best = candidates[0];
+  let best: Move | undefined = candidates[0];
   let nodes = 0;
   const deadline = Date.now() + 850;
 
-  function search(depth, alpha, beta, ply) {
+  function search(depth: number, alpha: number, beta: number, ply: number): number {
     nodes += 1;
     if (nodes > 30_000 || (nodes % 64 === 0 && Date.now() > deadline)) throw SEARCH_LIMIT;
     if (chess.isCheckmate()) return -MATE + ply;
@@ -223,7 +279,7 @@ export function chooseComputerMove(fen, difficulty = 'garden') {
     let value = -Infinity;
     for (const move of orderMoves(chess.moves({ verbose: true }))) {
       chess.move(moveCoordinates(move));
-      let child;
+      let child: number;
       try { child = -search(depth - 1, -beta, -alpha, ply + 1); }
       finally { chess.undo(); }
       value = Math.max(value, child);
@@ -235,13 +291,14 @@ export function chooseComputerMove(fen, difficulty = 'garden') {
 
   // Iterative deepening keeps a fully evaluated answer if the browser budget expires.
   for (let depth = 1; depth <= targetDepth; depth += 1) {
-    let iterationBest = best;
+    let iterationBest: Move | undefined = best;
     let alpha = -Infinity;
     try {
-      const ordered = [best, ...candidates.filter((move) => move !== best)];
+      const ordered: (Move | undefined)[] = [best, ...candidates.filter((move) => move !== best)];
       for (const move of ordered) {
+        if (!move) continue;
         chess.move(moveCoordinates(move));
-        let score;
+        let score: number;
         try { score = -search(depth - 1, -Infinity, -alpha, 1); }
         finally { chess.undo(); }
         if (score > alpha) {

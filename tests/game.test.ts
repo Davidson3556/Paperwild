@@ -1,8 +1,11 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { createGame, restoreGame, chooseComputerMove } from '../src/game.js';
+import { createGame, restoreGame, chooseComputerMove } from '../src/game.ts';
+import type { ConservatoryGame } from '../src/game.ts';
 
-function play(game, ...moves) {
+type Step = [from: string, to: string, promotion?: string];
+
+function play(game: ConservatoryGame, ...moves: Step[]) {
   for (const [from, to, promotion] of moves) {
     assert.ok(game.move({ from, to, promotion }), `${from}-${to} should be legal`);
   }
@@ -19,15 +22,15 @@ test('legal moves are exposed and invalid attempts leave the board untouched', (
   assert.equal(game.chess.fen(), initial);
   play(game, ['e2', 'e4']);
   assert.equal(game.status().turn, 'b');
-  assert.equal(game.chess.get('e4').type, 'p');
+  assert.equal(game.chess.get('e4')?.type, 'p');
 });
 
 test('castling moves the rook and undo restores both pieces', () => {
   const game = createGame({ fen: 'r3k2r/8/8/8/8/8/8/R3K2R w KQkq - 0 1', mode: 'local' });
   const initial = game.chess.fen();
   play(game, ['e1', 'g1']);
-  assert.equal(game.chess.get('f1').type, 'r');
-  assert.equal(game.chess.get('g1').type, 'k');
+  assert.equal(game.chess.get('f1')?.type, 'r');
+  assert.equal(game.chess.get('g1')?.type, 'k');
   assert.equal(game.undoTurn().length, 1);
   assert.equal(game.chess.fen(), initial);
 });
@@ -39,17 +42,17 @@ test('en passant records the captured pawn and the correct side', () => {
   assert.deepEqual(game.captures(), [{ color: 'b', type: 'p', by: 'w', moveNumber: 3 }]);
   game.undoTurn();
   assert.deepEqual(game.captures(), []);
-  assert.equal(game.chess.get('d5').type, 'p');
+  assert.equal(game.chess.get('d5')?.type, 'p');
 });
 
 test('promotion supports a chosen piece and defaults to a queen', () => {
   const options = { fen: '7k/P7/8/8/8/8/8/7K w - - 0 1' };
   const game = createGame(options);
   play(game, ['a7', 'a8', 'n']);
-  assert.equal(game.chess.get('a8').type, 'n');
+  assert.equal(game.chess.get('a8')?.type, 'n');
   const queenGame = createGame(options);
   play(queenGame, ['a7', 'a8']);
-  assert.equal(queenGame.chess.get('a8').type, 'q');
+  assert.equal(queenGame.chess.get('a8')?.type, 'q');
 });
 
 test('mate reports a winner and rejects further play', () => {
@@ -91,7 +94,7 @@ test('undo removes a completed computer turn, a pending human move, or one local
 
 test('saved games preserve full history, preferences, repetition and undo', () => {
   const game = createGame({ mode: 'local', difficulty: 'wildwood' });
-  const cycle = [['g1', 'f3'], ['g8', 'f6'], ['f3', 'g1'], ['f6', 'g8']];
+  const cycle: Step[] = [['g1', 'f3'], ['g8', 'f6'], ['f3', 'g1'], ['f6', 'g8']];
   play(game, ...cycle, ...cycle);
   assert.equal(game.chess.isThreefoldRepetition(), true);
   const restored = restoreGame(JSON.parse(JSON.stringify(game.serialize())));
@@ -145,7 +148,7 @@ test('each computer difficulty returns a legal move without changing the live ga
   const game = createGame();
   play(game, ['e2', 'e4']);
   const before = game.chess.fen();
-  for (const difficulty of ['seedling', 'garden', 'wildwood']) {
+  for (const difficulty of ['seedling', 'garden', 'wildwood'] as const) {
     const move = chooseComputerMove(before, difficulty);
     assert.ok(move);
     assert.ok(game.moves().some((candidate) => candidate.from === move.from && candidate.to === move.to));

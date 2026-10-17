@@ -4,7 +4,7 @@
 
 Create a distinctive, dependable browser chess game whose board sits inside a miniature botanical conservatory. Captures accumulate flowers, giving the player a visible record of the match. The visual treatment should invite a slower, thoughtful game while keeping every piece, destination, turn, and result clear.
 
-This document describes the current implementation in `src/main.js`, `src/game.js`, and `src/scene.js`. Planned submission tasks are identified separately.
+This document describes the current implementation in `src/main.ts`, `src/game.ts`, and `src/scene.ts`. Planned submission tasks are identified separately.
 
 ## Current product
 

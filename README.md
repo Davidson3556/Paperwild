@@ -18,13 +18,15 @@ This is a private development preview. A public hackathon URL and public reposit
 - Captures add flowers to the garden and journal. Undo restores the board, move history, and capture count together.
 - Explore three **Garden studies**: a capture on d5, promotion on a8, and checkmate on g7.
 - Change between morning and evening light, perspective and overhead views, and gentle or reduced motion. Sound starts off and can be enabled with the speaker button.
+- Meet the residents: tap the robin or snail, or use **Say hello** with a keyboard. The robin changes perches, the snail wanders along the rim, and a bee and butterfly visit the plants and new capture flowers.
+- **Let it rain** changes the light and shelters the insects. Evening brings out fireflies and lantern light. Moving leaf shadows, drifting sunlight, and occasional falling leaves continue around the game.
 - The game and settings save in this browser. Download the game as PGN from the Field notes panel.
 
 Arrow keys explore the board; Enter chooses a square; Escape clears selection; **U** undoes a turn. A flat board is used when the 3D scene cannot initialize.
 
 ## Run locally
 
-Use Node.js 20.19+ or 22.12+ and npm.
+Use Node.js 22.18+ and npm. The tests run the TypeScript sources directly through Node's built-in type stripping.
 
 ```sh
 npm ci
@@ -35,6 +37,7 @@ Open **http://127.0.0.1:4173**.
 
 ```sh
 npm test
+npm run typecheck
 npm run build
 npm run preview
 ```
@@ -43,8 +46,9 @@ npm run preview
 
 ## Implementation
 
-- **Vite and native JavaScript modules** provide the browser application and build.
+- **Vite and strict TypeScript** provide the browser application and build. `npm run build` type-checks with `tsc` before bundling.
 - **Three.js** renders the scene. The board, pieces, plants, and materials are generated in code.
+- TypeScript modules keep the chess engine, wildlife, and room atmosphere separate. Animation pauses in hidden tabs; reduced motion freezes the decorative world while chess remains playable.
 - **chess.js** supplies legal moves, game history, special moves, and game termination.
 - The computer uses bounded alpha-beta search at depths 1, 2, and 3. Search normally runs in a Web Worker and has a synchronous fallback.
 - `localStorage` stores the starting position and complete move history. Restoration replays the history to retain repetition detection and undo.

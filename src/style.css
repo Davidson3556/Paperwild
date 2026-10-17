@@ -12,3 +12,22 @@
 :root{color:var(--ink);background:var(--paper)}body{color:var(--ink)}
 @media(max-width:420px){.scene-stage{height:410px;min-height:0}.scene-caption p{font-size:14px}.scene-topline{font-size:6px}.scene-controls{gap:10px}.scene-controls button{font-size:7px}.scene-controls button svg{width:13px;height:13px}.invitation h1{font-size:43px}.experience{gap:12px}.section-heading h2{font-size:19px}}
 @media(prefers-reduced-motion:reduce){html:not(.reduced-motion) *,html:not(.reduced-motion) *::before,html:not(.reduced-motion) *::after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+
+/* The page is part of the glasshouse: weather and leaf-shadows live behind it. */
+.app-shell{position:relative;z-index:1}
+.living-atmosphere{position:fixed;inset:0;pointer-events:none;z-index:0}
+.wildlife-note{display:flex;align-items:center;justify-content:center;gap:8px;margin:0 14px 12px;color:var(--muted);font-size:8px;line-height:1.7;min-height:25px}
+.wildlife-presence{width:4px;height:4px;flex:none;background:#85966c;border-radius:50%;box-shadow:0 0 0 4px #85966c0b}
+.resident-greeting{padding:4px 0;margin-left:9px;white-space:nowrap;font-size:9px;border-bottom:1px solid var(--line);color:var(--ink)}
+.resident-greeting>span{margin-left:4px;color:var(--gold)}
+.scene-caption .caption-index{font-size:7px;line-height:1.6;letter-spacing:1.1px;min-width:65px}
+.scene-caption #garden-observation{transition:color .6s;max-width:80%;text-align:center}
+.scene-controls #weather[aria-pressed=true]{color:var(--ink)}
+.scene-controls #weather svg{transition:transform .5s}
+.scene-controls #weather:hover svg{transform:translateY(2px)}
+[data-weather=rain] .scene-topline i{background:#7e9ba0;box-shadow:0 0 0 3px #7e9ba015}
+[data-weather=rain] body{background:radial-gradient(ellipse at 62% 40%,#e9eee7 0,transparent 61%),var(--paper)}
+[data-atmosphere=dusk][data-weather=rain] body{background:radial-gradient(ellipse at 62% 40%,#34484b 0,transparent 60%),var(--paper)}
+[data-atmosphere=dusk] button:hover:not(:disabled){color:#e6ca8e}
+@media(max-width:1279px){.scene-controls{gap:10px}.scene-controls #weather span{display:none}.wildlife-note{font-size:7px;gap:7px}.resident-greeting{font-size:8px}.scene-caption #garden-observation{font-size:15px}}
+@media(max-width:720px){.wildlife-note{justify-content:flex-start;margin:0 2px 7px;font-size:8px;gap:8px}.wildlife-note #wildlife-hint{max-width:230px}.resident-greeting{margin-left:auto;font-size:9px}.scene-controls #weather span{display:inline}.scene-caption #garden-observation{font-size:15px;max-width:75%}.scene-caption .caption-index{min-width:52px;font-size:6px}}
