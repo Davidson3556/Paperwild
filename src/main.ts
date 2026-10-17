@@ -62,7 +62,7 @@ let resizeFrame = 0;
 document.querySelector('#app')!.innerHTML = `
   <div class="app-shell">
     <header class="masthead">
-      <a class="brand" href="/" aria-label="The Marginwood Club home"><span class="brand-mark">${leaf}</span><span>The Marginwood<strong>Chess Club</strong></span></a>
+      <a class="brand" href="/" aria-label="Paperwild home"><span class="brand-mark">${leaf}</span><span>Paperwild<strong>Chess, drawn to life.</strong></span></a>
       <div class="masthead-note"><span class="small-star">✧</span> Good company. Questionable strategies.</div>
       <div class="header-actions"><button class="icon-button" id="sound" aria-label="Turn sound on" title="Sound">${icon('mute')}</button><button class="icon-button" id="help" aria-label="How to play" title="How to play">${icon('help')}</button><span class="edition">FIELD BOOK No. 01</span></div>
     </header>
@@ -322,8 +322,8 @@ for(const b of all('[data-study]'))b.onclick=()=>{
 };
 for(const b of all('[data-promotion]'))b.onclick=()=>{const move=pendingPromotion;if(!move)return;dialog('#promotion-dialog').close();commitMove({...move,promotion:b.dataset.promotion as PromotionPiece});};
 button('#export').onclick=()=>{
-  game.chess.header('Event','The Marginwood Club','White',game.mode==='computer'?'You':'Amber','Black',game.mode==='computer'?'The club':'Indigo');
-  const url=URL.createObjectURL(new Blob([game.chess.pgn()],{type:'application/x-chess-pgn'}));const a=document.createElement('a');a.href=url;a.download='a-marginwood-game.pgn';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
+  game.chess.header('Event','Paperwild','White',game.mode==='computer'?'You':'Amber','Black',game.mode==='computer'?'The club':'Indigo');
+  const url=URL.createObjectURL(new Blob([game.chess.pgn()],{type:'application/x-chess-pgn'}));const a=document.createElement('a');a.href=url;a.download='paperwild-game.pgn';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
 };
 document.addEventListener('keydown',e=>{if(e.key.toLowerCase()==='u'&&!document.querySelector('dialog[open]')&&!['INPUT','TEXTAREA','SELECT'].includes((e.target as HTMLElement).tagName)&&!e.ctrlKey&&!e.metaKey){if(!e.defaultPrevented){e.preventDefault();undo();}}});
 try {

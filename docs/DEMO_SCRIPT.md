@@ -1,4 +1,4 @@
-# A one-minute visit to The Marginwood Club
+# A one-minute visit to Paperwild
 
 Pitch: **A familiar game, drawn into a little world that carries on around you.**
 
@@ -7,7 +7,7 @@ Record the real app. Let its movement breathe; avoid a rapid tour of every butto
 | Time | Show | Say |
 | --- | --- | --- |
 | 0–3 s | Hold on the complete page: characters idle, the tea balloon rocks, and steam rises in the margins. | Let the world introduce itself without narration. |
-| 3–12 s | Choose With a friend; move the hare g1–f3 and let the hop settle. Briefly open Who’s who in the club? | “Welcome to The Marginwood Club. Familiar chess, with some curious company. The hare is your knight.” |
+| 3–12 s | Choose With a friend; move the hare g1–f3 and let the hop settle. Briefly open Who’s who in the club? | “Welcome to Paperwild. Familiar chess, with some curious company. The hare is your knight.” |
 | 12–27 s | Little chess stories → Tea on the sidelines → d5. Hold through the captured acorn’s departure and margin reaction. | “Nobody disappears when they leave the board. They join the sideline society. There’s always room for one more at tea.” |
 | 27–36 s | Undo and repeat the capture; then use Say hello. | “Undo puts everyone back. And the world around the game notices you, too.” |
 | 36–45 s | Invite A little rain, watch the cloud and tea-party umbrella, then switch Daydream to Moonlight. | “A passing shower, a cup raised to your next move, or a little moonlight. The page has a life of its own.” |

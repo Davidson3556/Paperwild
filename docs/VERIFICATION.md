@@ -2,7 +2,15 @@
 
 First build verification: October 17, 2026 (Africa/Lagos).
 
-## Current illustrated Marginwood revision — October 17, 2026
+## Paperwild repository release — October 17, 2026
+
+- Renamed the app, page metadata, package, favicon, and PGN export to Paperwild. Legacy browser save keys remain compatible.
+- Removed the tracked private-hosting configuration and vendor-specific references from the published files. Local configuration, build output, dependencies, and raw TestSprite artifacts remain excluded from source control.
+- `npm test`: 13 passed; strict TypeScript and `npm run build` passed after the rebrand. The Paperwild production entry is `index-57Drn_F8.js`.
+- Chrome showed the Paperwild title and wordmark and decoded all 32 starting character images. The README screenshot was captured from the actual running game.
+- Published source target: [Davidson3556/Paperwild](https://github.com/Davidson3556/Paperwild). Public app deployment and TestSprite Portal/GitHub App execution remain pending.
+
+## Current illustrated Paperwild revision — October 17, 2026
 
 The active renderer is now DOM/SVG with original transparent character illustrations, pencil-style margin drawings, and paper texture. The strict TypeScript chess engine and existing save keys are preserved. The earlier 3D observations below are historical evidence for previous versions, not validation of this renderer.
 
@@ -82,4 +90,4 @@ The workflow recovered by supplying the app’s product requirements through the
 
 The runner also recorded a control websocket disconnect, repeated `ENOTFOUND control.tun.testsprite.com`, and backend response failures beginning around 00:20 WAT. The run still completed and released its lock; it did not end through its timeout path. No rerun or source edit followed. The dashboard process was stopped after retaining the artifacts.
 
-The [audited report](TESTSPRITE_RUN_2026-10-17.md) links each actual TestSprite result and the retained local scripts/raw report. The [current 17-scenario acceptance specification](TESTSPRITE_PLAN.md) covers the illustrated version. Dedicated Portal 3.0 suite validation, public hackathon deployment, public GitHub repository, GitHub App PR checks, and Discord submission remain pending. The private Sites preview is available at https://queens-conservatory-davidson.sweetbox2.chatgpt.site.
+The [audited report](TESTSPRITE_RUN_2026-10-17.md) links each actual TestSprite result and the retained local scripts/raw report. The [current 17-scenario acceptance specification](TESTSPRITE_PLAN.md) covers the illustrated version. Source is available at [Davidson3556/Paperwild](https://github.com/Davidson3556/Paperwild). Dedicated Portal 3.0 suite validation, a public hackathon deployment, GitHub App PR checks, and Discord submission remain pending.

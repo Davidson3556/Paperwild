@@ -1,4 +1,4 @@
-# Product requirements: The Marginwood Club
+# Product requirements: Paperwild
 
 ## Intent
 
@@ -59,7 +59,7 @@ Opening a story replaces the current position and uses local mode. Its starting 
 - Store sound, atmosphere, weather, motion, and the retained compatibility view setting in `queens-conservatory.preferences.v1`. The active board is flat; the view control is hidden.
 - Restore by validating and replaying the history so undo and repetition remain correct. A study banner is restored only when its starting FEN matches the restored game.
 - Recover from malformed saves with a usable fresh game. Failed storage writes must not prevent play; show the unavailable-storage state.
-- Export PGN as `a-marginwood-game.pgn`, including The Marginwood Club event, player headers, moves, and setup FEN where needed. Export is disabled before a move.
+- Export PGN as `paperwild-game.pgn`, including the Paperwild event, player headers, moves, and setup FEN where needed. Export is disabled before a move.
 
 Saves remain local to the same browser and origin. There are no accounts, network multiplayer, or cloud synchronization.
 
@@ -71,10 +71,10 @@ Saves remain local to the same browser and origin. There are no accounts, networ
 4. Test assertions must check complete feature outcomes. A screenshot, nonempty URL, or successful button click alone does not prove correct chess.
 5. Build and strict type checking must succeed; local engine tests must pass before release.
 
-Current evidence: **13 local engine tests pass, and strict TypeScript checking passes.** Build and browser observations are recorded separately in [VERIFICATION.md](VERIFICATION.md). No TestSprite cloud run has yet targeted the illustrated Marginwood interface.
+Current evidence: **13 local engine tests pass, and strict TypeScript checking passes.** Build and browser observations are recorded separately in [VERIFICATION.md](VERIFICATION.md). No TestSprite cloud run has yet targeted the illustrated Paperwild interface.
 
 The [historical October 17 native run](TESTSPRITE_RUN_2026-10-17.md) targeted the earlier 3D prototype. Raw 2 passed / 4 failed became all six intended feature scenarios inconclusive after assertion review. It establishes no acceptance coverage for the current UI. The [current TestSprite plan](TESTSPRITE_PLAN.md) is a specification, not an executed suite.
 
 ## Submission work
 
-The current private preview address remains https://queens-conservatory-davidson.sweetbox2.chatgpt.site. Public source and deployment, a meaningful TestSprite Portal 3.0 suite, a demonstrated GitHub App pull-request check, and the actual hackathon submission remain pending. Retain real failing assertions, fixes, and successful reruns; do not present planned cases as passing evidence.
+The public source repository is [Davidson3556/Paperwild](https://github.com/Davidson3556/Paperwild). A public playable deployment, a meaningful TestSprite Portal 3.0 suite, a demonstrated GitHub App pull-request check, and the actual hackathon submission remain pending. Retain real failing assertions, fixes, and successful reruns; do not present planned cases as passing evidence.

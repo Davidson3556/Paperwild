@@ -5,5 +5,7 @@ dist/
 .env.*
 testsprite_tests/
 .sites/
+.openai/
+.codex/
 testsprite_tests/tmp/config.json
 testsprite_tests/tmp/

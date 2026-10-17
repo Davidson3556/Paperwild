@@ -1,44 +1,34 @@
-# The Marginwood Club
+# Paperwild
 
-**Meet you in the margins.** A playable chess sketchbook with a woodland cast and a little world carrying on around the game.
+### Chess, drawn to life.
 
-Acorns take the first step. Hares hop, moths drift, and bookish badgers guard their kingside. Captured characters join the sideline society instead of disappearing. Beyond the board, a leaf-lifted tea balloon wanders past a sleepy cloud, a tortoise carries its cottage home, and a rabbit and hedgehog share a pot of tea.
+A woodland chess game on a living sketchbook page. Acorns advance, hares hop, moths drift, and bookish badgers protect their crowns. Captured characters leave the board for tea on the sidelines. Around them, a leaf-lifted tea balloon rocks, a tortoise carries its cottage, and a rabbit and hedgehog keep the kettle warm.
 
-Built for **[TestSprite Hackathon Season 4](https://www.testsprite.com/hackathon-s4)**.
+![Paperwild: illustrated chess, woodland characters, and a living pencil-drawn world](docs/media/paperwild-preview.png)
 
-## Preview
+Built for **[TestSprite Hackathon Season 4](https://www.testsprite.com/hackathon-s4)** · [Source](https://github.com/Davidson3556/Paperwild)
 
-[Open the private development preview](https://queens-conservatory-davidson.sweetbox2.chatgpt.site).
+**Public demo: pending deployment.** A judge-accessible live URL, current TestSprite Portal results, and a demonstrated GitHub App pull-request check will be added here when available. This repository is a work in progress, not a completed hackathon submission.
 
-The hosting address retains the prototype’s original name. A public repository, public playable URL, TestSprite Portal 3.0 suite, and verified GitHub App checks remain submission work. No submission has been made.
+## A small game. A whole little world.
 
-## Play
+- **Complete chess:** legal moves, check, castling, en passant, four promotion choices, and standard draw conditions.
+- **Two ways to play:** take White/Amber against the computer at three bounded difficulty levels, or share the board with a friend.
+- **An illustrated cast:** acorn pawns, stump rooks, hare knights, moth bishops, fox queens, and badger kings, in Amber and Indigo palettes. Conventional role labels and a character guide keep the rules readable.
+- **Characters with somewhere to go:** idle gestures, distinctive moves, and capture arcs; captured friends join the sideline society. Undo restores everyone’s place.
+- **Life beyond the board:** fine pencil-style margin drawings, resident greetings, drifting leaves, tea steam, a passing shower, and Daydream/Moonlight paper treatments.
+- **A thoughtful pace:** keyboard play, visible legal destinations, opt-in sound, reduced motion, and hidden-page animation pausing.
+- **A place in the story:** local save/resume, full move history, PGN download, and three short capture, promotion, and checkmate stories.
 
-- **Against the club:** play Amber (White) against Indigo (Black). Choose Sleepy, Thoughtful, or Mischievous.
-- **With a friend:** take turns on the same device.
-- Choose a character, then a marked destination. Standard chess rules apply, including castling, en passant, and all four promotion choices.
-- Captured characters travel to the sidelines. Undo restores the board, history, and sideline society together.
-- Open **Little chess stories** for **Tea on the sidelines** (capture on d5), **Room to become** (promotion on a8), or **One final move** (checkmate on g7). Each story preselects its starting piece.
-- Turn Daydream into Moonlight, invite a little rain, or **Say hello** to the residents. The margin drawings respond without changing the chess position.
-- Pause the wandering for reduced motion. Sound is off until enabled.
-- Your game and preferences save in this browser. Download the moves as PGN from **Field notes**.
-
-Arrow keys explore the board; Enter chooses a square; Escape clears selection; **U** undoes a turn. Coordinate, color, and conventional chess-role labels remain available even though the pieces are woodland characters. **Who’s who in the club?** explains the cast.
-
-| Chess role | Club character |
-| --- | --- |
-| Pawn | Acorn sprite |
-| Rook | Tree stump |
-| Knight | Hare |
-| Bishop | Moth |
-| Queen | Fox |
-| King | Badger |
+Choose **Against the club** or **With a friend**. Select a character, then a marked square. Open **Little chess stories** for a quick demonstration. Arrow keys explore, Enter chooses, Escape releases, and **U** undoes.
 
 ## Run locally
 
-Use **Node.js 22.18+** and npm. Tests run the TypeScript sources through Node’s built-in type stripping.
+Requires **Node.js 22.18+** and npm. No backend, API key, or environment file is needed.
 
 ```sh
+git clone https://github.com/Davidson3556/Paperwild.git
+cd Paperwild
 npm ci
 npm run dev
 ```
@@ -46,39 +36,40 @@ npm run dev
 Open **http://127.0.0.1:4173**.
 
 ```sh
-npm test
-npm run typecheck
-npm run build
-npm run preview
+npm test              # engine integration tests
+npm run typecheck     # strict TypeScript checks
+npm run build         # type-check and create dist/
+npm run preview       # serve the production build locally
 ```
 
-Development and preview both use port 4173; stop one before starting the other. No backend, account, API key, or environment file is needed to run the game.
+Development and preview both use port 4173; stop one before starting the other. To deploy, run `npm ci` and `npm run build`, then serve `dist/` with a static host. A public hackathon deployment must be reachable without a private-preview login.
 
-## How it is built
+## Built with
 
-- **Vite and strict TypeScript:** the production build type-checks before bundling.
-- **DOM, SVG, and original transparent PNG artwork:** a flat illustrated board, twelve woodland character assets in Amber and Indigo palettes, textured paper, and fine pencil-style margin drawings. There is no WebGL dependency in the active renderer.
-- **CSS and Web Animations:** gentle idle gestures, movement suited to each character, capture arcs, drifting leaves, rising tea steam, and resident greetings. Reduced motion settles the action; hidden-page animations pause.
-- **chess.js:** legal moves, complete history, special moves, game termination, undo, and PGN.
-- **A bounded computer search:** three search depths run in a worker with a synchronous fallback. These are casual difficulty levels, not claimed Elo ratings.
-- **Validated local saves:** the starting position and full history are replayed on restore to preserve undo and repetition detection.
+**Vite + strict TypeScript**, **DOM/SVG**, **CSS/Web Animations**, and **chess.js**. The active board renderer is flat and does not require WebGL. The computer searches in a worker with bounded time/depth and a synchronous fallback; difficulty labels are not Elo ratings.
 
-See [art provenance and exact generation prompts](docs/ART_PROMPTS.md) for the original character and paper assets. The earlier prototype’s `scene.ts`, `wildlife.ts`, and `atmosphere.ts` remain in the source tree but are not imported by the current application entry point.
+Original AI-generated character and paper artwork is combined with code-drawn SVG margin residents. [Art provenance and generation prompts](docs/ART_PROMPTS.md) document the assets. Saved games stay in the current browser and origin; multiplayer means two people on one device.
 
-Saved games stay on the current browser and origin. Two-player mode shares one device; network multiplayer and cloud accounts are outside this version’s scope.
+## Testing and verification
 
-## Validation and submission
+| Layer | Recorded status and scope |
+| --- | --- |
+| Local engine suite | **13 passing tests**: legality, castling, en passant, promotion, mate/stalemate, undo, save restoration, repetition, reset, invalid saves, and computer legality. |
+| Strict types and production build | Passed in the recorded illustrated revision; reproduce with the commands above. |
+| Browser verification | Focused desktop/mobile Chrome checks cover actual moves, illustrated castling/en passant, promotion, mate, undo, resume, preferences, and reduced motion. [Evidence and limits](docs/VERIFICATION.md). |
+| Current illustrated UI in TestSprite | **Pending.** The [17-scenario acceptance plan](docs/TESTSPRITE_PLAN.md) requires board, role-image, history, capture, persistence, and accessibility assertions. |
+| GitHub App PR checks | **Pending setup and a demonstrated run.** |
 
-The local engine suite passes **13 tests**, and strict TypeScript checking passes. These checks cover game-state behavior and types; they do not establish browser animation, layout, or cloud acceptance coverage. Current browser and build evidence belongs in [the verification record](docs/VERIFICATION.md).
+The [historical native TestSprite run](docs/TESTSPRITE_RUN_2026-10-17.md) tested an earlier 3D prototype. Raw statuses were 2 passed / 4 failed, but assertion review left **all six intended gameplay scenarios inconclusive**. Those results do not validate Paperwild’s illustrated interface.
 
-**The illustrated Marginwood interface has not yet had a TestSprite cloud run.** The [historical audited native run](docs/TESTSPRITE_RUN_2026-10-17.md) targeted the earlier 3D prototype: raw statuses were 2 passed / 4 failed, but all six intended gameplay scenarios were inconclusive after reviewing the generated assertions. That run is not validation of this interface.
+## Hackathon release checklist
 
-The [current acceptance plan](docs/TESTSPRITE_PLAN.md) specifies meaningful board, role-image, history, capture, persistence, and accessibility assertions for the next run. See also [product requirements](docs/PRODUCT_REQUIREMENTS.md) and [the one-minute demo](docs/DEMO_SCRIPT.md).
+Season 4 requires public source with a README describing the app, live URL, and suite coverage; a public deployed app; a suite generated in the TestSprite 3.0 portal; and at least one PR carrying a TestSprite comment or status check. Submit the PR link, live URL, and TestSprite account name/email in Discord’s `#hackathon-submissions`; a demo video is optional. The listed project deadline is **October 22, 2026, 11:59 PM Pacific**, with the final schedule confirmed in Discord. [Official Season 4 rules](https://www.testsprite.com/ja/hackathon-s4).
 
-Before hackathon submission:
+- [ ] Add the public live demo URL above and verify signed-out access.
+- [ ] Generate and run the current suite in TestSprite Portal 3.0; link real results.
+- [ ] Configure [TestSprite’s GitHub integration](https://docs.testsprite.com/web-portal/integrations/github-integration) against working PR preview deployments and retain a real checked PR.
+- [ ] Triage confirmed defects, commit fixes, and retain the affected-case reruns.
+- [ ] Post the required entry details in the official Discord before the confirmed deadline.
 
-- Publish a public repository and a public playable deployment.
-- Create and execute the required suite in TestSprite Portal 3.0; retain real assertions, failures, fixes, and rerun evidence.
-- Configure the TestSprite GitHub App and demonstrate an actual pull-request check.
-- Attach the public links, test evidence, and a short demonstration.
-- Confirm the final schedule and submission instructions in the event Discord.
+[Product requirements](docs/PRODUCT_REQUIREMENTS.md) · [Acceptance plan](docs/TESTSPRITE_PLAN.md) · [Verification record](docs/VERIFICATION.md) · [One-minute demo script](docs/DEMO_SCRIPT.md)

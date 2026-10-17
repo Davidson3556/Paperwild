@@ -1,16 +1,16 @@
-# TestSprite acceptance plan: The Marginwood Club
+# TestSprite acceptance plan: Paperwild
 
 ## Execution status
 
 **This is the acceptance specification for the illustrated DOM/SVG interface. It has not been cloud-executed.** The current local engine suite passes 13 tests and strict TypeScript checking passes. Actual build and manual browser observations belong in [VERIFICATION.md](VERIFICATION.md), not in this planned suite.
 
-The [historical native run](TESTSPRITE_RUN_2026-10-17.md) targeted the earlier 3D prototype. Its raw result was 2 passed / 4 failed, but all six intended gameplay scenarios were inconclusive after auditing the generated assertions. It is retained as historical evidence, not coverage of Marginwood. TestSprite Portal 3.0 validation and GitHub App integration remain pending.
+The [historical native run](TESTSPRITE_RUN_2026-10-17.md) targeted the earlier 3D prototype. Its raw result was 2 passed / 4 failed, but all six intended gameplay scenarios were inconclusive after auditing the generated assertions. It is retained as historical evidence, not coverage of Paperwild. TestSprite Portal 3.0 validation and GitHub App integration remain pending.
 
 ## Targets and evidence
 
 - Local development: `http://127.0.0.1:4173`, using `npm run dev`.
-- Private preview: `https://queens-conservatory-davidson.sweetbox2.chatgpt.site`; its address retains the prototype name.
-- Public hackathon target and repository: pending. Use the public deployment for final Portal execution.
+- Repository: [Davidson3556/Paperwild](https://github.com/Davidson3556/Paperwild).
+- Public hackathon deployment: pending. Use the public deployment for final Portal execution; a local or private preview is insufficient for submission.
 - Record the exact commit/build, URL, viewport, browser, run link, assertions, console errors, and screenshots. Preserve failed assertions and rerun evidence.
 - Use an isolated browser context for independent cases. Clear only this app’s storage when a clean start is required.
 - Exercise desktop and mobile. Wait for observable game state and settled animation, not a fixed computer response or a screenshot alone.
@@ -125,7 +125,7 @@ For Sleepy, Thoughtful, and Mischievous, use a fresh Against the club game:
 ### MC-13 — PGN download is the game shown
 
 1. Assert export disabled with empty history. Make a local opening and capture the download.
-2. Assert filename `a-marginwood-game.pgn`, Event The Marginwood Club, player headers, and exact moves. Replay to the displayed position.
+2. Assert filename `paperwild-game.pgn`, Event Paperwild, player headers, and exact moves. Replay to the displayed position.
 3. Repeat with a promotion story; assert setup FEN and promotion SAN, then replay to the same final board.
 
 ### MC-14 — Keyboard, dialogs, and role-independent access

@@ -1,6 +1,6 @@
-# Original art assets — The Marginwood Club
+# Original art assets — Paperwild
 
-These project assets were generated with the built-in OpenAI image generation tool for this game. They are original woodland character and paper illustrations; no reference illustration was traced or reused. Generated 17 October 2026.
+These original woodland characters and paper illustrations were generated with an AI image-generation tool for this game. No reference illustration was traced or reused. Generated 17 October 2026. The exact original prompts below retain the game's working title.
 
 ## Character atlas
 
