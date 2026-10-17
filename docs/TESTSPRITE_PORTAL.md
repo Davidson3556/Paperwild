@@ -37,14 +37,26 @@ The ten-case Portal suite does not certify the full [20-scenario acceptance spec
 
 ## GitHub App setup and remaining submission work
 
-The TestSprite GitHub App is connected with access restricted to **Paperwild**. The PR trigger has **not** been saved or executed. The current PR preview is protected by Vercel authentication, so preview access must be resolved before enabling the trigger. Public production access does not establish that the runner can reach a PR preview.
+The TestSprite GitHub App is connected with access restricted to **Paperwild**. The PR trigger is now **saved and active** with this configuration:
 
-The prepared trigger uses the Vercel bot's PR comment and target pattern `https://paperwild-git-{branch-slug}-davidson3556s-projects.vercel.app`. For the short branch `ci`, this resolves to the observed [PR #2 preview](https://paperwild-git-ci-davidson3556s-projects.vercel.app). Keep branch names short: Vercel can truncate and hash long branch aliases, which this pattern cannot reconstruct. Verify the actual first navigation and reload origin in the PR run before treating it as preview coverage.
+| Setting | Saved value |
+| --- | --- |
+| Repository | Paperwild |
+| Trigger | PR comment from `vercel[bot]` |
+| Target pattern | `https://paperwild-git-{branch-slug}-davidson3556s-projects.vercel.app` |
+| Draft PR runs | Off |
+| Merge gate | Off |
+
+For the short branch `ci`, the target pattern resolves to the observed [PR #2 preview](https://paperwild-git-ci-davidson3556s-projects.vercel.app). Vercel can truncate and hash long branch aliases, which this pattern cannot reconstruct; verify the actual alias before using another branch.
+
+With the user's approval, a public-access exception was applied **only** to `paperwild-git-ci-davidson3556s-projects.vercel.app`. An unauthenticated HEAD request returned 200 and a browser opened the game. Project-wide standard login protection remains on; other previews remain protected. This access check does not establish that a TestSprite PR execution has reached the preview.
+
+The saved trigger displays **Never run**. A manual **Send Test Event** attempt made before the trigger was created produced no observed execution, comment, check, or activity; it is not evidence of a dispatched run. The next step is to observe a new Vercel bot comment and verify whether the active trigger starts an execution. In that execution, verify the initial and reload origins match the PR preview before treating it as preview coverage.
 
 Still required:
 
-1. Resolve PR-preview access and execute the saved plan with its revised target-origin requirements against the preview.
-2. Save the TestSprite trigger and retain an actual TestSprite comment or status check on the current PR.
+1. Observe an actual PR-triggered execution of the saved plan with its revised target-origin requirements against the approved preview.
+2. Retain its result and an actual TestSprite comment or status check on the current PR.
 3. Verify the final README links and submit the required PR link, public app URL, and account details through the official hackathon channel.
 
 Connecting the App and passing ordinary CI do not complete the TestSprite PR-check requirement. No completed hackathon submission is claimed here.

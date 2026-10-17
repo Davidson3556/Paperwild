@@ -68,7 +68,7 @@ The main graphite lines draw themselves in once when the board first appears. Th
 | Strict types and production build | Passed; reproduce with the commands above. |
 | Browser verification | Recorded Chrome checks cover all six active gait profiles, hare/pawn intermediate poses, castling, capture/undo interruption, promotion arrival, ordered computer replies, saved sound preference, reduced motion, and usable 320/390 px layouts. No warnings/errors were observed. Audio initialized without availability errors; audible quality was not assessed. The newest watercolor cast has [separate production-preview evidence](docs/WATERCOLOR_VERIFICATION_2026-10-17.md): all 32 characters blinked and breathed, all 158 painted parts moved without input, chess state stayed unchanged, and capture/promotion/undo/computer/castling/phone checks passed. |
 | TestSprite Portal 3.0 | Ten reviewed cases executed against the public app: **8 service passes / 2 failures** initially; both corrected cases then returned **PASS**. The suite now shows all ten passed across those executions. See the [Portal record, saved plan, and evidence limits](docs/TESTSPRITE_PORTAL.md). This is not deterministic replay or full coverage of the [20-scenario acceptance plan](docs/TESTSPRITE_PLAN.md). |
-| GitHub App PR checks | App connected for Paperwild only. The PR trigger has not been saved or run; the PR preview requires Vercel authentication. [PR #2](https://github.com/Davidson3556/Paperwild/pull/2) has passing ordinary CI, which is separate from a TestSprite check. |
+| GitHub App PR checks | App connected for Paperwild only; the Vercel-comment trigger is saved and active. Only [PR #2's preview](https://paperwild-git-ci-davidson3556s-projects.vercel.app/) has a public-access exception; other previews remain protected. **An actual TestSprite PR execution/comment/check is still pending.** Ordinary CI on [PR #2](https://github.com/Davidson3556/Paperwild/pull/2) passed separately. |
 
 The [historical native TestSprite run](docs/TESTSPRITE_RUN_2026-10-17.md) tested an earlier 3D prototype. Raw statuses were 2 passed / 4 failed, but assertion review left **all six intended gameplay scenarios inconclusive**. A later [three-case native MCP audit](docs/TESTSPRITE_CURRENT_RUN_2026-10-17.md) found two partial smoke tests and one invalid exported replay despite three service passes. These are separate from the current Portal work.
 
@@ -79,7 +79,8 @@ Season 4 requires public source with a README describing the app, live URL, and 
 - [x] Add the public live demo URL above and verify signed-out access.
 - [x] Generate and run ten reviewed cases in [TestSprite Portal 3.0](docs/TESTSPRITE_PORTAL.md); record the initial results and limits.
 - [x] Rerun the two corrected cases and record their service passes separately from the initial execution.
-- [ ] Configure [TestSprite’s GitHub integration](https://docs.testsprite.com/web-portal/integrations/github-integration) against working PR preview deployments and retain a real checked PR.
+- [x] Connect [TestSprite’s GitHub integration](https://docs.testsprite.com/web-portal/integrations/github-integration), save the PR trigger, and verify public access to the approved PR #2 preview.
+- [ ] Retain an actual TestSprite PR execution and comment or status check against that preview.
 - [ ] Triage confirmed defects, commit fixes, and retain the affected-case reruns.
 - [ ] Post the required entry details in the official Discord before the confirmed deadline.
 
