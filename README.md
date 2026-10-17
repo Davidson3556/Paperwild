@@ -67,8 +67,8 @@ The main graphite lines draw themselves in once when the board first appears. Th
 | Character choreography tests | **3 passing motion invariant tests**; **34 local tests total** across engine, sound, PCM, and motion. |
 | Strict types and production build | Passed; reproduce with the commands above. |
 | Browser verification | Recorded Chrome checks cover all six active gait profiles, hare/pawn intermediate poses, castling, capture/undo interruption, promotion arrival, ordered computer replies, saved sound preference, reduced motion, and usable 320/390 px layouts. No warnings/errors were observed. Audio initialized without availability errors; audible quality was not assessed. The newest watercolor cast has [separate production-preview evidence](docs/WATERCOLOR_VERIFICATION_2026-10-17.md): all 32 characters blinked and breathed, all 158 painted parts moved without input, chess state stayed unchanged, and capture/promotion/undo/computer/castling/phone checks passed. |
-| TestSprite Portal 3.0 | Ten reviewed cases executed against the public app: **8 service passes / 2 failures** initially; both corrected cases then returned **PASS**. The suite now shows all ten passed across those executions. See the [Portal record, saved plan, and evidence limits](docs/TESTSPRITE_PORTAL.md). This is not deterministic replay or full coverage of the [20-scenario acceptance plan](docs/TESTSPRITE_PLAN.md). |
-| GitHub App PR checks | App connected for Paperwild only; the Vercel-comment trigger is saved and active. Only [PR #2's preview](https://paperwild-git-ci-davidson3556s-projects.vercel.app/) has a public-access exception; other previews remain protected. **An actual TestSprite PR execution/comment/check is still pending.** Ordinary CI on [PR #2](https://github.com/Davidson3556/Paperwild/pull/2) passed separately. |
+| TestSprite Portal 3.0 | A manual ten-case run against PR #2 preview head `e2aa53d` returned **10 service passes / 0 failures / 0 blocked**. Runtime logs confirm every case initially navigated to that preview. **Acceptance coverage remains partial:** the illegal-move case showed no illegal attempt, and the sound case did not demonstrate the required behavior checks. See the [Portal record and runtime evidence](docs/TESTSPRITE_PORTAL.md); this is not full coverage of the [20-scenario specification](docs/TESTSPRITE_PLAN.md). |
+| GitHub App PR checks | The active trigger received PR #2's event and posted a **failed TestSprite V3 check** on `e2aa53d`: its Free-plan gate ran **no tests**. This conflicts with the currently advertised one-repository Free entitlement. See [the check evidence and support draft](docs/TESTSPRITE_PORTAL.md). Only [PR #2's preview](https://paperwild-git-ci-davidson3556s-projects.vercel.app/) is public; other previews remain protected. Ordinary CI passed separately. |
 
 The [historical native TestSprite run](docs/TESTSPRITE_RUN_2026-10-17.md) tested an earlier 3D prototype. Raw statuses were 2 passed / 4 failed, but assertion review left **all six intended gameplay scenarios inconclusive**. A later [three-case native MCP audit](docs/TESTSPRITE_CURRENT_RUN_2026-10-17.md) found two partial smoke tests and one invalid exported replay despite three service passes. These are separate from the current Portal work.
 
@@ -79,8 +79,10 @@ Season 4 requires public source with a README describing the app, live URL, and 
 - [x] Add the public live demo URL above and verify signed-out access.
 - [x] Generate and run ten reviewed cases in [TestSprite Portal 3.0](docs/TESTSPRITE_PORTAL.md); record the initial results and limits.
 - [x] Rerun the two corrected cases and record their service passes separately from the initial execution.
+- [x] Complete a manual PR #2 preview run and audit the runtime origins and partial assertions.
 - [x] Connect [TestSprite’s GitHub integration](https://docs.testsprite.com/web-portal/integrations/github-integration), save the PR trigger, and verify public access to the approved PR #2 preview.
-- [ ] Retain an actual TestSprite PR execution and comment or status check against that preview.
+- [x] Observe the integration receive a PR event and post a TestSprite check; retain the plan-gate failure.
+- [ ] Resolve the entitlement gate and retain an actual TestSprite PR test execution and result against that preview.
 - [ ] Triage confirmed defects, commit fixes, and retain the affected-case reruns.
 - [ ] Post the required entry details in the official Discord before the confirmed deadline.
 
