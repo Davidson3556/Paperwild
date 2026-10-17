@@ -8,6 +8,8 @@
    Pausing an animation halfway through a blink would leave a sleepy mask. */
 .sketch-scene[data-motion=still] .character-blink,
 .sketch-scene[data-paused=true] .character-blink,
+.reduced-motion .character-blink,
+[data-page-paused=true] .character-blink,
 .sketch-piece.is-moving .character-blink{animation:none!important;opacity:0!important}
 .sketch-piece-body:has(.sketch-piece-art[hidden]) .character-face,
 .sketch-piece-body:has(.sketch-piece-fallback:not([hidden])) .character-face{display:none}

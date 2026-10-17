@@ -8,6 +8,7 @@ import type { Atmosphere, View } from './scene.ts';
 import { createPaperwildSound } from './sound.ts';
 import type { ComputerRequest, ComputerResponse } from './ai.worker.ts';
 import { createSketchMargins } from './sketch-margins.ts';
+import { createCharacterPortrait } from './character-portrait.ts';
 
 interface Preferences { atmosphere: Atmosphere; weather: 'clear' | 'rain'; sound: boolean; view: View; reducedMotion: boolean }
 interface Study { id: string; name: string; label: string; description: string; fen: string; focus: Square }
@@ -29,6 +30,7 @@ const icons = {
 const icon = (name: keyof typeof icons) => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${icons[name]}</svg>`;
 const glyphs: Record<Color, Record<PieceSymbol, string>> = { w: { k:'♔',q:'♕',r:'♖',b:'♗',n:'♘',p:'♙' }, b: { k:'♚',q:'♛',r:'♜',b:'♝',n:'♞',p:'♟' } };
 const clubNames: Record<PieceSymbol, string> = { k:'The bookish badger',q:'The fox queen',r:'The mossy rook',b:'The moth bishop',n:'The wandering hare',p:'The little acorn' };
+const voiceNames: Record<PieceSymbol, string> = { k:'badger',q:'fox',r:'stump',b:'moth',n:'hare',p:'acorn' };
 const SAVE_KEY = 'queens-conservatory.game.v1';
 const PREF_KEY = 'queens-conservatory.preferences.v1';
 const studies: Study[] = [
@@ -58,13 +60,15 @@ let feedbackEpoch = 0;
 let pendingPromotion: MoveInput | null = null;
 let resultDismissed = false;
 let resizeFrame = 0;
+let capturePortraitKey = '';
+const portraitSlot = (color: Color, type: PieceSymbol, label = '') => `<span class="character-portrait-slot" data-portrait="${color}${type}" data-portrait-label="${label}"></span>`;
 
 document.querySelector('#app')!.innerHTML = `
   <div class="app-shell">
     <header class="masthead">
       <a class="brand" href="/" aria-label="Paperwild home"><span class="brand-mark">${leaf}</span><span><span class="brand-word">${[...'Paperwild'].map((letter,i)=>`<span style="--letter-tilt:${[-5,3,-3,5,-2,3,-4,4,-2][i]}deg;--letter-hop:${[0,-2,1,-1,2,0,-2,1,-1][i]}px">${letter}</span>`).join('')}</span><strong>Chess, drawn to life.</strong></span></a>
       <div class="masthead-note"><span class="small-star">☆</span> i drew us a little world!</div>
-      <div class="header-actions"><button class="icon-button sound-button" id="sound" aria-label="Turn sound on" title="Hear the little footsteps">${icon('mute')}<span>Sound off</span></button><button class="icon-button" id="help" aria-label="How to play" title="How to play">${icon('help')}</button><span class="edition">my sketchbook ♡</span></div>
+      <div class="header-actions"><button class="icon-button sound-button" id="sound" aria-label="Turn sound on" title="Hear the creatures and their little footsteps">${icon('mute')}<span>Sound off</span></button><button class="icon-button" id="help" aria-label="How to play" title="How to play">${icon('help')}</button><span class="edition">my sketchbook ♡</span></div>
     </header>
     <main class="experience">
       <aside class="invitation">
@@ -99,10 +103,10 @@ document.querySelector('#app')!.innerHTML = `
     <footer class="footer"><span>no erasers needed.</span><div><button id="motion" aria-pressed="false">Let it wander</button><span>p.s. the drawings are alive :)</span></div></footer>
   </div>
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
-  <dialog id="help-dialog" class="modal"><button class="modal-close icon-button" data-close aria-label="Close instructions">${icon('close')}</button><p class="eyebrow">WELCOME TO THE CLUB</p><h2>Familiar chess.<br><em>Curious company.</em></h2><p>Standard chess, with a woodland cast. Amber is White, indigo is Black. Play the computer or take turns on the same device.</p><div class="character-legend">${(['k','q','r','b','n','p'] as const).map(p=>`<div><img src="/art/pieces/w${p}.png" alt="${clubNames[p]}" width="90" height="90"><strong>${PIECE_NAMES[p]}</strong><span>${clubNames[p]}</span></div>`).join('')}</div><div class="instruction-grid"><div><strong>Choose, then move</strong><p>Select a character, then a marked square. All the usual rules apply, including castling and en passant.</p></div><div><strong>Tea on the sidelines</strong><p>Captured characters leave the board and join the sidelines. Undo restores everyone to their place.</p></div><div><strong>The margins are alive</strong><p>Say hello to the little world, invite a shower, or turn the page toward moonlight.</p></div><div><strong>A quieter page</strong><p>Sound is off until you invite it in. Pause the wandering at the bottom of the page.</p></div></div><div class="keyboard-note"><kbd>↑</kbd><kbd>↓</kbd><kbd>←</kbd><kbd>→</kbd> explore · <kbd>Enter</kbd> choose · <kbd>Esc</kbd> release · <kbd>U</kbd> undo</div><button class="primary-button" data-close>Back to the story ${icon('arrow')}</button></dialog>
+  <dialog id="help-dialog" class="modal"><button class="modal-close icon-button" data-close aria-label="Close instructions">${icon('close')}</button><p class="eyebrow">WELCOME TO THE CLUB</p><h2>Familiar chess.<br><em>Curious company.</em></h2><p>Standard chess, with a woodland cast. Amber is White, indigo is Black. Play the computer or take turns on the same device.</p><p class="voice-invitation">Every friend has a little voice. Tap “hear me” to turn sound on.</p><div class="character-legend">${(['k','q','r','b','n','p'] as const).map(p=>`<div>${portraitSlot('w',p,clubNames[p])}<strong>${PIECE_NAMES[p]}</strong><span>${clubNames[p]}</span><button class="character-voice-button" data-voice="${p}" aria-label="Hear the ${voiceNames[p]}">hear me <span aria-hidden="true">♫</span></button></div>`).join('')}</div><div class="instruction-grid"><div><strong>Choose, then move</strong><p>Select a character, then a marked square. All the usual rules apply, including castling and en passant.</p></div><div><strong>Tea on the sidelines</strong><p>Captured characters leave the board and join the sidelines. Undo restores everyone to their place.</p></div><div><strong>The margins are alive</strong><p>Say hello to the little world, invite a shower, or turn the page toward moonlight.</p></div><div><strong>A quieter page</strong><p>Sound is off until you invite it in. Each friend reacts to your moves in its own voice. Pause the wandering for a still, quieter page.</p></div></div><div class="keyboard-note"><kbd>↑</kbd><kbd>↓</kbd><kbd>←</kbd><kbd>→</kbd> explore · <kbd>Enter</kbd> choose · <kbd>Esc</kbd> release · <kbd>U</kbd> undo</div><button class="primary-button" data-close>Back to the story ${icon('arrow')}</button></dialog>
   <dialog id="studies-dialog" class="modal studies-modal"><button class="modal-close icon-button" data-close aria-label="Close chess studies">${icon('close')}</button><p class="eyebrow">THREE LITTLE CHAPTERS</p><h2>Chess <em>stories.</em></h2><p>Small positions. A little room to discover. Both sides are yours to move.</p><div class="study-options">${studies.map((s,i)=>`<button data-study="${s.id}"><span class="study-index">0${i+1}</span><span><strong>${s.name}</strong><small>${s.label}</small></span>${icon('arrow')}</button>`).join('')}</div><p class="fine-print">Opening a story replaces the current game.</p></dialog>
   <dialog id="new-game-dialog" class="modal small-modal"><span class="modal-mark">${leaf}</span><p class="eyebrow">A FRESH SHEET OF POSSIBILITY</p><h2>Another <em>chapter?</em></h2><p>Your current game and sideline society will be cleared.</p><div class="modal-actions"><button class="secondary-button" data-close>Keep playing</button><button class="primary-button" id="confirm-new">Begin again ${icon('arrow')}</button></div></dialog>
-  <dialog id="promotion-dialog" class="modal small-modal"><p class="eyebrow">A LITTLE ACORN. A BIG POSSIBILITY.</p><h2>Who will you <em>become?</em></h2><p>Choose a new role for your pawn.</p><div class="promotion-options">${(['q','r','b','n'] as const).map(p=>`<button data-promotion="${p}" aria-label="Promote to ${PIECE_NAMES[p]}"><img src="/art/pieces/w${p}.png" alt="" width="95" height="95">${PIECE_NAMES[p]}</button>`).join('')}</div><button class="text-button" data-close>Choose a different move</button></dialog>
+  <dialog id="promotion-dialog" class="modal small-modal"><p class="eyebrow">A LITTLE ACORN. A BIG POSSIBILITY.</p><h2>Who will you <em>become?</em></h2><p>Choose a new role for your pawn.</p><div class="promotion-options">${(['q','r','b','n'] as const).map(p=>`<button data-promotion="${p}" aria-label="Promote to ${PIECE_NAMES[p]}">${portraitSlot('w',p)}${PIECE_NAMES[p]}</button>`).join('')}</div><button class="text-button" data-close>Choose a different move</button></dialog>
   <dialog id="result-dialog" class="modal result-modal"><button class="modal-close icon-button" data-close aria-label="Close result">${icon('close')}</button><div class="result-flower" aria-hidden="true">✧</div><p class="eyebrow">A CHAPTER FOR THE CLUB BOOK</p><h2 id="result-title">What a little<br><em>adventure.</em></h2><p id="result-description"></p><div class="result-stats"><div><strong id="result-moves"></strong><span>MOVES PLAYED</span></div><div><strong id="result-blooms"></strong><span>FRIENDS ON THE SIDELINES</span></div></div><button class="primary-button" id="result-new">Another little adventure ${icon('arrow')}</button><button class="text-button" data-close>Stay a little longer</button></dialog>
 `;
 
@@ -110,7 +114,24 @@ const $ = <T extends HTMLElement = HTMLElement>(s: string) => document.querySele
 const dialog = (s: string) => $<HTMLDialogElement>(s);
 const button = (s: string) => $<HTMLButtonElement>(s);
 const all = <T extends HTMLElement = HTMLButtonElement>(s: string) => document.querySelectorAll<T>(s);
-const sound = createPaperwildSound({onUnavailable:()=>{
+function mountPortraits() {
+  for (const [index, slot] of [...all('[data-portrait]')].entries()) {
+    const color = slot.dataset.portrait![0] as Color, type = slot.dataset.portrait![1] as PieceSymbol;
+    slot.replaceChildren(createCharacterPortrait(color, type, 103 + index * 71, slot.dataset.portraitLabel ?? ''));
+  }
+}
+mountPortraits();
+function pageVisibility() { document.documentElement.dataset.pagePaused = String(document.hidden); }
+document.addEventListener('visibilitychange', pageVisibility); pageVisibility();
+const voiceEvents: string[] = [];
+const sound = createPaperwildSound({onCharacterCall:({role,activity})=>{
+  const control=button('#sound');
+  control.dataset.lastRole=role;control.dataset.lastActivity=activity;
+  control.dataset.voiceCount=String(Number(control.dataset.voiceCount ?? 0)+1);
+  voiceEvents.push(`${role}:${activity}`);
+  if(voiceEvents.length>12)voiceEvents.shift();
+  control.dataset.voiceEvents=voiceEvents.join(',');
+},onUnavailable:()=>{
   prefs.sound=false;applyPreferences();
   showToast('Sound is unavailable here. The little world is still yours to explore.');
 }});
@@ -150,6 +171,7 @@ function persist() {
 function savePreferences() { try {localStorage.setItem(PREF_KEY,JSON.stringify(prefs));} catch {} }
 function onMotion(event: SketchMotionEvent) {
   if(event.phase==='start')sound.moveStart(event.type,{durationMs:event.durationMs,contactTimesMs:event.contactTimesMs});
+  if(event.phase==='capture')sound.captured(event.type);
   if(event.phase==='cancel')sound.cancel();
 }
 function cancelFeedback() {
@@ -190,14 +212,14 @@ function selectSquare(square: Square) {
         pendingPromotion={from,to:square};
         const color=game.chess.get(from)?.color ?? game.chess.turn();
         for(const option of all('[data-promotion]')){
-          const image=option.querySelector('img');
-          if(image)image.src=`/art/pieces/${color}${option.dataset.promotion}.png`;
+          const slot=option.querySelector<HTMLElement>('[data-portrait]');
+          if(slot){slot.dataset.portrait=`${color}${option.dataset.promotion}`;slot.replaceChildren(createCharacterPortrait(color,option.dataset.promotion as PieceSymbol,option.dataset.promotion!.charCodeAt(0)*17));}
         }
         dialog('#promotion-dialog').showModal();return;
       }
       commitMove({from,to:square});return;
     }
-    if (!piece||piece.color!==game.chess.turn()) {showToast('That square isn’t a legal move. Follow the marked possibilities.');return;}
+    if (!piece||piece.color!==game.chess.turn()) {sound.invalid(game.chess.get(from)?.type ?? 'p');showToast('That square isn’t a legal move. Follow the marked possibilities.');return;}
   }
   if (piece?.color===game.chess.turn()) {selected=square;focusedSquare=square;render();sound.select(piece.type);}
   else {selected=null;render();}
@@ -278,7 +300,19 @@ function render() {
   button('#undo').disabled=!history.length;button('#export').disabled=!history.length;
   $('#bloom-count').textContent=String(captures.length).padStart(2,'0');
   $('#bloom-display').setAttribute('aria-label',`${captures.length} captured ${captures.length===1?'piece':'pieces'} on the sidelines`);
-  $('#bloom-display').innerHTML=captures.length?`<div class="bloom-collection">${captures.map((c,i)=>`<span class="bloom-token bloom-${i%4}" title="${c.color==='w'?'White':'Black'} ${PIECE_NAMES[c.type]} captured"><img src="/art/pieces/${c.color}${c.type}.png" alt="${c.color==='w'?'White':'Black'} ${PIECE_NAMES[c.type]} captured" width="64" height="64"></span>`).join('')}</div>`:`<span class="empty-sprout">${leaf}</span><p>The kettle’s on.<br>Everyone is welcome.</p>`;
+  const nextCapturePortraitKey=captures.map(c=>`${c.color}${c.type}${c.by}${c.moveNumber}`).join('|');
+  if(nextCapturePortraitKey!==capturePortraitKey){
+    capturePortraitKey=nextCapturePortraitKey;
+    if(captures.length){
+      const collection=document.createElement('div');collection.className='bloom-collection';
+      captures.forEach((c,i)=>{
+        const label=`${c.color==='w'?'White':'Black'} ${PIECE_NAMES[c.type]} captured`;
+        const token=document.createElement('span');token.className=`bloom-token bloom-${i%4}`;token.title=label;
+        token.append(createCharacterPortrait(c.color,c.type,127*i+41,label));collection.append(token);
+      });
+      $('#bloom-display').replaceChildren(collection);
+    }else $('#bloom-display').innerHTML=`<span class="empty-sprout">${leaf}</span><p>The kettle’s on.<br>Everyone is welcome.</p>`;
+  }
   $('#blooms-caption').textContent=captures.length?`${captures.length} ${captures.length===1?'friend':'friends'} off the board. Still part of the story.`:'Captured pieces keep good company.';
   const rows: {n:number;w:string;b:string}[]=[];for(const m of history){const n=Number(m.before.split(' ')[5]);let row=rows.at(-1);if(!row||row.n!==n){row={n,w:'',b:''};rows.push(row);}row[m.color]=m.san;}
   $('#move-history').innerHTML=rows.length?rows.map((row,i)=>`<li${i===rows.length-1?' class="latest"':''}><span class="move-number">${row.n}.</span><span>${row.w||'…'}</span><span>${row.b||'—'}</span></li>`).join(''):'<li class="history-empty">Your story starts with a move.</li>';
@@ -316,12 +350,15 @@ button('#new-game').onclick=()=>game.chess.history().length?dialog('#new-game-di
 button('#confirm-new').onclick=newGame;button('#result-new').onclick=newGame;button('#leave-study').onclick=newGame;
 button('#undo').onclick=undo;button('#help').onclick=()=>dialog('#help-dialog').showModal();button('#studies').onclick=()=>dialog('#studies-dialog').showModal();
 button('#meet').onclick=()=>dialog('#help-dialog').showModal();
-button('#sound').onclick=()=>{prefs.sound=!prefs.sound;applyPreferences();if(prefs.sound)void sound.unlock().then(ready=>{if(ready&&prefs.sound)sound.toggle();});};
+button('#sound').onclick=()=>{prefs.sound=!prefs.sound;applyPreferences();if(prefs.sound)sound.toggle();};
 button('#atmosphere').onclick=()=>{prefs.atmosphere=prefs.atmosphere==='day'?'dusk':'day';applyPreferences();$('#garden-observation').textContent=prefs.atmosphere==='dusk'?'The paper turns blue. The moths take the next watch.':'Another golden afternoon between the lines.';};
 button('#weather').onclick=()=>{prefs.weather=prefs.weather==='clear'?'rain':'clear';applyPreferences();$('#garden-observation').textContent=prefs.weather==='rain'?'A passing shower. The tea tastes even better.':'The shower passes. The little world wakes again.';};
 button('#view').onclick=()=>{prefs.view=prefs.view==='perspective'?'overhead':'perspective';applyPreferences();};
 button('#motion').onclick=()=>{prefs.reducedMotion=!prefs.reducedMotion;applyPreferences();};
 button('#greet').onclick=()=>{scene?.greetResident();sound.greeting();};
+for(const b of all('[data-voice]'))b.onclick=()=>{
+  prefs.sound=true;applyPreferences();sound.greeting(b.dataset.voice as PieceSymbol);
+};
 $<HTMLSelectElement>('#difficulty').onchange=e=>{const value=(e.currentTarget as HTMLSelectElement).value;if(!isDifficulty(value))return;cancelFeedback();cancelComputer();game.difficulty=value;persist();render();queueComputer();};
 for(const b of all('[data-mode]'))b.onclick=()=>{const mode=b.dataset.mode;if(!isGameMode(mode))return;cancelFeedback();cancelComputer();game.mode=mode;selected=null;persist();render();queueComputer();};
 for(const b of all('[data-close]'))b.onclick=()=>b.closest('dialog')?.close();
@@ -338,7 +375,9 @@ button('#export').onclick=()=>{
 };
 document.addEventListener('keydown',e=>{if(e.key.toLowerCase()==='u'&&!document.querySelector('dialog[open]')&&!['INPUT','TEXTAREA','SELECT'].includes((e.target as HTMLElement).tagName)&&!e.ctrlKey&&!e.metaKey){if(!e.defaultPrevented){e.preventDefault();undo();}}});
 try {
-  scene=createSketchScene($('#scene'),{onSquare:selectSquare,onMotion,reducedMotion:prefs.reducedMotion,onCreature:creature=>{
+  scene=createSketchScene($('#scene'),{onSquare:selectSquare,onMotion,onIdle:role=>{
+    if(!moving&&!thinking&&!prefs.reducedMotion&&!game.status().over)sound.idle(role);
+  },reducedMotion:prefs.reducedMotion,onCreature:creature=>{
     atmosphere.greetResident(creature);
     const observations={robin:'The tea balloon is taking the scenic route.',snail:'The cottage tortoise is in no particular hurry.',butterfly:'A moth has a little moonlight to share.',bee:'The tea party raises a cup to your next move.'};
     $('#garden-observation').textContent=observations[creature];

@@ -1,6 +1,8 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { createPaperwildSound } from '../src/sound.ts';
+import type { CharacterCallEvent } from '../src/sound.ts';
+import type { PieceSymbol } from '../src/game.ts';
 
 class Parameter {
   value = 0;
@@ -22,9 +24,10 @@ class Source extends Node {
   onended: (() => void) | null = null;
   started = false;
   stopped = false;
+  stopTime: number | undefined;
   startTime = 0;
   start(time = 0) { this.started = true; this.startTime = time; }
-  stop() { this.stopped = true; }
+  stop(time?: number) { this.stopTime = time; if (time === undefined) this.stopped = true; }
 }
 class Page extends EventTarget { hidden = false; }
 class Context {
@@ -38,6 +41,7 @@ class Context {
   destination = new Node();
   sources: Source[] = [];
   nodes: Node[] = [];
+  bufferCount = 0;
   resumeCount = 0;
   suspendCount = 0;
   closeCount = 0;
@@ -49,6 +53,7 @@ class Context {
     this.nodes.push(node); return node;
   }
   createBuffer(channels: number, length: number, sampleRate: number) {
+    this.bufferCount++;
     const samples = Array.from({ length: channels }, () => new Float32Array(length));
     return { duration: length / sampleRate, getChannelData(channel: number) { return samples[channel]; } };
   }
@@ -139,7 +144,8 @@ test('a pending unlock cannot play stale cues after mute', async () => {
 
 test('cancel drops stale queued cues without breaking a newer gesture during unlock', async () => {
   await environment(async (_page, activation) => {
-    const sound = createPaperwildSound();
+    const calls: CharacterCallEvent[] = [];
+    const sound = createPaperwildSound({ onCharacterCall: call => calls.push(call) });
     activation.isActive = true; Context.deferResume = true;
     const enabling = sound.setEnabled(true);
     sound.moveStart('b');
@@ -150,7 +156,8 @@ test('cancel drops stale queued cues without breaking a newer gesture during unl
     assert.equal(await enabling, true);
     await Promise.resolve();
     // The fresh selection plays; none of the old four-flap movement is queued.
-    assert.equal(context.sources.length, 2);
+    assert.deepEqual(calls, [{ role: 'p', activity: 'select' }]);
+    assert.ok(context.sources.every(source => source.startTime < 0.025));
     assert.equal(context.resumeCount, 1);
     sound.destroy();
   });
@@ -211,7 +218,7 @@ test('repeated input has bounded polyphony and destroy releases the graph', asyn
     activation.isActive = true; await sound.setEnabled(true);
     for (let index = 0; index < 40; index++) sound.moveStart('b');
     const context = Context.instances[0];
-    assert.ok(context.sources.filter(source => source.started && !source.stopped).length <= 14);
+    assert.ok(context.sources.filter(source => source.started && !source.stopped).length <= 24);
     assert.ok(context.sources.some(source => source.stopped));
     sound.destroy(); sound.destroy();
     assert.equal(context.closeCount, 1);
@@ -221,5 +228,113 @@ test('repeated input has bounded polyphony and destroy releases the graph', asyn
     sound.toggle(); sound.land('k', { ending: 'draw' });
     assert.equal(await sound.setEnabled(true), false);
     assert.equal(context.sources.length, count);
+  });
+});
+
+test('each creature speaks for selection, movement, landing, capture, surprise and puzzlement', async () => {
+  await environment(async (_page, activation) => {
+    const calls: CharacterCallEvent[] = [];
+    const sound = createPaperwildSound({ onCharacterCall: call => calls.push(call) });
+    activation.isActive = true; await sound.setEnabled(true);
+    const roles: readonly PieceSymbol[] = ['p', 'r', 'n', 'b', 'q', 'k'];
+    for (const role of roles) {
+      const before = calls.length;
+      sound.select(role); sound.moveStart(role); sound.land(role);
+      sound.land(role, { capture: true }); sound.captured(role);
+      sound.invalid(role); sound.greeting(role);
+      assert.deepEqual(calls.slice(before), ['select', 'move', 'land', 'capture', 'captured', 'blocked', 'greet'].map(activity => ({ role, activity })));
+    }
+    await sound.setEnabled(false);
+    const count = calls.length;
+    sound.captured('q'); sound.invalid('n'); sound.greeting('b'); sound.idle('k');
+    assert.equal(calls.length, count, 'muted requests never report a scheduled voice');
+    sound.destroy();
+  });
+});
+
+test('landing chooses one expression while capture victims keep their own voice', async () => {
+  await environment(async (_page, activation) => {
+    const calls: CharacterCallEvent[] = [];
+    const sound = createPaperwildSound({ onCharacterCall: call => calls.push(call) });
+    activation.isActive = true; await sound.setEnabled(true);
+    sound.captured('n'); sound.land('q', { capture: true });
+    sound.land('p', { capture: true, check: true });
+    sound.land('b', { capture: true, check: true, promotion: true });
+    sound.land('q', { capture: true, check: true, promotion: true, ending: 'win' });
+    sound.land('r', { promotion: true, ending: 'draw' });
+    assert.deepEqual(calls, [
+      { role: 'n', activity: 'captured' }, { role: 'q', activity: 'capture' },
+      { role: 'p', activity: 'check' }, { role: 'b', activity: 'promotion' },
+      { role: 'q', activity: 'win' }, { role: 'r', activity: 'draw' },
+    ]);
+    sound.destroy();
+  });
+});
+
+test('idle calls cannot unlock audio and stay sparse around foreground activity', async () => {
+  await environment(async (page, activation) => {
+    const calls: CharacterCallEvent[] = [];
+    const sound = createPaperwildSound({ onCharacterCall: call => calls.push(call) });
+    await sound.setEnabled(true);
+    activation.isActive = true;
+    sound.idle('p'); sound.idle('n');
+    assert.equal(Context.instances.length, 0, 'even a gesture does not let idle create audio');
+    await sound.unlock();
+    const context = Context.instances[0];
+    sound.idle('p');
+    assert.equal(calls.length, 0, 'no chorus at opt-in');
+    context.currentTime = 3.1; sound.idle('p'); sound.idle('n');
+    assert.deepEqual(calls, [{ role: 'p', activity: 'idle' }]);
+    context.currentTime = 10.2; sound.idle('p'); sound.idle('n');
+    assert.deepEqual(calls.at(-1), { role: 'n', activity: 'idle' });
+    assert.equal(calls.length, 2, 'global and role cooldowns are independent');
+    context.currentTime = 17.3; sound.select('q'); sound.idle('b');
+    assert.equal(calls.length, 3, 'foreground action gets a quiet interval');
+    context.currentTime = 19.4; sound.idle('b');
+    assert.deepEqual(calls.at(-1), { role: 'b', activity: 'idle' });
+    context.currentTime = 29; sound.idle('p');
+    assert.deepEqual(calls.at(-1), { role: 'p', activity: 'idle' });
+    page.hidden = true; page.dispatchEvent(new Event('visibilitychange'));
+    const count = calls.length, resumes = context.resumeCount;
+    context.currentTime = 60; sound.idle('k');
+    page.hidden = false; page.dispatchEvent(new Event('visibilitychange')); sound.idle('k');
+    assert.equal(calls.length, count); assert.equal(context.resumeCount, resumes);
+    sound.destroy();
+  });
+});
+
+test('castling keeps both movement plans and their contact sounds scheduled', async () => {
+  await environment(async (_page, activation) => {
+    const calls: CharacterCallEvent[] = [];
+    const sound = createPaperwildSound({ onCharacterCall: call => calls.push(call) });
+    activation.isActive = true; await sound.setEnabled(true);
+    const contacts = [70, 210, 350, 490, 630, 770];
+    sound.moveStart('k', { durationMs: 900, contactTimesMs: contacts });
+    sound.moveStart('r', { durationMs: 900, contactTimesMs: contacts });
+    const context = Context.instances[0];
+    assert.deepEqual(calls, [{ role: 'k', activity: 'move' }, { role: 'r', activity: 'move' }]);
+    assert.ok(context.sources.length > 14, 'the old source cap would steal part of this plan');
+    assert.ok(context.sources.every(source => !source.stopped), 'no planned contact was stolen');
+    for (const contact of contacts) {
+      assert.equal(context.sources.filter(source => Math.abs(source.startTime - (0.008 + contact / 1000)) < 0.00001).length, 2);
+    }
+    sound.cancel();
+    assert.ok(context.sources.every(source => source.stopped && source.disconnected));
+    sound.destroy();
+  });
+});
+
+test('four vocal takes are reused without losing natural variation', async () => {
+  await environment(async (_page, activation) => {
+    const sound = createPaperwildSound();
+    activation.isActive = true; await sound.setEnabled(true);
+    const context = Context.instances[0];
+    for (let take = 0; take < 4; take++) sound.greeting('q');
+    const buffers = context.sources.filter(source => source.buffer && source.buffer.duration < 1).map(source => source.buffer);
+    assert.equal(new Set(buffers).size, 4);
+    const previousAllocations = context.bufferCount;
+    for (let take = 0; take < 4; take++) sound.greeting('q');
+    assert.equal(context.bufferCount, previousAllocations, 'repeat takes reuse PCM buffers');
+    sound.destroy();
   });
 });

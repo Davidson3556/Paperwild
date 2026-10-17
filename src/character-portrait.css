@@ -1,0 +1,16 @@
+.character-portrait{display:block;position:relative;width:100%;height:100%;pointer-events:none;overflow:visible}
+.character-portrait .sketch-piece-body{animation:none}
+.character-portrait .sketch-piece-art,.character-portrait .character-idle-part{width:100%;height:100%;object-fit:contain;object-position:center bottom}
+.character-portrait .character-life-marks{display:none}
+.character-portrait-slot{display:block;position:relative;width:90px;height:90px;margin:auto}
+.promotion-options .character-portrait-slot{width:100%;height:90px}
+.bloom-token .character-portrait{width:100%;height:100%}
+.character-portrait[data-color=b] .sketch-piece-fallback{color:#687597}
+
+/* Portraits outside the scene share the page's motion and visibility state. */
+.reduced-motion .character-life,.reduced-motion .character-life-breath,
+[data-page-paused=true] .character-life,[data-page-paused=true] .character-life-breath{animation:none!important;transform:none!important}
+.reduced-motion .character-blink,[data-page-paused=true] .character-blink,
+.reduced-motion .character-life-marks,[data-page-paused=true] .character-life-marks{animation:none!important;opacity:0!important}
+.reduced-motion .character-idle-part,[data-page-paused=true] .character-idle-part{animation:none!important;transform:none!important}
+@media(max-width:720px){.character-portrait-slot{width:83px;height:83px}.promotion-options .character-portrait-slot{height:74px}}

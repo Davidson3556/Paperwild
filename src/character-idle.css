@@ -1,16 +1,20 @@
 /* The PNG is a square contained at the bottom of a taller piece box. Both its
    complementary SVG mask and these copies use that same square geometry. */
 .character-idle{position:absolute;bottom:0;left:0;width:100%;aspect-ratio:1;z-index:2;pointer-events:none;visibility:hidden}
-.sketch-piece.has-idle-parts:not(.is-moving) .sketch-piece-body[data-artwork=ready]>.character-idle[data-ready=true]{visibility:visible}
-.sketch-piece.has-idle-parts:not(.is-moving) .sketch-piece-body[data-artwork=ready]:has(>.character-idle[data-ready=true])>.sketch-piece-art{-webkit-mask-image:var(--idle-cutout);mask-image:var(--idle-cutout);-webkit-mask-size:100% 100%;mask-size:100% 100%;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;mask-mode:alpha}
+:is(.sketch-piece,.character-portrait).has-idle-parts .sketch-piece-body[data-artwork=ready]>.character-idle[data-ready=true]{visibility:visible}
+:is(.sketch-piece,.character-portrait).has-idle-parts .sketch-piece-body[data-artwork=ready]:has(>.character-idle[data-ready=true])>.sketch-piece-art{-webkit-mask-image:var(--idle-cutout);mask-image:var(--idle-cutout);-webkit-mask-size:100% 100%;mask-size:100% 100%;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;mask-mode:alpha}
 .character-idle-part{display:block;position:absolute;inset:0;width:100%;height:100%;object-fit:contain;pointer-events:none;backface-visibility:hidden;animation-duration:var(--part-cycle,9s);animation-delay:var(--part-phase,0s);animation-timing-function:ease-in-out;animation-iteration-count:infinite}
 .character-idle-left-ear{animation-name:character-ear-listen-left}
 .character-idle-right-ear{animation-name:character-ear-listen-right;animation-duration:calc(var(--part-cycle,9s) + 1.1s)}
 .character-idle-left-wing{animation-name:character-wing-rest-left}
 .character-idle-right-wing{animation-name:character-wing-rest-right}
+.character-idle-left-hand{animation-name:character-hand-wave}
+.character-idle-right-hand{animation-name:character-hand-pat;animation-duration:calc(var(--part-cycle,9s) + 1.8s)}
+.character-idle-left-foot{animation-name:character-foot-fidget;animation-duration:calc(var(--part-cycle,9s) + 3s)}
+.character-idle-right-foot{animation-name:character-foot-fidget;animation-duration:calc(var(--part-cycle,9s) + 4.6s);animation-direction:reverse}
+.character-idle-leaf{animation-name:character-leaf-listen}
 .character-idle-tail-tip{animation-name:character-tail-rest;animation-duration:calc(var(--part-cycle,9s) + 2s)}
-.sketch-piece.is-moving .character-idle{display:none}
-.sketch-piece.is-moving .character-idle-part,
+.sketch-piece.is-moving .character-idle-part{animation:none}
 .sketch-scene[data-motion=still] .character-idle-part,
 .sketch-scene[data-paused=true] .character-idle-part{animation:none!important;transform:none!important}
 .sketch-piece-body:has(>.sketch-piece-art[hidden])>.character-idle,
@@ -48,3 +52,28 @@
   76%{transform:rotate(-.55deg)}
 }
 @media(prefers-reduced-motion:reduce){.character-idle-part{animation:none!important;transform:none!important}}
+
+@keyframes character-hand-wave{
+  0%,18%,40%,100%{transform:none}
+  23%{transform:rotate(-9deg)}
+  27%{transform:rotate(-3deg)}
+  31%{transform:rotate(-11deg)}
+  35%{transform:rotate(-2deg)}
+}
+@keyframes character-hand-pat{
+  0%,55%,79%,100%{transform:none}
+  60%,69%{transform:rotate(7deg) translateY(-.5%)}
+  64%,73%{transform:rotate(2deg)}
+}
+@keyframes character-foot-fidget{
+  0%,72%,90%,100%{transform:none}
+  77%,84%{transform:rotate(5deg) translateY(-.6%)}
+  80%,87%{transform:rotate(-2deg)}
+}
+@keyframes character-leaf-listen{
+  0%,40%,68%,100%{transform:none}
+  46%{transform:rotate(-6deg)}
+  51%{transform:rotate(5deg)}
+  56%{transform:rotate(-3deg)}
+  62%{transform:rotate(1deg)}
+}

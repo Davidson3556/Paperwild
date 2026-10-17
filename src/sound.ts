@@ -1,4 +1,5 @@
 import type { PieceSymbol } from './game.ts';
+import { renderCharacterCall, type CharacterActivity } from './character-voice.ts';
 
 export interface LandingSound {
   capture?: boolean;
@@ -20,14 +21,24 @@ export interface PaperwildSound {
   select(role: PieceSymbol): void;
   moveStart(role: PieceSymbol, motion?: MovementSound): void;
   land(role: PieceSymbol, result?: LandingSound): void;
+  captured(role: PieceSymbol): void;
+  invalid(role: PieceSymbol): void;
+  /** Quiet, occasional reactions; never unlocks audio or queues a future call. */
+  idle(role: PieceSymbol): void;
   undo(): void;
-  greeting(): void;
+  greeting(role?: PieceSymbol): void;
   toggle(): void;
   cancel(): void;
   destroy(): void;
 }
 
-export interface PaperwildSoundOptions { onUnavailable?: () => void }
+export interface CharacterCallEvent { role: PieceSymbol; activity: CharacterActivity }
+
+export interface PaperwildSoundOptions {
+  onUnavailable?: () => void;
+  /** Fires only after the corresponding character voice has been scheduled. */
+  onCharacterCall?: (event: CharacterCallEvent) => void;
+}
 
 interface Voice {
   source: AudioScheduledSourceNode;
@@ -36,15 +47,20 @@ interface Voice {
 }
 
 type Recipe = (context: AudioContext, start: number) => void;
-const MAX_VOICES = 14;
+// Two castling movement plans can each contain ten Foley sources plus a voice.
+const MAX_VOICES = 24;
+const MAX_CHARACTER_BUFFERS = 48;
+const IDLE_INTERVAL = 7;
+const ROLE_IDLE_INTERVAL = 25;
 const MASTER_VOLUME = 0.52;
 const ROLE_PITCH: Readonly<Record<PieceSymbol, number>> = { p: 520, r: 148, n: 330, b: 730, q: 370, k: 196 };
+const GREETING_ROLES: readonly PieceSymbol[] = ['p', 'n', 'q', 'k', 'r', 'b'];
 
 /**
- * A little Foley studio made from paper noise, wooden plucks, soft pawfalls and
- * wing brushes. No files, network requests or background music are involved.
+ * A little Foley studio and cast of synthesized cartoon voices. Paper noise,
+ * wooden plucks, soft pawfalls and calls are made locally, without audio files.
  */
-export function createPaperwildSound({ onUnavailable }: PaperwildSoundOptions = {}): PaperwildSound {
+export function createPaperwildSound({ onUnavailable, onCharacterCall }: PaperwildSoundOptions = {}): PaperwildSound {
   let enabled = false;
   let destroyed = false;
   let unavailableReported = false;
@@ -57,8 +73,14 @@ export function createPaperwildSound({ onUnavailable }: PaperwildSoundOptions = 
   let gestureTurn = false;
   let epoch = 0;
   let randomState = 792451;
+  let greetingIndex = 0;
+  let nextIdleAt = 0;
+  let idleQuietUntil = 0;
   const voices = new Set<Voice>();
   const plucks = new Map<string, AudioBuffer>();
+  const characterBuffers = new Map<string, AudioBuffer>();
+  const characterVariants = new Map<string, number>();
+  const lastRoleIdle = new Map<PieceSymbol, number>();
   const page = typeof document === 'undefined' ? undefined : document;
 
   function random(): number {
@@ -94,6 +116,8 @@ export function createPaperwildSound({ onUnavailable }: PaperwildSoundOptions = 
     master.gain.setValueAtTime(0, now);
     master.gain.linearRampToValueAtTime(MASTER_VOLUME, now + 0.012);
     masterMuted = false;
+    // Enabling sound should not immediately summon an idle chorus.
+    idleQuietUntil = Math.max(idleQuietUntil, now + 3);
   }
   function suspend(): void {
     if (!context || context.state === 'closed') return;
@@ -116,6 +140,7 @@ export function createPaperwildSound({ onUnavailable }: PaperwildSoundOptions = 
   }
   function cancel(): void {
     epoch++;
+    if (context) idleQuietUntil = Math.max(idleQuietUntil, context.currentTime + 2);
     for (const voice of voices) stopVoice(voice);
   }
 
@@ -199,6 +224,7 @@ export function createPaperwildSound({ onUnavailable }: PaperwildSoundOptions = 
     const requestedEpoch = epoch;
     const schedule = () => {
       if (destroyed || !enabled || hidden() || requestedEpoch !== epoch || context?.state !== 'running') return;
+      idleQuietUntil = Math.max(idleQuietUntil, context.currentTime + 2);
       try { recipe(context, context.currentTime + 0.008); } catch { cancel(); unavailable(); }
     };
     if (context?.state === 'running') schedule();
@@ -288,6 +314,70 @@ export function createPaperwildSound({ onUnavailable }: PaperwildSoundOptions = 
     source.frequency.exponentialRampToValueAtTime(180, at + 0.075);
     if (!connectVoice(ctx, source, 0.038, at, 0.11, 0.004)) return;
     source.start(at); source.stop(at + 0.13);
+  }
+
+  function characterBuffer(ctx: AudioContext, role: PieceSymbol, activity: CharacterActivity, variant: number): AudioBuffer {
+    const key = `${role}:${activity}:${variant}`;
+    const cached = characterBuffers.get(key);
+    if (cached) {
+      // Touch the entry so frequently heard voices stay in the bounded cache.
+      characterBuffers.delete(key);
+      characterBuffers.set(key, cached);
+      return cached;
+    }
+    const samples = renderCharacterCall(role, activity, ctx.sampleRate, variant);
+    const buffer = ctx.createBuffer(1, samples.length, ctx.sampleRate);
+    buffer.getChannelData(0).set(samples);
+    if (characterBuffers.size >= MAX_CHARACTER_BUFFERS) {
+      const oldest = characterBuffers.keys().next().value;
+      if (oldest !== undefined) characterBuffers.delete(oldest);
+    }
+    characterBuffers.set(key, buffer);
+    return buffer;
+  }
+
+  function characterCall(ctx: AudioContext, at: number, role: PieceSymbol, activity: CharacterActivity): void {
+    const key = `${role}:${activity}`;
+    const variant = characterVariants.get(key) ?? 0;
+    const buffer = characterBuffer(ctx, role, activity, variant);
+    const source = ctx.createBufferSource();
+    source.buffer = buffer;
+    const volume = activity === 'idle' ? 0.075 : activity === 'greet' ? 0.36 : activity === 'captured' ? 0.24 : 0.3;
+    const duration = buffer.duration;
+    const voice = connectVoice(ctx, source, volume, at, duration, 0.006);
+    if (!voice) return;
+    // The renderer shapes individual syllables. Preserve their relative levels,
+    // with only a short outer fade to avoid clicks when composing the graph.
+    const fade = Math.min(0.012, duration / 4);
+    voice.gain.gain.cancelScheduledValues(at);
+    voice.gain.gain.setValueAtTime(0, at);
+    voice.gain.gain.linearRampToValueAtTime(volume, at + fade);
+    voice.gain.gain.setValueAtTime(volume, at + duration - fade);
+    voice.gain.gain.linearRampToValueAtTime(0, at + duration);
+    source.start(at);
+    source.stop(at + duration + 0.01);
+    characterVariants.set(key, (variant + 1) % 4);
+    try { onCharacterCall?.({ role, activity }); } catch { /* UI evidence must not interrupt a call. */ }
+  }
+
+  function landingActivity(result: LandingSound): CharacterActivity {
+    if (result.ending) return result.ending;
+    if (result.promotion) return 'promotion';
+    if (result.check) return 'check';
+    return result.capture ? 'capture' : 'land';
+  }
+
+  function idle(role: PieceSymbol): void {
+    // Passive animations cannot create/resume an AudioContext, even with a saved
+    // preference. They also do not enter play()'s pending-unlock queue.
+    if (destroyed || !enabled || hidden() || masterMuted || context?.state !== 'running') return;
+    const now = context.currentTime;
+    if (now < idleQuietUntil || now < nextIdleAt || now - (lastRoleIdle.get(role) ?? -Infinity) < ROLE_IDLE_INTERVAL) return;
+    try {
+      characterCall(context, now + 0.008, role, 'idle');
+      nextIdleAt = now + IDLE_INTERVAL;
+      lastRoleIdle.set(role, now);
+    } catch { cancel(); unavailable(); }
   }
 
   function startStep(ctx: AudioContext, at: number, role: PieceSymbol): void {
@@ -384,10 +474,24 @@ export function createPaperwildSound({ onUnavailable }: PaperwildSoundOptions = 
       play((ctx, at) => {
         brush(ctx, at, 0.045, 2500, 0.065, -0.08, 1.05);
         pluck(ctx, at + 0.008, ROLE_PITCH[role] * 1.35, 0.11, 0.016, 0.72);
+        characterCall(ctx, at + 0.012, role, 'select');
       });
     },
-    moveStart(role, motion) { play((ctx, at) => plannedSteps(ctx, at, role, motion)); },
-    land(role, result = {}) { play((ctx, at) => landing(ctx, at, role, result)); },
+    moveStart(role, motion) {
+      play((ctx, at) => {
+        plannedSteps(ctx, at, role, motion);
+        characterCall(ctx, at, role, 'move');
+      });
+    },
+    land(role, result = {}) {
+      play((ctx, at) => {
+        landing(ctx, at, role, result);
+        characterCall(ctx, at + 0.025, role, landingActivity(result));
+      });
+    },
+    captured(role) { play((ctx, at) => characterCall(ctx, at, role, 'captured')); },
+    invalid(role) { play((ctx, at) => characterCall(ctx, at, role, 'blocked')); },
+    idle,
     undo() {
       cancel();
       play((ctx, at) => {
@@ -397,12 +501,11 @@ export function createPaperwildSound({ onUnavailable }: PaperwildSoundOptions = 
         pluck(ctx, at + 0.145, 294, 0.2, 0.03, 0.7);
       });
     },
-    greeting() {
+    greeting(role) {
       play((ctx, at) => {
         brush(ctx, at, 0.09, 2400, 0.045, -0.12);
-        pluck(ctx, at + 0.018, 784, 0.32, 0.045, 0.42, -0.1);
-        pluck(ctx, at + 0.13, 1174.66, 0.35, 0.033, 0.45, 0.1);
-        brush(ctx, at + 0.18, 0.08, 3300, 0.025, 0.15);
+        const speaker = role ?? GREETING_ROLES[greetingIndex++ % GREETING_ROLES.length];
+        characterCall(ctx, at + 0.012, speaker, 'greet');
       });
     },
     toggle() {
@@ -421,7 +524,7 @@ export function createPaperwildSound({ onUnavailable }: PaperwildSoundOptions = 
       try { master?.disconnect(); limiter?.disconnect(); } catch { /* Closed contexts may already be disconnected. */ }
       const closing = context;
       context = undefined; master = undefined; limiter = undefined; noiseBuffer = undefined;
-      plucks.clear();
+      plucks.clear(); characterBuffers.clear(); characterVariants.clear(); lastRoleIdle.clear();
       try { if (closing && closing.state !== 'closed') void closing.close().catch(() => {}); } catch { /* Disposal stays idempotent. */ }
     },
   };

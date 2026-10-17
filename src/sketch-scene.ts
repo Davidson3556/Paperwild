@@ -5,6 +5,9 @@ import { getPieceMotion } from './piece-motion.ts';
 import type { PieceMotionPlan } from './piece-motion.ts';
 import { createCharacterFace } from './character-face.ts';
 import { createCharacterIdle } from './character-idle.ts';
+import { createCharacterLife } from './character-life.ts';
+import { createCharacterPortrait } from './character-portrait.ts';
+import { characterArt } from './character-art.ts';
 
 export interface SketchMotionEvent {
   id: number;
@@ -16,7 +19,10 @@ export interface SketchMotionEvent {
   contactTimesMs: readonly number[];
   capture: boolean;
 }
-export interface SketchSceneOptions extends ConservatoryOptions { onMotion?: (event: SketchMotionEvent) => void }
+export interface SketchSceneOptions extends ConservatoryOptions {
+  onMotion?: (event: SketchMotionEvent) => void;
+  onIdle?: (role: PieceSymbol) => void;
+}
 export interface SketchScene extends Conservatory {
   whenSettled(): Promise<void>;
   settle(): void;
@@ -38,12 +44,11 @@ interface Sprite {
   fallback: HTMLSpanElement;
   emote: HTMLSpanElement;
   shadow: SVGSVGElement;
-  limbs: SVGSVGElement;
   parts: Map<string, HTMLElement | SVGElement>;
-  fragments: HTMLImageElement[];
   face: SVGSVGElement;
   idle: HTMLDivElement | null;
   idleSeed: number;
+  life: ReturnType<typeof createCharacterLife>;
   pendingArtwork: boolean;
   square: Square;
   color: Color;
@@ -65,7 +70,7 @@ function capturedPosition(index: number): Point {
 }
 
 /** A flat sheet of pencilled chess, with all input owned by the semantic board. */
-export function createSketchScene(container: HTMLElement, { onSquare, onCreature, onReady, onMotion, reducedMotion = false }: SketchSceneOptions = {}): SketchScene {
+export function createSketchScene(container: HTMLElement, { onSquare, onCreature, onReady, onMotion, onIdle, reducedMotion = false }: SketchSceneOptions = {}): SketchScene {
   const prefix = `marginwood-board-${++instance}`;
   const root = document.createElement('div'); root.className = 'sketch-scene';
   root.setAttribute('aria-hidden', 'true'); root.dataset.motion = reducedMotion ? 'still' : 'gentle';
@@ -222,7 +227,7 @@ export function createSketchScene(container: HTMLElement, { onSquare, onCreature
     image.hidden = false; fallback.hidden = true;
     image.onload = () => { if (!destroyed) { image.hidden = false; fallback.hidden = true; holder.dataset.artwork = 'ready'; } };
     image.onerror = () => { if (!destroyed) { image.hidden = true; fallback.hidden = false; holder.dataset.artwork = 'missing'; } };
-    image.src = `/art/pieces/${color}${type}.png`;
+    image.src = characterArt(color, type);
   }
   function createSprite(piece: BoardPiece) {
     const element = document.createElement('div'); element.className = `sketch-piece sketch-${piece.type}`; element.dataset.color = piece.color;
@@ -231,67 +236,32 @@ export function createSketchScene(container: HTMLElement, { onSquare, onCreature
     const fallback = document.createElement('span'); fallback.className = 'sketch-piece-fallback'; fallback.textContent = SYMBOLS[piece.color][piece.type]; fallback.hidden = true;
     const emote = document.createElement('span'); emote.className = 'sketch-piece-emote'; emote.textContent = '!';
     const shadow = svg('svg', { viewBox: '0 0 100 100', preserveAspectRatio: 'none', class: 'sketch-ground-shadow' });
-    shadow.append(svg('ellipse', { cx: 50, cy: 89, rx: 24, ry: 3, fill: '#706b48', opacity: .18 }), svg('path', { d: 'M30 89q20 3 39-1m-34 4 28-1', fill: 'none', stroke: '#746e4c', 'stroke-width': .7, opacity: .3 }));
-    const limbs = svg('svg', { viewBox: '0 0 100 100', preserveAspectRatio: 'none', class: 'sketch-moving-limbs' });
+    shadow.append(svg('ellipse', { cx: 50, cy: 95, rx: 24, ry: 3, fill: '#706b48', opacity: .18 }), svg('path', { d: 'M30 95q20 3 39-1m-34 4 28-1', fill: 'none', stroke: '#746e4c', 'stroke-width': .7, opacity: .3 }));
     const idleSeed = (FILES.indexOf(piece.square[0]) + Number(piece.square[1]) * 8) * 37 + (piece.color === 'b' ? 17 : 0);
     const face = createCharacterFace(piece.color, piece.type, idleSeed);
-    body.append(image, fallback, face); element.append(shadow, limbs, body, emote); cast.append(element);
-    const sprite: Sprite = { element, body, image, fallback, emote, shadow, limbs, face, idle: null, idleSeed, parts: new Map(), fragments: [], pendingArtwork: false, square: piece.square, color: piece.color, type: piece.type };
+    const life = createCharacterLife(piece.color, piece.type, idleSeed);
+    body.append(image, fallback, face); life.content.append(body); element.append(shadow, life.element, emote); cast.append(element);
+    const sprite: Sprite = { element, body, image, fallback, emote, shadow, face, idle: null, idleSeed, life, parts: new Map(), pendingArtwork: false, square: piece.square, color: piece.color, type: piece.type };
     element.style.setProperty('--idle-delay', `${-((piece.square.charCodeAt(0) + Number(piece.square[1]) * 3) % 17) / 3}s`);
     artwork(image, piece.color, piece.type, fallback); articulate(sprite); locate(sprite, piece.square); return sprite;
   }
   function articulate(sprite: Sprite) {
-    for (const fragment of sprite.fragments) fragment.remove();
-    sprite.fragments.length = 0; sprite.parts.clear(); sprite.limbs.replaceChildren();
+    sprite.parts.clear();
     sprite.idle?.remove();
     const idle = createCharacterIdle(sprite.color, sprite.type, sprite.idleSeed);
     sprite.idle = idle?.element ?? null;
     sprite.element.classList.toggle('has-idle-parts', !!idle);
-    if (idle) { sprite.body.style.setProperty('--idle-cutout', idle.mask); sprite.body.append(idle.element); }
-    else sprite.body.style.removeProperty('--idle-cutout');
-    const type = sprite.type;
-    const joint = (name: string, x: number, y: number, parent: SVGElement = sprite.limbs) => {
-      const group = svg('g', { class: `sketch-joint sketch-joint-${name}` });
-      group.style.transformOrigin = `${x}% ${y}%`; group.style.transformBox = 'view-box';
-      parent.append(group); sprite.parts.set(name, group); return group;
-    };
-    const fragment = (name: string, clip: string, origin: string) => {
-      const image = document.createElement('img'); image.alt = ''; image.draggable = false;
-      image.className = `sketch-art-fragment sketch-fragment-${name}`; image.src = sprite.image.src;
-      image.style.clipPath = clip; image.style.transformOrigin = origin;
-      sprite.body.append(image); sprite.fragments.push(image); sprite.parts.set(name, image);
-    };
-    if (type === 'p' || type === 'r' || type === 'k' || type === 'q') {
-      for (const [side, sign] of [['left', -1], ['right', 1]] as const) {
-        const x = type === 'r' ? 50 + sign * 20 : type === 'p' ? 49 + sign * 7 : 50 + sign * 12;
-        const hipY = type === 'k' ? 78 : 75;
-        const kneeX = x + sign * 2, footX = x + sign * 5;
-        const leg = joint(`${side}-leg`, x, hipY);
-        if (type === 'r') leg.append(svg('path', { d: `M${x - 5} ${hipY - 1}q8-1 10 4l-3 8-7 1q4-8 0-13`, class: 'sketch-root-leg' }));
-        else leg.append(svg('path', { d: `M${x} ${hipY}Q${x + sign * 3} 78 ${kneeX} 83`, class: `sketch-pencil-leg sketch-leg-${type}` }));
-        const shin = joint(`${side}-shin`, kneeX, 82, leg);
-        if (type === 'r') shin.append(svg('path', { d: `M${kneeX - 4} 81q-2 7 ${sign * 11} 12q${-sign * 8} 3 ${-sign * 14}-1l-4-2q7-2 8-9z`, class: 'sketch-root-foot' }));
-        else shin.append(svg('path', { d: `M${kneeX} 82q${sign * 2} 4 ${sign * 4} 8`, class: `sketch-pencil-leg sketch-leg-${type}` }));
-        const foot = joint(`${side}-foot`, footX, 91, shin);
-        if (type !== 'r') foot.append(svg('ellipse', { cx: footX, cy: 91, rx: type === 'k' ? 9 : type === 'q' ? 6 : 5, ry: type === 'k' ? 3.6 : 2.2, class: `sketch-pencil-foot sketch-foot-${type}` }));
-        if (type === 'k') foot.append(svg('path', { d: `M${footX - 4} 90v2m4-2v2m4-2v2`, class: 'sketch-paw-toes' }));
-      }
-    }
-    if (type === 'n') {
-      fragment('left-ear', 'polygon(28% 18%,57% 18%,64% 48%,34% 46%)', '56% 44%');
-      fragment('right-ear', 'polygon(56% 17%,76% 17%,78% 45%,58% 48%)', '64% 43%');
-      const tail = joint('tail', 30, 61);
-      tail.append(svg('path', { d: 'M24 57q-5-3-7 3q-4 3 1 7q3 6 9 1q6-1 4-7q0-4-7-4z', class: 'sketch-hare-tail' }));
-    }
-    if (type === 'b') {
-      fragment('left-wing', 'polygon(0% 46%,46% 43%,48% 96%,0% 96%)', '47% 62%');
-      fragment('right-wing', 'polygon(63% 44%,100% 44%,100% 96%,62% 96%)', '63% 62%');
-    }
-    if (type === 'q') fragment('fox-tail', 'polygon(53% 66%,100% 66%,100% 100%,53% 100%)', '57% 72%');
+    if (idle) {
+      sprite.body.style.setProperty('--idle-cutout', idle.mask);
+      sprite.body.append(idle.element);
+      for (const part of idle.element.querySelectorAll<HTMLElement>('[data-part]')) sprite.parts.set(part.dataset.part!, part);
+    } else sprite.body.style.removeProperty('--idle-cutout');
   }
   function refreshArtwork(sprite: Sprite) {
     sprite.element.className = `sketch-piece sketch-${sprite.type}`; sprite.pendingArtwork = false;
     sprite.element.dataset.color = sprite.color; sprite.fallback.textContent = SYMBOLS[sprite.color][sprite.type];
+    const life = createCharacterLife(sprite.color, sprite.type, sprite.idleSeed);
+    life.content.append(sprite.body); sprite.life.element.replaceWith(life.element); sprite.life = life;
     sprite.face.remove(); sprite.face = createCharacterFace(sprite.color, sprite.type, sprite.idleSeed); sprite.body.append(sprite.face);
     artwork(sprite.image, sprite.color, sprite.type, sprite.fallback); articulate(sprite);
   }
@@ -334,36 +304,40 @@ export function createSketchScene(container: HTMLElement, { onSquare, onCreature
     if (part) track(part.animate(frames, { duration, easing: 'linear' }));
   }
   function animateLimbs(sprite: Sprite, plan: PieceMotionPlan) {
+    // These are the same painted cutouts used at rest. Locomotion takes over
+    // their transforms instead of adding a second set of ears, paws or hands.
+    for (const [side, sign] of [['left', -1], ['right', 1]] as const) {
+      const frames: Keyframe[] = [];
+      for (let index = 0; index <= 20; index++) {
+        const offset = index / 20, envelope = Math.sin(Math.PI * offset);
+        frames.push({ offset, transform: `rotate(${Math.sin(offset * Math.PI * 6) * sign * 10 * envelope}deg)` });
+      }
+      animatePart(sprite, `${side}-hand`, frames, plan.durationMs);
+    }
     if (plan.type === 'p' || plan.type === 'r' || plan.type === 'k') {
       const swing = plan.type === 'r' ? 14 : plan.type === 'k' ? 19 : 29;
       const firstPlant = plan.contacts[0].atMs / plan.durationMs;
       const period = (plan.contacts[1].atMs - plan.contacts[0].atMs) / plan.durationMs * 2;
       for (const [side, phase] of [['left', 0], ['right', Math.PI]] as const) {
-        const thigh: Keyframe[] = [], shin: Keyframe[] = [], foot: Keyframe[] = [];
+        const foot: Keyframe[] = [];
         for (let index = 0; index <= 20; index++) {
           const offset = index / 20, active = Math.sin(Math.PI / 2 * Math.min(1, offset / .09)) * (offset > .92 ? (1 - offset) / .08 : 1);
           const gait = Math.sin((offset - firstPlant) * Math.PI * 2 / period - Math.PI / 2 + phase);
           const bend = Math.max(0, gait) * swing * 1.15;
-          thigh.push({ offset, transform: `rotate(${gait * swing * active}deg)` });
-          shin.push({ offset, transform: `rotate(${-bend * active}deg)` });
           foot.push({ offset, transform: `rotate(${(bend - gait * swing) * active * .5}deg) translateY(${-Math.max(0, gait) * active * (plan.type === 'r' ? 2 : 4)}px)` });
         }
-        animatePart(sprite, `${side}-leg`, thigh, plan.durationMs);
-        animatePart(sprite, `${side}-shin`, shin, plan.durationMs);
         animatePart(sprite, `${side}-foot`, foot, plan.durationMs);
       }
     }
     if (plan.type === 'q') {
       for (const [side, sign] of [['left', -1], ['right', 1]] as const) {
-        animatePart(sprite, `${side}-leg`, plan.frames.map(pose => ({ offset: pose.offset, transform: `rotate(${sign * pose.lift * .6}deg)` })), plan.durationMs);
-        animatePart(sprite, `${side}-shin`, plan.frames.map(pose => ({ offset: pose.offset, transform: `rotate(${-sign * pose.lift * .8}deg)` })), plan.durationMs);
+        animatePart(sprite, `${side}-foot`, plan.frames.map(pose => ({ offset: pose.offset, transform: `rotate(${sign * pose.lift * .25}deg) translateY(${-pose.lift * .06}px)` })), plan.durationMs);
       }
     }
     if (plan.type === 'n') {
       const offsets = [0, .10, .17, .25, .43, .58, .73, .78, .88, 1];
       const earAngles = [0, -13, -28, 13, 25, 18, -12, -32, 12, 0];
       for (const [name, side] of [['left-ear', -1], ['right-ear', 1]] as const) animatePart(sprite, name, offsets.map((offset, index) => ({ offset, transform: `rotate(${earAngles[index] * (side < 0 ? .8 : 1.1)}deg)` })), plan.durationMs);
-      animatePart(sprite, 'tail', offsets.map((offset, index) => ({ offset, transform: `rotate(${earAngles[index] * -.55}deg) scale(${index === 3 || index === 4 ? .85 : 1})` })), plan.durationMs);
     }
     if (plan.type === 'b') {
       for (const [name, sign] of [['left-wing', -1], ['right-wing', 1]] as const) {
@@ -376,13 +350,13 @@ export function createSketchScene(container: HTMLElement, { onSquare, onCreature
         animatePart(sprite, name, frames, plan.durationMs);
       }
     }
-    if (plan.type === 'q') animatePart(sprite, 'fox-tail', plan.frames.map(pose => ({ offset: pose.offset, transform: `rotate(${-pose.rotation * 1.7}deg) scaleX(${1 + pose.lift / 240})` })), plan.durationMs);
+    if (plan.type === 'q') animatePart(sprite, 'tail-tip', plan.frames.map(pose => ({ offset: pose.offset, transform: `rotate(${-pose.rotation * 1.7}deg) scaleX(${1 + pose.lift / 240})` })), plan.durationMs);
   }
   function drawFootsteps(plan: PieceMotionPlan, from: Point, to: Point) {
     for (let index = 0; index < plan.contacts.length; index++) {
       const contact = plan.contacts[index];
       const pose = plan.frames.find(frame => Math.abs(frame.offset * plan.durationMs - contact.atMs) <= 2) ?? plan.frames.at(-1)!;
-      const x = from.x + (to.x - from.x) * pose.progress, y = from.y + (to.y - from.y) * pose.progress + 43;
+      const x = from.x + (to.x - from.x) * pose.progress, y = from.y + (to.y - from.y) * pose.progress + 50;
       const group = svg('g', { class: 'sketch-footstep', transform: `translate(${x} ${y})`, opacity: 0 });
       if (plan.type === 'b') group.append(svg('path', { d: 'M-13-7q-7-4-10 1m34-2q8-5 12 0m-16 9q-6 4-13 0', class: 'sketch-flutter-trace', fill: 'none' }));
       else {
@@ -395,7 +369,7 @@ export function createSketchScene(container: HTMLElement, { onSquare, onCreature
       track(group.animate([{ opacity: 0 }, { opacity: .48, offset: .08 }, { opacity: .36, offset: .55 }, { opacity: 0 }], { duration: 850, delay: contact.atMs, fill: 'backwards', easing: 'ease-out' }), () => group.remove());
     }
     if (plan.type === 'n' || plan.type === 'q' || plan.type === 'r' || plan.type === 'k') {
-      const dust = svg('g', { class: 'sketch-landing-dust', transform: `translate(${to.x} ${to.y + 40})`, opacity: 0 });
+      const dust = svg('g', { class: 'sketch-landing-dust', transform: `translate(${to.x} ${to.y + 50})`, opacity: 0 });
       dust.append(svg('path', { d: 'M-15 1q-8-6-14-2m46-1q9-7 16-2m-22 11 7-1m-32-2-7-1', fill: 'none', class: 'sketch-dust-line' })); traces.append(dust);
       track(dust.animate([{ opacity: 0, scale: '.5' }, { opacity: .75, scale: '1.1', offset: .18 }, { opacity: 0, scale: '1.5' }], { duration: 430, delay: plan.landingTimeMs, fill: 'backwards', easing: 'ease-out' }), () => dust.remove());
     }
@@ -432,10 +406,7 @@ export function createSketchScene(container: HTMLElement, { onSquare, onCreature
       const item = document.createElement('div'); item.className = 'sketch-sideline-piece'; item.dataset.color = capture.color;
       const point = capturedPosition(index); item.style.left = `${point.x / 10}%`; item.style.top = `${point.y / 10}%`;
       item.style.setProperty('--sit-angle', `${index % 2 ? 4 : -5}deg`);
-      const image = document.createElement('img'); image.alt = ''; image.draggable = false;
-      const fallback = document.createElement('span'); fallback.className = 'sketch-sideline-fallback'; fallback.textContent = SYMBOLS[capture.color][capture.type]; fallback.hidden = true;
-      const face = createCharacterFace(capture.color, capture.type, index * 127 + 41);
-      item.append(image, fallback, face); collection.append(item); artwork(image, capture.color, capture.type, fallback);
+      item.append(createCharacterPortrait(capture.color, capture.type, index * 127 + 41)); collection.append(item);
       if (animate && oldCount >= 0 && index >= oldCount) track(item.animate([{ opacity: 0, transform: 'translate(-50%,-50%) scale(.1)' }, { opacity: 1, transform: 'translate(-50%,-50%) scale(1)' }], { duration: 400, delay: 760, fill: 'backwards', easing: 'ease-out' }));
     });
     previousCaptures = captures.length;
@@ -533,11 +504,25 @@ export function createSketchScene(container: HTMLElement, { onSquare, onCreature
     onCreature?.(name); return name;
   }
   function click(event: MouseEvent) { const square = pickSquare(event.clientX, event.clientY); if (square) onSquare?.(square); }
+  function idleGesture(event: AnimationEvent) {
+    if (event.animationName !== 'resident-voice-clock' || destroyed || document.hidden || reducedMotion || motions.size) return;
+    const cue = event.target;
+    if (!(cue instanceof HTMLElement) || !cue.classList.contains('character-life-voice-cue')) return;
+    if (cue.closest('.reduced-motion, [data-page-paused=true]')) return;
+    const element = cue.closest<HTMLDivElement>('.sketch-piece');
+    const sprite = element?.dataset.square ? sprites.get(element.dataset.square as Square) : undefined;
+    // Only the current board resident can nominate a call. Old capture flights,
+    // replaced promotion artwork and decorative portraits have no voice here.
+    if (!sprite || sprite.element !== element || element.classList.contains('is-moving') || cue.parentElement !== sprite.life.element) return;
+    onIdle?.(sprite.type);
+  }
+  cast.addEventListener('animationiteration', idleGesture);
   root.addEventListener('click', click); document.addEventListener('visibilitychange', visibility);
   const observer = new ResizeObserver(resize); observer.observe(container); resize(); visibility();
   queueMicrotask(() => { if (!destroyed && !ready) { ready = true; onReady?.(); } });
   function destroy() {
     destroyed = true; finishAnimations(); observer.disconnect();
+    cast.removeEventListener('animationiteration', idleGesture);
     root.removeEventListener('click', click); document.removeEventListener('visibilitychange', visibility);
     for (const image of root.querySelectorAll('img')) { image.onload = null; image.onerror = null; }
     root.remove(); sprites.clear();

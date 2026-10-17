@@ -2,6 +2,18 @@
 
 First build verification: October 17, 2026 (Africa/Lagos).
 
+## Activity-based creature voices — October 17, 2026
+
+The [current sound verification record](SOUND_VERIFICATION_2026-10-17.md) covers six procedural cartoon voices, twelve activity expressions, guide auditions, gesture-driven sparse idle calls, and cancellation/mute behavior. All **34 local tests** and the strict production build pass. Chrome verified role/activity scheduling, capture/undo, promotion, checkmate, silent saved-preference loading, paused idle clocks, muting during movement, and keyboard/390 px auditions without warnings/errors. A greeting WAV and actual screenshots are linked there. Physical listening quality remains unassessed. This work stays local and unpushed; no new TestSprite Portal or GitHub App validation is claimed.
+
+## Watercolor cast and autonomous life — October 17, 2026
+
+The [current watercolor verification record](WATERCOLOR_VERIFICATION_2026-10-17.md) covers twelve new transparent paintings, fitted faces, 58 appendage definitions, and independent breathing/gestures for all six roles. In the production preview, 200 temporal samples observed all 32 characters blinking, breathing, and gesturing and all 158 painted parts moving without input, with the entire chess snapshot unchanged. Capture, promotion, undo, computer reply, castling, checkmate, pause/resume, and 390 px layout checks passed. All 24 local tests and the strict build passed. Actual screenshots and a timestamped animation recording are linked there. This revision remains local, uncommitted, and unpushed at the user's request; no new TestSprite service run is claimed.
+
+## Current TestSprite audit — October 17, 2026
+
+The [current native MCP report](TESTSPRITE_CURRENT_RUN_2026-10-17.md) records three reported passes against a local button-targeting correction. Exported-script audit establishes only two partial smoke tests and one contradictory promotion replay. The candidate remains local and unpushed; full acceptance validation and a GitHub App gate remain pending. These results do not replace or backdate the local checks recorded below.
+
 ## Blinking and idle expressions — October 17, 2026
 
 - Fitted feathered eyelids and pencil arcs to the eye positions of all twelve character illustrations. A temporary, unshipped browser review showed each pair closed at large scale, including the badgers' glasses. The original painted eyes remain visible between blinks.

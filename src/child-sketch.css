@@ -103,6 +103,11 @@ dialog { border:0; background:linear-gradient(#fffdf4ec,#faf7ebed),url('/art/ske
 .instruction-grid strong { font-family:'Schoolbell',cursive; font-size:19px; }
 .instruction-grid p { font:16px/1.5 'Patrick Hand',cursive; }
 .character-legend span { font:16px/1.5 'Schoolbell',cursive; }
+.modal > .voice-invitation { font:17px/1.45 'Schoolbell',cursive; margin-bottom:12px; }
+.character-voice-button { margin-top:7px; padding:4px 10px; min-height:32px; border:1px dashed #9b8667; border-radius:38% 12% 30% 9% / 14% 30% 12% 24%; font:16px/1.2 'Schoolbell',cursive; color:#6c7452; background:#cbd49c1c; }
+.character-voice-button:hover { background:#cbd49c45; transform:rotate(-2deg); }
+.character-voice-button:focus-visible { outline:2px solid #798b60; outline-offset:3px; }
+.character-legend .character-voice-button span { color:inherit; font:inherit; }
 .study-options>button,.promotion-options button { border:0; border-radius:0; }
 .study-options strong { font:24px/1.4 'Schoolbell',cursive; }
 .study-options small { font-size:15px; }

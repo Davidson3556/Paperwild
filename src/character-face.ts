@@ -11,62 +11,62 @@ interface Eye {
   readonly ink?: string;
 }
 
-/** Eye positions are measured in the original 362 × 362 transparent artwork.
- * Keep these separate for each illustration: the two clubs have different poses.
- * In particular, the badger's lids sit inside its glasses, and the hare's far
- * eye is a narrow sliver rather than a second full-size eye.
+/** Fitted to the 480 × 480 delivery canvas for the watercolor paintings.
+ * The 1254px originals have identical framing. Every painting has its own map:
+ * both hare eyes are now visible, and badger lids stay inside the wire lenses.
+ * The radii include each eye's pale painted edge, not just its dark pupil.
  */
 export const CHARACTER_EYES: Readonly<Record<Color, Readonly<Record<PieceSymbol, readonly Eye[]>>>> = {
   w: {
     p: [
-      { x: 175.5, y: 167, rx: 9, ry: 11, tilt: -17, fur: '#edcb9b' },
-      { x: 223, y: 151.5, rx: 7.5, ry: 10.6, tilt: 9, fur: '#f1d3a5' },
+      { x: 207, y: 251, rx: 25, ry: 31, tilt: -10, fur: '#f5d393' },
+      { x: 319, y: 233, rx: 24, ry: 31, tilt: 9, fur: '#f9dca2' },
     ],
     r: [
-      { x: 178.5, y: 148, rx: 6.7, ry: 8.7, tilt: 5, fur: '#eac596' },
-      { x: 225, y: 150, rx: 6.4, ry: 8.7, tilt: 5, fur: '#eac18e' },
+      { x: 176, y: 219, rx: 24, ry: 29, tilt: 15, fur: '#dda36a' },
+      { x: 280, y: 238, rx: 26, ry: 30, tilt: 12, fur: '#dda774' },
     ],
     n: [
-      { x: 227, y: 154, rx: 9.4, ry: 9.4, tilt: -17, fur: '#e6bb8c' },
-      { x: 268, y: 151, rx: 3.1, ry: 6.5, tilt: -7, fur: '#d5a879' },
+      { x: 235, y: 213, rx: 17.5, ry: 21, tilt: -13, fur: '#f6dfb0' },
+      { x: 311, y: 200, rx: 14.5, ry: 20, tilt: -17, fur: '#f5dcac' },
     ],
     b: [
-      { x: 190, y: 159, rx: 8, ry: 9.3, tilt: -15, fur: '#edcba3' },
-      { x: 230.5, y: 146, rx: 6.4, ry: 9.1, tilt: 5, fur: '#eed0a4' },
+      { x: 219, y: 197, rx: 21, ry: 25, tilt: -12, fur: '#f5e5bd' },
+      { x: 301, y: 188, rx: 17.5, ry: 24, tilt: -10, fur: '#f4e1b5' },
     ],
     q: [
-      { x: 172, y: 121, rx: 9.8, ry: 6.4, tilt: 19, fur: '#df9a59', ink: '#743f25' },
-      { x: 204.5, y: 125, rx: 3.5, ry: 5, tilt: 11, fur: '#e29147', ink: '#743f25' },
+      { x: 163, y: 198, rx: 27, ry: 28, tilt: -10, fur: '#ffc17c', ink: '#75462f' },
+      { x: 262, y: 178, rx: 24, ry: 29, tilt: -11, fur: '#ffc184', ink: '#75462f' },
     ],
     k: [
-      { x: 185, y: 122, rx: 5.7, ry: 7.2, tilt: -14, fur: '#75614c', ink: '#302c28' },
-      { x: 221, y: 108.5, rx: 3.4, ry: 5.2, tilt: -8, fur: '#7f6a53', ink: '#302c28' },
+      { x: 186, y: 170, rx: 17, ry: 22, tilt: 17, fur: '#e9d9bf', ink: '#51483c' },
+      { x: 285, y: 192, rx: 18, ry: 21, tilt: 22, fur: '#e7d8bc', ink: '#51483c' },
     ],
   },
   b: {
     p: [
-      { x: 174, y: 168, rx: 9.4, ry: 11, tilt: -14, fur: '#e8c098' },
-      { x: 224.5, y: 150, rx: 7.8, ry: 10.8, tilt: 7, fur: '#efd0a7' },
+      { x: 190, y: 250, rx: 24, ry: 29, tilt: 15, fur: '#f6d493' },
+      { x: 295, y: 269, rx: 24, ry: 28, tilt: 18, fur: '#f9d99a' },
     ],
     r: [
-      { x: 175, y: 146, rx: 7, ry: 8.7, tilt: 9, fur: '#e1bd97' },
-      { x: 225, y: 151, rx: 6.6, ry: 8.8, tilt: 5, fur: '#e4c2a0' },
+      { x: 179, y: 213, rx: 25, ry: 32, tilt: 11, fur: '#e7b27b' },
+      { x: 283, y: 230, rx: 28, ry: 31, tilt: 15, fur: '#e2ac78' },
     ],
     n: [
-      { x: 249, y: 153, rx: 9.5, ry: 9.4, tilt: -16, fur: '#e3c19c' },
-      { x: 289, y: 148, rx: 2.8, ry: 5.8, tilt: -10, fur: '#d9ae7f' },
+      { x: 250, y: 217, rx: 18, ry: 20, tilt: -9, fur: '#f5dfb6' },
+      { x: 331, y: 204, rx: 13, ry: 20, tilt: -18, fur: '#f4d8a7' },
     ],
     b: [
-      { x: 181, y: 161, rx: 8.4, ry: 9.7, tilt: -13, fur: '#edcba7' },
-      { x: 223, y: 151, rx: 6.9, ry: 9.9, tilt: 5, fur: '#e5c09b' },
+      { x: 205, y: 213, rx: 16.5, ry: 21, tilt: 8, fur: '#f6e6c5' },
+      { x: 274, y: 222, rx: 18, ry: 20, tilt: 15, fur: '#f7e8cc' },
     ],
     q: [
-      { x: 170, y: 119.5, rx: 10.2, ry: 6.1, tilt: 17, fur: '#d59c68', ink: '#6f412d' },
-      { x: 204, y: 127, rx: 3.7, ry: 5.5, tilt: 10, fur: '#d58e50', ink: '#6f412d' },
+      { x: 159, y: 203, rx: 25, ry: 26, tilt: -17, fur: '#ffc181', ink: '#75462f' },
+      { x: 262, y: 185, rx: 24, ry: 29, tilt: -7, fur: '#ffc486', ink: '#75462f' },
     ],
     k: [
-      { x: 185, y: 123, rx: 6, ry: 7.4, tilt: -13, fur: '#665e56', ink: '#282830' },
-      { x: 222, y: 111, rx: 3.9, ry: 5.8, tilt: -7, fur: '#756859', ink: '#282830' },
+      { x: 214, y: 166, rx: 18, ry: 19, tilt: -10, fur: '#e8deca', ink: '#51483c' },
+      { x: 305, y: 152, rx: 17, ry: 22, tilt: -15, fur: '#e7ddc7', ink: '#51483c' },
     ],
   },
 };
@@ -88,7 +88,7 @@ function svg<Tag extends keyof SVGElementTagNameMap>(tag: Tag, attributes: Recor
 export function createCharacterFace(color: Color, type: PieceSymbol, seed: number): SVGSVGElement {
   const face = svg('svg', {
     class: 'character-face',
-    viewBox: '0 0 362 362',
+    viewBox: '0 0 480 480',
     preserveAspectRatio: 'xMidYMax meet',
     'aria-hidden': 'true',
     focusable: 'false',
@@ -106,22 +106,22 @@ export function createCharacterFace(color: Color, type: PieceSymbol, seed: numbe
     const gradient = svg('radialGradient', { id: gradientId });
     // A soft elliptical edge joins the lid to the painted fur without a box.
     gradient.append(
-      svg('stop', { offset: '.78', 'stop-color': eye.fur }),
+      svg('stop', { offset: '.94', 'stop-color': eye.fur }),
       svg('stop', { offset: '1', 'stop-color': eye.fur, 'stop-opacity': '0' }),
     );
     defs.append(gradient);
-    const lid = svg('g', { transform: `translate(${eye.x} ${eye.y}) rotate(${eye.tilt})` });
+    const lid = svg('g', { 'data-eye': index, transform: `translate(${eye.x} ${eye.y}) rotate(${eye.tilt})` });
     lid.append(svg('ellipse', {
-      rx: eye.rx + 3,
-      ry: eye.ry + 3,
+      rx: eye.rx + 2,
+      ry: eye.ry + 2,
       fill: `url(#${gradientId})`,
     }));
     const halfWidth = eye.rx * .87;
     lid.append(svg('path', {
-      d: `M${-halfWidth} -.7 Q0 ${Math.min(eye.ry * .62, 4.4)} ${halfWidth} -.7`,
+      d: `M${-halfWidth} -.7 Q0 ${Math.min(eye.ry * .46, 5.8)} ${halfWidth} -.7`,
       fill: 'none',
       stroke: eye.ink ?? '#70503b',
-      'stroke-width': type === 'k' ? 1.7 : 2.2,
+      'stroke-width': type === 'k' ? 2.2 : 2.7,
       'stroke-linecap': 'round',
       opacity: '.86',
     }));
