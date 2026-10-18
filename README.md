@@ -6,6 +6,8 @@
 
 **Version status:** this is the [`living` branch](https://github.com/Davidson3556/Paperwild/tree/living), containing the field-notebook layout, team mittens, delight reactions, and capture stories. The public demo still serves the earlier `main` baseline; this branch has not been promoted to production. Test results below identify the build they cover.
 
+[Review PR #3](https://github.com/Davidson3556/Paperwild/pull/3) · [Vercel preview — sign-in required](https://paperwild-git-living-davidson3556s-projects.vercel.app/)
+
 ![Paperwild's current field notebook: team mittens and a pencil-cloud capture, with the camp and memorial clearing beside the board](docs/media/paperwild-living-release.jpg)
 
 ## The game
@@ -111,7 +113,9 @@ Local tests cover chess integrity, deterministic gait/capture plans, ceremony qu
 
 **Current TestSprite result:** eight supported cases have service passes after correcting test expectations and rerunning; phone resizing remains blocked in the TestSprite runner and was checked separately in Chrome. This is a native MCP run against the current local production build, not one nine-case green execution or complete assertion coverage. The [audit](docs/TESTSPRITE_LIVING_RUN_2026-10-18.md) preserves every run and generated-export gap.
 
-**Portal/PR integration:** the earlier manual Portal run on PR head `e2aa53d` reported ten service passes with partial acceptance coverage. Its GitHub App check hit a Free-plan gate and ran no tests. Those historical results do not validate this branch. Actual background-tab pausing and physical sound quality remain unassessed.
+**GitHub checks:** [PR #3's clean-install CI](https://github.com/Davidson3556/Paperwild/actions/runs/39114707252) passed all 64 tests and the production build on app commit `be69892`; Vercel marked the preview Ready. Its [TestSprite V3 check](https://github.com/Davidson3556/Paperwild/pull/3/checks?check_run_id=117638045330) reported **“GitHub CI runs not on the Free plan. No tests were run.”** This account gate is separate from the completed native MCP runs.
+
+**Earlier Portal evidence:** the manual Portal run on PR head `e2aa53d` reported ten service passes with partial acceptance coverage. Those historical results do not validate this branch. Actual background-tab pausing and physical sound quality remain unassessed.
 
 ## Deployment and hackathon status
 

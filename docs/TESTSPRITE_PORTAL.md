@@ -1,5 +1,7 @@
 # TestSprite Portal evidence
 
+**October 18 update:** [PR #3 (`living`)](https://github.com/Davidson3556/Paperwild/pull/3) now contains the field-notebook and capture-story build. Its ordinary CI passed 64 tests and the production build; Vercel's preview is Ready but requires sign-in. The [new TestSprite V3 check](https://github.com/Davidson3556/Paperwild/pull/3/checks?check_run_id=117638045330) repeated the Free-plan gate and executed no tests. Separate current native MCP runs reached eight supported service passes across reruns, with phone resizing blocked and assertion gaps retained in [the current audit](TESTSPRITE_LIVING_RUN_2026-10-18.md). They are not new Portal executions. The October 17 record below remains historical.
+
 Recorded October 17, 2026. This is the current Portal setup record; the older native MCP reports remain historical evidence.
 
 ## App and pull request

@@ -38,6 +38,12 @@ Browser checks used disposable local origin `http://127.0.0.1:4176/`, serving th
 
 ![Current phone capture without page scrolling](media/paperwild-living-release-mobile.jpg)
 
+## GitHub publication and preview
+
+App commit [`be69892`](https://github.com/Davidson3556/Paperwild/commit/be698925190a2ea482363c4672a439c217fe489c) was pushed to `living`, and [PR #3](https://github.com/Davidson3556/Paperwild/pull/3) opened against `main`. Its [clean GitHub Actions run](https://github.com/Davidson3556/Paperwild/actions/runs/39114707252) passed all 64 tests and the production build. Vercel marked the deployment Ready and posted the [branch preview](https://paperwild-git-living-davidson3556s-projects.vercel.app/).
+
+The preview redirects unauthenticated requests to Vercel SSO. Its access controls were not changed, and anonymous application access is not claimed. The [TestSprite V3 check](https://github.com/Davidson3556/Paperwild/pull/3/checks?check_run_id=117638045330) failed with “GitHub CI runs not on the Free plan. No tests were run.” This is an execution entitlement gate, not a failed chess assertion. No paid plan was started. The production `main` baseline was not promoted or merged.
+
 ## Scope limits
 
 TestSprite's native MCP run targets this local production build through its temporary tunnel; it is not a Portal 3.0 execution or a deployed-preview test. See [the execution audit](TESTSPRITE_LIVING_RUN_2026-10-18.md) for service outcomes, corrected test expectations, unsupported phone resizing, and generated-export limitations. Old Portal passes and its GitHub plan-gate failure remain [historical evidence](TESTSPRITE_PORTAL.md).
