@@ -1,6 +1,7 @@
 import type { PieceSymbol } from './game.ts';
 
-export type CharacterActivity = 'select' | 'move' | 'land' | 'capture' | 'captured' | 'promotion' | 'check' | 'win' | 'draw' | 'idle' | 'greet' | 'blocked';
+export type CharacterActivity = 'select' | 'move' | 'land' | 'capture' | 'captured' | 'promotion' | 'check' | 'win' | 'draw' | 'idle' | 'greet' | 'blocked'
+  | 'happy' | 'cheer' | 'dizzy' | 'challenge' | 'startled' | 'farewell';
 
 interface Expression {
   seconds: number;
@@ -22,6 +23,18 @@ const EXPRESSIONS: Readonly<Record<CharacterActivity, Expression>> = {
   idle: { seconds: 0.30, notes: [0], glide: 1, strength: 0.43 },
   greet: { seconds: 0.53, notes: [0, 5, 3], glide: 3, strength: 0.83 },
   blocked: { seconds: 0.30, notes: [2, -3], glide: -5, strength: 0.67 },
+  // A little giggle when noticed: three quick rising "he-he-he" syllables.
+  happy: { seconds: 0.40, notes: [5, 7, 10], glide: 2, strength: 0.78 },
+  // The winner's "yaaay!", sliding up a fifth and an octave.
+  cheer: { seconds: 0.72, notes: [0, 7, 12], glide: 5, strength: 0.95 },
+  // A woozy, wobbling descent while the stars go round.
+  dizzy: { seconds: 0.62, notes: [6, 3, 0, -3], glide: -6, strength: 0.72 },
+  // "Hup-hup!": a determined call to the duel.
+  challenge: { seconds: 0.31, notes: [0, 2], glide: 3, strength: 0.88 },
+  // A single startled yelp, scooping upward.
+  startled: { seconds: 0.25, notes: [9], glide: 9, strength: 0.86 },
+  // A brave, quiet "bye-bye" from the stretcher.
+  farewell: { seconds: 0.50, notes: [4, 0], glide: -2, strength: 0.72 },
 };
 
 interface Character {
@@ -91,10 +104,15 @@ export function renderCharacterCall(role: PieceSymbol, activity: CharacterActivi
     return ((seed >>> 0) / 2147483648) - 1;
   };
   const breath = bandpass(character.formant, role === 'n' || role === 'b' ? 0.75 : 2.1, sampleRate);
+  // A "mouth": two resonances that open in the middle of each syllable and close
+  // at its edges, so calls have vowel-like "wa"/"ya" shapes instead of a flat tone.
+  const mouthLow = bandpass(character.formant * 0.92, 3.4, sampleRate);
+  const mouthHigh = bandpass(character.formant2 * 0.82, 4.2, sampleRate);
+  const vocal = role === 'p' || role === 'q' || role === 'k' || role === 'r';
   const whisper = bandpass(character.formant2, 0.9, sampleRate);
   let lowNoise = 0;
   const slot = seconds * 0.94 / expression.notes.length;
-  const happy = activity === 'capture' || activity === 'win' || activity === 'promotion' || activity === 'greet';
+  const happy = activity === 'capture' || activity === 'win' || activity === 'promotion' || activity === 'greet' || activity === 'happy' || activity === 'cheer';
   const syllables = expression.notes.map((note, index) => ({
     start: index * slot + (index ? Math.sin(index * 3.1 + take) * slot * 0.035 : 0),
     duration: Math.min(seconds * 0.965 - index * slot, slot * character.articulation),
@@ -109,6 +127,7 @@ export function renderCharacterCall(role: PieceSymbol, activity: CharacterActivi
     const air = breath(white) * 1.5 + whisper(white) * 0.7;
     lowNoise += (white - lowNoise) * (1 - Math.exp(-TAU * 330 / sampleRate));
     let voice = 0;
+    let opening = 0;
     for (const syllable of syllables) {
       const elapsed = time - syllable.start;
       const u = elapsed / syllable.duration;
@@ -117,7 +136,8 @@ export function renderCharacterCall(role: PieceSymbol, activity: CharacterActivi
       const release = role === 'b' || role === 'k' ? 0.045 : 0.027;
       const envelope = smooth(elapsed / attack) * smooth((syllable.duration - elapsed) / release);
       const decay = Math.exp(-u * (role === 'b' ? 0.45 : role === 'n' ? 1.25 : 0.84));
-      const vibrato = role === 'r' ? Math.sin(TAU * 13 * elapsed) * 0.025
+      const vibrato = activity === 'dizzy' ? Math.sin(TAU * 4.2 * elapsed) * 0.045
+        : role === 'r' ? Math.sin(TAU * 13 * elapsed) * 0.025
         : role === 'k' ? Math.sin(TAU * 16 * elapsed) * 0.017
         : Math.sin(TAU * (happy ? 24 : 7) * elapsed) * (happy ? 0.009 : 0.004);
       const bend = expression.glide * (u - 0.27) + (role === 'q' ? Math.sin(Math.PI * u) * 3.8 : role === 'p' ? Math.sin(Math.PI * u) * 1.5 : 0);
@@ -163,12 +183,20 @@ export function renderCharacterCall(role: PieceSymbol, activity: CharacterActivi
           tone *= 0.81 + 0.16 * Math.sin(TAU * 17 * elapsed) + 0.03 * Math.sin(TAU * 23.7 * elapsed);
           break;
       }
+      // Expression colour: giggles bounce, dizzy calls wobble, yelps snap open.
+      if (activity === 'happy') tone *= 0.62 + 0.38 * Math.sin(TAU * 12 * elapsed + 1.2);
+      else if (activity === 'dizzy') tone *= 0.8 + 0.2 * Math.sin(TAU * 5.5 * elapsed);
       voice += tone * envelope * decay * syllable.strength;
+      opening = Math.max(opening, Math.sin(Math.PI * u) * envelope);
+    }
+    if (vocal) {
+      const shaped = mouthLow(voice) * 1.5 + mouthHigh(voice) * (role === 'q' ? 0.35 : 0.7);
+      voice = voice * (0.78 - opening * 0.18) + shaped * (0.18 + opening * 0.42);
     }
     // An additional whole-buffer fade protects the boundary even where a
     // flutter or overlapping syllable reaches the final release.
     const edge = smooth(time / 0.008) * smooth((samples.length - 1 - index) / (sampleRate * 0.018));
-    samples[index] = Math.tanh(voice * 1.2) * 0.72 * expression.strength * edge;
+    samples[index] = Math.tanh(voice * 1.2) * 0.72 * expression.strength * edge + 0; // never -0 at the boundary
   }
   return samples;
 }

@@ -14,12 +14,32 @@ export interface MovementSound {
   contactTimesMs?: readonly number[];
 }
 
+export type PageantSoundCue = 'arrival' | 'sermon' | 'plant' | 'bell' | 'petals' | 'choir' | 'memorial';
+export type ScenerySoundCue = 'pond' | 'whale' | 'stars';
+/** One beat of a capture, scheduled when the scene reaches it so pausing,
+ * skipping and the shared voice budget all follow the animation. */
+export interface CaptureSoundBeat {
+  beat: 'approach' | 'faceoff' | 'scuffle' | 'victory' | 'claim' | 'pickup' | 'carry';
+  attacker: PieceSymbol;
+  attackerColor: 'w' | 'b';
+  defender: PieceSymbol;
+  defenderColor: 'w' | 'b';
+  /** Scuffle impacts, in milliseconds from the start of that beat. */
+  impactsMs: readonly number[];
+}
+
 export interface PaperwildSound {
   /** Stores the preference; audio unlocks only inside a real user gesture. */
   setEnabled(enabled: boolean): Promise<boolean>;
   unlock(): Promise<boolean>;
   select(role: PieceSymbol): void;
   moveStart(role: PieceSymbol, motion?: MovementSound): void;
+  /** Cartoon contacts, in milliseconds from the start of a brief skirmish. */
+  skirmish(role: PieceSymbol, contactTimesMs: readonly number[]): void;
+  /** The capture story's Foley and voices, one beat at a time. */
+  captureBeat(beat: CaptureSoundBeat): void;
+  /** A quiet giggle for a hovered resident. Like idle calls, never unlocks audio. */
+  delight(role: PieceSymbol): void;
   land(role: PieceSymbol, result?: LandingSound): void;
   captured(role: PieceSymbol): void;
   invalid(role: PieceSymbol): void;
@@ -27,6 +47,9 @@ export interface PaperwildSound {
   idle(role: PieceSymbol): void;
   undo(): void;
   greeting(role?: PieceSymbol): void;
+  pageant(cue: PageantSoundCue, role?: PieceSymbol): void;
+  /** Short responses to clicked story scenes; never used as an ambient loop. */
+  scenery(cue: ScenerySoundCue): void;
   toggle(): void;
   cancel(): void;
   destroy(): void;
@@ -75,6 +98,7 @@ export function createPaperwildSound({ onUnavailable, onCharacterCall }: Paperwi
   let randomState = 792451;
   let greetingIndex = 0;
   let nextIdleAt = 0;
+  let nextDelightAt = 0;
   let idleQuietUntil = 0;
   const voices = new Set<Voice>();
   const plucks = new Map<string, AudioBuffer>();
@@ -336,14 +360,16 @@ export function createPaperwildSound({ onUnavailable, onCharacterCall }: Paperwi
     return buffer;
   }
 
-  function characterCall(ctx: AudioContext, at: number, role: PieceSymbol, activity: CharacterActivity): void {
+  function characterCall(ctx: AudioContext, at: number, role: PieceSymbol, activity: CharacterActivity, expression: { volume?: number; rate?: number } = {}): void {
     const key = `${role}:${activity}`;
     const variant = characterVariants.get(key) ?? 0;
     const buffer = characterBuffer(ctx, role, activity, variant);
     const source = ctx.createBufferSource();
     source.buffer = buffer;
-    const volume = activity === 'idle' ? 0.075 : activity === 'greet' ? 0.36 : activity === 'captured' ? 0.24 : 0.3;
-    const duration = buffer.duration;
+    const rate = expression.rate ?? 1;
+    source.playbackRate.value = rate;
+    const volume = expression.volume ?? (activity === 'idle' ? 0.075 : activity === 'greet' ? 0.36 : activity === 'captured' ? 0.24 : 0.3);
+    const duration = buffer.duration / rate;
     const voice = connectVoice(ctx, source, volume, at, duration, 0.006);
     if (!voice) return;
     // The renderer shapes individual syllables. Preserve their relative levels,
@@ -365,6 +391,220 @@ export function createPaperwildSound({ onUnavailable, onCharacterCall }: Paperwi
     if (result.promotion) return 'promotion';
     if (result.check) return 'check';
     return result.capture ? 'capture' : 'land';
+  }
+
+  function pageantCue(ctx: AudioContext, at: number, cue: PageantSoundCue, role: PieceSymbol): void {
+    switch (cue) {
+      case 'arrival':
+        // Two tiny bootfalls and the springy creak of a twig stretcher.
+        brush(ctx, at, 0.085, 640, 0.055, -0.16, 0.8);
+        pluck(ctx, at + 0.015, 148, 0.24, 0.035, 0.76, -0.1);
+        brush(ctx, at + 0.14, 0.075, 790, 0.045, 0.16, 0.85);
+        pluck(ctx, at + 0.15, 196, 0.2, 0.026, 0.72, 0.1);
+        break;
+      case 'sermon':
+        characterCall(ctx, at, 'k', 'idle', { volume: 0.11 });
+        characterCall(ctx, at + 0.16, 'b', 'idle', { volume: 0.07 });
+        break;
+      case 'plant':
+        brush(ctx, at, 0.18, 420, 0.08, -0.05, 0.75);
+        pop(ctx, at + 0.11);
+        break;
+      case 'bell':
+        pluck(ctx, at, 587.33, 0.7, 0.065, 0.62);
+        pluck(ctx, at + 0.003, 1174.66, 0.43, 0.015, 0.7);
+        break;
+      case 'petals':
+        brush(ctx, at, 0.19, 2300, 0.04, -0.2, 0.8);
+        brush(ctx, at + 0.07, 0.14, 3300, 0.025, 0.2, 0.9);
+        break;
+      case 'choir':
+        // One creature timbre forms a little major chord, each voice separately
+        // tracked so mute/undo also stops notes that have not started yet.
+        for (const [index, rate] of [1, 1.25, 1.5].entries()) {
+          characterCall(ctx, at + index * 0.045, 'p', 'idle', { volume: 0.085, rate });
+        }
+        break;
+      case 'memorial':
+        brush(ctx, at, 0.07, 2400, 0.028, -0.1);
+        characterCall(ctx, at + 0.012, role, 'greet', { volume: 0.24 });
+        break;
+    }
+  }
+
+  function sceneryCue(ctx: AudioContext, at: number, cue: ScenerySoundCue): void {
+    if (cue === 'stars') {
+      for (const [index, frequency] of [783.99, 1046.5, 1318.51].entries()) {
+        pluck(ctx, at + index * 0.085, frequency, 0.58, 0.045 - index * 0.007, 0.42, (index - 1) * 0.14);
+      }
+      brush(ctx, at, 0.055, 2700, 0.022);
+    } else if (cue === 'pond') {
+      for (const [index, frequency] of [392, 294].entries()) {
+        const start = at + index * 0.14;
+        pluck(ctx, start, frequency, 0.22, 0.05 - index * 0.01, 0.8, index ? 0.15 : -0.15);
+        brush(ctx, start + 0.018, 0.14, 1800, 0.025, index ? 0.15 : -0.15, 0.8);
+      }
+      // A brief two-syllable croak, with a hollow throat instead of a loud buzz.
+      for (let syllable = 0; syllable < 2; syllable++) {
+        const start = at + 0.29 + syllable * 0.115;
+        const source = ctx.createOscillator(); source.type = 'sawtooth';
+        source.frequency.setValueAtTime(syllable ? 145 : 170, start);
+        source.frequency.exponentialRampToValueAtTime(syllable ? 105 : 125, start + 0.09);
+        const throat = ctx.createBiquadFilter(); throat.type = 'bandpass';
+        throat.frequency.value = 620; throat.Q.value = 1.4;
+        if (connectVoice(ctx, source, 0.034, start, 0.1, 0.012, 0.08, [throat])) {
+          source.start(start); source.stop(start + 0.115);
+        }
+      }
+    } else {
+      // A low, rounded "whoo" with a quiet overtone and water on its tail.
+      for (const [index, frequency] of [112, 225].entries()) {
+        const source = ctx.createOscillator(); source.type = 'sine';
+        source.frequency.setValueAtTime(frequency, at);
+        source.frequency.exponentialRampToValueAtTime(frequency * 1.22, at + 0.22);
+        source.frequency.exponentialRampToValueAtTime(frequency * 0.91, at + 0.43);
+        source.frequency.exponentialRampToValueAtTime(frequency * 1.08, at + 0.61);
+        source.frequency.exponentialRampToValueAtTime(frequency * 0.78, at + 0.84);
+        if (connectVoice(ctx, source, index ? 0.024 : 0.13, at, 0.88, 0.1, index ? 0.08 : -0.08)) {
+          source.start(at); source.stop(at + 0.91);
+        }
+      }
+      brush(ctx, at + 0.3, 0.3, 1300, 0.027, 0.1, 0.75);
+    }
+  }
+
+  function skirmish(ctx: AudioContext, at: number, role: PieceSymbol, contacts: readonly number[]): void {
+    const pitch = ROLE_PITCH[role];
+    for (const [index, offset] of contacts.entries()) {
+      const contact = at + offset / 1000;
+      const pan = index % 2 ? 0.12 : -0.12;
+      brush(ctx, Math.max(at, contact - 0.065), 0.075, Math.min(2800, 850 + pitch * 2), 0.043, pan, 1.08);
+      pluck(ctx, contact, pitch * (role === 'b' ? 1.05 : 0.82), 0.13, role === 'b' ? 0.024 : 0.038, 0.7, -pan);
+    }
+    // One effort call leaves space between the little paper taps. Six contacts
+    // plus this call fit alongside a full movement plan in the shared budget.
+    characterCall(ctx, at + contacts[0] / 1000, role, 'move', { volume: 0.15 });
+  }
+
+  /** A soft pillow-fight thump: a falling sine body under a short paper puff. */
+  function thump(ctx: AudioContext, at: number, frequency: number, volume: number, pan = 0): void {
+    const source = ctx.createOscillator();
+    source.type = 'sine';
+    source.frequency.setValueAtTime(frequency, at);
+    source.frequency.exponentialRampToValueAtTime(frequency * 0.42, at + 0.12);
+    if (connectVoice(ctx, source, volume, at, 0.16, 0.004, pan)) { source.start(at); source.stop(at + 0.18); }
+  }
+  /** A cartoon spring: a triangle wave that zigzags upward and settles. */
+  function boing(ctx: AudioContext, at: number, base: number, volume: number, pan = 0): void {
+    const source = ctx.createOscillator();
+    source.type = 'triangle';
+    source.frequency.setValueAtTime(base, at);
+    source.frequency.exponentialRampToValueAtTime(base * 1.85, at + 0.05);
+    source.frequency.exponentialRampToValueAtTime(base * 1.3, at + 0.1);
+    source.frequency.exponentialRampToValueAtTime(base * 1.7, at + 0.15);
+    source.frequency.exponentialRampToValueAtTime(base * 1.42, at + 0.24);
+    if (connectVoice(ctx, source, volume, at, 0.28, 0.006, pan)) { source.start(at); source.stop(at + 0.3); }
+  }
+  /** Air rushing past: band-limited paper noise swept between two pitches. */
+  function swoosh(ctx: AudioContext, at: number, duration: number, from: number, to: number, volume: number, pan = 0): void {
+    if (!noiseBuffer) return;
+    const source = ctx.createBufferSource();
+    source.buffer = noiseBuffer;
+    const filter = ctx.createBiquadFilter();
+    filter.type = 'bandpass';
+    filter.Q.value = 1.1;
+    filter.frequency.setValueAtTime(from, at);
+    filter.frequency.exponentialRampToValueAtTime(to, at + duration);
+    if (!connectVoice(ctx, source, volume, at, duration, duration * 0.45, pan, [filter])) return;
+    source.start(at, random() * 0.2, duration + 0.03);
+    source.stop(at + duration + 0.03);
+  }
+  /** Dizzy birdies: two quick high chirps. */
+  function tweet(ctx: AudioContext, at: number, pan: number): void {
+    for (let index = 0; index < 2; index++) {
+      const start = at + index * 0.09, source = ctx.createOscillator();
+      source.type = 'sine';
+      source.frequency.setValueAtTime(2300, start);
+      source.frequency.exponentialRampToValueAtTime(3200, start + 0.05);
+      if (connectVoice(ctx, source, 0.022, start, 0.07, 0.004, pan)) { source.start(start); source.stop(start + 0.08); }
+    }
+  }
+  /** Beetle feet on paper: tiny alternating ticks. */
+  function patter(ctx: AudioContext, at: number, count: number, gap: number, volume: number): void {
+    for (let index = 0; index < count; index++) brush(ctx, at + index * gap, 0.022, 3600 + (index % 2) * 500, volume, index % 2 ? 0.25 : -0.25, 1.2);
+  }
+  const FANFARE: Readonly<Record<'w' | 'b', readonly number[]>> = { w: [523.25, 659.25, 783.99, 1046.5], b: [440, 554.37, 659.25, 880] };
+
+  function captureScore(ctx: AudioContext, at: number, event: CaptureSoundBeat): void {
+    const { attacker, defender } = event;
+    const attackerPitch = ROLE_PITCH[attacker], defenderPitch = ROLE_PITCH[defender];
+    switch (event.beat) {
+      case 'approach':
+        // Footfalls in the attacker's gait, a determined call, and a startled yelp.
+        plannedSteps(ctx, at, attacker, { durationMs: 560, contactTimesMs: [110, 250, 390, 520] });
+        characterCall(ctx, at + 0.04, attacker, 'challenge', { volume: 0.22 });
+        characterCall(ctx, at + 0.18, defender, 'startled', { volume: 0.2 });
+        break;
+      case 'faceoff':
+        // A tiny ring bell ("ding ding!") and the two of them bumping mittens.
+        for (const [index, time] of [0.04, 0.16].entries()) {
+          pluck(ctx, at + time, 1567.98, 0.42, 0.04 - index * 0.006, 0.36, 0.08);
+          pluck(ctx, at + time + 0.002, 3135.96, 0.22, 0.012, 0.5, 0.08);
+        }
+        swoosh(ctx, at + 0.02, 0.12, 900, 2400, 0.05, -0.1);
+        thump(ctx, at + 0.14, 230, 0.07);
+        break;
+      case 'scuffle': {
+        // A rolling dust rumble with a different cartoon hit on every impact.
+        swoosh(ctx, at, 0.86, 520, 900, 0.06);
+        event.impactsMs.slice(0, 6).forEach((offset, index) => {
+          const time = at + Math.max(0, offset) / 1000, pan = index % 2 ? 0.22 : -0.22;
+          const pitch = index % 2 ? defenderPitch : attackerPitch;
+          if (index % 3 === 0) thump(ctx, time, 150 + pitch * 0.12, 0.11, pan);
+          else if (index % 3 === 1) boing(ctx, time, Math.min(520, 220 + pitch * 0.35), 0.035, pan);
+          else pluck(ctx, time, 680 + pitch * 0.4, 0.14, 0.045, 0.6, pan);
+          if (index % 2 === 0) brush(ctx, Math.max(at, time - 0.05), 0.06, 2400, 0.045, -pan, 1.1);
+        });
+        const [first = 90, , second = 370, , fourth = 640] = event.impactsMs;
+        characterCall(ctx, at + first / 1000, attacker, 'move', { volume: 0.13 });
+        characterCall(ctx, at + (fourth || second) / 1000, defender, 'captured', { volume: 0.12 });
+        break;
+      }
+      case 'victory': {
+        // The cloud bursts, the winner cheers to a little fanfare, the loser sees stars.
+        swoosh(ctx, at, 0.22, 2600, 700, 0.07);
+        const notes = FANFARE[event.attackerColor];
+        notes.forEach((note, index) => pluck(ctx, at + 0.1 + index * 0.075, note, 0.55 + index * 0.08, 0.05 - index * 0.004, 0.34, (index - 1.5) * 0.14));
+        brush(ctx, at + 0.4, 0.2, 4200, 0.03, 0, 0.9);
+        characterCall(ctx, at + 0.12, attacker, 'cheer', { volume: 0.3 });
+        characterCall(ctx, at + 0.2, defender, 'dizzy', { volume: 0.13 });
+        tweet(ctx, at + 0.36, 0.3);
+        break;
+      }
+      case 'claim':
+        // A proud hop, a pennant planted with a "plink", and beetle feet arriving.
+        swoosh(ctx, at + 0.04, 0.14, 700, 1500, 0.04);
+        thump(ctx, at + 0.3, 120 + attackerPitch * 0.2, 0.08);
+        brush(ctx, at + 0.18, 0.08, 900, 0.05, 0.15, 0.9);
+        pop(ctx, at + 0.21);
+        characterCall(ctx, at + 0.32, attacker, 'happy', { volume: 0.16 });
+        patter(ctx, at + 0.4, 5, 0.075, 0.03);
+        break;
+      case 'pickup':
+        // "Hup!": two tiny beetle calls, a creaking twig stretcher, a brave goodbye.
+        for (const [index, time] of [0, 0.11].entries()) {
+          const source = ctx.createOscillator(); source.type = 'sine';
+          source.frequency.setValueAtTime(880 + index * 120, at + time);
+          source.frequency.exponentialRampToValueAtTime(1250 + index * 140, at + time + 0.06);
+          if (connectVoice(ctx, source, 0.028, at + time, 0.08, 0.005, index ? 0.2 : -0.2)) { source.start(at + time); source.stop(at + time + 0.09); }
+        }
+        pluck(ctx, at + 0.08, 148, 0.3, 0.035, 0.76);
+        characterCall(ctx, at + 0.3, defender, 'farewell', { volume: 0.18 });
+        break;
+      case 'carry':
+        patter(ctx, at, 8, 0.07, 0.026);
+        break;
+    }
   }
 
   function idle(role: PieceSymbol): void {
@@ -474,6 +714,8 @@ export function createPaperwildSound({ onUnavailable, onCharacterCall }: Paperwi
       play((ctx, at) => {
         brush(ctx, at, 0.045, 2500, 0.065, -0.08, 1.05);
         pluck(ctx, at + 0.008, ROLE_PITCH[role] * 1.35, 0.11, 0.016, 0.72);
+        // The happy jump has a springy little take-off.
+        boing(ctx, at + 0.012, Math.min(560, 260 + ROLE_PITCH[role] * 0.3), 0.03);
         characterCall(ctx, at + 0.012, role, 'select');
       });
     },
@@ -482,6 +724,25 @@ export function createPaperwildSound({ onUnavailable, onCharacterCall }: Paperwi
         plannedSteps(ctx, at, role, motion);
         characterCall(ctx, at, role, 'move');
       });
+    },
+    skirmish(role, contactTimesMs) {
+      const contacts = [...new Set(contactTimesMs.filter(value => Number.isFinite(value) && value >= 0 && value <= 2400))].sort((a, b) => a - b).slice(0, 6);
+      if (contacts.length) play((ctx, at) => skirmish(ctx, at, role, contacts));
+    },
+    captureBeat(beat) {
+      if (!beat || !(beat.attacker in ROLE_PITCH) || !(beat.defender in ROLE_PITCH)) return;
+      const impactsMs = beat.impactsMs.filter(value => Number.isFinite(value) && value >= 0 && value <= 2400);
+      play((ctx, at) => captureScore(ctx, at, { ...beat, impactsMs }));
+    },
+    delight(role) {
+      if (destroyed || !enabled || hidden() || masterMuted || context?.state !== 'running') return;
+      const now = context.currentTime;
+      if (now < nextDelightAt) return;
+      nextDelightAt = now + 0.35;
+      try {
+        characterCall(context, now + 0.01, role, 'happy', { volume: 0.12 });
+        boing(context, now + 0.04, Math.min(520, 240 + ROLE_PITCH[role] * 0.3), 0.018);
+      } catch { cancel(); unavailable(); }
     },
     land(role, result = {}) {
       play((ctx, at) => {
@@ -508,6 +769,8 @@ export function createPaperwildSound({ onUnavailable, onCharacterCall }: Paperwi
         characterCall(ctx, at + 0.012, speaker, 'greet');
       });
     },
+    pageant(cue, role = 'p') { play((ctx, at) => pageantCue(ctx, at, cue, role)); },
+    scenery(cue) { play((ctx, at) => sceneryCue(ctx, at, cue)); },
     toggle() {
       play((ctx, at) => {
         brush(ctx, at, 0.055, 1900, 0.045);

@@ -3,7 +3,9 @@
 .character-idle{position:absolute;bottom:0;left:0;width:100%;aspect-ratio:1;z-index:2;pointer-events:none;visibility:hidden}
 :is(.sketch-piece,.character-portrait).has-idle-parts .sketch-piece-body[data-artwork=ready]>.character-idle[data-ready=true]{visibility:visible}
 :is(.sketch-piece,.character-portrait).has-idle-parts .sketch-piece-body[data-artwork=ready]:has(>.character-idle[data-ready=true])>.sketch-piece-art{-webkit-mask-image:var(--idle-cutout);mask-image:var(--idle-cutout);-webkit-mask-size:100% 100%;mask-size:100% 100%;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;mask-mode:alpha}
-.character-idle-part{display:block;position:absolute;inset:0;width:100%;height:100%;object-fit:contain;pointer-events:none;backface-visibility:hidden;animation-duration:var(--part-cycle,9s);animation-delay:var(--part-phase,0s);animation-timing-function:ease-in-out;animation-iteration-count:infinite}
+.character-idle-part{display:block;position:absolute;inset:0;width:100%;height:100%;pointer-events:none;backface-visibility:hidden;animation-duration:var(--part-cycle,9s);animation-delay:var(--part-phase,0s);animation-timing-function:ease-in-out;animation-iteration-count:infinite}
+.character-idle-paint,.character-mitten{display:block;position:absolute;inset:0;width:100%;height:100%;object-fit:contain;pointer-events:none}
+.character-mitten{overflow:visible;filter:drop-shadow(0 .5px 0 #3d2c1c30)}
 .character-idle-left-ear{animation-name:character-ear-listen-left}
 .character-idle-right-ear{animation-name:character-ear-listen-right;animation-duration:calc(var(--part-cycle,9s) + 1.1s)}
 .character-idle-left-wing{animation-name:character-wing-rest-left}

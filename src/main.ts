@@ -9,6 +9,9 @@ import { createPaperwildSound } from './sound.ts';
 import type { ComputerRequest, ComputerResponse } from './ai.worker.ts';
 import { createSketchMargins } from './sketch-margins.ts';
 import { createCharacterPortrait } from './character-portrait.ts';
+import { createCapturePageant } from './capture-pageant.ts';
+import { createFieldCamp } from './field-camp.ts';
+import './field-notebook.css';
 
 interface Preferences { atmosphere: Atmosphere; weather: 'clear' | 'rain'; sound: boolean; view: View; reducedMotion: boolean }
 interface Study { id: string; name: string; label: string; description: string; fen: string; focus: Square }
@@ -34,7 +37,7 @@ const voiceNames: Record<PieceSymbol, string> = { k:'badger',q:'fox',r:'stump',b
 const SAVE_KEY = 'queens-conservatory.game.v1';
 const PREF_KEY = 'queens-conservatory.preferences.v1';
 const studies: Study[] = [
-  { id:'bloom', name:'Tea on the sidelines', label:'A lesson in captures', description:'White’s pawn on e4 can capture the pawn on d5. The captured acorn joins the sidelines.', fen:'rnbqkbnr/ppp1pppp/8/3p4/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 0 2', focus:'e4' },
+  { id:'bloom', name:'Tea on the sidelines', label:'A lesson in captures', description:'White’s pawn on e4 can capture the pawn on d5. The woodland stretcher crew has a very small ceremony prepared.', fen:'rnbqkbnr/ppp1pppp/8/3p4/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 0 2', focus:'e4' },
   { id:'promotion', name:'Room to become', label:'A lesson in promotion', description:'Guide White’s pawn from a7 to a8. Choose what it becomes.', fen:'7k/P7/8/8/8/8/8/7K w - - 0 1', focus:'a7' },
   { id:'mate', name:'One final move', label:'A checkmate in one', description:'White to move. Find the queen move that leaves Black’s king with nowhere to go.', fen:'7k/8/5KQ1/8/8/8/8/8 w - - 0 1', focus:'g6' },
 ];
@@ -64,17 +67,17 @@ let capturePortraitKey = '';
 const portraitSlot = (color: Color, type: PieceSymbol, label = '') => `<span class="character-portrait-slot" data-portrait="${color}${type}" data-portrait-label="${label}"></span>`;
 
 document.querySelector('#app')!.innerHTML = `
-  <div class="app-shell">
+  <div class="app-shell field-notebook">
     <header class="masthead">
       <a class="brand" href="/" aria-label="Paperwild home"><span class="brand-mark">${leaf}</span><span><span class="brand-word">${[...'Paperwild'].map((letter,i)=>`<span style="--letter-tilt:${[-5,3,-3,5,-2,3,-4,4,-2][i]}deg;--letter-hop:${[0,-2,1,-1,2,0,-2,1,-1][i]}px">${letter}</span>`).join('')}</span><strong>Chess, drawn to life.</strong></span></a>
-      <div class="masthead-note"><span class="small-star">☆</span> i drew us a little world!</div>
+      <div class="masthead-note"><span class="field-stamp">FIELD NOTES<br><b>No. 001</b></span><span>A small expedition in chess.</span></div>
       <div class="header-actions"><button class="icon-button sound-button" id="sound" aria-label="Turn sound on" title="Hear the creatures and their little footsteps">${icon('mute')}<span>Sound off</span></button><button class="icon-button" id="help" aria-label="How to play" title="How to play">${icon('help')}</button><span class="edition">my sketchbook ♡</span></div>
     </header>
     <main class="experience">
       <aside class="invitation">
-        <p class="eyebrow"><span></span> a page for daydreaming</p>
-        <h1>let's<br>play <em>chess!</em></h1>
-        <p class="intro-copy">i saved you a little spot.<br>pick a friend & make a move.</p>
+        <p class="eyebrow"><span></span> the pocket wilderness</p>
+        <h1>Small moves.<br><em>Wild company.</em></h1>
+        <p class="intro-copy">A field notebook.<br>A very curious chess club.</p>
         <div class="botanical-divider"><span></span>${leaf}<span></span></div>
         <div class="mode-selector" aria-label="Players"><button data-mode="computer" aria-pressed="true">Against the club</button><button data-mode="local" aria-pressed="false">With a friend</button></div>
         <p class="mode-description" id="mode-description">You play amber. The club plays indigo.</p>
@@ -83,27 +86,31 @@ document.querySelector('#app')!.innerHTML = `
         <button class="primary-button" id="new-game" aria-label="Begin a new game">A fresh page ${icon('arrow')}</button>
         <button class="text-button studies-link" id="studies" aria-label="Explore the chess studies">Little chess stories <span>↗</span></button>
         <div class="garden-note"><span class="note-number">a little note for you</span><p>off the board?<br>tea + biscuits<br>are over here!</p><span class="note-flower" aria-hidden="true">♡</span></div>
+        <div id="field-camp-host"></div>
       </aside>
       <section class="game-space" aria-label="Illustrated chess board">
+        <div id="field-turn-pocket"></div>
         <div class="scene-topline"><span><i></i> <span id="scene-label">our little chess club</span></span><div class="scene-controls"><button id="atmosphere" aria-label="Switch to evening light">${icon('sun')}<span id="atmosphere-label">Daydream</span></button><button id="weather" aria-label="Let it rain" aria-pressed="false">${icon('rain')}<span>A little rain</span></button><button id="view" hidden aria-label="Flat sketchbook view">${icon('view')}</button></div></div>
-        <div id="scene" class="scene-stage"><div class="scene-loading">${leaf}<span>Waking the little inklings…</span></div></div>
+        <div class="board-well"><div id="scene" class="scene-stage"><div class="scene-loading">${leaf}<span>Waking the little inklings…</span></div></div><div id="scene-fallback" class="fallback-board" hidden></div></div>
         <div class="board-access" id="board-access" role="group" aria-label="Chess board"></div>
-        <div id="scene-fallback" class="fallback-board" hidden></div>
-        <div class="scene-caption"><span class="caption-index">your turn,<br>daydreamer</span><p id="garden-observation">The best things happen between the lines.</p><span class="caption-seal" aria-hidden="true">☆</span></div>
+        <div class="scene-caption"><span class="caption-index">your turn,<br>daydreamer</span><p id="garden-observation">The best things happen between the lines.</p><span class="caption-seal" aria-hidden="true">☆</span><div class="toast" id="toast" role="status" aria-live="polite"></div></div>
         <div class="wildlife-note"><span class="wildlife-presence" aria-hidden="true"></span><span id="wildlife-hint">There’s a whole world in the margins.</span><button id="greet" class="resident-greeting">Say hello <span aria-hidden="true">↗</span></button></div>
         <div class="study-banner" id="study-banner" hidden><div><span class="eyebrow">A LITTLE CHESS STORY</span><h2 id="study-name"></h2><p id="study-description"></p></div><button id="leave-study" class="text-button">Return to a full game ${icon('arrow')}</button></div>
       </section>
       <aside class="game-journal">
         <div class="turn-card"><span class="field-label">psst... who's next?</span><div class="turn-heading"><span id="turn-token" class="turn-token"></span><h2 id="game-status" role="status" aria-live="polite">Your move.</h2></div><p id="turn-description">Choose a little character to begin.</p><div class="turn-card-footer"><span id="move-counter">Move 01</span><button id="undo" aria-label="Undo last turn">${icon('undo')} Undo</button></div></div>
+        <div id="field-camp-pocket"></div>
+        <div id="capture-pageant"></div>
         <section class="blooms-section" aria-labelledby="blooms-title"><div class="section-heading"><h2 id="blooms-title">The sideline society</h2><span id="bloom-count">00</span></div><div class="bloom-display" id="bloom-display" aria-label="No captures yet"><span class="empty-sprout">${leaf}</span><p>The kettle’s on.<br>Everyone is welcome.</p></div><p class="blooms-caption" id="blooms-caption">Captured pieces keep good company.</p></section>
         <section class="journal-section" aria-labelledby="journal-title"><div class="section-heading"><h2 id="journal-title">Field notes</h2><button class="icon-button compact" id="export" aria-label="Download game as PGN" title="Download game">${icon('download')}</button></div><ol id="move-history" class="move-history" aria-label="Move history"><li class="history-empty">Your story starts with a move.</li></ol></section>
         <button class="text-button meet-link" id="meet">Who’s who in the club? <span>↗</span></button><div class="saved-note" id="saved-note"><span></span> Your place in the story is saved.</div>
       </aside>
     </main>
-    <footer class="footer"><span>no erasers needed.</span><div><button id="motion" aria-pressed="false">Let it wander</button><span>p.s. the drawings are alive :)</span></div></footer>
+    <footer class="footer"><div class="field-tools"><button id="field-options" aria-haspopup="dialog">Field kit ${icon('view')}</button><button id="field-notes" aria-haspopup="dialog">Journal <span id="field-capture-count">00</span></button></div><span class="field-footer-note">Leave the board. Stay in the story.</span><button id="motion" aria-pressed="false">Let it wander</button></footer>
   </div>
-  <div class="toast" id="toast" role="status" aria-live="polite"></div>
-  <dialog id="help-dialog" class="modal"><button class="modal-close icon-button" data-close aria-label="Close instructions">${icon('close')}</button><p class="eyebrow">WELCOME TO THE CLUB</p><h2>Familiar chess.<br><em>Curious company.</em></h2><p>Standard chess, with a woodland cast. Amber is White, indigo is Black. Play the computer or take turns on the same device.</p><p class="voice-invitation">Every friend has a little voice. Tap “hear me” to turn sound on.</p><div class="character-legend">${(['k','q','r','b','n','p'] as const).map(p=>`<div>${portraitSlot('w',p,clubNames[p])}<strong>${PIECE_NAMES[p]}</strong><span>${clubNames[p]}</span><button class="character-voice-button" data-voice="${p}" aria-label="Hear the ${voiceNames[p]}">hear me <span aria-hidden="true">♫</span></button></div>`).join('')}</div><div class="instruction-grid"><div><strong>Choose, then move</strong><p>Select a character, then a marked square. All the usual rules apply, including castling and en passant.</p></div><div><strong>Tea on the sidelines</strong><p>Captured characters leave the board and join the sidelines. Undo restores everyone to their place.</p></div><div><strong>The margins are alive</strong><p>Say hello to the little world, invite a shower, or turn the page toward moonlight.</p></div><div><strong>A quieter page</strong><p>Sound is off until you invite it in. Each friend reacts to your moves in its own voice. Pause the wandering for a still, quieter page.</p></div></div><div class="keyboard-note"><kbd>↑</kbd><kbd>↓</kbd><kbd>←</kbd><kbd>→</kbd> explore · <kbd>Enter</kbd> choose · <kbd>Esc</kbd> release · <kbd>U</kbd> undo</div><button class="primary-button" data-close>Back to the story ${icon('arrow')}</button></dialog>
+  <dialog id="field-options-dialog" class="modal field-options-dialog"><button class="modal-close icon-button" data-close aria-label="Close field kit">${icon('close')}</button><p class="eyebrow">THE FIELD KIT</p><h2>Set out <em>your way.</em></h2><div id="field-options-host"></div></dialog>
+  <dialog id="field-notes-dialog" class="modal field-notes-dialog"><button class="modal-close icon-button" data-close aria-label="Close field journal">${icon('close')}</button><p class="eyebrow">COLLECTED ALONG THE WAY</p><h2>The field <em>journal.</em></h2><div id="field-notes-host"></div></dialog>
+  <dialog id="help-dialog" class="modal"><button class="modal-close icon-button" data-close aria-label="Close instructions">${icon('close')}</button><p class="eyebrow">WELCOME TO THE CLUB</p><h2>Familiar chess.<br><em>Curious company.</em></h2><p>Standard chess, with a woodland cast. Amber is White, indigo is Black. Play the computer or take turns on the same device.</p><p class="voice-invitation">Every friend has a little voice. Tap “hear me” to turn sound on.</p><div class="character-legend">${(['k','q','r','b','n','p'] as const).map(p=>`<div>${portraitSlot('w',p,clubNames[p])}<strong>${PIECE_NAMES[p]}</strong><span>${clubNames[p]}</span><button class="character-voice-button" data-voice="${p}" aria-label="Hear the ${voiceNames[p]}">hear me <span aria-hidden="true">♫</span></button></div>`).join('')}</div><div class="instruction-grid"><div><strong>Choose, then move</strong><p>Select a character, then a marked square. All the usual rules apply, including castling and en passant.</p></div><div><strong>Tea on the sidelines</strong><p>A tiny stretcher crew carries captured friends to the clearing beside the game for a woodland send-off. Ring the bell, scatter petals, or leave a flower. Undo brings everyone back.</p></div><div><strong>The margins are alive</strong><p>Say hello to the little world, invite a shower, or turn the page toward moonlight.</p></div><div><strong>A quieter page</strong><p>Sound is off until you invite it in. Each friend reacts to your moves in its own voice. Pause the wandering for a still, quieter page.</p></div></div><div class="keyboard-note"><kbd>↑</kbd><kbd>↓</kbd><kbd>←</kbd><kbd>→</kbd> explore · <kbd>Enter</kbd> choose · <kbd>Esc</kbd> release · <kbd>U</kbd> undo</div><button class="primary-button" data-close>Back to the story ${icon('arrow')}</button></dialog>
   <dialog id="studies-dialog" class="modal studies-modal"><button class="modal-close icon-button" data-close aria-label="Close chess studies">${icon('close')}</button><p class="eyebrow">THREE LITTLE CHAPTERS</p><h2>Chess <em>stories.</em></h2><p>Small positions. A little room to discover. Both sides are yours to move.</p><div class="study-options">${studies.map((s,i)=>`<button data-study="${s.id}"><span class="study-index">0${i+1}</span><span><strong>${s.name}</strong><small>${s.label}</small></span>${icon('arrow')}</button>`).join('')}</div><p class="fine-print">Opening a story replaces the current game.</p></dialog>
   <dialog id="new-game-dialog" class="modal small-modal"><span class="modal-mark">${leaf}</span><p class="eyebrow">A FRESH SHEET OF POSSIBILITY</p><h2>Another <em>chapter?</em></h2><p>Your current game and sideline society will be cleared.</p><div class="modal-actions"><button class="secondary-button" data-close>Keep playing</button><button class="primary-button" id="confirm-new">Begin again ${icon('arrow')}</button></div></dialog>
   <dialog id="promotion-dialog" class="modal small-modal"><p class="eyebrow">A LITTLE ACORN. A BIG POSSIBILITY.</p><h2>Who will you <em>become?</em></h2><p>Choose a new role for your pawn.</p><div class="promotion-options">${(['q','r','b','n'] as const).map(p=>`<button data-promotion="${p}" aria-label="Promote to ${PIECE_NAMES[p]}">${portraitSlot('w',p)}${PIECE_NAMES[p]}</button>`).join('')}</div><button class="text-button" data-close>Choose a different move</button></dialog>
@@ -121,6 +128,19 @@ function mountPortraits() {
   }
 }
 mountPortraits();
+for (const item of all('.game-journal .blooms-section,.game-journal .journal-section,.game-journal .meet-link,.game-journal .saved-note')) $('#field-notes-host').append(item);
+const fieldCompact = matchMedia('(max-width: 900px)');
+const fieldShort = matchMedia('(min-width: 901px) and (max-height: 650px)');
+const fieldInvitation = $('.invitation'), fieldTurn = $('.turn-card'), fieldCampHost = $('#field-camp-host');
+function dockFieldControls() {
+  (fieldCompact.matches || fieldShort.matches || dialog('#field-options-dialog').open ? $('#field-options-host') : $('.experience')).prepend(fieldInvitation);
+  (fieldCompact.matches ? $('#field-turn-pocket') : $('.game-journal')).prepend(fieldTurn);
+  (fieldCompact.matches || fieldShort.matches ? $('#field-camp-pocket') : fieldInvitation).append(fieldCampHost);
+}
+fieldCompact.addEventListener('change', dockFieldControls);
+fieldShort.addEventListener('change', dockFieldControls);
+dialog('#field-options-dialog').addEventListener('close', dockFieldControls);
+dockFieldControls();
 function pageVisibility() { document.documentElement.dataset.pagePaused = String(document.hidden); }
 document.addEventListener('visibilitychange', pageVisibility); pageVisibility();
 const voiceEvents: string[] = [];
@@ -136,6 +156,14 @@ const sound = createPaperwildSound({onCharacterCall:({role,activity})=>{
   showToast('Sound is unavailable here. The little world is still yours to explore.');
 }});
 const atmosphere = createSketchMargins(document.body, prefs);
+const pageant = createCapturePageant($('#capture-pageant'), {
+  reducedMotion: prefs.reducedMotion,
+  onCue: (cue, role) => sound.pageant(cue, role),
+});
+const camp = createFieldCamp(fieldCampHost, resident => {
+  const cues = { kettle:'petals', post:'bell', radio:'choir' } as const;
+  sound.pageant(cues[resident]);
+});
 const squareButtons = new Map<Square, HTMLButtonElement>();
 const fallbackButtons = new Map<Square, HTMLButtonElement>();
 for (let rank = 8; rank >= 1; rank--) {
@@ -151,6 +179,11 @@ for (let rank = 8; rank >= 1; rank--) {
     });
     button.addEventListener('keydown',e=>boardKeyboard(e,square));
     button.addEventListener('focus',()=>{ focusedSquare=square; updateSquareFocus(); });
+    // A mouse resting on a resident makes it lean in and hop. Touch has no hover;
+    // tapping selects instead, and a selected resident jumps for joy.
+    button.addEventListener('pointerenter',event=>{if(event.pointerType!=='mouse'||moving)return;const role=scene?.hover(square,event.clientX);if(role)sound.delight(role);});
+    button.addEventListener('pointermove',event=>{if(event.pointerType==='mouse')scene?.hover(square,event.clientX);});
+    button.addEventListener('pointerleave',event=>{if(event.pointerType==='mouse')scene?.hover(null);});
     $('#board-access').append(button); squareButtons.set(square,button);
     const flat = document.createElement('button');
     flat.dataset.square=square;flat.className=`flat-square ${(file.charCodeAt(0)+rank)%2 ? 'light' : 'dark'}`;
@@ -171,7 +204,6 @@ function persist() {
 function savePreferences() { try {localStorage.setItem(PREF_KEY,JSON.stringify(prefs));} catch {} }
 function onMotion(event: SketchMotionEvent) {
   if(event.phase==='start')sound.moveStart(event.type,{durationMs:event.durationMs,contactTimesMs:event.contactTimesMs});
-  if(event.phase==='capture')sound.captured(event.type);
   if(event.phase==='cancel')sound.cancel();
 }
 function cancelFeedback() {
@@ -199,7 +231,8 @@ function queueComputer() {
   },prefs.reducedMotion ? 150 : 650);
 }
 function selectSquare(square: Square) {
-  if(moving)return;
+  // A click during a capture skips straight to the result; chess resumes as normal.
+  if(moving){scene?.settle();return;}
   if (thinking) {showToast('The club is considering a move.');return;}
   if (game.status().over) {showToast('This chapter is complete. Begin a new game to play again.');return;}
   if (game.mode==='computer'&&game.chess.turn()!=='w') return;
@@ -221,7 +254,7 @@ function selectSquare(square: Square) {
     }
     if (!piece||piece.color!==game.chess.turn()) {sound.invalid(game.chess.get(from)?.type ?? 'p');showToast('That square isn’t a legal move. Follow the marked possibilities.');return;}
   }
-  if (piece?.color===game.chess.turn()) {selected=square;focusedSquare=square;render();sound.select(piece.type);}
+  if (piece?.color===game.chess.turn()) {selected=square;focusedSquare=square;render();scene?.delight(square);sound.select(piece.type);}
   else {selected=null;render();}
 }
 function commitMove(input: MoveInput) {
@@ -231,8 +264,8 @@ function commitMove(input: MoveInput) {
   selected=null;pendingPromotion=null;resultDismissed=false;persist();render();
   if(move.captured){
     atmosphere.celebrateCapture();
-    $('#garden-observation').textContent='One more friend for tea on the sidelines.';
-    showToast(`${clubNames[move.captured]} joins the sideline society.`);
+    $('#garden-observation').textContent='A little tussle. A victory hop. Then the stretcher crew.';
+    showToast(`${clubNames[move.piece]} challenges ${clubNames[move.captured]}!`);
   }
   void (scene?.whenSettled() ?? Promise.resolve()).then(()=>{
     if(epoch!==feedbackEpoch||fen!==game.chess.fen())return;
@@ -283,6 +316,9 @@ function render() {
   const legal=selected?game.moves(selected).map(m=>m.to):[];
   const checkSquare=status.check?game.chess.board().flat().find(p=>p?.type==='k'&&p.color===status.turn)?.square ?? null:null;
   scene?.sync({board:game.chess.board(),selected,legal,lastMove:last||null,captures,checkSquare});
+  // Let the characters finish their tussle and departure before the clearing
+  // welcomes the latest capture. Undo/reset still reconcile immediately.
+  pageant.sync(moving && last?.captured ? captures.slice(0,-1) : captures);
   $('#board-access').setAttribute('aria-busy',String(moving));
   for(const [square,button] of squareButtons){
     const piece=game.chess.get(square),label=`${square}, ${piece?`${piece.color==='w'?'White':'Black'} ${PIECE_NAMES[piece.type]}`:'empty'}${legal.includes(square)?', legal destination':''}`;
@@ -290,15 +326,17 @@ function render() {
     const flat=fallbackButtons.get(square)!;flat.textContent=piece?glyphs[piece.color][piece.type]:'';flat.setAttribute('aria-label',label);flat.classList.toggle('selected',selected===square);flat.classList.toggle('legal',legal.includes(square));flat.tabIndex=square===focusedSquare?0:-1;
   }
   updateSquareFocus();positionSquares();
-  const statusText=status.over?status.text:thinking?'A little thinking…':status.check?'Oh, a check!':game.mode==='computer'?'Your move.':`${status.turn==='w'?'Amber':'Indigo'} to move.`;
+  const capturing=moving&&!!last?.captured;
+  const statusText=capturing?'A little tussle…':status.over?status.text:thinking?'A little thinking…':status.check?'Oh, a check!':game.mode==='computer'?'Your move.':`${status.turn==='w'?'Amber':'Indigo'} to move.`;
   $('#game-status').textContent=statusText;
   $('#game-status').dataset.turn=status.turn;$('#game-status').dataset.gameOver=String(status.over);$('#game-status').dataset.thinking=String(thinking);$('#game-status').dataset.moving=String(moving);
   $('#turn-token').classList.toggle('ink',status.turn==='b');$('#turn-token').classList.toggle('thinking',thinking);
   const selectedType=selected?game.chess.get(selected)?.type:undefined;
-  $('#turn-description').textContent=status.over?'A chapter for the club book. Time for tea?':status.check?`${status.turn==='w'?'White’s':'Black’s'} king is in check. Find a safe move.`:thinking?'Even daydreamers need a moment.':selected?`${selectedType?clubNames[selectedType]:'A friend'} on ${selected}. Choose a marked square.`:'Choose a little character to see its possibilities.';
+  $('#turn-description').textContent=capturing?'A woodland scuffle, then the winner claims the square.':status.over?'A chapter for the club book. Time for tea?':status.check?`${status.turn==='w'?'White’s':'Black’s'} king is in check. Find a safe move.`:thinking?'Even daydreamers need a moment.':selected?`${selectedType?clubNames[selectedType]:'A friend'} on ${selected}. Choose a marked square.`:'Choose a little character to see its possibilities.';
   $('#move-counter').textContent=`Move ${String(Number(game.chess.fen().split(' ')[5])).padStart(2,'0')}`;
   button('#undo').disabled=!history.length;button('#export').disabled=!history.length;
   $('#bloom-count').textContent=String(captures.length).padStart(2,'0');
+  $('#field-capture-count').textContent=String(captures.length).padStart(2,'0');
   $('#bloom-display').setAttribute('aria-label',`${captures.length} captured ${captures.length===1?'piece':'pieces'} on the sidelines`);
   const nextCapturePortraitKey=captures.map(c=>`${c.color}${c.type}${c.by}${c.moveNumber}`).join('|');
   if(nextCapturePortraitKey!==capturePortraitKey){
@@ -341,21 +379,24 @@ function applyPreferences() {
   $('#motion').setAttribute('aria-pressed',String(!!prefs.reducedMotion));$('#motion').textContent=prefs.reducedMotion?'The world, paused':'Let it wander';
   scene?.setAtmosphere(prefs.atmosphere);scene?.setWeather(prefs.weather);scene?.setReducedMotion(!!prefs.reducedMotion);scene?.setView(prefs.view);
   atmosphere.setAtmosphere(prefs.atmosphere);atmosphere.setWeather(prefs.weather);atmosphere.setReducedMotion(!!prefs.reducedMotion);
+  pageant.setReducedMotion(!!prefs.reducedMotion);
   $('#wildlife-hint').textContent=!scene?'A quiet page. All the usual chess rules.':prefs.reducedMotion?'A still page. Let it wander when you’re ready.':'There’s a whole world in the margins.';
   button('#greet').hidden=!scene;
   positionSquares();savePreferences();
 }
 
-button('#new-game').onclick=()=>game.chess.history().length?dialog('#new-game-dialog').showModal():newGame();
+button('#new-game').onclick=()=>{dialog('#field-options-dialog').close();game.chess.history().length?dialog('#new-game-dialog').showModal():newGame();};
 button('#confirm-new').onclick=newGame;button('#result-new').onclick=newGame;button('#leave-study').onclick=newGame;
-button('#undo').onclick=undo;button('#help').onclick=()=>dialog('#help-dialog').showModal();button('#studies').onclick=()=>dialog('#studies-dialog').showModal();
+button('#undo').onclick=undo;button('#help').onclick=()=>dialog('#help-dialog').showModal();button('#studies').onclick=()=>{dialog('#field-options-dialog').close();dialog('#studies-dialog').showModal();};
 button('#meet').onclick=()=>dialog('#help-dialog').showModal();
+button('#field-options').onclick=()=>{dialog('#field-options-dialog').showModal();dockFieldControls();};
+button('#field-notes').onclick=()=>dialog('#field-notes-dialog').showModal();
 button('#sound').onclick=()=>{prefs.sound=!prefs.sound;applyPreferences();if(prefs.sound)sound.toggle();};
 button('#atmosphere').onclick=()=>{prefs.atmosphere=prefs.atmosphere==='day'?'dusk':'day';applyPreferences();$('#garden-observation').textContent=prefs.atmosphere==='dusk'?'The paper turns blue. The moths take the next watch.':'Another golden afternoon between the lines.';};
 button('#weather').onclick=()=>{prefs.weather=prefs.weather==='clear'?'rain':'clear';applyPreferences();$('#garden-observation').textContent=prefs.weather==='rain'?'A passing shower. The tea tastes even better.':'The shower passes. The little world wakes again.';};
 button('#view').onclick=()=>{prefs.view=prefs.view==='perspective'?'overhead':'perspective';applyPreferences();};
 button('#motion').onclick=()=>{prefs.reducedMotion=!prefs.reducedMotion;applyPreferences();};
-button('#greet').onclick=()=>{scene?.greetResident();sound.greeting();};
+button('#greet').onclick=()=>{scene?.greetResident();};
 for(const b of all('[data-voice]'))b.onclick=()=>{
   prefs.sound=true;applyPreferences();sound.greeting(b.dataset.voice as PieceSymbol);
 };
@@ -375,11 +416,12 @@ button('#export').onclick=()=>{
 };
 document.addEventListener('keydown',e=>{if(e.key.toLowerCase()==='u'&&!document.querySelector('dialog[open]')&&!['INPUT','TEXTAREA','SELECT'].includes((e.target as HTMLElement).tagName)&&!e.ctrlKey&&!e.metaKey){if(!e.defaultPrevented){e.preventDefault();undo();}}});
 try {
-  scene=createSketchScene($('#scene'),{onSquare:selectSquare,onMotion,onIdle:role=>{
+  scene=createSketchScene($('#scene'),{onSquare:selectSquare,onMotion,onCaptureBeat:beat=>sound.captureBeat(beat),onIdle:role=>{
     if(!moving&&!thinking&&!prefs.reducedMotion&&!game.status().over)sound.idle(role);
   },reducedMotion:prefs.reducedMotion,onCreature:creature=>{
-    atmosphere.greetResident(creature);
-    const observations={robin:'The tea balloon is taking the scenic route.',snail:'The cottage tortoise is in no particular hurry.',butterfly:'A moth has a little moonlight to share.',bee:'The tea party raises a cup to your next move.'};
+    const residents = { robin:'post', snail:'kettle', butterfly:'radio', bee:'post' } as const;
+    camp.greet(residents[creature]);
+    const observations={robin:'A letter has arrived at the beetle post.',snail:'The camp kettle has a little more time for you.',butterfly:'Radio Small Hours is taking requests.',bee:'Special delivery. The stamp is bigger than the postman.'};
     $('#garden-observation').textContent=observations[creature];
   },onReady:()=>queueMicrotask(()=>{document.querySelector('.scene-loading')?.remove();render();})});
   document.querySelector('.scene-loading')?.remove();
@@ -387,14 +429,17 @@ try {
   console.warn('Using the accessible chess board:',error instanceof Error ? error.message : error);$('#scene').hidden=true;$('#board-access').hidden=true;$('#scene-fallback').hidden=false;
   showToast('The quiet board is ready. All chess features are available.');
 }
-const observer=new ResizeObserver(()=>{cancelAnimationFrame(resizeFrame);resizeFrame=requestAnimationFrame(()=>{scene?.resize();positionSquares();});});observer.observe($('.game-space'));
+const observer=new ResizeObserver(()=>{cancelAnimationFrame(resizeFrame);resizeFrame=requestAnimationFrame(()=>{scene?.resize();positionSquares();});});observer.observe($('.game-space'));observer.observe($('#scene'));
 applyPreferences();render();queueComputer();
 for(const eventName of ['pointerdown','keydown'])document.addEventListener(eventName,event=>{if(event.isTrusted&&prefs.sound)void sound.unlock();},{capture:true});
 window.addEventListener('pagehide',event=>{
   persist();cancelFeedback();cancelComputer();
   if(!event.persisted){
     observer.disconnect();cancelAnimationFrame(resizeFrame);clearTimeout(toastTimer);
-    sound.destroy();scene?.destroy();atmosphere.destroy();
+    fieldCompact.removeEventListener('change',dockFieldControls);
+    fieldShort.removeEventListener('change',dockFieldControls);
+    dialog('#field-options-dialog').removeEventListener('close',dockFieldControls);
+    sound.destroy();scene?.destroy();atmosphere.destroy();pageant.destroy();camp.destroy();
   }
 });
 window.addEventListener('pageshow',event=>{if(event.persisted){scene?.resize();render();queueComputer();}});

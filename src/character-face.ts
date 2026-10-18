@@ -101,6 +101,7 @@ export function createCharacterFace(color: Color, type: PieceSymbol, seed: numbe
   const prefix = `paperwild-face-${++faceId}`;
   const defs = svg('defs', {});
   const blink = svg('g', { class: 'character-blink' });
+  const joy = svg('g', { class: 'character-joy' });
   CHARACTER_EYES[color][type].forEach((eye, index) => {
     const gradientId = `${prefix}-${index}`;
     const gradient = svg('radialGradient', { id: gradientId });
@@ -135,7 +136,15 @@ export function createCharacterFace(color: Color, type: PieceSymbol, seed: numbe
       opacity: '.17',
     }));
     blink.append(lid);
+    // Happy, squeezed-shut eyes: the same lid with the crease turned upward.
+    const smile = svg('g', { 'data-eye': index, transform: `translate(${eye.x} ${eye.y}) rotate(${eye.tilt * .6})` });
+    smile.append(svg('ellipse', { rx: eye.rx + 2.5, ry: eye.ry + 2.5, fill: `url(#${gradientId})` }));
+    smile.append(svg('path', {
+      d: `M${-halfWidth * 1.02} ${eye.ry * .22} Q0 ${-eye.ry * .78} ${halfWidth * 1.02} ${eye.ry * .22}`,
+      fill: 'none', stroke: eye.ink ?? '#70503b', 'stroke-width': type === 'k' ? 2.6 : 3.2, 'stroke-linecap': 'round', opacity: '.9',
+    }));
+    joy.append(smile);
   });
-  face.append(defs, blink);
+  face.append(defs, blink, joy);
   return face;
 }

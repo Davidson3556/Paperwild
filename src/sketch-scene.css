@@ -38,6 +38,14 @@
 .sketch-sideline-piece{position:absolute;width:4.5%;height:5.4%;transform:translate(-50%,-50%) rotate(var(--sit-angle,-4deg));pointer-events:none;filter:saturate(.8);opacity:.82}
 .sketch-sideline-piece img{width:100%;height:100%;object-fit:contain;object-position:center bottom}
 .sketch-sideline-fallback{font-family:Georgia,serif;font-size:28px;color:#7c855f}
+.sketch-stretcher{position:absolute;width:25%;height:17%;pointer-events:none;z-index:70;will-change:left,top;transform-origin:50% 75%}
+.sketch-stretcher-drawing{position:absolute;inset:0;width:100%;height:100%;overflow:visible;animation:stretcher-bob .28s ease-in-out infinite alternate}
+.sketch-stretcher .sketch-piece.is-carried{width:43%;height:83%;transform:translate(-50%,-57%) rotate(76deg);will-change:auto}
+.sketch-stretcher .sketch-piece-emote,.sketch-stretcher .character-life-marks{display:none}
+.stretcher-beetle-legs{transform-box:fill-box;transform-origin:center top;animation:stretcher-legs .22s ease-in-out infinite alternate;animation-delay:var(--beetle-delay,0s)}
+.sketch-scene[data-paused=true] .sketch-stretcher-drawing,.sketch-scene[data-paused=true] .stretcher-beetle-legs{animation-play-state:paused}
+@keyframes stretcher-bob{from{translate:0 -1px}to{translate:0 2px}}
+@keyframes stretcher-legs{from{transform:skewX(-13deg)}to{transform:skewX(14deg)}}
 .sketch-hello{position:absolute;right:1.4%;top:6%;opacity:0;color:#9c7c47;font:32px/1 'Patrick Hand','Caveat',cursive;transform:rotate(-8deg);pointer-events:none;z-index:5}
 .sketch-scene[data-atmosphere=dusk]{--sketch-ink:#48516f}
 .sketch-scene[data-atmosphere=dusk] .sketch-graphite-pass{stroke:#5f6579}
@@ -55,3 +63,14 @@
 @keyframes sketch-piece-attentive{0%,100%{transform:translateY(-1.5%) rotate(-.5deg)}50%{transform:translateY(-3.5%) rotate(1deg)}}
 @media(max-width:720px){.sketch-piece-fallback{font-size:clamp(25px,7.8vw,50px)}.sketch-piece-emote{font-size:25px}.sketch-hello{font-size:23px}}
 @media(prefers-reduced-motion:reduce){.sketch-piece-body{animation:none!important}}
+/* Team identity sits on the paper under each resident's feet. Amber is a light,
+   warm wash; indigo is dark with a broken highlight, so it reads in greyscale too. */
+.sketch-team-base{position:absolute;inset:0;width:100%;height:100%;overflow:visible;pointer-events:none;z-index:0;transform-origin:50% 93%;transition:opacity .25s,scale .25s}
+.team-base-wash{opacity:.5;mix-blend-mode:multiply}
+.sketch-team-base[data-team=b] .team-base-wash{opacity:.42}
+.team-base-line{stroke-width:.9;opacity:.55;vector-effect:non-scaling-stroke;stroke-linecap:round}
+.team-base-line.second-pass{stroke-width:.6;opacity:.35}
+.team-base-hatch{stroke-width:1.1;stroke-linecap:round;opacity:.75;vector-effect:non-scaling-stroke}
+.sketch-piece.is-hovered .sketch-team-base,.sketch-piece.is-selected .sketch-team-base{scale:1.08}
+.sketch-piece.is-hovered .team-base-wash,.sketch-piece.is-selected .team-base-wash{opacity:.72}
+.sketch-piece.is-dueling .sketch-team-base,.sketch-stretcher .sketch-team-base{opacity:0}

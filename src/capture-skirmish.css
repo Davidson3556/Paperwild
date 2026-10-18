@@ -1,0 +1,146 @@
+/* A cartoon capture belongs to the page, not to either body's motion.
+   The scene owns every element's lifetime and its WAAPI timing; CSS supplies
+   looks and the small looping wobbles for each phase. */
+.sketch-skirmish {
+  --skirmish-accent: #c98b2e;
+  --skirmish-ink: #8a7356;
+  position: absolute;
+  width: 23%;
+  height: 10.5%;
+  transform: translate(-50%, -50%);
+  z-index: 73;
+  pointer-events: none;
+  isolation: isolate;
+}
+.sketch-skirmish[data-color=b] { --skirmish-accent: #5a6db3; --skirmish-ink: #6f6c86; }
+
+.skirmish-ink {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  overflow: visible; opacity: 0;
+  stroke: var(--skirmish-ink); stroke-linecap: round; stroke-linejoin: round;
+  transform-origin: 50% 60%;
+}
+.skirmish-cloud {
+  fill: #f4ecd9;
+  stroke: var(--skirmish-ink); stroke-width: 1.6;
+  stroke-dasharray: 70 1.4 22 .8;
+  filter: drop-shadow(0 2px 0 #7a6a4a22);
+}
+.skirmish-cloud-shade { fill: none; stroke: #b9a783; stroke-width: 1.1; opacity: .7; }
+.skirmish-loop { fill: none; stroke: var(--skirmish-accent); stroke-width: 1.6; stroke-dasharray: 13 2 4 1; opacity: .75; transform-box: fill-box; transform-origin: center; }
+.skirmish-streak { stroke: var(--skirmish-accent); stroke-width: 1.3; opacity: .6; }
+.sketch-skirmish[data-phase=scuffle] .skirmish-loop { animation: skirmish-pencil-scribble .34s linear infinite; }
+.sketch-skirmish[data-phase=scuffle] .skirmish-loop + .skirmish-loop { animation-direction: reverse; animation-duration: .41s; }
+.sketch-skirmish[data-phase=scuffle] .skirmish-cloud { animation: skirmish-pencil-rumble .22s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
+
+/* A crackle of challenge between the two before the cloud forms. */
+.skirmish-spark {
+  position: absolute; left: 50%; top: 18%; width: 22%; aspect-ratio: 1;
+  fill: none; stroke: var(--skirmish-accent); stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round;
+  opacity: 0; overflow: visible;
+}
+
+.skirmish-pops { position: absolute; inset: 0; }
+.pop-mitten { position: absolute; width: 22%; aspect-ratio: 220/180; opacity: 0; overflow: visible; filter: drop-shadow(0 1px 0 #3d2c1c40); }
+.pop-word {
+  position: absolute; opacity: 0; white-space: nowrap;
+  font: 400 clamp(12px, 2.1vw, 24px)/1 'Schoolbell', 'Patrick Hand', cursive;
+  color: #c2762a; letter-spacing: .02em;
+  text-shadow: -1.5px 0 #fbf4e2, 1.5px 0 #fbf4e2, 0 1.5px #fbf4e2, 0 -1.5px #fbf4e2, 2px 2px 0 #7d5a3255;
+}
+.pop-word[data-team=b] { color: #4d61a8; text-shadow: -1.5px 0 #fbf4e2, 1.5px 0 #fbf4e2, 0 1.5px #fbf4e2, 0 -1.5px #fbf4e2, 2px 2px 0 #2c375f55; }
+.pop-star { position: absolute; width: 12%; aspect-ratio: 1; opacity: 0; overflow: visible; }
+.pop-star path { fill: #f6d77a; stroke: #9c7a33; stroke-width: 2; stroke-linejoin: round; }
+.skirmish-puff-bit {
+  position: absolute; left: 50%; top: 55%; width: 14%; aspect-ratio: 1.3; opacity: 0;
+  border-radius: 50%; background: #f1e7d1; border: 1.3px dashed #b2a07c;
+}
+
+/* Winners and happy clicks: a starburst, confetti in team colours and a word. */
+.sketch-celebration {
+  position: absolute; left: 50%; top: 2%; width: 92%; aspect-ratio: 1;
+  translate: -50% -38%; pointer-events: none; z-index: 6; opacity: 0;
+}
+.sketch-celebration.is-big { width: 130%; top: -6%; }
+.celebration-rays { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; fill: none; stroke-width: 2.4; stroke-linecap: round; }
+.celebration-star { stroke-width: 1.4; transform-box: fill-box; transform-origin: center; animation: celebration-twinkle .5s ease-in-out infinite alternate; }
+.sketch-celebration i {
+  position: absolute; left: 50%; top: 50%; width: 7%; height: 4%;
+  border-radius: 1px; opacity: 0; box-shadow: 0 0 0 .6px #6a4c2c55;
+}
+.celebration-word {
+  position: absolute; left: 50%; top: -8%; translate: -50% 0; white-space: nowrap;
+  font: 400 clamp(13px, 2.3vw, 26px)/1 'Schoolbell', 'Patrick Hand', cursive;
+  color: #c2762a; rotate: -6deg;
+  text-shadow: -1.5px 0 #fbf4e2, 1.5px 0 #fbf4e2, 0 1.5px #fbf4e2, 0 -1.5px #fbf4e2;
+}
+.sketch-celebration[data-team=b] .celebration-word { color: #4d61a8; }
+
+/* The loser sees stars: three little sparks orbit above its head. */
+.sketch-dizzy {
+  position: absolute; left: 50%; top: 4%; width: 62%; height: 18%;
+  translate: -50% 0; pointer-events: none; z-index: 7;
+}
+.sketch-dizzy span {
+  position: absolute; left: 50%; top: 50%;
+  font: 15px/1 Georgia, serif; color: #d9a93a;
+  text-shadow: 0 0 1px #7a5a1d;
+  animation: dizzy-orbit 1.05s linear infinite;
+}
+.sketch-dizzy span:nth-child(2) { animation-delay: -.35s; color: #e6c35a; }
+.sketch-dizzy span:nth-child(3) { animation-delay: -.7s; color: #c98d2e; }
+
+/* Claimed squares: a pennant in team colours. Its wash is clipped to the tile. */
+.sketch-claim-flag .claim-pennant { transform-box: fill-box; transform-origin: 0 50%; animation: claim-pennant-wave .5s ease-in-out infinite alternate; }
+.sketch-claim-bloom { mix-blend-mode: multiply; transform-box: fill-box; transform-origin: center; }
+
+/* The stretcher crew calls out while it works. */
+.stretcher-call {
+  position: absolute; left: 50%; top: -6%; translate: -50% 0; white-space: nowrap;
+  font: 400 clamp(10px, 1.5vw, 17px)/1 'Schoolbell', 'Patrick Hand', cursive; color: #8a6b48; rotate: -4deg;
+  animation: stretcher-chant .44s steps(2, jump-none) infinite;
+}
+.sketch-piece.is-awaiting-stretcher .sketch-piece-body { animation: none !important; }
+
+.sketch-piece.is-dueling .sketch-piece-emote { color: #ab7a36; }
+.sketch-piece.is-dueling[data-color=b] .sketch-piece-emote { color: #5d6aa6; }
+.sketch-piece.is-defending .sketch-piece-emote { rotate: -9deg; }
+
+/* Hover: lean toward the pointer, with a soft happy glow on the team puddle. */
+.sketch-piece-body { transition: rotate .28s cubic-bezier(.3, 1.6, .5, 1); }
+.sketch-piece.is-hovered .character-life-breath { animation-duration: 1.6s; }
+
+@keyframes skirmish-pencil-rumble {
+  0%, 100% { translate: -1.5px 0; rotate: -1deg; }
+  33% { translate: 1.5px -1px; rotate: 1.4deg; }
+  66% { translate: -.5px 1px; rotate: -.6deg; }
+}
+@keyframes skirmish-pencil-scribble {
+  0% { rotate: 0deg; scale: .96; }
+  50% { rotate: 180deg; scale: 1.05; }
+  100% { rotate: 360deg; scale: .96; }
+}
+@keyframes celebration-twinkle { from { scale: .9; rotate: -8deg; } to { scale: 1.15; rotate: 8deg; } }
+@keyframes dizzy-orbit {
+  0% { transform: translate(-50%, -50%) translate(-120%, 0) scale(.75); opacity: .6; }
+  25% { transform: translate(-50%, -50%) translate(0, 55%) scale(1.15); opacity: 1; }
+  50% { transform: translate(-50%, -50%) translate(120%, 0) scale(.75); opacity: .6; }
+  75% { transform: translate(-50%, -50%) translate(0, -55%) scale(.55); opacity: .35; }
+  100% { transform: translate(-50%, -50%) translate(-120%, 0) scale(.75); opacity: .6; }
+}
+@keyframes claim-pennant-wave { from { transform: skewY(-6deg) scaleX(.94); } to { transform: skewY(5deg) scaleX(1.04); } }
+@keyframes stretcher-chant { from { translate: -50% 0; } to { translate: -50% -3px; } }
+
+.sketch-scene[data-motion=still] :is(.sketch-skirmish, .sketch-dizzy, .sketch-celebration, .stretcher-call, .sketch-claim-flag) * ,
+.sketch-scene[data-motion=still] .stretcher-call { animation: none !important; }
+.sketch-scene[data-paused=true] :is(.sketch-skirmish, .sketch-dizzy, .sketch-celebration, .sketch-claim-flag) *,
+.sketch-scene[data-paused=true] .stretcher-call { animation-play-state: paused !important; }
+.sketch-scene[data-motion=still] .sketch-piece-body { transition: none; rotate: none !important; }
+
+@media (prefers-reduced-motion: reduce) {
+  :is(.sketch-skirmish, .sketch-dizzy, .sketch-celebration, .sketch-claim-flag) *, .stretcher-call { animation: none !important; }
+  .sketch-piece-body { transition: none; rotate: none !important; }
+}
+.sketch-piece-emote[data-glyph="♡"] { color: #d9645f; text-shadow: 0 0 1px #7a2e2a55; }
+.sketch-piece-emote[data-glyph="✦"], .sketch-piece-emote[data-glyph="♪"] { color: #d39a2c; }
+.sketch-piece-emote[data-glyph="bye!"] { font-size: clamp(13px, 1.8vw, 22px); color: #8a6b48; }

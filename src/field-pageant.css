@@ -1,0 +1,104 @@
+/* A little clearing in the field notebook. The game owns the viewport; this
+   scene keeps a fixed footprint as ceremonies and memorial pages change. */
+.field-notebook .capture-pageant{
+  --field-pageant-stage-height:clamp(142px,23vh,225px);
+  width:100%;min-width:0;max-width:none;margin:0;display:grid;
+  grid-template-columns:minmax(0,1fr);gap:3px;align-content:start;
+}
+.field-notebook .pageant-heading{height:30px;padding:0 4px;gap:5px;min-width:0}
+.field-notebook .pageant-heading-flower{width:24px;height:28px}
+.field-notebook .pageant-eyebrow{font-size:9px;letter-spacing:.04em}
+.field-notebook .pageant-heading h2{font-size:19px;line-height:1.05;margin:1px 0 0;white-space:nowrap}
+.field-notebook .pageant-queue{font-size:10px;max-width:52px;flex:none}
+.field-notebook .pageant-intro{display:none}
+.field-notebook .capture-pageant .pageant-stage,
+.field-notebook .capture-pageant[data-phase=idle]:not([data-total-count="0"]) .pageant-stage{height:var(--field-pageant-stage-height);min-width:0;margin:0}
+.field-notebook .pageant-sermon{display:none}
+.field-notebook .pageant-procession{left:5%;bottom:42px;width:64%;height:94px}
+.field-notebook .pageant-bearer{width:58px;height:77px}
+.field-notebook .pageant-bearer-left{left:-4px}
+.field-notebook .pageant-bearer-right{right:0}
+.field-notebook .pageant-stretcher{bottom:26px;height:52px}
+.field-notebook .pageant-stretcher>svg{height:48px}
+.field-notebook .pageant-cargo{top:-22px;height:70px}
+.field-notebook .pageant-celebrant{left:auto;right:7%;bottom:40px;width:62px;height:80px}
+.field-notebook .capture-pageant[data-phase=idle] .pageant-celebrant{bottom:40px}
+.field-notebook .pageant-book{height:40px;bottom:3px}
+.field-notebook .pageant-mound{left:10%;bottom:25px;width:47%;height:57px}
+.field-notebook .pageant-plaque{font-size:9px}
+.field-notebook .pageant-little-sprout{height:32px}
+.field-notebook .pageant-little-sprout i{width:18px;height:9px}
+.field-notebook .pageant-little-sprout i+i{left:-17px;top:12px}
+.field-notebook .pageant-spirit{left:22%;bottom:83px;width:43px;height:60px}
+.field-notebook .pageant-spirit span{font-size:9px;left:28px;width:68px}
+.field-notebook .pageant-idle-note{top:27px;left:23%;right:10%;font-size:14px;line-height:1.3}
+.field-notebook .capture-pageant[data-phase=idle]:not([data-total-count="0"]) .pageant-stage:before{top:32px;left:16%;font-size:17px}
+.field-notebook .pageant-choir-notes{bottom:115px;right:4%;font-size:12px}
+.field-notebook .pageant-status{height:72px;min-height:72px;margin:0;padding:3px 5px;font-size:13px;line-height:1.24;overflow-wrap:break-word}
+.field-notebook .pageant-actions{padding:0 3px;gap:5px;height:44px}
+.field-notebook .pageant-actions button{height:44px;min-height:44px;padding:3px;gap:2px;font-size:12px;border-radius:4px;background:#f4efdc7a}
+.field-notebook .pageant-actions svg{width:22px;height:25px}
+.field-notebook .pageant-notice{position:absolute;z-index:9;left:5px;right:5px;top:calc(30px + var(--field-pageant-stage-height) - 34px);min-height:0;max-height:43px;margin:0;padding:2px 4px;font-size:11px;line-height:1.2;text-align:center;pointer-events:none;background:#f4eedbe8;border-radius:3px}
+.field-notebook .pageant-notice:empty{display:none}
+.field-notebook .pageant-garden{height:80px;min-width:0;display:grid;grid-template-rows:56px 24px;gap:0}
+.field-notebook .pageant-memorials{height:56px;min-width:0;padding:0 2px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:3px}
+.field-notebook .pageant-grave{height:56px;min-height:56px;min-width:0;padding:0 2px 3px;overflow:hidden}
+.field-notebook .pageant-grave-portrait{width:32px;height:36px;margin:0 auto}
+.field-notebook .pageant-grave-name{font-size:10px;line-height:1.05;padding:1px 3px;white-space:nowrap}
+.field-notebook .pageant-grave-flower{width:17px;height:23px;right:3px;bottom:7px}
+.field-notebook .pageant-grave:before{height:10px}
+.field-notebook .pageant-pagination{height:24px;display:flex;align-items:center;justify-content:center;gap:12px}
+.field-notebook .pageant-pagination button{min-width:44px;min-height:24px;border:0;background:transparent;padding:0 8px;font:18px/1 'Patrick Hand',cursive;color:#75664e;cursor:pointer}
+.field-notebook .pageant-pagination button:disabled{opacity:.3;cursor:default}
+.field-notebook .pageant-pagination button:focus-visible{outline:2px dashed #8573a0;outline-offset:1px}
+.field-notebook .pageant-page-number{font-size:11px;color:#84745a;min-width:34px;text-align:center}
+.field-notebook .pageant-garden[hidden],.field-notebook .pageant-pagination[hidden],.field-notebook .pageant-grave[hidden]{display:none!important}
+
+@media(max-width:900px),(max-height:650px){
+  .field-notebook .capture-pageant{
+    --field-pageant-garden-space:0px;--field-pageant-stage-height:auto;
+    height:var(--field-pageant-height,210px);min-height:0;position:relative;
+    grid-template-columns:minmax(136px,42%) minmax(0,1fr);
+    grid-template-rows:20px minmax(0,1fr) 44px;gap:2px 7px;
+  }
+  .field-notebook .capture-pageant:not([data-memorial-count="0"]){--field-pageant-garden-space:62px}
+  .field-notebook .capture-pageant[data-paginated=true]{--field-pageant-garden-space:82px}
+  .field-notebook .pageant-heading{grid-area:1/1/2/3;height:20px;padding:0 2px;gap:4px}
+  .field-notebook .pageant-heading-flower{width:19px;height:20px}
+  .field-notebook .pageant-eyebrow{display:none}
+  .field-notebook .pageant-heading h2{font-size:16px;margin:0}
+  .field-notebook .pageant-queue{max-width:none;font-size:10px}
+  .field-notebook .capture-pageant .pageant-stage,
+  .field-notebook .capture-pageant[data-phase=idle]:not([data-total-count="0"]) .pageant-stage{grid-area:2/1/4/2;width:100%;height:100%;min-height:0}
+  .field-notebook .pageant-status{grid-area:2/2/3/3;height:auto;min-height:0;margin:0;padding:2px 3px 0 0;font-size:12px;line-height:1.22;align-self:start}
+  .field-notebook .pageant-actions{grid-area:3/2/4/3;padding:0;gap:4px;height:44px}
+  .field-notebook .pageant-actions button{min-width:44px;height:44px;min-height:44px;padding:4px;flex-direction:row}
+  .field-notebook .pageant-actions svg{width:26px;height:29px}
+  .field-notebook .pageant-actions button>span{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+  .field-notebook .pageant-procession{left:3%;bottom:calc(24px + var(--field-pageant-garden-space));width:70%;height:67px}
+  .field-notebook .pageant-bearer{width:40px;height:56px}
+  .field-notebook .pageant-bearer-left{left:-3px}
+  .field-notebook .pageant-bearer-right{right:-2px}
+  .field-notebook .pageant-stretcher{bottom:20px;height:37px}
+  .field-notebook .pageant-stretcher>svg{height:35px}
+  .field-notebook .pageant-cargo{top:-17px;height:52px;width:61%;left:21%}
+  .field-notebook .pageant-celebrant,.field-notebook .capture-pageant[data-phase=idle] .pageant-celebrant{left:auto;right:1%;bottom:calc(22px + var(--field-pageant-garden-space));width:43px;height:62px}
+  .field-notebook .pageant-book{height:29px;bottom:2px}
+  .field-notebook .pageant-mound{left:7%;width:61%;bottom:calc(15px + var(--field-pageant-garden-space));height:39px}
+  .field-notebook .pageant-plaque{font-size:7px;padding:2px 0}
+  .field-notebook .pageant-little-sprout{height:24px}
+  .field-notebook .pageant-spirit{left:15%;bottom:calc(51px + var(--field-pageant-garden-space));width:32px;height:44px}
+  .field-notebook .pageant-spirit span{font-size:7px;left:21px;width:50px}
+  .field-notebook .pageant-idle-note{top:13px;left:8%;right:19%;font-size:12px;line-height:1.2}
+  .field-notebook .capture-pageant[data-phase=idle]:not([data-total-count="0"]) .pageant-stage:before{top:12px;left:4%;font-size:12px;max-width:75%}
+  .field-notebook .pageant-choir-notes{right:1%;bottom:calc(79px + var(--field-pageant-garden-space));font-size:9px}
+  .field-notebook .pageant-notice{top:23px;right:auto;left:1px;width:calc(42% - 2px);max-height:none;padding:3px;font-size:10px;line-height:1.15}
+  .field-notebook .pageant-garden{position:absolute;bottom:0;left:0;width:42%;min-width:136px;height:80px;background:linear-gradient(transparent,#f0e8d7e8 14%);z-index:10}
+  .field-notebook .capture-pageant[data-paginated=false] .pageant-garden{height:58px;grid-template-rows:56px}
+  .field-notebook .pageant-memorials{padding:0;gap:1px}
+  .field-notebook .pageant-grave{min-width:44px}
+  .field-notebook .pageant-grave-portrait{width:29px;height:35px}
+  .field-notebook .pageant-grave-name{font-size:9px;padding:1px 2px}
+  .field-notebook .pageant-grave-flower{right:0;width:14px;height:20px}
+  .field-notebook .pageant-pagination{gap:4px}
+}
