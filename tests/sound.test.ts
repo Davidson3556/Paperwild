@@ -3,13 +3,15 @@ import test from 'node:test';
 import { createPaperwildSound } from '../src/sound.ts';
 import type { CaptureSoundBeat, CharacterCallEvent, PageantSoundCue, ScenerySoundCue } from '../src/sound.ts';
 import type { PieceSymbol } from '../src/game.ts';
+import { FINALE } from '../src/finale-motion.ts';
 
 class Parameter {
   value = 0;
-  setValueAtTime(value: number) { this.value = value; return this; }
-  linearRampToValueAtTime(value: number) { this.value = value; return this; }
-  exponentialRampToValueAtTime(value: number) { this.value = value; return this; }
-  cancelScheduledValues() { return this; }
+  events: { kind: 'set' | 'linear' | 'exponential'; value: number; time: number }[] = [];
+  setValueAtTime(value: number, time = 0) { this.value = value; this.events.push({ kind: 'set', value, time }); return this; }
+  linearRampToValueAtTime(value: number, time = 0) { this.value = value; this.events.push({ kind: 'linear', value, time }); return this; }
+  exponentialRampToValueAtTime(value: number, time = 0) { this.value = value; this.events.push({ kind: 'exponential', value, time }); return this; }
+  cancelScheduledValues(time = 0) { this.events = this.events.filter(event => event.time < time); return this; }
 }
 class Node {
   disconnected = false;
@@ -19,6 +21,7 @@ class Node {
 }
 class Source extends Node {
   buffer: AudioBuffer | null = null;
+  loop = false;
   playbackRate = new Parameter();
   frequency = new Parameter();
   type = 'sine';
@@ -64,6 +67,7 @@ class Context {
     const node = Object.assign(new Node(), { Q: new Parameter(), frequency: new Parameter(), type: 'bandpass' });
     this.nodes.push(node); return node;
   }
+  createDelay() { const node = Object.assign(new Node(), { delayTime: new Parameter() }); this.nodes.push(node); return node; }
   createStereoPanner() { const node = Object.assign(new Node(), { pan: new Parameter() }); this.nodes.push(node); return node; }
   resume(): Promise<void> {
     this.resumeCount++;
@@ -751,5 +755,190 @@ test('hover delight is a quiet, throttled character response that cancellation s
     context.currentTime = 0.71; sound.delight('b');
     assert.deepEqual(calls.at(-1), { role: 'b', activity: 'happy' });
     sound.destroy();
+  });
+});
+
+test('the radio needs sound opt-in and a real unlock; a saved preference alone stays silent', async () => {
+  await environment(async (_page, activation) => {
+    const changes: boolean[] = [];
+    const sound = createPaperwildSound({ onRadioChange: playing => changes.push(playing) });
+    sound.radio(true);
+    assert.equal(Context.instances.length, 0, 'tuning in cannot create audio without sound enabled');
+    await sound.setEnabled(true);
+    assert.equal(Context.instances.length, 0, 'a saved preference cannot autoplay music');
+    assert.equal(sound.isRadioPlaying(), false);
+    activation.isActive = true; await sound.unlock();
+    const context = Context.instances[0];
+    assert.equal(sound.isRadioPlaying(), true, 'the first real gesture starts the tuned-in radio');
+    assert.ok(context.sources.some(source => source.started), 'the lullaby schedules notes ahead');
+    assert.ok(context.sources.every(source => source.startTime >= 0 && source.startTime < 1), 'only a short lookahead is scheduled');
+    assert.deepEqual(changes, [true]);
+    sound.destroy();
+    assert.deepEqual(changes, [true, false]);
+  });
+});
+
+test('radio music has its own budget: Foley bursts and cancellation do not interrupt it', async () => {
+  await environment(async (_page, activation) => {
+    const sound = createPaperwildSound();
+    activation.isActive = true; await sound.setEnabled(true);
+    sound.radio(true);
+    const context = Context.instances[0];
+    const music = new Set(context.sources);
+    assert.ok(music.size > 0);
+    for (let index = 0; index < 40; index++) sound.moveStart('b');
+    sound.land('q', { capture: true });
+    assert.ok([...music].every(source => !source.stopped), 'character sounds never steal a music note');
+    const foley = context.sources.filter(source => !music.has(source) && source.started && !source.stopped);
+    assert.ok(foley.length <= 24, 'Foley keeps its own bounded budget');
+    sound.cancel();
+    assert.ok([...music].every(source => !source.stopped), 'undo and new moves cancel Foley, not the radio');
+    assert.equal(sound.isRadioPlaying(), true);
+    sound.destroy();
+  });
+});
+
+test('muting, hiding, switching off and destroying stop the radio and release its graph', async () => {
+  await environment(async (page, activation) => {
+    const changes: boolean[] = [];
+    const sound = createPaperwildSound({ onRadioChange: playing => changes.push(playing) });
+    activation.isActive = true; await sound.setEnabled(true);
+    sound.radio(true); sound.radioMood('dusk'); sound.radioFlourish('b');
+    const context = Context.instances[0];
+    assert.equal(sound.isRadioPlaying(), true);
+    await sound.setEnabled(false);
+    assert.equal(sound.isRadioPlaying(), false);
+    assert.ok(context.sources.every(source => source.stopped && source.disconnected), 'muting silences every note at once');
+    await sound.setEnabled(true);
+    assert.equal(sound.isRadioPlaying(), true, 'turning sound back on resumes the tuned-in radio');
+    page.hidden = true; page.dispatchEvent(new Event('visibilitychange'));
+    assert.equal(sound.isRadioPlaying(), false, 'a hidden page stops the music');
+    page.hidden = false; page.dispatchEvent(new Event('visibilitychange'));
+    activation.isActive = false;
+    sound.radio(true);
+    assert.equal(sound.isRadioPlaying(), false, 'returning to the page waits for a fresh gesture');
+    activation.isActive = true; await sound.unlock();
+    assert.equal(sound.isRadioPlaying(), true);
+    sound.radio(false);
+    assert.equal(sound.isRadioPlaying(), false);
+    sound.radio(true);
+    assert.equal(sound.isRadioPlaying(), true);
+    sound.destroy();
+    assert.equal(sound.isRadioPlaying(), false);
+    sound.radio(true);
+    assert.equal(sound.isRadioPlaying(), false, 'a destroyed studio stays silent');
+    assert.ok(context.sources.every(source => source.stopped && source.disconnected));
+    assert.ok(context.nodes.every(node => node.disconnected));
+    assert.deepEqual(changes, [true, false, true, false, true, false, true, false]);
+  });
+});
+
+test('the checkmate finisher cue needs opt-in, keeps its own budget and is fully cancelled', async () => {
+  await environment(async (page, activation) => {
+    const calls: CharacterCallEvent[] = [];
+    const sound = createPaperwildSound({ onCharacterCall: call => calls.push(call) });
+    sound.finale({ winner: 'w', attacker: 'q' });
+    assert.equal(Context.instances.length, 0, 'the finisher never opts the user into sound');
+    activation.isActive = true; await sound.setEnabled(true);
+    const context = Context.instances[0]; context.currentTime = 4;
+    sound.finale({ winner: 'b', attacker: 'n' });
+    const score = new Set(context.sources);
+    assert.ok(score.size > 60, 'a dense cue: drums, riser, bass, chords and voices');
+    assert.ok([...score].every(source => source.started && source.connections.length > 0));
+    const beat = 60 / 128, drop = 4.008 + beat * 5.5;
+    assert.ok([...score].every(source => source.startTime < 4.008 + beat * 5.05 || source.startTime >= drop - 0.001), 'half a beat of silence before the drop');
+    assert.ok([...score].some(source => Math.abs(source.startTime - drop) < 0.0001), 'the drop lands on the strike');
+    assert.ok([...score].every(source => source.stopTime! < 4.008 + beat * 11.5 + 1.1), 'the final chord rings out under the result card, then stops');
+    assert.deepEqual(calls.map(call => `${call.role}:${call.activity}`), ['n:challenge', 'k:startled', 'n:cheer', 'k:dizzy', 'n:win']);
+    for (let index = 0; index < 40; index++) sound.moveStart('b');
+    assert.ok([...score].filter(source => source.stopped).length <= 5, 'Foley bursts cannot steal the finisher, only its few voices');
+    sound.cancel();
+    assert.ok([...score].every(source => source.stopped && source.disconnected), 'skip and undo silence the whole cue');
+    sound.finale({ winner: 'w', attacker: 'p' });
+    page.hidden = true; page.dispatchEvent(new Event('visibilitychange'));
+    assert.ok(context.sources.every(source => source.stopped && source.disconnected), 'hiding the page stops it');
+    page.hidden = false; activation.isActive = true; await sound.unlock();
+    sound.finale({ winner: 'w', attacker: 'k' });
+    sound.destroy();
+    assert.ok(context.sources.every(source => source.stopped && source.disconnected));
+    assert.ok(context.nodes.every(node => node.disconnected));
+  });
+});
+
+test('the finisher keeps the radio ducked across nested character calls and releases it when skipped', async () => {
+  await environment(async (_page, activation) => {
+    const sound = createPaperwildSound();
+    activation.isActive = true; await sound.setEnabled(true); sound.radio(true);
+    const context = Context.instances[0];
+    // The radio bus has the long tuning-in fade; individual notes decay quickly.
+    const bus = context.nodes.find(node => 'gain' in node && (node.gain as Parameter).events.some(event => event.kind === 'exponential' && event.time > 2)) as Node & { gain: Parameter };
+    assert.ok(bus);
+    const normalVolume = bus.gain.events.at(-1)!.value;
+    sound.finale({ winner: 'w', attacker: 'q' });
+    const holdUntil = FINALE.durationMs / 1000 + 0.4;
+    const assertHold = () => {
+      assert.ok(bus.gain.events.some(event => event.kind === 'set' && event.value === 0 && event.time >= holdUntil), 'the radio remains silent for the complete finisher');
+      assert.ok(bus.gain.events.filter(event => event.kind === 'linear' && event.value === normalVolume).every(event => event.time > holdUntil), 'no nested voice restores music before the finale ends');
+    };
+    assertHold();
+    context.currentTime = 1; sound.greeting('p');
+    assertHold();
+    sound.cancel();
+    assert.equal(sound.isRadioPlaying(), true, 'skip does not switch the radio off');
+    assert.ok(bus.gain.events.some(event => event.kind === 'linear' && event.value === normalVolume && event.time < 2), 'skip releases the obsolete finale hold');
+    sound.destroy();
+  });
+});
+
+test('long finale noise loops only until its finite cue boundary and fades within that duration', async () => {
+  await environment(async (_page, activation) => {
+    const sound = createPaperwildSound();
+    activation.isActive = true; await sound.setEnabled(true);
+    const context = Context.instances[0];
+    sound.finale({ winner: 'b', attacker: 'n' });
+    const beat = FINALE.beatMs / 1000, start = 0.008 + beat;
+    const riser = context.sources.find(source => source.buffer && Math.abs(source.startTime - start) < 0.00001)!;
+    assert.ok(riser?.buffer);
+    assert.ok(riser.buffer.duration < beat * 4, 'the requested riser outlasts the reusable noise buffer');
+    assert.equal(riser.loop, true, 'the source must not exhaust the short buffer during its attack');
+    const end = start + beat * 4;
+    assert.ok(Math.abs(riser.stopTime! - end) < 0.00001, 'the riser stops at the beginning of the pre-drop gap');
+    const filter = riser.connections[0];
+    const gain = filter.connections[0] as Node & { gain: Parameter };
+    const peak = gain.gain.events.find(event => event.kind === 'linear')!;
+    const release = gain.gain.events.find(event => event.kind === 'exponential')!;
+    assert.ok(peak.time > start && peak.time < end);
+    assert.ok(Math.abs(release.time - end) < 0.00001, 'attack is included in the total cue duration');
+    assert.ok(release.value < 0.001, 'the noise fades before its loop is stopped');
+    assert.ok(context.sources.filter(source => source.loop).every(source => Number.isFinite(source.stopTime) && source.stopTime! > source.startTime), 'every looping noise has a scheduled end');
+    sound.destroy();
+    assert.ok(context.sources.every(source => source.stopped && source.disconnected));
+  });
+});
+
+test('the radio recovers after an audio interruption without needing to be switched off and on', async () => {
+  await environment(async (_page, activation) => {
+    const changes: boolean[] = [];
+    const sound = createPaperwildSound({ onRadioChange: playing => changes.push(playing) });
+    activation.isActive = true; await sound.setEnabled(true); sound.radio(true);
+    const context = Context.instances[0];
+    context.state = 'suspended';
+    // Let the radio's short lookahead timer observe the device interruption.
+    await new Promise(resolve => setTimeout(resolve, 180));
+    assert.equal(sound.isRadioPlaying(), false, 'the UI does not stay on air with no scheduler');
+    assert.ok(context.sources.every(source => source.stopped && source.disconnected), 'the old pending schedule is retired');
+    const previous = context.sources.length;
+    // A browser may have restored the context before the next trusted tap.
+    context.state = 'running'; context.currentTime = 2;
+    assert.equal(await sound.unlock(), true);
+    assert.equal(sound.isRadioPlaying(), true);
+    assert.ok(context.sources.length > previous, 'a fresh unlock starts the tuned-in station');
+    const startupCount = context.sources.length;
+    context.currentTime = 3;
+    await new Promise(resolve => setTimeout(resolve, 180));
+    assert.ok(context.sources.length > startupCount, 'the scheduler continues beyond its tuning-in sounds');
+    sound.destroy();
+    assert.deepEqual(changes, [true, false, true, false]);
+    assert.ok(context.sources.every(source => source.stopped && source.disconnected));
   });
 });

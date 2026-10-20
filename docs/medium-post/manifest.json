@@ -1,0 +1,62 @@
+{
+  "prepared": "2026-10-20",
+  "images_edited": false,
+  "assets": [
+    {
+      "file": "images/01-paperwild-cover.jpg",
+      "source": "docs/media/paperwild-living-release.jpg",
+      "context": "Published application checkpoint, October 18; application included in PR head 869a1f9.",
+      "bytes": 179687,
+      "sha256": "cc2adb5c20798691386232e95267f1238391e3036c1c0937ff0afe536f100104"
+    },
+    {
+      "file": "images/02-character-guide.png",
+      "source": "docs/media/paperwild-creature-voices.png",
+      "context": "Earlier character-guide UI, October 17.",
+      "bytes": 83235,
+      "sha256": "d33d8df36ee07c180ce036a8519bad51ffd79c57c6e2d5d59beb81b32dff9ebd"
+    },
+    {
+      "file": "images/03-remembrance-keepsake.png",
+      "source": "docs/media/paperwild-remembrance-export.png",
+      "context": "Actual exported PNG from unpublished local additions, October 19.",
+      "bytes": 236865,
+      "sha256": "885c2fd192f13abe0542ec88a90e2bcf416f5a63290ae8aa061ef0b072e82708"
+    },
+    {
+      "file": "images/04-testsprite-startup-blocker.jpg",
+      "source": "docs/media/paperwild-pr-startup-failure-2026-10-19.jpg",
+      "context": "Historical startup failure screenshot, October 19.",
+      "bytes": 108449,
+      "sha256": "c61b00d9cd173567431dcaf1738900e32330a6308315ac8d0e184f19f6b6b79b"
+    },
+    {
+      "file": "images/05-vercel-preview-access.jpg",
+      "source": "docs/media/paperwild-living-preview-public-2026-10-20.jpg",
+      "context": "Preview-specific Vercel exception, October 20.",
+      "bytes": 94617,
+      "sha256": "fd6ae1d541b358644c840405dcfedd8edc8ea205d0c2fc1150b835927cb6759c"
+    },
+    {
+      "file": "images/06-testsprite-10-passed.jpg",
+      "source": "docs/media/paperwild-pr-10-passed-2026-10-20.jpg",
+      "context": "Final manual GitHub-integration PR suite, October 20, head 869a1f9.",
+      "bytes": 138545,
+      "sha256": "511beeff25f29c12beeb4544773f1bc7d1c9431eef81c89c2bb3c96551293173"
+    },
+    {
+      "file": "extras/07-latest-local-board.jpg",
+      "source": "docs/media/paperwild-additions-desktop.jpg",
+      "context": "Unpublished local additions, October 19.",
+      "bytes": 426346,
+      "sha256": "a24777b5deaaef004bb26a09f74225d71a005028f8b8896fcd3d4827ebc944a1"
+    },
+    {
+      "file": "extras/08-local-checkmate-finale.jpg",
+      "source": "docs/media/paperwild-finale-2026-10-19.jpg",
+      "context": "Unpublished local checkmate finale in progress, October 19.",
+      "bytes": 340595,
+      "sha256": "85eeea803038f0289fc82dae3637140bd0a812ecd4404420767ae586c3f9344d"
+    }
+  ]
+}

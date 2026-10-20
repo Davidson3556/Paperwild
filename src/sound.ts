@@ -1,5 +1,6 @@
 import type { PieceSymbol } from './game.ts';
 import { renderCharacterCall, type CharacterActivity } from './character-voice.ts';
+import { FINALE } from './finale-motion.ts';
 
 export interface LandingSound {
   capture?: boolean;
@@ -14,7 +15,7 @@ export interface MovementSound {
   contactTimesMs?: readonly number[];
 }
 
-export type PageantSoundCue = 'arrival' | 'sermon' | 'plant' | 'bell' | 'petals' | 'choir' | 'memorial';
+export type PageantSoundCue = 'arrival' | 'sermon' | 'plant' | 'bell' | 'petals' | 'choir' | 'memorial' | 'revive' | 'fanfare' | 'salute';
 export type ScenerySoundCue = 'pond' | 'whale' | 'stars';
 /** One beat of a capture, scheduled when the scene reaches it so pausing,
  * skipping and the shared voice budget all follow the animation. */
@@ -40,9 +41,14 @@ export interface PaperwildSound {
   captureBeat(beat: CaptureSoundBeat): void;
   /** A quiet giggle for a hovered resident. Like idle calls, never unlocks audio. */
   delight(role: PieceSymbol): void;
+  /** A paper "fwip" as a row of pop-up residents stands up. Never unlocks audio. */
+  pagePop(): void;
+  /** The checkmate finisher's original edit cue, on its own clock and budget. */
+  finale(event: FinaleSound): void;
   land(role: PieceSymbol, result?: LandingSound): void;
   captured(role: PieceSymbol): void;
-  invalid(role: PieceSymbol): void;
+  /** "Nope" at first; repeated tries bring a growl and stomps, or a sniffle. */
+  invalid(role: PieceSymbol, mood?: 'nope' | 'angry' | 'sad', level?: number): void;
   /** Quiet, occasional reactions; never unlocks audio or queues a future call. */
   idle(role: PieceSymbol): void;
   undo(): void;
@@ -51,9 +57,21 @@ export interface PaperwildSound {
   /** Short responses to clicked story scenes; never used as an ambient loop. */
   scenery(cue: ScenerySoundCue): void;
   toggle(): void;
+  /** Radio Small Hours: a preference for the generative lullaby. It plays only
+   * while sound is enabled and audio is unlocked, and resumes after a fresh tap. */
+  radio(on: boolean): void;
+  radioMood(mood: RadioMood): void;
+  /** A short phrase in the winner's key, woven into the next bar. */
+  radioFlourish(color: 'w' | 'b'): void;
+  isRadioPlaying(): boolean;
+  /** Stops character and Foley sounds. The radio has its own lifecycle. */
   cancel(): void;
   destroy(): void;
 }
+
+export type RadioMood = 'day' | 'dusk';
+/** The checkmate finisher's soundtrack is scored for the winning side and attacker. */
+export interface FinaleSound { winner: 'w' | 'b'; attacker: PieceSymbol; capture?: boolean }
 
 export interface CharacterCallEvent { role: PieceSymbol; activity: CharacterActivity }
 
@@ -61,6 +79,8 @@ export interface PaperwildSoundOptions {
   onUnavailable?: () => void;
   /** Fires only after the corresponding character voice has been scheduled. */
   onCharacterCall?: (event: CharacterCallEvent) => void;
+  /** Reports when the radio actually starts or stops making sound. */
+  onRadioChange?: (playing: boolean) => void;
 }
 
 interface Voice {
@@ -76,6 +96,12 @@ const MAX_CHARACTER_BUFFERS = 48;
 const IDLE_INTERVAL = 7;
 const ROLE_IDLE_INTERVAL = 25;
 const MASTER_VOLUME = 0.52;
+const MUSIC_VOLUME = 0.32;
+/** The radio's own budget of overlapping oscillators. */
+const MAX_MUSIC_NOTES = 48;
+/** The finisher's own budget of sources; it is dense for five seconds, then gone. */
+const MAX_STAGE_NOTES = 180;
+const STAGE_VOLUME = 0.55;
 const ROLE_PITCH: Readonly<Record<PieceSymbol, number>> = { p: 520, r: 148, n: 330, b: 730, q: 370, k: 196 };
 const GREETING_ROLES: readonly PieceSymbol[] = ['p', 'n', 'q', 'k', 'r', 'b'];
 
@@ -83,7 +109,7 @@ const GREETING_ROLES: readonly PieceSymbol[] = ['p', 'n', 'q', 'k', 'r', 'b'];
  * A little Foley studio and cast of synthesized cartoon voices. Paper noise,
  * wooden plucks, soft pawfalls and calls are made locally, without audio files.
  */
-export function createPaperwildSound({ onUnavailable, onCharacterCall }: PaperwildSoundOptions = {}): PaperwildSound {
+export function createPaperwildSound({ onUnavailable, onCharacterCall, onRadioChange }: PaperwildSoundOptions = {}): PaperwildSound {
   let enabled = false;
   let destroyed = false;
   let unavailableReported = false;
@@ -129,6 +155,7 @@ export function createPaperwildSound({ onUnavailable, onCharacterCall }: Paperwi
   }
   function silenceMaster(): void {
     masterMuted = true;
+    stopMusic(false);
     if (!context || !master) return;
     master.gain.cancelScheduledValues(context.currentTime);
     master.gain.setValueAtTime(0, context.currentTime);
@@ -142,6 +169,7 @@ export function createPaperwildSound({ onUnavailable, onCharacterCall }: Paperwi
     masterMuted = false;
     // Enabling sound should not immediately summon an idle chorus.
     idleQuietUntil = Math.max(idleQuietUntil, now + 3);
+    startMusic();
   }
   function suspend(): void {
     if (!context || context.state === 'closed') return;
@@ -164,6 +192,7 @@ export function createPaperwildSound({ onUnavailable, onCharacterCall }: Paperwi
   }
   function cancel(): void {
     epoch++;
+    stopStage();
     if (context) idleQuietUntil = Math.max(idleQuietUntil, context.currentTime + 2);
     for (const voice of voices) stopVoice(voice);
   }
@@ -211,6 +240,7 @@ export function createPaperwildSound({ onUnavailable, onCharacterCall }: Paperwi
     if (destroyed || !enabled || hidden()) return Promise.resolve(false);
     if (context?.state === 'running') {
       if (masterMuted) restoreMaster();
+      else startMusic();
       return Promise.resolve(true);
     }
     // Saved preferences do not grant permission to start audio on page load.
@@ -370,6 +400,7 @@ export function createPaperwildSound({ onUnavailable, onCharacterCall }: Paperwi
     source.playbackRate.value = rate;
     const volume = expression.volume ?? (activity === 'idle' ? 0.075 : activity === 'greet' ? 0.36 : activity === 'captured' ? 0.24 : 0.3);
     const duration = buffer.duration / rate;
+    if (activity !== 'idle') duckMusic(Math.min(1.4, duration + 0.4));
     const voice = connectVoice(ctx, source, volume, at, duration, 0.006);
     if (!voice) return;
     // The renderer shapes individual syllables. Preserve their relative levels,
@@ -428,6 +459,25 @@ export function createPaperwildSound({ onUnavailable, onCharacterCall }: Paperwi
       case 'memorial':
         brush(ctx, at, 0.07, 2400, 0.028, -0.1);
         characterCall(ctx, at + 0.012, role, 'greet', { volume: 0.24 });
+        break;
+      case 'revive':
+        // "Not dead yet!": a springy pop out of the ground and a delighted cheer.
+        brush(ctx, at, 0.12, 900, 0.06, 0, 0.8);
+        boing(ctx, at + 0.04, Math.min(520, 230 + ROLE_PITCH[role] * 0.35), 0.04);
+        characterCall(ctx, at + 0.1, role, 'cheer', { volume: 0.26 });
+        break;
+      case 'fanfare':
+        // A small, slightly wobbly woodland trumpet for a state funeral.
+        [392, 523.25, 659.25, 523.25, 783.99].forEach((note, index) => {
+          const start = at + index * 0.18, source = ctx.createOscillator(); source.type = 'sawtooth';
+          source.frequency.setValueAtTime(note * 0.985, start); source.frequency.exponentialRampToValueAtTime(note, start + 0.05);
+          const tone = ctx.createBiquadFilter(); tone.type = 'lowpass'; tone.frequency.value = 1800; tone.Q.value = 2;
+          if (connectVoice(ctx, source, index === 4 ? 0.04 : 0.03, start, index === 4 ? 0.55 : 0.17, 0.02, 0, [tone])) { source.start(start); source.stop(start + (index === 4 ? 0.6 : 0.2)); }
+        });
+        break;
+      case 'salute':
+        // Twenty-one acorns pop in seven little volleys of three.
+        for (let volley = 0; volley < 7; volley++) pop(ctx, at + volley * 0.16);
         break;
     }
   }
@@ -607,6 +657,346 @@ export function createPaperwildSound({ onUnavailable, onCharacterCall }: Paperwi
     }
   }
 
+  // ---- Radio Small Hours ---------------------------------------------------
+  // A generative music-box lullaby on its own quiet bus. It has a separate node
+  // budget, so it never steals Foley or voices, and it is never part of play():
+  // music starts only while sound is enabled and the context is already running.
+  interface MusicNote { sources: AudioScheduledSourceNode[]; nodes: AudioNode[] }
+  const musicNotes = new Set<MusicNote>();
+  let musicWanted = false;
+  let musicMood: RadioMood = 'day';
+  let musicBus: GainNode | undefined;
+  let musicNodes: AudioNode[] = [];
+  let musicTimer: ReturnType<typeof setTimeout> | undefined;
+  let musicPlaying = false;
+  let musicNextTime = 0;
+  let musicStep = 0;
+  let musicPhrase = 0;
+  let musicDegree = 4;
+  let musicSeed = 20261018;
+  let musicFlourish: readonly number[] = [];
+  let musicDuckUntil = 0;
+  let musicDuckDepth = 1;
+
+  function musicRandom(): number {
+    musicSeed = (Math.imul(musicSeed, 1664525) + 1013904223) >>> 0;
+    return musicSeed / 4294967296;
+  }
+  function midi(note: number): number { return 440 * 2 ** ((note - 69) / 12); }
+  function reportRadio(): void {
+    try { onRadioChange?.(musicPlaying); } catch { /* UI state must not break audio. */ }
+  }
+  function ensureMusicBus(ctx: AudioContext): GainNode | undefined {
+    if (musicBus || !master) return musicBus;
+    const bus = ctx.createGain();
+    bus.gain.value = 0;
+    // A gentle "wireless" roll-off; brighter music-box partials stay soft.
+    const tone = ctx.createBiquadFilter();
+    tone.type = 'lowpass'; tone.frequency.value = 2900; tone.Q.value = 0.4;
+    bus.connect(tone); tone.connect(master);
+    musicNodes = [bus, tone];
+    if (typeof ctx.createDelay === 'function') {
+      // A small room around the radio: one soft, filtered echo.
+      const delay = ctx.createDelay(1);
+      delay.delayTime.value = 0.34;
+      const feedback = ctx.createGain(); feedback.gain.value = 0.27;
+      const wet = ctx.createGain(); wet.gain.value = 0.24;
+      bus.connect(delay); delay.connect(feedback); feedback.connect(delay); delay.connect(wet); wet.connect(tone);
+      musicNodes.push(delay, feedback, wet);
+    }
+    musicBus = bus;
+    return bus;
+  }
+  function musicVoice(ctx: AudioContext, type: OscillatorType, frequency: number, at: number, volume: number, decay: number, attack = 0.006): void {
+    if (!musicBus || musicNotes.size >= MAX_MUSIC_NOTES) return;
+    const source = ctx.createOscillator();
+    source.type = type;
+    source.frequency.setValueAtTime(frequency, at);
+    const gain = ctx.createGain();
+    gain.gain.setValueAtTime(0, at);
+    gain.gain.linearRampToValueAtTime(volume, at + attack);
+    gain.gain.exponentialRampToValueAtTime(0.0001, at + attack + decay);
+    source.connect(gain); gain.connect(musicBus);
+    const note: MusicNote = { sources: [source], nodes: [source, gain] };
+    musicNotes.add(note);
+    source.onended = () => releaseMusicNote(note);
+    source.start(at); source.stop(at + attack + decay + 0.02);
+  }
+  function releaseMusicNote(note: MusicNote): void {
+    if (!musicNotes.delete(note)) return;
+    for (const source of note.sources) source.onended = null;
+    for (const node of note.nodes) { try { node.disconnect(); } catch { /* Already gone. */ } }
+  }
+  /** A music-box tine: a sine body with a short metallic overtone. */
+  function musicBox(ctx: AudioContext, note: number, at: number, velocity: number): void {
+    const frequency = midi(note);
+    musicVoice(ctx, 'sine', frequency, at, 0.11 * velocity, 1.7);
+    musicVoice(ctx, 'sine', frequency * 4.01, at, 0.016 * velocity, 0.22, 0.002);
+    musicVoice(ctx, 'sine', frequency * 2, at, 0.02 * velocity, 0.55);
+  }
+  function kalimba(ctx: AudioContext, note: number, at: number, velocity: number): void {
+    musicVoice(ctx, 'triangle', midi(note), at, 0.045 * velocity, 0.9);
+    musicVoice(ctx, 'sine', midi(note) * 5.4, at, 0.006 * velocity, 0.05, 0.002);
+  }
+  function bass(ctx: AudioContext, note: number, at: number): void {
+    musicVoice(ctx, 'sine', midi(note), at, 0.085, 1.5, 0.04);
+  }
+  const MOODS: Readonly<Record<RadioMood, { beat: number; chords: readonly (readonly number[])[]; scale: readonly number[] }>> = {
+    // C major pentatonic over C–Am–F–G in daylight.
+    day: { beat: 0.39, chords: [[48, 52, 55], [45, 48, 52], [41, 45, 48], [43, 47, 50]], scale: [72, 74, 76, 79, 81, 84, 86, 88] },
+    // Slower A minor pentatonic over Am–F–C–G by moonlight.
+    dusk: { beat: 0.46, chords: [[45, 48, 52], [41, 45, 48], [48, 52, 55], [43, 47, 50]], scale: [69, 72, 74, 76, 79, 81, 84, 86] },
+  };
+  /** Schedules one eighth note: bass on each bar, kalimba on the off-beats and
+   * a wandering melody that leans on chord tones and rests often. */
+  function musicEighth(ctx: AudioContext, at: number): void {
+    const mood = MOODS[musicMood];
+    const bar = Math.floor(musicStep / 8), slot = musicStep % 8;
+    const chord = mood.chords[bar % mood.chords.length];
+    const breath = musicPhrase % 4 === 3 && bar % 4 === 3;
+    if (slot === 0) bass(ctx, chord[0] - 12, at);
+    if (!breath && (slot === 2 || slot === 6)) kalimba(ctx, chord[(slot / 2 + bar) % chord.length] + 12, at, 0.8);
+    if (musicFlourish.length && slot % 2 === 0) {
+      musicBox(ctx, musicFlourish[0], at, 1.15);
+      musicFlourish = musicFlourish.slice(1);
+    } else if (!breath && musicRandom() < (slot % 2 ? 0.34 : 0.62)) {
+      // Step through the scale, sometimes leaping, gently pulled to the middle.
+      const leap = musicRandom() < 0.18 ? 2 : 1;
+      const direction = musicDegree > 5 ? -1 : musicDegree < 2 ? 1 : musicRandom() < 0.5 ? -1 : 1;
+      musicDegree = Math.max(0, Math.min(mood.scale.length - 1, musicDegree + direction * leap));
+      musicBox(ctx, mood.scale[musicDegree], at, slot === 0 ? 1 : 0.72 + musicRandom() * 0.2);
+    }
+    musicStep++;
+    if (musicStep % 32 === 0) { musicPhrase++; musicSeed ^= musicPhrase * 2654435761; }
+  }
+  function musicTick(): void {
+    musicTimer = undefined;
+    if (!musicPlaying) return;
+    if (!context || context.state !== 'running') {
+      // An audio-device interruption need not hide the page. Retire the old
+      // schedule so a fresh unlock can tune back in rather than remaining "on"
+      // with no timer and no notes.
+      stopMusic(false);
+      return;
+    }
+    const horizon = context.currentTime + 0.6;
+    if (musicNextTime < context.currentTime) musicNextTime = context.currentTime + 0.05;
+    while (musicNextTime < horizon) {
+      musicEighth(context, musicNextTime);
+      musicNextTime += MOODS[musicMood].beat;
+    }
+    musicTimer = setTimeout(musicTick, 150);
+    // A forgotten studio must never keep a host process (or test run) alive.
+    (musicTimer as { unref?: () => void }).unref?.();
+  }
+  function startMusic(): void {
+    if (musicPlaying || !musicWanted || destroyed || !enabled || hidden() || masterMuted || context?.state !== 'running') return;
+    const bus = ensureMusicBus(context);
+    if (!bus) return;
+    const now = context.currentTime;
+    // Tuning in: a wisp of static and a falling whistle, then the lullaby fades up.
+    if (noiseBuffer) {
+      const hiss = context.createBufferSource(); hiss.buffer = noiseBuffer;
+      const band = context.createBiquadFilter(); band.type = 'bandpass'; band.Q.value = 1.2;
+      band.frequency.setValueAtTime(600, now); band.frequency.exponentialRampToValueAtTime(2600, now + 0.5);
+      const hissGain = context.createGain();
+      hissGain.gain.setValueAtTime(0, now); hissGain.gain.linearRampToValueAtTime(0.16, now + 0.2); hissGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.55);
+      hiss.connect(band); band.connect(hissGain); hissGain.connect(bus);
+      const static_: MusicNote = { sources: [hiss], nodes: [hiss, band, hissGain] };
+      musicNotes.add(static_); hiss.onended = () => releaseMusicNote(static_);
+      hiss.start(now, 0, 0.6); hiss.stop(now + 0.6);
+    }
+    const whistle = context.createOscillator(); whistle.type = 'sine';
+    whistle.frequency.setValueAtTime(1900, now + 0.1);
+    whistle.frequency.exponentialRampToValueAtTime(820, now + 0.45);
+    const whistleGain = context.createGain();
+    whistleGain.gain.setValueAtTime(0, now + 0.1); whistleGain.gain.linearRampToValueAtTime(0.012, now + 0.16); whistleGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.5);
+    whistle.connect(whistleGain); whistleGain.connect(bus);
+    const note: MusicNote = { sources: [whistle], nodes: [whistle, whistleGain] };
+    musicNotes.add(note); whistle.onended = () => releaseMusicNote(note);
+    whistle.start(now + 0.1); whistle.stop(now + 0.52);
+    bus.gain.cancelScheduledValues(now);
+    bus.gain.setValueAtTime(0.0001, now);
+    bus.gain.exponentialRampToValueAtTime(MUSIC_VOLUME, now + 2.4);
+    musicPlaying = true;
+    musicNextTime = now + 0.7;
+    musicTick();
+    reportRadio();
+  }
+  function stopMusic(fade: boolean): void {
+    clearTimeout(musicTimer); musicTimer = undefined;
+    const wasPlaying = musicPlaying;
+    musicPlaying = false;
+    musicDuckUntil = 0; musicDuckDepth = 1;
+    if (context && musicBus) {
+      const now = context.currentTime;
+      musicBus.gain.cancelScheduledValues(now);
+      if (fade) { musicBus.gain.setValueAtTime(musicBus.gain.value, now); musicBus.gain.linearRampToValueAtTime(0, now + 0.35); }
+      else musicBus.gain.setValueAtTime(0, now);
+    }
+    for (const note of [...musicNotes]) {
+      for (const source of note.sources) { try { source.stop(fade && context ? context.currentTime + 0.4 : undefined); } catch { /* Ended. */ } }
+      if (!fade) releaseMusicNote(note);
+    }
+    if (wasPlaying) reportRadio();
+  }
+  /** Voices and capture beats briefly lower the music so the cast stays clear. */
+  function duckMusic(seconds = 1.1, depth = 0.32): void {
+    if (!musicPlaying || !context || !musicBus) return;
+    const now = context.currentTime;
+    // Character calls can be scheduled inside a longer scored moment. Keep
+    // the strongest active hold instead of letting a short call release it.
+    musicDuckDepth = Math.min(now < musicDuckUntil ? musicDuckDepth : 1, depth);
+    musicDuckUntil = Math.max(musicDuckUntil, now + seconds);
+    musicBus.gain.cancelScheduledValues(now);
+    musicBus.gain.setValueAtTime(Math.max(0.0001, musicBus.gain.value), now);
+    musicBus.gain.linearRampToValueAtTime(MUSIC_VOLUME * musicDuckDepth, now + 0.06);
+    musicBus.gain.setValueAtTime(MUSIC_VOLUME * musicDuckDepth, musicDuckUntil);
+    musicBus.gain.linearRampToValueAtTime(MUSIC_VOLUME, musicDuckUntil + 1.2);
+  }
+
+  // ---- The checkmate finisher's soundtrack -----------------------------------
+  // An original 128 BPM "edit" cue, composed here in code: a tape-stop freeze, a
+  // riser with an accelerating snare roll, half a beat of silence, a drop on the
+  // winning strike, four beats of groove and a final chord. It plays on its own
+  // stage bus and budget, so it can be dense without stealing the cast's voices.
+  interface StageNote { source: AudioScheduledSourceNode; nodes: AudioNode[] }
+  const stageNotes = new Set<StageNote>();
+  let stageBus: GainNode | undefined;
+  let stageNodes: AudioNode[] = [];
+  function ensureStageBus(ctx: AudioContext): GainNode | undefined {
+    if (stageBus || !master) return stageBus;
+    // Punchier than the cast, but not a jump-scare: about 10 dB above its peaks.
+    const bus = ctx.createGain(); bus.gain.value = STAGE_VOLUME;
+    bus.connect(master);
+    stageBus = bus; stageNodes = [bus];
+    return bus;
+  }
+  function releaseStage(note: StageNote): void {
+    if (!stageNotes.delete(note)) return;
+    note.source.onended = null;
+    for (const node of note.nodes) { try { node.disconnect(); } catch { /* Gone. */ } }
+  }
+  function stopStage(): void {
+    const wasPlaying = stageNotes.size > 0;
+    for (const note of [...stageNotes]) {
+      try { note.source.stop(); } catch { /* Ended. */ }
+      releaseStage(note);
+    }
+    if (wasPlaying && musicPlaying && context && musicBus) {
+      // Skipping or undoing the finisher also releases its radio hold.
+      musicDuckUntil = 0; musicDuckDepth = 1;
+      const now = context.currentTime;
+      musicBus.gain.cancelScheduledValues(now);
+      musicBus.gain.setValueAtTime(musicBus.gain.value, now);
+      musicBus.gain.linearRampToValueAtTime(MUSIC_VOLUME, now + 0.35);
+    }
+  }
+  function stageConnect(source: AudioScheduledSourceNode, chain: AudioNode[], start: number, stop: number): boolean {
+    if (!stageBus || stageNotes.size >= MAX_STAGE_NOTES) return false;
+    let previous: AudioNode = source;
+    for (const node of chain) { previous.connect(node); previous = node; }
+    previous.connect(stageBus);
+    const note: StageNote = { source, nodes: [source, ...chain] };
+    stageNotes.add(note);
+    source.onended = () => releaseStage(note);
+    source.start(start); source.stop(stop);
+    return true;
+  }
+  function envelope(ctx: AudioContext, at: number, peak: number, attack: number, decay: number): GainNode {
+    const gain = ctx.createGain();
+    gain.gain.setValueAtTime(0, at);
+    gain.gain.linearRampToValueAtTime(peak, at + attack);
+    gain.gain.exponentialRampToValueAtTime(0.0001, at + attack + decay);
+    return gain;
+  }
+  function stageTone(ctx: AudioContext, type: OscillatorType, from: number, to: number, at: number, peak: number, attack: number, decay: number, filter?: { type: BiquadFilterType; from: number; to: number; q?: number }): void {
+    const source = ctx.createOscillator(); source.type = type;
+    source.frequency.setValueAtTime(from, at);
+    if (to !== from) source.frequency.exponentialRampToValueAtTime(to, at + attack + decay);
+    const chain: AudioNode[] = [];
+    if (filter) {
+      const node = ctx.createBiquadFilter(); node.type = filter.type; node.Q.value = filter.q ?? 0.7;
+      node.frequency.setValueAtTime(filter.from, at); node.frequency.exponentialRampToValueAtTime(filter.to, at + attack + decay);
+      chain.push(node);
+    }
+    chain.push(envelope(ctx, at, peak, attack, decay));
+    stageConnect(source, chain, at, at + attack + decay + 0.02);
+  }
+  function stageNoise(ctx: AudioContext, at: number, duration: number, from: number, to: number, peak: number, attack = 0.002, q = 0.8): void {
+    if (!noiseBuffer) return;
+    const source = ctx.createBufferSource(); source.buffer = noiseBuffer; source.loop = true;
+    const filter = ctx.createBiquadFilter(); filter.type = 'bandpass'; filter.Q.value = q;
+    filter.frequency.setValueAtTime(from, at); filter.frequency.exponentialRampToValueAtTime(to, at + duration);
+    const rise = Math.min(attack, duration * 0.95);
+    stageConnect(source, [filter, envelope(ctx, at, peak, rise, duration - rise)], at, at + duration);
+  }
+  const kick = (ctx: AudioContext, at: number, peak = 0.42) => {
+    stageTone(ctx, 'sine', 155, 42, at, peak, 0.003, 0.26);
+    stageNoise(ctx, at, 0.018, 3200, 2400, peak * 0.18);
+  };
+  const snare = (ctx: AudioContext, at: number, peak: number) => {
+    stageNoise(ctx, at, 0.1, 2300, 1500, peak, 0.002, 0.7);
+    stageTone(ctx, 'triangle', 200, 160, at, peak * 0.5, 0.002, 0.06);
+  };
+  const hat = (ctx: AudioContext, at: number) => stageNoise(ctx, at, 0.035, 8500, 7600, 0.05, 0.001, 1.2);
+  const clap = (ctx: AudioContext, at: number) => { for (let index = 0; index < 3; index++) stageNoise(ctx, at + index * 0.011, 0.06 + index * 0.03, 1500, 1200, 0.12 - index * 0.025, 0.001, 0.9); };
+  /** A bright chord: two slightly detuned saws per note through a closing filter. */
+  const supersaw = (ctx: AudioContext, notes: readonly number[], at: number, peak: number, decay: number) => {
+    for (const note of notes) for (const detune of [-0.0035, 0.0035]) {
+      const frequency = midi(note) * (1 + detune);
+      stageTone(ctx, 'sawtooth', frequency, frequency, at, peak, 0.006, decay, { type: 'lowpass', from: 5200, to: 900, q: 0.9 });
+    }
+  };
+  function finaleScore(ctx: AudioContext, at: number, event: FinaleSound): void {
+    const beat = FINALE.beatMs / 1000;
+    const t = (beats: number) => at + beats * beat;
+    // The winner's key: amber in A minor, indigo in E minor. Chords i–VI–III–VII.
+    const root = event.winner === 'w' ? 57 : 52;
+    const chords = [[0, 3, 7], [-4, 0, 3], [3, 7, 10], [-2, 2, 5]].map(chord => chord.map(step => root + 12 + step));
+    // Freeze: a tape-stop sigh and a low drone that waits under the build.
+    stageTone(ctx, 'sine', 620, 70, at, 0.08, 0.01, 0.42);
+    stageNoise(ctx, at, 0.4, 2600, 300, 0.07, 0.01);
+    stageTone(ctx, 'sawtooth', midi(root - 24), midi(root - 24), at, 0.04, 0.6, beat * 4.4, { type: 'lowpass', from: 220, to: 900, q: 1.2 });
+    // Build: four beats of riser, kicks and a snare roll that doubles each beat.
+    stageNoise(ctx, t(1), beat * 4, 400, 7000, 0.075, beat * 3.6, 1.1);
+    stageTone(ctx, 'sawtooth', midi(root), midi(root + 24), t(1), 0.035, beat * 3.8, beat * 0.2, { type: 'lowpass', from: 600, to: 4000 });
+    for (let index = 0; index < 4; index++) kick(ctx, t(1 + index), 0.26 + index * 0.03);
+    [1, 2, 4, 8].forEach((hits, bar) => {
+      for (let hit = 0; hit < hits; hit++) snare(ctx, t(1 + bar + hit / hits), 0.05 + bar * 0.022 + hit / hits * 0.02);
+    });
+    // Silence from beat 5 to 5.5. Then the drop, exactly on the winning strike.
+    const drop = t(5.5);
+    kick(ctx, drop, 0.5);
+    stageTone(ctx, 'sine', 70, 31, drop, 0.32, 0.004, 0.95);
+    stageNoise(ctx, drop, 1.3, 7200, 5200, 0.09, 0.002, 0.5);
+    supersaw(ctx, chords[0], drop, 0.024, 0.55);
+    // Groove: four beats of kick, off-beat hats, claps, pumping bass and stabs.
+    for (let index = 0; index < 4; index++) {
+      const downbeat = drop + index * beat, chord = chords[index];
+      if (index) kick(ctx, downbeat, 0.42);
+      hat(ctx, downbeat + beat / 2);
+      if (index % 2) clap(ctx, downbeat);
+      for (let eighth = 0; eighth < 2; eighth++) {
+        // Each bass note starts just after the kick, as if side-chained to it.
+        const start = downbeat + eighth * beat / 2 + 0.05;
+        stageTone(ctx, 'square', midi(chord[0] - 24), midi(chord[0] - 24), start, 0.05, 0.012, beat / 2 - 0.09, { type: 'lowpass', from: 900, to: 320 });
+      }
+      if (index) supersaw(ctx, chord, downbeat + beat / 2, 0.016, 0.16);
+    }
+    // Outro: a sustained tonic with the winner's cheer on top.
+    const outro = drop + beat * 4;
+    kick(ctx, outro, 0.36);
+    supersaw(ctx, [...chords[0], chords[0][0] + 12], outro, 0.02, 1.5);
+    stageNoise(ctx, outro, 1.4, 6000, 3000, 0.05, 0.002, 0.5);
+    // Voices ride on top of the mix through the shared, bounded cast budget.
+    characterCall(ctx, t(1.3), event.attacker, 'challenge', { volume: 0.3 });
+    characterCall(ctx, drop + 0.08, 'k', 'startled', { volume: 0.24 });
+    characterCall(ctx, drop + beat * 0.9, event.attacker, 'cheer', { volume: 0.32 });
+    characterCall(ctx, drop + beat * 1.6, 'k', 'dizzy', { volume: 0.18 });
+    characterCall(ctx, outro + 0.05, event.attacker, 'win', { volume: 0.3 });
+  }
+
   function idle(role: PieceSymbol): void {
     // Passive animations cannot create/resume an AudioContext, even with a saved
     // preference. They also do not enter play()'s pending-unlock queue.
@@ -732,7 +1122,24 @@ export function createPaperwildSound({ onUnavailable, onCharacterCall }: Paperwi
     captureBeat(beat) {
       if (!beat || !(beat.attacker in ROLE_PITCH) || !(beat.defender in ROLE_PITCH)) return;
       const impactsMs = beat.impactsMs.filter(value => Number.isFinite(value) && value >= 0 && value <= 2400);
-      play((ctx, at) => captureScore(ctx, at, { ...beat, impactsMs }));
+      play((ctx, at) => { duckMusic(0.9); captureScore(ctx, at, { ...beat, impactsMs }); });
+    },
+    finale(event) {
+      if (!event || !(event.attacker in ROLE_PITCH) || (event.winner !== 'w' && event.winner !== 'b')) return;
+      play((ctx, at) => {
+        if (!ensureStageBus(ctx)) return;
+        // The radio steps aside for the whole finisher, then returns.
+        duckMusic(FINALE.durationMs / 1000 + 0.4, 0);
+        finaleScore(ctx, at, event);
+      });
+    },
+    pagePop() {
+      if (destroyed || !enabled || hidden() || masterMuted || context?.state !== 'running') return;
+      const now = context.currentTime;
+      try {
+        swoosh(context, now, 0.16, 1200, 3600, 0.05);
+        pluck(context, now + 0.1, 660, 0.12, 0.02, 0.6);
+      } catch { cancel(); unavailable(); }
     },
     delight(role) {
       if (destroyed || !enabled || hidden() || masterMuted || context?.state !== 'running') return;
@@ -751,7 +1158,28 @@ export function createPaperwildSound({ onUnavailable, onCharacterCall }: Paperwi
       });
     },
     captured(role) { play((ctx, at) => characterCall(ctx, at, role, 'captured')); },
-    invalid(role) { play((ctx, at) => characterCall(ctx, at, role, 'blocked')); },
+    invalid(role, mood = 'nope', level = 1) {
+      play((ctx, at) => {
+        if (mood === 'angry') {
+          // Stomps in time with the body, a growl, and a kettle hiss of steam.
+          const stomps = level > 2 ? 4 : 3, span = level > 2 ? 1.7 : 1.25;
+          for (let index = 0; index < stomps; index++) thump(ctx, at + span * (.14 + index * (.72 / stomps) + .72 / stomps * .45), 110 + ROLE_PITCH[role] * 0.15, 0.1, index % 2 ? 0.15 : -0.15);
+          brush(ctx, at + 0.15, level > 2 ? 0.55 : 0.32, 5200, level > 2 ? 0.05 : 0.03, 0, 1.2);
+          characterCall(ctx, at + 0.05, role, 'angry', { volume: level > 2 ? 0.34 : 0.28 });
+        } else if (mood === 'sad') {
+          // A sniffle, then on the third try a little "wah-wah" of falling notes.
+          characterCall(ctx, at + 0.05, role, 'sad', { volume: 0.26 });
+          brush(ctx, at + 0.75, 0.12, 2600, 0.025, 0, 0.9);
+          if (level > 2) [392, 370, 349.23, 311.13].forEach((note, index) => pluck(ctx, at + 0.85 + index * 0.24, note, index === 3 ? 0.7 : 0.3, 0.035, 0.55));
+        } else {
+          // Two quick head-shake swishes and a soft wooden "tok" under the "uh-uh".
+          brush(ctx, at + 0.17, 0.07, 1500, 0.05, -0.25, 1.05);
+          brush(ctx, at + 0.28, 0.07, 1300, 0.045, 0.25, 1.05);
+          pluck(ctx, at + 0.02, ROLE_PITCH[role] * 0.6, 0.12, 0.03, 0.75);
+          characterCall(ctx, at, role, 'blocked');
+        }
+      });
+    },
     idle,
     undo() {
       cancel();
@@ -777,6 +1205,18 @@ export function createPaperwildSound({ onUnavailable, onCharacterCall }: Paperwi
         pluck(ctx, at + 0.008, 660, 0.14, 0.026, 0.64);
       });
     },
+    radio(on) {
+      if (destroyed) return;
+      musicWanted = on;
+      if (on) startMusic(); else stopMusic(true);
+    },
+    radioMood(mood) {
+      if (mood === 'day' || mood === 'dusk') musicMood = mood;
+    },
+    radioFlourish(color) {
+      if (musicPlaying) musicFlourish = color === 'b' ? [69, 73, 76, 81] : [72, 76, 79, 84];
+    },
+    isRadioPlaying: () => musicPlaying,
     cancel,
     destroy() {
       if (destroyed) return;
@@ -788,6 +1228,9 @@ export function createPaperwildSound({ onUnavailable, onCharacterCall }: Paperwi
       const closing = context;
       context = undefined; master = undefined; limiter = undefined; noiseBuffer = undefined;
       plucks.clear(); characterBuffers.clear(); characterVariants.clear(); lastRoleIdle.clear();
+      for (const node of [...musicNodes, ...stageNodes]) { try { node.disconnect(); } catch { /* Closed. */ } }
+      stageNodes = []; stageBus = undefined;
+      musicNodes = []; musicBus = undefined; musicWanted = false;
       try { if (closing && closing.state !== 'closed') void closing.close().catch(() => {}); } catch { /* Disposal stays idempotent. */ }
     },
   };

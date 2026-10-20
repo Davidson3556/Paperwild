@@ -144,3 +144,32 @@
 .sketch-piece-emote[data-glyph="♡"] { color: #d9645f; text-shadow: 0 0 1px #7a2e2a55; }
 .sketch-piece-emote[data-glyph="✦"], .sketch-piece-emote[data-glyph="♪"] { color: #d39a2c; }
 .sketch-piece-emote[data-glyph="bye!"] { font-size: clamp(13px, 1.8vw, 22px); color: #8a6b48; }
+/* Refusals: a red pencil ✗ on the square, and the word in the same red. */
+.sketch-refusal-mark path { fill: none; stroke: #c4473a; stroke-width: 4.2; stroke-linecap: round; stroke-dasharray: 1; opacity: .85; }
+.sketch-refusal-mark path.second-pass { stroke-width: 1.6; opacity: .5; }
+.sketch-piece-emote[data-mood=refuse] {
+  right: auto; left: 50%; translate: -50% 0; white-space: nowrap;
+  font-size: clamp(12px, 1.7vw, 21px); color: #c4473a;
+  text-shadow: -1.5px 0 #fbf4e2, 1.5px 0 #fbf4e2, 0 1.5px #fbf4e2, 0 -1.5px #fbf4e2;
+}
+/* Tempers and sulks. */
+.sketch-piece-emote[data-mood=angry], .sketch-piece-emote[data-mood=sad] {
+  right: auto; left: 50%; translate: -50% 0; white-space: nowrap;
+  font-size: clamp(12px, 1.8vw, 22px);
+  text-shadow: -1.5px 0 #fbf4e2, 1.5px 0 #fbf4e2, 0 1.5px #fbf4e2, 0 -1.5px #fbf4e2;
+}
+.sketch-piece-emote[data-mood=angry] { color: #c23a2c; font-weight: 700; letter-spacing: .02em; }
+.sketch-piece-emote[data-mood=sad] { color: #4f78a6; top: -4%; rotate: -4deg; }
+.sketch-steam { position: absolute; left: 50%; top: 10%; width: 70%; height: 30%; translate: -50% 0; pointer-events: none; z-index: 7; }
+.sketch-steam i {
+  position: absolute; left: 50%; top: 50%; width: 22%; aspect-ratio: 1.3; opacity: 0;
+  border-radius: 50%; background: #f4efe4; border: 1.3px dashed #b3a891; box-shadow: 0 0 0 1px #f4efe466;
+}
+.steam-anger { position: absolute; right: -4%; top: -18%; width: 34%; aspect-ratio: 1; overflow: visible; opacity: 0; fill: none; stroke: #c23a2c; stroke-width: 3.4; stroke-linecap: round; }
+.sketch-steam.level-3 .steam-anger { width: 44%; stroke-width: 3.8; }
+.sketch-raincloud { position: absolute; left: 50%; top: -30%; width: 64%; aspect-ratio: 2; opacity: 0; pointer-events: none; z-index: 7; }
+.sketch-raincloud svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; fill: #c7ccd6; stroke: #6e7686; stroke-width: 1.5; stroke-linejoin: round; }
+.sketch-raincloud i { position: absolute; top: 72%; width: 4%; height: 14%; border-radius: 50% 50% 60% 60%; background: #8cbbe0; opacity: 0; }
+.sketch-raincloud i:nth-of-type(1) { left: 24%; } .sketch-raincloud i:nth-of-type(2) { left: 38%; }
+.sketch-raincloud i:nth-of-type(3) { left: 52%; } .sketch-raincloud i:nth-of-type(4) { left: 64%; } .sketch-raincloud i:nth-of-type(5) { left: 76%; }
+.sketch-piece-emote[data-glyph="I'm back!"] { right: auto; left: 50%; translate: -50% 0; white-space: nowrap; font-size: clamp(12px, 1.7vw, 21px); color: #4f8a4a; text-shadow: -1.5px 0 #fbf4e2, 1.5px 0 #fbf4e2, 0 1.5px #fbf4e2, 0 -1.5px #fbf4e2; }

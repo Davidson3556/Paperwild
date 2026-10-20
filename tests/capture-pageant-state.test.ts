@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { CAPTURE_PAGEANT_DURATION_MS, CapturePageantState, createCapturePageantState } from '../src/capture-pageant-state.ts';
+import { CAPTURE_PAGEANT_DURATION_MS, CapturePageantState, capturePageantDuration, capturePageantPhases, createCapturePageantState } from '../src/capture-pageant-state.ts';
 import type { Capture } from '../src/game.ts';
 
 const pawn: Capture = { color: 'b', type: 'p', by: 'w', moveNumber: 2 };
@@ -18,18 +18,19 @@ test('a saved capture snapshot materializes memorials without replaying ceremoni
   assert.equal(state.snapshot.memorials.length, 2);
 });
 
-test('new captures enter one eight-second ceremony at a time with exact phase boundaries', () => {
+test('new captures enter one ceremony at a time with exact phase boundaries', () => {
   const state = new CapturePageantState([pawn]);
   state.sync([pawn, knight, bishop]);
   assert.equal(state.snapshot.active?.capture.type, 'n');
   assert.equal(state.snapshot.phase, 'arrival');
   assert.equal(state.snapshot.queued[0].capture.type, 'b');
   assert.equal(state.snapshot.pendingCount, 2);
-  assert.equal(state.advance(2400).phase, 'sermon');
+  const [arrival, sermon, burial, memorial] = capturePageantPhases('n').map(phase => phase.durationMs);
+  assert.equal(state.advance(arrival).phase, 'sermon');
   assert.equal(state.snapshot.active?.phaseElapsedMs, 0);
-  assert.equal(state.advance(2200).phase, 'burial');
-  assert.equal(state.advance(2000).phase, 'memorial');
-  const next = state.advance(1400);
+  assert.equal(state.advance(sermon).phase, 'burial');
+  assert.equal(state.advance(burial).phase, 'memorial');
+  const next = state.advance(memorial);
   assert.equal(next.phase, 'arrival');
   assert.equal(next.active?.capture.type, 'b');
   assert.equal(next.active?.elapsedMs, 0);
@@ -47,7 +48,7 @@ test('repeated cloned renders preserve progress and cannot duplicate or replay a
   assert.equal(state.snapshot.active?.elapsedMs, 3000);
   assert.equal(state.snapshot.phase, 'sermon');
   assert.equal(state.snapshot.queued.length, 0);
-  state.advance(5000); state.sync([{ ...pawn }]);
+  state.advance(capturePageantDuration('p') - 3000); state.sync([{ ...pawn }]);
   assert.equal(state.snapshot.active, null);
   assert.equal(state.snapshot.memorials.length, 1);
   assert.equal(state.snapshot.memorials[0].key, key);
@@ -72,7 +73,7 @@ test('undoing a queued capture leaves the surviving active ceremony at its curre
   assert.equal(state.snapshot.active?.key, activeKey);
   assert.equal(state.snapshot.active?.elapsedMs, 1000);
   assert.deepEqual(state.snapshot.queued.map(item => item.capture), [knight]);
-  state.advance(15000);
+  state.advance(capturePageantDuration('p') + capturePageantDuration('n'));
   assert.equal(state.snapshot.phase, 'idle');
   assert.deepEqual(state.snapshot.memorials.map(item => item.capture), [pawn, knight]);
 });
@@ -87,7 +88,7 @@ test('same-count history replacements remove obsolete plots and cancel replaced 
   assert.equal(state.snapshot.active?.capture.type, 'r');
   assert.equal(state.snapshot.active?.elapsedMs, 0);
   assert.notEqual(state.snapshot.active?.key, replacedActive);
-  state.advance(8000);
+  state.advance(capturePageantDuration('r'));
   assert.deepEqual(state.snapshot.memorials.map(item => item.capture), [pawn, rook]);
   assert.ok(state.snapshot.memorials.every(item => item.key !== oldPlot && item.key !== replacedActive));
 });
@@ -136,7 +137,7 @@ test('rapid appends and a long visible frame carry time sequentially without ski
   state.sync([pawn]); state.advance(7000);
   state.sync([pawn, knight]); state.sync([pawn, knight, bishop]);
   assert.equal(state.snapshot.active?.elapsedMs, 7000);
-  const next = state.advance(9000);
+  const next = state.advance(capturePageantDuration('p') - 7000 + capturePageantDuration('n'));
   assert.deepEqual(next.memorials.map(item => item.capture), [pawn, knight]);
   assert.equal(next.active?.capture.type, 'b');
   assert.equal(next.active?.elapsedMs, 0);
@@ -156,4 +157,20 @@ test('capture snapshots are immutable copies and identical records still receive
   assert.ok(Object.isFrozen(state.snapshot.active?.capture));
   for (const elapsed of [-1, Number.NaN, Number.POSITIVE_INFINITY]) assert.throws(() => state.advance(elapsed), RangeError);
   assert.equal(state.snapshot.active?.elapsedMs, 0);
+});
+
+test('ceremonies scale with importance: humble acorns, standard hares and moths, a tolled stump, a state fox', () => {
+  const length = (type: Parameters<typeof capturePageantDuration>[0]) => capturePageantDuration(type);
+  assert.ok(length('p') < length('n'));
+  assert.equal(length('n'), length('b'));
+  assert.equal(length('n'), CAPTURE_PAGEANT_DURATION_MS);
+  assert.ok(length('r') > length('n') && length('q') > length('r'));
+  for (const type of ['p', 'n', 'b', 'r', 'q', 'k'] as const) {
+    assert.deepEqual(capturePageantPhases(type).map(phase => phase.phase), ['arrival', 'sermon', 'burial', 'memorial']);
+    assert.ok(capturePageantPhases(type)[1].durationMs >= 4000, 'every sermon is long enough to read');
+  }
+  const state = new CapturePageantState();
+  state.sync([{ ...pawn, type: 'q' }]);
+  assert.equal(state.advance(length('q') - 1).phase, 'memorial');
+  assert.equal(state.advance(1).phase, 'idle');
 });

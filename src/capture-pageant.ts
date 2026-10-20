@@ -1,11 +1,14 @@
 import './capture-pageant.css';
 import './field-pageant.css';
-import type { Capture, PieceSymbol } from './game.ts';
+import './pageant-grandeur.css';
+import type { CaptureStory, PieceSymbol } from './game.ts';
 import { createCharacterPortrait } from './character-portrait.ts';
-import { createCapturePageantState } from './capture-pageant-state.ts';
+import { capturePageantKey, createCapturePageantState } from './capture-pageant-state.ts';
+import { createCaptureRevivals } from './capture-revival.ts';
 import type { CapturePageantEntry, CapturePageantSnapshot } from './capture-pageant-state.ts';
+import { SPECIES, epitaphFor, grandeurOf, sermonFor, storyNames } from './resident-stories.ts';
 
-export type PageantCue = 'arrival' | 'sermon' | 'plant' | 'bell' | 'petals' | 'choir' | 'memorial';
+export type PageantCue = 'arrival' | 'sermon' | 'plant' | 'bell' | 'petals' | 'choir' | 'memorial' | 'revive' | 'fanfare' | 'salute';
 
 interface PageantOptions {
   reducedMotion?: boolean;
@@ -58,8 +61,12 @@ export function createCapturePageant(container: HTMLElement, options: PageantOpt
   let memorialKeys: string[] = [];
   let effectTimer: ReturnType<typeof setTimeout> | undefined;
   const model = createCapturePageantState();
+  /** Each capture's full story, keyed like the queue model's entries. */
+  const stories = new Map<string, { story: CaptureStory; index: number }>();
+  const storyOf = (entry: CapturePageantEntry) => stories.get(entry.key);
   const plotButtons = new Map<string, HTMLButtonElement>();
   const plotClicks = new Map<string, number>();
+  const revivals = createCaptureRevivals(() => paginatePlots());
   const root = document.createElement('section');
   root.className = 'capture-pageant';
   root.setAttribute('aria-label', 'Woodland send-offs');
@@ -69,7 +76,12 @@ export function createCapturePageant(container: HTMLElement, options: PageantOpt
   <p class="pageant-intro">Captured pieces get a little ceremony. The woodland takes this very seriously. Mostly.</p>
   <div class="pageant-stage" aria-hidden="true">${CLEARING}
     <div class="pageant-sermon"><span class="pageant-sermon-title">the moth has a few words</span><p></p></div>
-    <div class="pageant-procession"><span class="pageant-bearer pageant-bearer-left"></span><span class="pageant-bearer pageant-bearer-right"></span><div class="pageant-stretcher"><svg viewBox="0 0 220 75" aria-hidden="true"><path class="pageant-cloth" d="m17 29 185-2-13 30c-55 12-106 13-162-1Z"/><path d="m3 28 214-2M7 32l208-3m-192 2 11 26c45 11 104 11 153-1l11-25M42 37l3 14m121-14-3 14"/></svg><span class="pageant-cargo"></span></div></div>
+    <div class="pageant-procession"><svg class="pageant-trumpet" viewBox="0 0 70 30" aria-hidden="true"><path d="M4 15h34l22-11v22L38 15"/><path d="M14 15v-5m8 5v-5"/></svg><span class="pageant-bearer pageant-bearer-left"></span><span class="pageant-bearer pageant-bearer-right"></span><div class="pageant-stretcher"><svg viewBox="0 0 220 75" aria-hidden="true"><path class="pageant-cloth" d="m17 29 185-2-13 30c-55 12-106 13-162-1Z"/><path d="m3 28 214-2M7 32l208-3m-192 2 11 26c45 11 104 11 153-1l11-25M42 37l3 14m121-14-3 14"/></svg><span class="pageant-cargo"></span></div></div>
+    <div class="pageant-mourners" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+    <svg class="pageant-halfmast" viewBox="0 0 60 120" aria-hidden="true"><path d="M8 118V6" stroke="#7a6548" stroke-width="2.4"/><path class="halfmast-flag" d="M9 46q14-5 30 0-6 8 0 16-15-5-30 0Z"/></svg>
+    <div class="pageant-salute" aria-hidden="true">${Array.from({ length: 21 }, (_, i) => `<i style="--salute:${i}"></i>`).join('')}</div>
+    <div class="pageant-capturer" aria-hidden="true"><span class="pageant-capturer-portrait"></span><span class="pageant-capturer-word">sorry…</span></div>
+    <div class="pageant-revive" aria-hidden="true"></div>
     <div class="pageant-celebrant"><span class="pageant-preacher"></span><svg class="pageant-book" viewBox="0 0 100 70" aria-hidden="true"><path d="M49 61C36 51 20 48 4 48L8 9c18-2 33 4 43 13C61 10 78 7 96 11l-1 39c-18-3-33 1-46 11Z"/><path d="m51 22-2 39M14 20c12-1 20 4 28 8m-28 3c10 0 19 4 27 8m21-11c8-5 16-8 25-7m-25 18c8-5 16-7 25-6"/></svg></div>
     <div class="pageant-mound"><svg viewBox="0 0 200 75" aria-hidden="true"><path d="M5 63C20 27 42 45 56 26c19-24 41-1 55-5 20-8 30 12 40 13 21-1 35 10 45 30-57 8-136 7-191-1Z"/><path d="m27 58 8-4m20 3 5 3m21-20 6 3m30 10 7-4m30 10 8-1"/></svg><span class="pageant-little-sprout"><i></i><i></i></span><span class="pageant-plaque">a good little story</span></div>
     <div class="pageant-spirit"><svg viewBox="0 0 90 110" aria-hidden="true"><path d="M15 98V44C15 0 76 0 76 44l-1 54-14-9-14 11-15-10-17 8Z"/><path class="pageant-spirit-face" d="M32 44v8m24-8v8m-20 9c3 5 8 5 12 0"/></svg><span>back for the snacks</span></div>
@@ -93,13 +105,43 @@ export function createCapturePageant(container: HTMLElement, options: PageantOpt
   const previousPage = query<HTMLButtonElement>('[data-pageant-page=previous]');
   const nextPage = query<HTMLButtonElement>('[data-pageant-page=next]');
   const pageNumber = query<HTMLSpanElement>('.pageant-page-number');
-  query('.pageant-bearer-left').append(createCharacterPortrait('w', 'n', 859));
-  query('.pageant-bearer-right').append(createCharacterPortrait('b', 'n', 1371));
-  query('.pageant-preacher').append(createCharacterPortrait('w', 'b', 1123));
+  const bearers = [query<HTMLSpanElement>('.pageant-bearer-left'), query<HTMLSpanElement>('.pageant-bearer-right')];
+  const preacher = query<HTMLSpanElement>('.pageant-preacher');
+  const mourners = [...root.querySelectorAll<HTMLSpanElement>('.pageant-mourners span')];
+  const capturer = query<HTMLSpanElement>('.pageant-capturer-portrait');
+  const revive = query<HTMLDivElement>('.pageant-revive');
+  const plaque = query<HTMLSpanElement>('.pageant-plaque');
+  const heading = query<HTMLHeadingElement>('.pageant-heading h2');
+  const HEADINGS = { humble: 'A very small send-off.', standard: 'A little send-off.', tolled: 'A solemn send-off.', state: 'A state funeral.' } as const;
+  /** The fallen resident's own team carries it, preaches and mourns. */
+  function cast(entry: CapturePageantEntry) {
+    const { color } = entry.capture, seed = 900 + entry.index * 53;
+    bearers.forEach((bearer, index) => bearer.replaceChildren(createCharacterPortrait(color, 'n', seed + index * 7)));
+    preacher.replaceChildren(createCharacterPortrait(color, 'b', seed + 31));
+    const grandeur = grandeurOf(entry.capture.type);
+    const company: readonly PieceSymbol[] = grandeur === 'state' ? ['p', 'n', 'p', 'r'] : grandeur === 'tolled' ? ['p', 'p'] : [];
+    mourners.forEach((slot, index) => slot.replaceChildren(...(company[index] ? [createCharacterPortrait(color, company[index], seed + 101 + index * 13)] : [])));
+    const told = storyOf(entry);
+    capturer.replaceChildren(createCharacterPortrait(entry.capture.by, told?.story.capturer ?? 'p', seed + 211));
+  }
+  bearers.forEach((bearer, index) => bearer.append(createCharacterPortrait(index ? 'b' : 'w', 'n', index ? 1371 : 859)));
+  preacher.append(createCharacterPortrait('w', 'b', 1123));
+  const nameOf = (entry: CapturePageantEntry) => { const told = storyOf(entry); return told ? storyNames(told.story).name : NAMES[entry.capture.type]; };
 
   const cue = (value: PageantCue, role?: PieceSymbol) => {
     if (!destroyed && !document.hidden && document.documentElement.dataset.pagePaused !== 'true') options.onCue?.(value, role);
   };
+  function clearTransientEffects() {
+    if (effectTimer !== undefined) clearTimeout(effectTimer);
+    effectTimer = undefined;
+    root.dataset.effect = ''; notice.textContent = '';
+    revivals.clear();
+  }
+  function animateRevival(ghost: HTMLElement, node: HTMLElement, frames: Keyframe[], inGarden = false) {
+    if (reducedMotion || paused()) { node.remove(); return; }
+    const animation = ghost.animate(frames, { duration: 1500, easing: 'ease-in-out' });
+    revivals.track(animation, node, inGarden);
+  }
   function announceEffect(message: string, effect: string) {
     if (effectTimer !== undefined) clearTimeout(effectTimer);
     root.dataset.effect = '';
@@ -117,7 +159,7 @@ export function createCapturePageant(container: HTMLElement, options: PageantOpt
     const end = memorialKeys.length - memorialPage * 3;
     const visible = new Set(memorialKeys.slice(Math.max(0, end - 3), end));
     for (const [key, button] of plotButtons) button.hidden = !visible.has(key);
-    garden.hidden = memorialKeys.length === 0;
+    garden.hidden = memorialKeys.length === 0 && !revivals.hasGardenRevival;
     pagination.hidden = pageCount === 1;
     previousPage.disabled = memorialPage === 0;
     nextPage.disabled = memorialPage === pageCount - 1;
@@ -139,10 +181,13 @@ export function createCapturePageant(container: HTMLElement, options: PageantOpt
       button.type = 'button'; button.className = 'pageant-grave';
       button.dataset.captureKey = entry.key; button.dataset.role = entry.capture.type;
       button.dataset.pageantCue = 'memorial';
-      button.setAttribute('aria-label', `Leave flowers for ${NAMES[entry.capture.type]}, ${entry.capture.color === 'w' ? 'amber' : 'indigo'} ${entry.capture.type === 'p' ? 'pawn' : NAMES[entry.capture.type].toLowerCase()}, captured on move ${entry.capture.moveNumber}`);
+      const told = storyOf(entry);
+      const graveName = nameOf(entry);
+      button.setAttribute('aria-label', `Leave flowers for ${graveName}, ${entry.capture.color === 'w' ? 'amber' : 'indigo'} ${SPECIES[entry.capture.type]}, taken on move ${entry.capture.moveNumber}${told ? ` by ${storyNames(told.story).capturerName}` : ''}`);
+      if (told) button.title = `${graveName}: ${epitaphFor(told.story, told.index)}`;
       const portrait = document.createElement('span'); portrait.className = 'pageant-grave-portrait';
       portrait.append(createCharacterPortrait(entry.capture.color, entry.capture.type, 4001 + entry.index * 97));
-      const name = document.createElement('span'); name.className = 'pageant-grave-name'; name.textContent = NAMES[entry.capture.type];
+      const name = document.createElement('span'); name.className = 'pageant-grave-name'; name.textContent = graveName;
       const flower = document.createElement('span'); flower.className = 'pageant-grave-flower'; flower.innerHTML = FLOWER;
       button.append(portrait, name, flower); memorials.append(button); plotButtons.set(entry.key, button);
     }
@@ -160,34 +205,89 @@ export function createCapturePageant(container: HTMLElement, options: PageantOpt
     const active = snapshot.active;
     if (active) {
       root.dataset.captureKey = active.key;
+      const told = storyOf(active);
       if (portraitKey !== active.key) {
         portraitKey = active.key;
-        cargo.replaceChildren(createCharacterPortrait(active.capture.color, active.capture.type, 7301 + active.index * 37, `${NAMES[active.capture.type]} on the woodland stretcher`));
-        sermon.textContent = SERMONS[active.capture.type];
+        cargo.replaceChildren(createCharacterPortrait(active.capture.color, active.capture.type, 7301 + active.index * 37, `${nameOf(active)} on the woodland stretcher`));
+        sermon.textContent = told ? sermonFor(told.story, told.index) : SERMONS[active.capture.type];
+        plaque.replaceChildren(Object.assign(document.createElement('strong'), { textContent: nameOf(active) }), ...(told ? [Object.assign(document.createElement('span'), { className: 'pageant-plaque-epitaph', textContent: epitaphFor(told.story, told.index) })] : []));
+        heading.textContent = HEADINGS[grandeurOf(active.capture.type)];
+        root.dataset.grandeur = grandeurOf(active.capture.type);
+        root.dataset.mourning = active.capture.color;
+        cast(active);
       }
-      const arrival = Math.min(active.elapsedMs / 2400, 1);
-      const burial = Math.min(Math.max((active.elapsedMs - 4600) / 2000, 0), 1);
-      const spirit = Math.min(Math.max((active.elapsedMs - 5200) / 2400, 0), 1);
+      // Progress follows each phase, whatever length this resident's ceremony is.
+      const { phase, phaseProgress } = active;
+      const arrival = phase === 'arrival' ? phaseProgress : 1;
+      const burial = phase === 'burial' ? phaseProgress : phase === 'memorial' ? 1 : 0;
+      const spirit = phase === 'burial' ? phaseProgress * .6 : phase === 'memorial' ? .6 + phaseProgress * .4 : 0;
       root.style.setProperty('--pageant-arrival', String(arrival));
       root.style.setProperty('--pageant-burial', String(burial));
       root.style.setProperty('--pageant-spirit', String(spirit));
       const marker = `${active.key}-${active.phase}`;
       if (marker !== lastCue) {
         lastCue = marker;
-        const name = NAMES[active.capture.type];
-        status.textContent = active.phase === 'arrival' ? `Make way for ${name}. The woodland stretcher is coming through.`
-          : active.phase === 'sermon' ? `${name}'s tiny sermon: ${SERMONS[active.capture.type]}`
-            : active.phase === 'burial' ? `A little earth for ${name}. A very big legend.` : `A new sprout for ${name}. Leave a flower in the little garden.`;
-        if (playCues) cue(active.phase === 'arrival' ? 'arrival' : active.phase === 'sermon' ? 'sermon' : active.phase === 'burial' ? 'plant' : 'memorial', active.capture.type);
+        const name = nameOf(active), grandeur = grandeurOf(active.capture.type);
+        const capturerName = told ? storyNames(told.story).capturerName : 'the winner';
+        status.textContent = active.phase === 'arrival'
+          ? grandeur === 'state' ? `A state funeral for ${name}. Hats off, everyone.` : grandeur === 'humble' ? `A small, humble send-off for ${name}.` : `Make way for ${name}. The woodland stretcher is coming through.`
+          : active.phase === 'sermon' ? `${name}'s tiny sermon: ${sermon.textContent}`
+            : active.phase === 'burial' ? grandeur === 'tolled' || grandeur === 'state' ? `The bell tolls once for ${name}.` : `A little earth for ${name}. A very big legend.`
+              : grandeur === 'state' ? `A twenty-one-acorn salute for ${name}. ${capturerName} brings a flower.` : `A new sprout for ${name}. ${capturerName} shuffles over with a flower. Leave one too.`;
+        if (playCues) {
+          cue(active.phase === 'arrival' ? 'arrival' : active.phase === 'sermon' ? 'sermon' : active.phase === 'burial' ? 'plant' : 'memorial', active.capture.type);
+          if (active.phase === 'arrival' && grandeur === 'state') cue('fanfare', active.capture.type);
+          if (active.phase === 'burial' && (grandeur === 'tolled' || grandeur === 'state')) { cue('bell', active.capture.type); announceEffect(`The bell tolls for ${name}.`, 'bell'); }
+          if (active.phase === 'memorial' && grandeur === 'state') cue('salute', active.capture.type);
+        }
       }
     } else {
-      delete root.dataset.captureKey;
+      delete root.dataset.captureKey; delete root.dataset.grandeur;
+      heading.textContent = 'A very small send-off.';
       portraitKey = ''; lastCue = '';
       status.textContent = snapshot.totalCount ? `${snapshot.totalCount} little ${snapshot.totalCount === 1 ? 'story planted' : 'stories planted'}. Tap a memorial to leave a flower.` : 'The meadow is listening. Everyone is still on the board.';
     }
     updatePlots(active?.phase === 'memorial' ? [...snapshot.memorials, active] : snapshot.memorials);
   }
 
+  /** Undo brings a friend back: it pops out of its grave (or sits up on the
+   * stretcher), shouts "Not dead yet!", dusts itself off and hops back to the board. */
+  function resurrect(entry: CapturePageantEntry, wasActive: boolean, story?: CaptureStory) {
+    const grave = plotButtons.get(entry.key);
+    const name = story ? storyNames(story).name : nameOf(entry);
+    const ghost = document.createElement('div');
+    ghost.className = 'pageant-reviver';
+    ghost.append(createCharacterPortrait(entry.capture.color, entry.capture.type, 6100 + entry.index * 41));
+    const word = document.createElement('span'); word.className = 'pageant-revive-word'; word.textContent = 'Not dead yet!';
+    ghost.append(word);
+    if (grave && !wasActive) {
+      // The grave stays just long enough to be climbed out of.
+      plotButtons.delete(entry.key);
+      plotClicks.delete(entry.key);
+      grave.classList.add('is-reviving'); grave.disabled = true;
+      // Compact memorial cards normally clip portraits and dim disabled
+      // buttons. The departing resident must be able to rise above its card.
+      grave.style.overflow = 'visible'; grave.style.opacity = '1';
+      grave.append(ghost);
+      animateRevival(ghost, grave, [
+        { transform: 'translate(-50%, 30%) scale(.6)', opacity: 0 },
+        { transform: 'translate(-50%, -55%) scale(1.15) rotate(-8deg)', opacity: 1, offset: .22 },
+        { transform: 'translate(-50%, -48%) scale(1) rotate(6deg)', opacity: 1, offset: .36 },
+        { transform: 'translate(-50%, -52%) scale(1) rotate(-4deg)', opacity: 1, offset: .5 },
+        { transform: 'translate(120%, -90%) scale(.8) rotate(10deg)', opacity: 0 },
+      ], true);
+    } else {
+      revive.append(ghost);
+      animateRevival(ghost, ghost, [
+        { transform: 'translate(-50%, 0) rotate(-79deg) scale(.9)', opacity: 1 },
+        { transform: 'translate(-50%, -40%) rotate(0deg) scale(1.1)', opacity: 1, offset: .25 },
+        { transform: 'translate(-50%, -35%) rotate(4deg) scale(1)', opacity: 1, offset: .5 },
+        { transform: 'translate(160%, -60%) rotate(10deg) scale(.8)', opacity: 0 },
+      ]);
+    }
+    announceEffect(`${name}: “Not dead yet!” Back to the board.`, 'revive');
+    cue('revive', entry.capture.type);
+  }
   function paused() { return document.hidden || document.documentElement.dataset.pagePaused === 'true'; }
   function stopFrame() { if (frame) cancelAnimationFrame(frame); frame = 0; previousTime = 0; }
   function schedule() {
@@ -198,10 +298,15 @@ export function createCapturePageant(container: HTMLElement, options: PageantOpt
     if (destroyed || reducedMotion || paused()) { previousTime = 0; return; }
     const elapsed = previousTime ? Math.max(0, time - previousTime) : 0;
     previousTime = time;
-    render(model.advance(elapsed));
+    // When several friends are waiting, the woodland politely hurries along.
+    const rate = 1 + Math.min(1.5, model.snapshot.queued.length * .5);
+    render(model.advance(elapsed * rate));
     schedule();
   }
-  function visibilityChanged() { if (paused()) stopFrame(); else schedule(); }
+  function visibilityChanged() {
+    if (paused()) { stopFrame(); clearTransientEffects(); }
+    else schedule();
+  }
   const pauseObserver = new MutationObserver(visibilityChanged);
   pauseObserver.observe(document.documentElement, { attributes: true, attributeFilter: ['data-page-paused'] });
   document.addEventListener('visibilitychange', visibilityChanged);
@@ -220,7 +325,8 @@ export function createCapturePageant(container: HTMLElement, options: PageantOpt
       const count = (plotClicks.get(key) ?? 0) + 1;
       plotClicks.set(key, count); target.dataset.flowered = 'true';
       target.setAttribute('aria-pressed', 'true');
-      announceEffect(`${NAMES[role]}: ${QUIRKS[role][(count - 1) % QUIRKS[role].length]}`, 'petals'); cue('memorial', role);
+      const entry = [...model.snapshot.memorials, ...(model.snapshot.active ? [model.snapshot.active] : [])].find(item => item.key === key);
+      announceEffect(`${entry ? nameOf(entry) : NAMES[role]}: ${QUIRKS[role][(count - 1) % QUIRKS[role].length]}`, 'petals'); cue('memorial', role);
     } else {
       const messages = { bell: 'Ding. Even the worms took their hats off.', petals: 'A little colour for a rather good little life.', choir: 'The choir knows one song. It is mostly humming.' };
       announceEffect(messages[value as 'bell' | 'petals' | 'choir'], value); cue(value, model.snapshot.active?.capture.type);
@@ -231,31 +337,45 @@ export function createCapturePageant(container: HTMLElement, options: PageantOpt
   function setReducedMotion(value: boolean) {
     if (destroyed) return;
     reducedMotion = value; root.dataset.reducedMotion = String(value);
-    if (value) { stopFrame(); render(model.settle(), false); }
+    if (value) { stopFrame(); clearTransientEffects(); render(model.settle(), false); }
     else schedule();
   }
   root.dataset.reducedMotion = String(reducedMotion);
   render(model.snapshot, false);
   return {
-    sync(captures: readonly Capture[], animate = true) {
+    sync(captures: readonly CaptureStory[], animate = true) {
       if (destroyed) return;
-      const snapshot = model.sync(captures, { settle: initialSync || reducedMotion || !animate });
       const silent = initialSync || reducedMotion || !animate;
+      const before = model.snapshot;
+      const previous = [...before.memorials, ...(before.active ? [before.active] : [])];
+      // The undone friends' stories are needed once more, to call them by name.
+      const previousStories = new Map(stories);
+      stories.clear();
+      captures.forEach((story, index) => stories.set(capturePageantKey(story, index), { story, index }));
+      const snapshot = model.sync(captures, { settle: initialSync || reducedMotion || !animate });
       initialSync = false;
+      if (!silent && captures.length < before.totalCount) {
+        const surviving = new Set([...snapshot.memorials, ...(snapshot.active ? [snapshot.active] : [])].map(entry => entry.key));
+        for (const entry of previous) if (!surviving.has(entry.key)) resurrect(entry, before.active?.key === entry.key, previousStories.get(entry.key)?.story);
+      }
       render(snapshot, !silent);
       if (!snapshot.active) stopFrame(); else schedule();
     },
     /** A new study may happen to contain the same capture values as the last. */
-    reset(captures: readonly Capture[] = []) {
+    reset(captures: readonly CaptureStory[] = []) {
       if (destroyed) return;
+      clearTransientEffects();
+      stories.clear();
+      captures.forEach((story, index) => stories.set(capturePageantKey(story, index), { story, index }));
       stopFrame(); portraitKey = ''; lastCue = ''; initialSync = false; memorialPage = 0;
+      memorials.replaceChildren(); plotButtons.clear(); plotClicks.clear(); memorialKeys = [];
       render(model.reset(captures), false);
     },
     setReducedMotion,
     destroy() {
       if (destroyed) return;
       destroyed = true; stopFrame(); pauseObserver.disconnect();
-      if (effectTimer !== undefined) clearTimeout(effectTimer);
+      clearTransientEffects();
       document.removeEventListener('visibilitychange', visibilityChanged);
       root.removeEventListener('click', clicked); root.remove();
       plotButtons.clear(); plotClicks.clear(); memorialKeys = [];

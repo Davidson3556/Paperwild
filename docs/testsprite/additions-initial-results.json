@@ -1,0 +1,42 @@
+[
+  {
+    "title": "TC301-Notebook opens and repeated illegal attempts preserve chess state",
+    "testStatus": "FAILED",
+    "testError": "TEST FAILURE\n\nThe pawn moved to e4 and the turn passed, but the Journal did not show the required single e4 entry.\n\nObservations:\n- The board shows the white pawn on e4 and e2 empty.\n- The turn display reads \u201cIndigo to move.\u201d\n- The Journal still shows 00.",
+    "portalUrl": "https://www.testsprite.com/dashboard/mcp/tests/78b89942-deeb-5cc4-82ea-744261173379/test/a07f15ed-e9b0-4df6-a862-918db6e2bd53",
+    "created": "2026-10-18T23:19:53.882Z",
+    "modified": "2026-10-18T23:22:42.785Z"
+  },
+  {
+    "title": "TC302-Named capture produces a remembrance card and Undo restores both residents",
+    "testStatus": "BLOCKED",
+    "testError": "TEST BLOCKED\n\nThe game flow could not be tested because the page remained on its loading screen and the board never appeared.\n\nObservations:\n- The loading illustration was still visible after 18 seconds of waiting.\n- No board controls or other interactive game controls were available.",
+    "portalUrl": "https://www.testsprite.com/dashboard/mcp/tests/78b89942-deeb-5cc4-82ea-744261173379/test/c7de43be-e541-426c-89bc-81740399ab68",
+    "created": "2026-10-18T23:19:53.891Z",
+    "modified": "2026-10-18T23:21:18.785Z"
+  },
+  {
+    "title": "TC303-Fresh page and study replacement clear capture ceremonies without reviving old residents",
+    "testStatus": "FAILED",
+    "testError": "TEST FAILURE\n\nThe final promotion-study cleanup check failed \u2014 a stretcher element remained after the page settled.\n\nObservations:\n- The board showed exactly three residents: a7=wp, h1=wk, and h8=bk.\n- Journal showed 00 and the send-off count was 0.\n- A `.pageant-stretcher` element remained in the settled state.",
+    "portalUrl": "https://www.testsprite.com/dashboard/mcp/tests/78b89942-deeb-5cc4-82ea-744261173379/test/8d9773fd-6863-41b7-a605-79ab006461b5",
+    "created": "2026-10-18T23:19:53.898Z",
+    "modified": "2026-10-18T23:24:53.005Z"
+  },
+  {
+    "title": "TC304-Checkmate finale resolves once and Undo restores the study",
+    "testStatus": "PASSED",
+    "testError": "",
+    "portalUrl": "https://www.testsprite.com/dashboard/mcp/tests/78b89942-deeb-5cc4-82ea-744261173379/test/61d8f0d9-4860-421e-990c-cdcafc10942c",
+    "created": "2026-10-18T23:19:53.906Z",
+    "modified": "2026-10-18T23:22:41.877Z"
+  },
+  {
+    "title": "TC305-Radio tuning and mute controls retain their state across reload",
+    "testStatus": "PASSED",
+    "testError": "",
+    "portalUrl": "https://www.testsprite.com/dashboard/mcp/tests/78b89942-deeb-5cc4-82ea-744261173379/test/617b2ed9-aa90-4d38-943a-e340ddcb3ce0",
+    "created": "2026-10-18T23:19:53.912Z",
+    "modified": "2026-10-18T23:21:55.993Z"
+  }
+]

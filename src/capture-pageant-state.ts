@@ -1,14 +1,30 @@
-import type { Capture } from './game.ts';
+import type { Capture, PieceSymbol } from './game.ts';
 
 export type CapturePageantPhase = 'arrival' | 'sermon' | 'burial' | 'memorial';
 
-export const CAPTURE_PAGEANT_PHASES: readonly Readonly<{ phase: CapturePageantPhase; durationMs: number }>[] = Object.freeze([
-  Object.freeze({ phase: 'arrival', durationMs: 2400 }),
-  Object.freeze({ phase: 'sermon', durationMs: 2200 }),
-  Object.freeze({ phase: 'burial', durationMs: 2000 }),
-  Object.freeze({ phase: 'memorial', durationMs: 1400 }),
+type Phases = readonly Readonly<{ phase: CapturePageantPhase; durationMs: number }>[];
+const phases = (arrival: number, sermon: number, burial: number, memorial: number): Phases => Object.freeze([
+  Object.freeze({ phase: 'arrival' as const, durationMs: arrival }),
+  Object.freeze({ phase: 'sermon' as const, durationMs: sermon }),
+  Object.freeze({ phase: 'burial' as const, durationMs: burial }),
+  Object.freeze({ phase: 'memorial' as const, durationMs: memorial }),
 ]);
-export const CAPTURE_PAGEANT_DURATION_MS = 8000;
+/** Ceremonies scale with importance: a humble acorn send-off, a standard one
+ * for hares and moths, a tolling bell for stumps, and a state funeral for a fox.
+ * Sermons are long enough to read. */
+const BY_TYPE: Readonly<Record<PieceSymbol, Phases>> = Object.freeze({
+  p: phases(1800, 4200, 1600, 1200),
+  n: phases(2400, 4800, 2000, 1400),
+  b: phases(2400, 4800, 2000, 1400),
+  r: phases(2400, 5000, 2600, 1400),
+  q: phases(3600, 5600, 2600, 3200),
+  k: phases(3600, 5600, 2600, 3200),
+});
+export function capturePageantPhases(type: PieceSymbol): Phases { return BY_TYPE[type]; }
+export function capturePageantDuration(type: PieceSymbol): number { return BY_TYPE[type].reduce((sum, phase) => sum + phase.durationMs, 0); }
+/** The standard (hare and moth) ceremony. */
+export const CAPTURE_PAGEANT_PHASES: Phases = BY_TYPE.n;
+export const CAPTURE_PAGEANT_DURATION_MS = capturePageantDuration('n');
 
 export interface CapturePageantEntry {
   readonly key: string;
@@ -78,13 +94,14 @@ export class CapturePageantState {
     let active: ActiveCapturePageant | null = null;
     if (this.#active) {
       let phaseStart = 0;
-      for (const phase of CAPTURE_PAGEANT_PHASES) {
+      const total = capturePageantDuration(this.#active.capture.type);
+      for (const phase of capturePageantPhases(this.#active.capture.type)) {
         if (this.#elapsedMs < phaseStart + phase.durationMs) {
           const phaseElapsedMs = this.#elapsedMs - phaseStart;
           active = Object.freeze({
             ...this.#active, phase: phase.phase, elapsedMs: this.#elapsedMs,
             phaseElapsedMs, phaseDurationMs: phase.durationMs,
-            progress: this.#elapsedMs / CAPTURE_PAGEANT_DURATION_MS,
+            progress: this.#elapsedMs / total,
             phaseProgress: phaseElapsedMs / phase.durationMs,
           });
           break;
@@ -128,7 +145,7 @@ export class CapturePageantState {
     let remaining = elapsedVisibleMs;
     this.#startNext();
     while (this.#active) {
-      const untilComplete = CAPTURE_PAGEANT_DURATION_MS - this.#elapsedMs;
+      const untilComplete = capturePageantDuration(this.#active.capture.type) - this.#elapsedMs;
       if (remaining < untilComplete) { this.#elapsedMs += remaining; break; }
       remaining -= untilComplete;
       this.#settled.add(this.#active.key);

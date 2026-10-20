@@ -28,5 +28,6 @@
 }
 @media(prefers-reduced-motion:reduce){.character-blink{animation:none!important;opacity:0!important}}
 /* Shown by the scene for delighted hops and victories, never as a resting face. */
-.character-joy{opacity:0}
-.sketch-scene[data-motion=still] .character-joy{opacity:0!important}
+.character-joy,.character-squeeze,.character-brows-angry,.character-brows-sad,.character-tears,.character-flush{opacity:0}
+.character-tear{transform-box:fill-box;transform-origin:50% 0}
+.sketch-scene[data-motion=still] :is(.character-joy,.character-squeeze,.character-brows-angry,.character-brows-sad,.character-tears,.character-flush){opacity:0!important}

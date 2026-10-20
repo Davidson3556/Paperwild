@@ -1,14 +1,242 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" class="is-loading">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#f2ecd9" />
     <meta name="description" content="Paperwild. Chess, drawn to life. Acorn sprites, fox queens, and bookish badger kings come alive on a pencil-drawn woodland sketchbook." />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Patrick+Hand&family=Schoolbell&display=swap" />
     <title>Paperwild — Chess, drawn to life.</title>
+    <script>
+      // A returning visitor in the same session gets a quicker sketch.
+      try { if (sessionStorage.getItem('paperwild.loaded')) document.documentElement.classList.add('is-quick-load'); } catch {}
+    </script>
+    <style>
+      /* The loading page: a closed field notebook. While the club loads, the
+         acorn sketches itself on the cover and a ribbon bookmark slides out.
+         Then the band snaps off, the cover opens and the game comes out of
+         the page. Inline, so it appears before any script or stylesheet. */
+      html.is-loading, html.is-loading body { overflow: hidden; }
+      .pw-loading {
+        --pace: 1; --progress: 0;
+        --ink: #5a4632; --paper: #f3ead6;
+        position: fixed; inset: 0; z-index: 10000; overflow: hidden;
+        display: grid; place-items: center; align-content: center; gap: 18px;
+        background:
+          radial-gradient(ellipse at 50% 45%, transparent 48%, #b89d7450 100%),
+          linear-gradient(90deg, transparent 0 62px, #d98d8259 62px 64px, transparent 64px),
+          repeating-linear-gradient(180deg, transparent 0 31px, #8aa0b72e 31px 32px),
+          var(--paper);
+        color: var(--ink);
+        font-family: 'Patrick Hand', 'Comic Sans MS', cursive;
+      }
+      .is-quick-load .pw-loading { --pace: .45; }
+      .pw-desk { perspective: 1700px; perspective-origin: 50% 40%; }
+      .pw-book {
+        --w: min(370px, 74vw, 50vh); position: relative; width: var(--w); aspect-ratio: 5 / 7;
+        transform-style: preserve-3d; transform-origin: 50% 50%;
+        transition: transform calc(.8s * var(--pace)) cubic-bezier(.45, .05, .3, 1);
+        animation: pw-book-arrive calc(.7s * var(--pace)) cubic-bezier(.3, 1.3, .5, 1) backwards;
+      }
+      /* The page block: cream paper edges peeking out on the right and bottom. */
+      .pw-pages {
+        position: absolute; inset: 1% 0 0 1.5%; border-radius: 3px 10px 10px 3px;
+        background: repeating-linear-gradient(90deg, #efe6d1 0 2px, #e4d8bd 2px 3px);
+        box-shadow: 0 18px 26px #5a463233, 0 4px 4px #5a463226;
+        transform: translateZ(-6px);
+      }
+      .pw-page {
+        position: absolute; inset: 1% 1% 1% 2%; border-radius: 2px 9px 9px 2px; overflow: hidden;
+        background:
+          linear-gradient(90deg, #00000014, transparent 9%),
+          linear-gradient(90deg, transparent 0 13%, #d98d8259 13% 13.5%, transparent 13.5%),
+          repeating-linear-gradient(180deg, transparent 0 21px, #8aa0b733 21px 22px),
+          #f6efdd;
+        transform: translateZ(-2px);
+        display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 10% 12% 10% 18%;
+      }
+      .pw-page small { font-size: clamp(12px, 3.4vw, 15px); letter-spacing: .08em; color: #9a8a70; }
+      .pw-page strong { font: 400 clamp(22px, 6vw, 31px)/1.15 'Schoolbell', cursive; color: #5b4733; margin: 6px 0 12px; }
+      .pw-page svg { width: 62%; overflow: visible; fill: none; stroke: #6f6658; stroke-width: 1.5; stroke-linecap: round; }
+      .pw-flutter {
+        position: absolute; inset: 1.5% 1% 1.5% 2%; border-radius: 2px 9px 9px 2px; transform-origin: 0 50%;
+        background: linear-gradient(90deg, #00000012, transparent 12%), repeating-linear-gradient(180deg, transparent 0 21px, #8aa0b72a 21px 22px), #f4ecd8;
+        transform: translateZ(-1px); backface-visibility: visible;
+      }
+      .pw-flutter.second { transform: translateZ(-1.5px); }
+      .pw-cover { position: absolute; inset: 0; transform-origin: 0 50%; transform-style: preserve-3d; transform: translateZ(1px); }
+      .pw-cover-front, .pw-cover-inside { position: absolute; inset: 0; border-radius: 4px 12px 12px 4px; backface-visibility: hidden; -webkit-backface-visibility: hidden; }
+      .pw-cover-front {
+        background:
+          linear-gradient(90deg, #6e4d2e 0 6%, #00000022 6% 7%, transparent 7%),
+          repeating-linear-gradient(45deg, #ffffff08 0 2px, transparent 2px 5px),
+          repeating-linear-gradient(-45deg, #00000009 0 2px, transparent 2px 5px),
+          linear-gradient(160deg, #c79d6c, #b78859 60%, #a8794c);
+        box-shadow: inset 0 0 0 1px #8b663f, inset 0 0 22px #6d4c2b40;
+        display: flex; flex-direction: column; align-items: center; padding: 9% 9% 7% 14%;
+      }
+      .pw-cover-inside {
+        transform: rotateY(180deg);
+        background:
+          radial-gradient(circle at 25% 30%, #c9b99a55 0 3px, transparent 4px) 0 0 / 34px 34px,
+          radial-gradient(circle at 70% 75%, #b8c49a55 0 3px, transparent 4px) 0 0 / 34px 34px,
+          #efe5cf;
+        box-shadow: inset 0 0 0 1px #d6c7a8, inset -16px 0 22px #00000014;
+      }
+      .pw-label {
+        width: 100%; padding: 6% 6% 5%; text-align: center;
+        background: #f6efdd; border-radius: 4px;
+        box-shadow: 0 0 0 1.5px #8b6a45, 0 0 0 4px #f6efdd, 0 0 0 5.5px #8b6a45, 0 3px 6px #5a463233;
+      }
+      .pw-loading-title { margin: 0; font: 400 clamp(34px, 10vw, 58px)/1 'Schoolbell', 'Patrick Hand', cursive; letter-spacing: .01em; }
+      .pw-loading-title span { display: inline-block; opacity: 0; animation: pw-letter calc(.5s * var(--pace)) calc((.35s + var(--i) * .07s) * var(--pace)) cubic-bezier(.3, 1.6, .5, 1) both; }
+      .pw-loading-title span:nth-child(3n+1) { color: #65769f; }
+      .pw-loading-title span:nth-child(3n+2) { color: #b9706b; }
+      .pw-loading-title span:nth-child(3n) { color: #8a9b6e; }
+      .pw-loading-tagline { margin: 4px 0 0; font-size: clamp(14px, 3.8vw, 19px); color: #7d6a52; opacity: 0; animation: pw-fade calc(.6s * var(--pace)) calc(1s * var(--pace)) ease-out both; }
+      .pw-stamp { margin-top: 6px; font-size: clamp(10px, 2.6vw, 12px); letter-spacing: .14em; color: #a0846a; }
+      .pw-loading-art { width: 104%; margin-top: 4%; height: auto; overflow: visible; }
+      /* Elastic band and ribbon bookmark. The ribbon's length is the progress. */
+      .pw-band {
+        position: absolute; top: -2%; bottom: -2%; right: 13%; width: 4.2%; border-radius: 3px;
+        background: linear-gradient(90deg, #3d4a6c, #56658c 45%, #3a4566);
+        box-shadow: 1px 0 2px #00000033; transform: translateZ(3px); transform-origin: 50% 0;
+      }
+      .pw-ribbon {
+        position: absolute; left: 30%; top: 98%; width: 5.5%; transform: translateZ(-4px);
+        height: calc(10px + var(--progress) * 50px);
+        background: linear-gradient(90deg, #d4701c, #ef8d33 50%, #c9641a);
+        clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 82%, 0 100%);
+        transition: height .45s ease-out;
+      }
+      .pw-draw { fill-opacity: 0; stroke: var(--ink); stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 1; stroke-dashoffset: 1;
+        animation: pw-draw calc(.55s * var(--pace)) calc((var(--d) + .3s) * var(--pace)) ease-out both, pw-wash calc(.7s * var(--pace)) calc((var(--d) + .75s) * var(--pace)) ease-out both; }
+      .pw-draw.is-line { fill: none; animation: pw-draw calc(.5s * var(--pace)) calc((var(--d) + .3s) * var(--pace)) ease-out both; }
+      .pw-hatch { fill: none; stroke: #8fa38c; stroke-width: 1.3; stroke-linecap: round; opacity: 0; animation: pw-fade calc(.5s * var(--pace)) calc((var(--d) + .3s) * var(--pace)) ease-out both; }
+      .pw-soft { opacity: 0; animation: pw-fade calc(.6s * var(--pace)) calc((var(--d) + .3s) * var(--pace)) ease-out both; }
+      .pw-acorn { transform-box: fill-box; transform-origin: 50% 100%; animation: pw-breathe 3.2s calc(2.4s * var(--pace)) ease-in-out infinite; }
+      .pw-wave { transform-box: view-box; transform-origin: 249px 211px; animation: pw-wave 2.6s calc(2.5s * var(--pace)) ease-in-out infinite; }
+      .pw-blink { opacity: 0; animation: pw-blink 4.2s calc(2.9s * var(--pace)) linear infinite; }
+      .pw-pencil { transform-box: view-box; animation: pw-pencil calc(2.1s * var(--pace)) calc(.3s * var(--pace)) ease-in-out both; }
+      .pw-loading-status { min-height: 30px; margin: 46px 0 0; font-size: clamp(16px, 4.4vw, 21px); color: #8a7458; text-align: center; padding: 0 16px; }
+      .pw-loading-status span { display: inline-block; animation: pw-fade .4s ease-out both; }
+      .pw-ready { opacity: 0; font: 400 22px 'Schoolbell', cursive; fill: #4f8a4a; }
+      .pw-skip { position: fixed; bottom: 18px; right: 22px; font: 15px 'Patrick Hand', cursive; color: #a08c70; opacity: 0; animation: pw-fade .5s 1.6s ease-out both; }
+      /* Ready: the acorn hops. Opening: the band snaps off and the cover swings
+         open with a couple of fluttering pages, recentring the open spread. */
+      .pw-loading.is-ready .pw-acorn { animation: pw-hop .5s cubic-bezier(.3, 1.4, .5, 1) 2; }
+      .pw-loading.is-ready .pw-ready { animation: pw-fade .3s ease-out both; }
+      .pw-loading.is-opening .pw-band { animation: pw-band-snap calc(.36s * var(--pace)) ease-in forwards; }
+      /* Recentre the open spread, shrinking it on narrow screens so both pages fit. */
+      .pw-loading.is-opening .pw-book { transform: translateX(calc(50% * var(--open-scale, 1))) scale(var(--open-scale, 1)); }
+      .pw-loading.is-opening .pw-cover { animation: pw-open calc(.95s * var(--pace)) calc(.18s * var(--pace)) cubic-bezier(.5, .05, .3, 1) forwards; }
+      .pw-loading.is-opening .pw-flutter { animation: pw-open calc(.75s * var(--pace)) calc(.42s * var(--pace)) cubic-bezier(.5, .05, .3, 1) forwards; }
+      .pw-loading.is-opening .pw-flutter.second { animation-delay: calc(.56s * var(--pace)); animation-duration: calc(.7s * var(--pace)); }
+      .pw-loading.is-opening .pw-loading-status, .pw-loading.is-opening .pw-skip { opacity: 0; transition: opacity .2s; }
+      .is-quick-load .pw-flutter { display: none; }
+      /* Entering: dive into the open page, which becomes the game. */
+      .pw-loading.is-entering { animation: pw-enter-fade calc(.62s * var(--pace)) ease-in forwards; }
+      .pw-loading.is-entering .pw-book { transition: transform calc(.62s * var(--pace)) cubic-bezier(.6, .0, .7, .4); transform: scale(3.4); }
+      @keyframes pw-book-arrive { from { opacity: 0; transform: translateY(24px) rotate(-3deg) scale(.94); } to { opacity: 1; transform: none; } }
+      @keyframes pw-letter { from { opacity: 0; transform: translateY(12px) rotate(calc(var(--t) * 3)) scale(.6); } to { opacity: 1; transform: translateY(var(--h)) rotate(var(--t)); } }
+      @keyframes pw-fade { from { opacity: 0; } to { opacity: 1; } }
+      @keyframes pw-draw { to { stroke-dashoffset: 0; } }
+      @keyframes pw-wash { from { fill-opacity: 0; } to { fill-opacity: 1; } }
+      @keyframes pw-breathe { 0%, 100% { transform: scale(1, 1); } 50% { transform: scale(1.015, 1.03) translateY(-1px); } }
+      @keyframes pw-wave { 0%, 55%, 100% { transform: rotate(0deg); } 62%, 76% { transform: rotate(-16deg); } 69%, 83% { transform: rotate(6deg); } }
+      @keyframes pw-blink { 0%, 92%, 100% { opacity: 0; } 94%, 97% { opacity: 1; } }
+      @keyframes pw-hop { 0%, 100% { transform: translateY(0) scale(1, 1); } 30% { transform: translateY(2px) scale(1.08, .9); } 60% { transform: translateY(-16px) scale(.95, 1.06); } }
+      @keyframes pw-pencil {
+        0% { transform: translate(110px, 220px) rotate(-30deg); }
+        20% { transform: translate(300px, 230px) rotate(-26deg); }
+        42% { transform: translate(190px, 112px) rotate(-36deg); }
+        58% { transform: translate(250px, 190px) rotate(-28deg); }
+        74% { transform: translate(160px, 200px) rotate(-34deg); }
+        100% { transform: translate(318px, 236px) rotate(-62deg); }
+      }
+      @keyframes pw-band-snap { 0% { transform: translateZ(3px); } 35% { transform: translateZ(3px) scaleY(1.04); } 100% { transform: translateZ(3px) translate(160%, 30%) rotate(18deg); opacity: 0; } }
+      @keyframes pw-open { from { transform: translateZ(1px) rotateY(0deg); } to { transform: translateZ(1px) rotateY(-178deg); } }
+      @keyframes pw-enter-fade { 0%, 45% { opacity: 1; } 100% { opacity: 0; } }
+      @media (prefers-reduced-motion: reduce) {
+        .pw-loading *, .pw-loading { animation: none !important; transition: none !important; }
+        .pw-loading-title span, .pw-loading-tagline, .pw-hatch, .pw-soft, .pw-skip { opacity: 1; }
+        .pw-draw { stroke-dashoffset: 0; fill-opacity: 1; }
+        .pw-pencil { transform: translate(318px, 236px) rotate(-62deg); }
+        .pw-loading.is-entering { opacity: 0; transition: opacity .25s !important; }
+      }
+    </style>
   </head>
   <body>
+    <div id="paperwild-loading" class="pw-loading" role="status" aria-live="polite" aria-label="Loading Paperwild">
+      <div class="pw-desk">
+        <div class="pw-book">
+          <div class="pw-pages"></div>
+          <div class="pw-page">
+            <small>CHAPTER ONE</small>
+            <strong>A very curious<br>chess club</strong>
+            <svg viewBox="0 0 120 80" aria-hidden="true"><path d="M10 10h100v60H10zM35 10v60M60 10v60M85 10v60M10 30h100M10 50h100"/><path d="M14 14l17 13m-13 0 17-13M64 34l17 13m-13 0 17-13M39 54l17 13m-13 0 17-13M89 54l17 13m-13 0 17-13" stroke="#9fb08f" stroke-width="1"/></svg>
+          </div>
+          <div class="pw-flutter second"></div>
+          <div class="pw-flutter"></div>
+          <div class="pw-cover">
+            <div class="pw-cover-front">
+              <div class="pw-label">
+                <h1 class="pw-loading-title" aria-label="Paperwild"><span style="--i:0;--t:-5deg;--h:0px">P</span><span style="--i:1;--t:3deg;--h:-2px">a</span><span style="--i:2;--t:-3deg;--h:1px">p</span><span style="--i:3;--t:5deg;--h:-1px">e</span><span style="--i:4;--t:-2deg;--h:2px">r</span><span style="--i:5;--t:3deg;--h:0px">w</span><span style="--i:6;--t:-4deg;--h:-2px">i</span><span style="--i:7;--t:4deg;--h:1px">l</span><span style="--i:8;--t:-2deg;--h:-1px">d</span></h1>
+                <p class="pw-loading-tagline">Chess, drawn to life.</p>
+                <div class="pw-stamp">FIELD NOTES · No. 001</div>
+              </div>
+              <svg class="pw-loading-art" viewBox="0 66 420 220" aria-hidden="true">
+          <!-- A little board, sketched in perspective under the acorn's feet. -->
+          <g>
+            <path class="pw-draw is-line" style="--d:.05s" pathLength="1" d="M128 214 Q210 211 292 214 L322 268 Q210 272 98 268 Z" fill="none"/>
+            <path class="pw-draw is-line" style="--d:.25s" pathLength="1" d="M169 213 151 269M210 212V270M251 213l18 56M114 241q96-3 192 0"/>
+            <path class="pw-hatch" style="--d:.6s" d="M134 238l10-20m3 20 9-21m3 22 7-15M213 237l9-21m4 21 9-21m3 21 7-14M160 266l9-22m4 22 9-22m4 22 8-17M254 266l9-22m4 22 9-22m4 22 9-20"/>
+          </g>
+          <ellipse class="pw-soft" style="--d:1.4s" cx="210" cy="254" rx="46" ry="7" fill="#6f5c3c" fill-opacity=".16"/>
+          <g class="pw-acorn">
+            <!-- Feet and arms first, then the body, cap and scarf: drawn in pencil, then washed with colour. -->
+            <ellipse class="pw-draw" style="--d:.9s" pathLength="1" cx="192" cy="249" rx="12" ry="6" fill="#8a5a32"/>
+            <ellipse class="pw-draw" style="--d:.95s" pathLength="1" cx="229" cy="249" rx="12" ry="6" fill="#8a5a32"/>
+            <path class="pw-draw is-line" style="--d:1s" pathLength="1" d="M173 214Q160 222 151 232" stroke-width="3.2"/>
+            <path class="pw-draw" style="--d:.95s" pathLength="1" d="M167 160C160 206 182 247 210 247S260 206 253 160Z" fill="#f2c47e"/>
+            <path class="pw-draw" style="--d:1.1s" pathLength="1" d="M158 166C155 126 184 104 210 104S265 126 262 166C240 176 180 176 158 166Z" fill="#9b6034"/>
+            <path class="pw-draw is-line" style="--d:1.25s" pathLength="1" d="M171 138q8 6 16 0t16 0 16 0 16 0 16 0M165 153q9 6 18 0t18 0 18 0 18 0 18 0" stroke="#6b3f1f" stroke-width="1.6"/>
+            <path class="pw-draw is-line" style="--d:1.3s" pathLength="1" d="M209 104C207 94 211 86 218 82" stroke="#6b3f1f" stroke-width="4"/>
+            <path class="pw-draw" style="--d:1.35s" pathLength="1" d="M215 88C226 74 246 74 252 84 240 94 226 94 215 88Z" fill="#8fae6a"/>
+            <path class="pw-draw" style="--d:1.4s" pathLength="1" d="M207 90C196 78 178 80 174 90 186 98 198 97 207 90Z" fill="#a3bd7a"/>
+            <path class="pw-draw" style="--d:1.45s" pathLength="1" d="M171 212Q210 228 249 212L247 224Q210 240 173 224Z" fill="#f39a2e"/>
+            <path class="pw-draw" style="--d:1.5s" pathLength="1" d="M228 228 236 246 225 245 221 230Z" fill="#e8862a"/>
+            <ellipse class="pw-draw" style="--d:1.15s" pathLength="1" cx="147" cy="235" rx="9" ry="8" fill="#ff9b2b"/>
+            <g class="pw-wave">
+              <path class="pw-draw is-line" style="--d:1.05s" pathLength="1" d="M248 210Q262 200 270 190" stroke-width="3.2"/>
+              <ellipse class="pw-draw" style="--d:1.2s" pathLength="1" cx="274" cy="185" rx="9" ry="8" fill="#ff9b2b"/>
+            </g>
+            <g class="pw-soft" style="--d:1.6s">
+              <ellipse cx="196" cy="188" rx="5.5" ry="7" fill="#3b2a20"/><ellipse cx="225" cy="188" rx="5.5" ry="7" fill="#3b2a20"/>
+              <circle cx="198" cy="185" r="1.9" fill="#fff"/><circle cx="227" cy="185" r="1.9" fill="#fff"/>
+              <ellipse cx="185" cy="201" rx="7.5" ry="4" fill="#e8908a" fill-opacity=".6"/><ellipse cx="236" cy="201" rx="7.5" ry="4" fill="#e8908a" fill-opacity=".6"/>
+              <path d="M204 203q6 6 12 0" fill="none" stroke="#5a4632" stroke-width="2" stroke-linecap="round"/>
+            </g>
+            <g class="pw-blink"><ellipse cx="196" cy="188" rx="7" ry="8" fill="#f2c47e"/><ellipse cx="225" cy="188" rx="7" ry="8" fill="#f2c47e"/><path d="M190 189q6 4 12 0m17 0q6 4 12 0" fill="none" stroke="#5a4632" stroke-width="2" stroke-linecap="round"/></g>
+          </g>
+          <text class="pw-ready" x="282" y="150">ready!</text>
+          <!-- The pencil doing the drawing. -->
+          <g class="pw-pencil"><path d="M0 0 9-3 52-3 52 3 9 3Z" fill="#f3c34f" stroke="#7a5a2a" stroke-width="1.2"/><path d="M0 0 9-3 9 3Z" fill="#e6c9a0" stroke="#7a5a2a" stroke-width="1"/><path d="M0 0 3-1 3 1Z" fill="#3b2a20"/><path d="M52-3h8v6h-8" fill="#e59a9a" stroke="#7a5a2a" stroke-width="1"/></g>
+        </svg>
+            </div>
+            <div class="pw-cover-inside"></div>
+          </div>
+          <div class="pw-band"></div>
+          <div class="pw-ribbon"></div>
+        </div>
+      </div>
+      <p class="pw-loading-status"><span>Sharpening the pencils…</span></p>
+      <span class="pw-skip" aria-hidden="true">tap to open</span>
+    </div>
+    <noscript><p style="font-family: sans-serif; text-align: center; margin: 40vh 16px 0;">Paperwild needs JavaScript to draw its little chess club.</p></noscript>
     <div id="app"></div>
     <script type="module" src="/src/main.ts"></script>
   </body>

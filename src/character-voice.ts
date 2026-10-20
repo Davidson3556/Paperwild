@@ -1,7 +1,7 @@
 import type { PieceSymbol } from './game.ts';
 
 export type CharacterActivity = 'select' | 'move' | 'land' | 'capture' | 'captured' | 'promotion' | 'check' | 'win' | 'draw' | 'idle' | 'greet' | 'blocked'
-  | 'happy' | 'cheer' | 'dizzy' | 'challenge' | 'startled' | 'farewell';
+  | 'happy' | 'cheer' | 'dizzy' | 'challenge' | 'startled' | 'farewell' | 'angry' | 'sad';
 
 interface Expression {
   seconds: number;
@@ -35,6 +35,10 @@ const EXPRESSIONS: Readonly<Record<CharacterActivity, Expression>> = {
   startled: { seconds: 0.25, notes: [9], glide: 9, strength: 0.86 },
   // A brave, quiet "bye-bye" from the stretcher.
   farewell: { seconds: 0.50, notes: [4, 0], glide: -2, strength: 0.72 },
+  // A low, growly "grr-hmph!" for a lost temper.
+  angry: { seconds: 0.5, notes: [-3, -5, -2], glide: -2, strength: 0.9 },
+  // A wobbling, falling sniffle: "aww…".
+  sad: { seconds: 0.72, notes: [4, 1, -3], glide: -5, strength: 0.7 },
 };
 
 interface Character {
@@ -137,6 +141,7 @@ export function renderCharacterCall(role: PieceSymbol, activity: CharacterActivi
       const envelope = smooth(elapsed / attack) * smooth((syllable.duration - elapsed) / release);
       const decay = Math.exp(-u * (role === 'b' ? 0.45 : role === 'n' ? 1.25 : 0.84));
       const vibrato = activity === 'dizzy' ? Math.sin(TAU * 4.2 * elapsed) * 0.045
+        : activity === 'sad' ? Math.sin(TAU * 5.2 * elapsed) * 0.03
         : role === 'r' ? Math.sin(TAU * 13 * elapsed) * 0.025
         : role === 'k' ? Math.sin(TAU * 16 * elapsed) * 0.017
         : Math.sin(TAU * (happy ? 24 : 7) * elapsed) * (happy ? 0.009 : 0.004);
@@ -186,6 +191,9 @@ export function renderCharacterCall(role: PieceSymbol, activity: CharacterActivi
       // Expression colour: giggles bounce, dizzy calls wobble, yelps snap open.
       if (activity === 'happy') tone *= 0.62 + 0.38 * Math.sin(TAU * 12 * elapsed + 1.2);
       else if (activity === 'dizzy') tone *= 0.8 + 0.2 * Math.sin(TAU * 5.5 * elapsed);
+      // A growl is a fast, rough flutter; a sob catches in short breaths.
+      else if (activity === 'angry') tone *= 0.66 + 0.34 * Math.sin(TAU * 31 * elapsed) * Math.sin(TAU * 7 * elapsed + 0.4);
+      else if (activity === 'sad') tone *= 0.72 + 0.28 * Math.sin(TAU * 6 * elapsed);
       voice += tone * envelope * decay * syllable.strength;
       opening = Math.max(opening, Math.sin(Math.PI * u) * envelope);
     }

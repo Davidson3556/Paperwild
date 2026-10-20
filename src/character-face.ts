@@ -102,7 +102,14 @@ export function createCharacterFace(color: Color, type: PieceSymbol, seed: numbe
   const defs = svg('defs', {});
   const blink = svg('g', { class: 'character-blink' });
   const joy = svg('g', { class: 'character-joy' });
-  CHARACTER_EYES[color][type].forEach((eye, index) => {
+  const squeeze = svg('g', { class: 'character-squeeze' });
+  const angry = svg('g', { class: 'character-brows-angry' });
+  const sad = svg('g', { class: 'character-brows-sad' });
+  const tears = svg('g', { class: 'character-tears' });
+  const flush = svg('g', { class: 'character-flush' });
+  const eyes = CHARACTER_EYES[color][type];
+  const centre = eyes.reduce((sum, eye) => sum + eye.x, 0) / eyes.length;
+  eyes.forEach((eye, index) => {
     const gradientId = `${prefix}-${index}`;
     const gradient = svg('radialGradient', { id: gradientId });
     // A soft elliptical edge joins the lid to the painted fur without a box.
@@ -144,7 +151,40 @@ export function createCharacterFace(color: Color, type: PieceSymbol, seed: numbe
       fill: 'none', stroke: eye.ink ?? '#70503b', 'stroke-width': type === 'k' ? 2.6 : 3.2, 'stroke-linecap': 'round', opacity: '.9',
     }));
     joy.append(smile);
+    // Scrunched "> <" eyes for a refusal: chevrons point toward the nose.
+    const scrunch = svg('g', { 'data-eye': index, transform: `translate(${eye.x} ${eye.y}) rotate(${eye.tilt * .4})` });
+    scrunch.append(svg('ellipse', { rx: eye.rx + 2.5, ry: eye.ry + 2.5, fill: `url(#${gradientId})` }));
+    const side = eye.x < centre ? 1 : -1, reach = halfWidth * .85, rise = eye.ry * .42;
+    scrunch.append(svg('path', {
+      d: `M${-side * reach} ${-rise} L${side * reach * .75} 0 L${-side * reach} ${rise}`,
+      fill: 'none', stroke: eye.ink ?? '#70503b', 'stroke-width': type === 'k' ? 2.6 : 3.2, 'stroke-linecap': 'round', 'stroke-linejoin': 'round', opacity: '.92',
+    }));
+    squeeze.append(scrunch);
+    // Eyebrows, drawn like thick marker strokes above each eye. Local +x points
+    // toward the nose, so one shape serves both eyes.
+    const browWidth = eye.rx * 1.05, browHeight = eye.ry * .5, ink = eye.ink ?? '#5c4130';
+    const brow = (className: string, d: string) => {
+      const group = svg('g', { class: `character-brow ${className}`, transform: `translate(${eye.x} ${eye.y - eye.ry * 1.42}) rotate(${eye.tilt * .5}) scale(${side} 1)` });
+      group.append(svg('path', { d, fill: 'none', stroke: ink, 'stroke-width': type === 'k' ? 7 : 8, 'stroke-linecap': 'round', 'stroke-linejoin': 'round' }));
+      return group;
+    };
+    angry.append(brow('angry', `M${-browWidth} ${-browHeight * .7} Q0 ${-browHeight * .15} ${browWidth * .95} ${browHeight * .75}`));
+    sad.append(brow('sad', `M${-browWidth} ${browHeight * .45} Q${-browWidth * .1} ${-browHeight * .2} ${browWidth * .9} ${-browHeight * .85}`));
+    // Tears well under each eye and roll down the cheek.
+    // The group places the tear; the scene animates only the inner drop, because
+    // a CSS transform on an SVG element would replace its placement attribute.
+    const seat = svg('g', { transform: `translate(${eye.x + side * eye.rx * .3} ${eye.y + eye.ry * .95}) scale(2.3)` });
+    seat.append(svg('path', { class: 'character-tear', d: 'M0 -11C6 -3 9 5 0 11-9 5-6 -3 0 -11Z', fill: '#a6d6f2', stroke: '#4a7fae', 'stroke-width': 1.1 }));
+    tears.append(seat);
   });
-  face.append(defs, blink, joy);
+  // A red flush across the cheeks for real anger.
+  const flushId = `${prefix}-flush`;
+  const span = Math.max(...eyes.map(eye => eye.x)) - Math.min(...eyes.map(eye => eye.x));
+  const cheekY = eyes.reduce((sum, eye) => sum + eye.y + eye.ry * 1.25, 0) / eyes.length;
+  const flushGradient = svg('radialGradient', { id: flushId });
+  flushGradient.append(svg('stop', { offset: '0', 'stop-color': '#e2483a', 'stop-opacity': '.55' }), svg('stop', { offset: '1', 'stop-color': '#e2483a', 'stop-opacity': '0' }));
+  defs.append(flushGradient);
+  flush.append(svg('ellipse', { cx: centre, cy: cheekY, rx: span * .95, ry: span * .42, fill: `url(#${flushId})` }));
+  face.append(defs, blink, joy, squeeze, flush, angry, sad, tears);
   return face;
 }
