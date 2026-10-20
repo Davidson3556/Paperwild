@@ -64,8 +64,9 @@ export interface SketchScene extends Conservatory {
   delight(square: Square): PieceSymbol | null;
   /** Lay every resident flat on the page, ready to pop up like a pop-up book. */
   fold(): void;
-  /** Stand the folded residents up row by row; `onRow` fires as each row rises. */
-  popUp(onRow?: (row: number) => void): void;
+  /** Draw the page, then stand the folded residents up row by row. Resolves
+   * when the entrance finishes or is settled; `onRow` fires as each row rises. */
+  popUp(onRow?: (row: number) => void): Promise<void>;
   /** "No, no, no": a scrunched face and a head shake, with a ✗ on the square tried. */
   refuse(square: Square, reason: RefusalReason, attempted?: Square): RefusalReaction | null;
 }
@@ -146,6 +147,7 @@ export function createSketchScene(container: HTMLElement, { onSquare, onCreature
   const prefix = `marginwood-board-${++instance}`;
   const root = document.createElement('div'); root.className = 'sketch-scene';
   root.setAttribute('aria-hidden', 'true'); root.dataset.motion = reducedMotion ? 'still' : 'gentle';
+  root.dataset.intro = 'ready';
   root.dataset.atmosphere = 'day'; root.dataset.weather = 'clear';
   const sheet = svg('svg', { viewBox: '0 0 1000 1000', preserveAspectRatio: 'none', class: 'sketch-board-ink' });
   const defs = svg('defs'); sheet.append(defs);
@@ -168,6 +170,8 @@ export function createSketchScene(container: HTMLElement, { onSquare, onCreature
   let motionId = 0;
   let lastCaptureList: readonly Capture[] = [];
   let gridIntroduced = false;
+  let entrance: Promise<void> | undefined;
+  let entranceActive = false;
 
   // A child has coloured these in, gone over the lines, and missed a few bits.
   // The nominal grid remains exact underneath the wavering pencil marks.
@@ -261,21 +265,28 @@ export function createSketchScene(container: HTMLElement, { onSquare, onCreature
     for (const animation of [...running.keys()]) retire(animation, true);
   }
   function revealPencilGrid() {
-    if (gridIntroduced || destroyed) return;
+    // The notebook covers the board until popUp. Spending this one-time draw
+    // while folded would leave nothing to see when the cover finally opens.
+    if (gridIntroduced || destroyed || root.classList.contains('is-folded')) return 0;
     gridIntroduced = true;
-    if (reducedMotion) return;
-    grid.querySelectorAll<SVGPathElement>('.graphite-0').forEach((path, index) => {
+    if (reducedMotion) return 0;
+    const strokes = grid.querySelectorAll<SVGPathElement>('.graphite-0');
+    let duration = 0;
+    strokes.forEach((path, index) => {
       const length = path.getTotalLength();
       if (!Number.isFinite(length) || length <= 0) return;
+      const delay = index * 35;
+      duration = Math.max(duration, delay + 720);
       const pressure = path.getAttribute('stroke-dasharray');
       path.setAttribute('stroke-dasharray', `${length} ${length}`);
       track(path.animate([{ strokeDashoffset: String(length) }, { strokeDashoffset: '0' }], {
-        duration: 720, delay: index * 35, fill: 'backwards', easing: 'cubic-bezier(.3,.08,.6,.98)',
+        duration: 720, delay, fill: 'backwards', easing: 'cubic-bezier(.3,.08,.6,.98)',
       }), () => {
         if (pressure === null) path.removeAttribute('stroke-dasharray');
         else path.setAttribute('stroke-dasharray', pressure);
       });
     });
+    return duration;
   }
   function trackMotion(animation: Animation, event: SketchMotionEvent, cleanup?: (cancelled: boolean) => void) {
     motions.add(animation);
@@ -1341,15 +1352,28 @@ export function createSketchScene(container: HTMLElement, { onSquare, onCreature
   /** The opening of the notebook: residents drawn flat on the page fold up
    * like a pop-up book, back ranks first, then the pawns, sweeping across files. */
   function fold() {
-    if (!reducedMotion && !destroyed) root.classList.add('is-folded');
+    if (!reducedMotion && !destroyed) {
+      root.classList.add('is-folded'); root.dataset.intro = 'folded';
+    }
   }
   function popUp(onRow?: (row: number) => void) {
-    if (!root.classList.contains('is-folded')) return;
-    if (reducedMotion || destroyed) { root.classList.remove('is-folded'); return; }
+    if (entrance) return entrance;
+    if (!root.classList.contains('is-folded')) return Promise.resolve();
+    root.classList.remove('is-folded');
+    const drawingDuration = revealPencilGrid();
+    if (reducedMotion || destroyed || document.hidden) {
+      finishAnimations(); root.dataset.intro = 'ready'; return Promise.resolve();
+    }
+    root.dataset.intro = 'drawing'; entranceActive = true;
+    // Let the pencil reach the last strokes before the cast starts to rise.
+    // WAAPI's backwards fill keeps everyone folded during their own delay.
+    const riseStart = Math.max(0, drawingDuration - 280);
     const group = (sprite: Sprite) => { const rank = Number(sprite.square[1]); return rank === 1 || rank === 8 ? 0 : rank === 2 || rank === 7 ? 1 : 2; };
     const rows = new Set<number>();
+    let duration = drawingDuration;
     for (const sprite of sprites.values()) {
-      const row = group(sprite), delay = row * 260 + FILES.indexOf(sprite.square[0]) * 45;
+      const row = group(sprite), delay = riseStart + row * 260 + FILES.indexOf(sprite.square[0]) * 45;
+      duration = Math.max(duration, delay + 560);
       rows.add(row);
       track(sprite.body.animate([
         { transform: 'perspective(500px) rotateX(80deg) scale(1, .2)', opacity: .55 },
@@ -1359,9 +1383,17 @@ export function createSketchScene(container: HTMLElement, { onSquare, onCreature
       ], { duration: 560, delay, easing: 'ease-out', fill: 'backwards' }));
       track(sprite.base.animate([{ transform: 'scale(.3)', opacity: 0 }, { transform: 'scale(1)', opacity: 1 }], { duration: 320, delay: delay + 120, easing: 'ease-out', fill: 'backwards' }));
     }
-    for (const row of rows) track(root.animate([], { duration: Math.max(1, row * 260) }), cancelled => { if (!cancelled) onRow?.(row); });
-    // The animations now hold the flat pose until each one's turn.
-    root.classList.remove('is-folded');
+    for (const row of rows) track(root.animate([], { duration: Math.max(1, riseStart + row * 260) }), cancelled => {
+      if (!cancelled) { root.dataset.intro = 'rising'; onRow?.(row); }
+    });
+    // The caller can resume a saved computer turn only once this visible
+    // entrance is over. Settling, reduced motion and destroy also release it.
+    entrance = new Promise<void>(resolve => {
+      track(root.animate([], { duration: Math.max(1, duration) }), () => {
+        entranceActive = false; root.dataset.intro = 'ready'; resolve();
+      });
+    });
+    return entrance;
   }
   function castleRook(lastMove: LastMove, animate: boolean) {
     const kingSide = lastMove.to[0] === 'g', rank = lastMove.from[1];
@@ -1388,6 +1420,9 @@ export function createSketchScene(container: HTMLElement, { onSquare, onCreature
   }
   function visibility() {
     root.dataset.paused = document.hidden ? 'true' : 'false';
+    // A startup animation has no game state to preserve. Finish it when the
+    // page is hidden so returning never leaves a folded board or pending gate.
+    if (document.hidden && entranceActive) finishAnimations();
     for (const animation of running.keys()) if (document.hidden) animation.pause(); else if (!reducedMotion) animation.play();
   }
   function setReducedMotion(value: boolean) {
