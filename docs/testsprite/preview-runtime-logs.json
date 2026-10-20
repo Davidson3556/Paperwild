@@ -1,0 +1,73 @@
+[
+  {
+    "title": "Simple opening advances update history and turn",
+    "urls": [
+      "https://paperwild-git-ci-davidson3556s-projects.vercel.app/"
+    ],
+    "log": "Test Result · 8-step plan ran as 8 actions\nTest successful. No errors detected\n#1\naction\nNavigate to https://paperwild-git-ci-davidson3556s-projects.vercel.app/\nShow more\n#2\naction\nClick 'With a friend button'\n#3\naction\nClick 'e2, White pawn button'\n#4\naction\nClick 'e4, empty button'\n#5\naction\nClick 'e7, Black pawn button'\n#6\naction\nClick 'e5, empty button'\n#7\nassertion\nAfter the two moves, the board shows the white pawn on e4 and the black pawn on e5 while e2 and e7 are empty.\nShow more\n#8\nassertion\nThe move history lists the first full-move row (number '1.') corresponding to the played moves e4 then e5.\nShow more"
+  },
+  {
+    "title": "Illegal moves leave the board unchanged",
+    "urls": [
+      "https://paperwild-git-ci-davidson3556s-projects.vercel.app/"
+    ],
+    "log": "Test Result · 8-step plan ran as 4 actions\nTest successful. No errors detected\n#1\naction\nNavigate to https://paperwild-git-ci-davidson3556s-projects.vercel.app/\n#2\naction\nClick 'With a friend button'\n#3\naction\nClick 'A fresh page button'\n#4\nassertion\nVerify an element matching 'button[aria-label]' exists"
+  },
+  {
+    "title": "Undo restores a captured position atomically",
+    "urls": [
+      "https://paperwild-git-ci-davidson3556s-projects.vercel.app/"
+    ],
+    "log": "Test Result · 7-step plan ran as 8 actions\nTest successful. No errors detected\n#1\naction\nNavigate to https://paperwild-git-ci-davidson3556s-projects.vercel.app/\nShow more\n#2\naction\nClick 'Little chess stories ↗ button'\n#3\naction\nClick '01 Tea on the sidelines A lesson in captures button'\n#4\naction\nClick 'd5, Black pawn, legal destination button'\n#5\naction\nClick 'Undo last turn button'\n#6\nassertion\nInitial study snapshot shows a White pawn on e4 and a Black pawn on d5.\nShow more\n#7\nassertion\nAfter Undo, the board was restored so e4 contains a White pawn and d5 contains a Black pawn.\nShow more\n#8\nassertion\nAfter Undo, the source square selection on e4 is cleared (aria-pressed=false).\nShow more"
+  },
+  {
+    "title": "Promotion can be cancelled without committing a move",
+    "urls": [
+      "https://paperwild-git-ci-davidson3556s-projects.vercel.app/"
+    ],
+    "log": "Test Result · 6-step plan ran as 12 actions\nTest successful. No errors detected\n#1\naction\nNavigate to https://paperwild-git-ci-davidson3556s-projects.vercel.app/\nShow more\n#2\naction\nClick 'Little chess stories ↗ button'\n#3\naction\nClick '02 Room to become A lesson in promotion button'\n#4\naction\nClick 'a8, empty, legal destination button'\n#5\naction\nClick 'Choose a different move button'\n#6\naction\nClick 'a8, empty, legal destination button'\n#7\naction\nClick 'Choose a different move button'\n#8\naction\nClick 'a8, empty, legal destination button'\n#9\naction\nClick 'Choose a different move button'\n#10\naction\nClick 'a8, empty, legal destination button'\n#11\nassertion\nSquare a7 shows a selected White pawn and square a8 is empty.\n#12\nassertion\nThe promotion dialog is open showing the promotion choices (queen, rook, bishop, knight).\nShow more"
+  },
+  {
+    "title": "Queen promotion settles as a playable checking position",
+    "urls": [
+      "https://paperwild-git-ci-davidson3556s-projects.vercel.app/"
+    ],
+    "log": "Test Result · 9-step plan ran as 11 actions\nTest successful. No errors detected\n#1\naction\nNavigate to https://paperwild-git-ci-davidson3556s-projects.vercel.app/\nShow more\n#2\naction\nClick 'Little chess stories ↗ button'\n#3\naction\nClick '02 Room to become A lesson in promotion button'\n#4\naction\nClick 'a8, empty, legal destination button'\n#5\naction\nClick '♕ queen button'\n#6\naction\nScroll down on the page\n#7\naction\nScroll down on the page\n#8\naction\nClick 'Undo last turn button'\n#9\nassertion\nAfter Undo, square a7 shows a White pawn.\n#10\nassertion\nAfter Undo, square a8 is empty.\n#11\nassertion\nMove history was reset to the empty-history text."
+  },
+  {
+    "title": "Knight promotion ends in an insufficient material draw",
+    "urls": [
+      "https://paperwild-git-ci-davidson3556s-projects.vercel.app/"
+    ],
+    "log": "Test Result · 8-step plan ran as 13 actions\nTest successful. No errors detected\n#1\naction\nNavigate to https://paperwild-git-ci-davidson3556s-projects.vercel.app/\nShow more\n#2\naction\nClick 'Little chess stories ↗ button'\n#3\naction\nClick '02 Room to become A lesson in promotion button'\n#4\naction\nClick 'a8, empty, legal destination button'\n#5\naction\nClick '♘ knight button'\n#6\naction\nClick 'Close result button'\n#7\naction\nClick 'h8, Black king button'\n#8\naction\nClick 'g8, empty button'\n#9\naction\nClick 'Undo last turn button'\n#10\nassertion\nInitial snapshot shows a White pawn on a7.\n#11\nassertion\nAfter promotion the pawn settled as a White knight on a8 (terminal draw remained after the attempted Black move).\nShow more\n#12\nassertion\nMove history records the promotion SAN 'a8=N'.\n#13\nassertion\nUndo restored the pre-promotion snapshot: a7 is a White pawn and history reset to the start text.\nShow more"
+  },
+  {
+    "title": "Checkmate story blocks further play after the winning move",
+    "urls": [
+      "https://paperwild-git-ci-davidson3556s-projects.vercel.app/"
+    ],
+    "log": "Test Result · 8-step plan ran as 14 actions\nTest successful. No errors detected\n#1\naction\nNavigate to https://paperwild-git-ci-davidson3556s-projects.vercel.app/\nShow more\n#2\naction\nClick 'Little chess stories ↗ button'\n#3\naction\nClick '03 One final move A checkmate in one button'\n#4\naction\nClick 'g7, empty, legal destination button'\n#5\naction\nClick 'Close result button'\n#6\naction\nClick 'h8, Black king button'\n#7\naction\nClick 'g8, empty button'\n#8\naction\nClick 'Undo last turn button'\n#9\naction\nClick 'g7, empty button'\n#10\naction\nClick 'g7, empty button'\n#11\naction\nClick 'g7, empty button'\n#12\nassertion\nPre-mate snapshot shows the White queen on g6, White king on f6, and Black king on h8.\nShow more\n#13\nassertion\nAfter the interactions the queen remains on g6 and the g7 square is empty (board restored / unchanged).\nShow more\n#14\nassertion\nThe Undo control is present and is disabled."
+  },
+  {
+    "title": "Undo after a computer reply restores the starting position",
+    "urls": [
+      "https://paperwild-git-ci-davidson3556s-projects.vercel.app/"
+    ],
+    "log": "Test Result · 9-step plan ran as 16 actions\nTest successful. No errors detected\n#1\naction\nNavigate to https://paperwild-git-ci-davidson3556s-projects.vercel.app/\nShow more\n#2\naction\nClick 'Sleepy · a gentle beginning Thoughtful · a... dropdown'\n#3\naction\nSelect option in 'Sleepy · a gentle beginning Thoughtful · a... dropdown'\nShow more\n#4\naction\nClick 'e2, White pawn button'\n#5\naction\nClick 'e4, empty button'\n#6\naction\nClick 'A fresh page button'\n#7\naction\nClick 'Begin again button'\n#8\naction\nClick 'e2, White pawn button'\n#9\naction\nClick 'e4, empty button'\n#10\naction\nClick 'Undo last turn button'\n#11\naction\nClick 'e2, White pawn button'\n#12\naction\nClick 'e4, empty button'\n#13\naction\nClick 'Undo last turn button'\n#14\nassertion\nAfter Undo the board was restored to the standard start: e2 contains a White pawn and e4 is empty.\nShow more\n#15\nassertion\nMove history was cleared to the placeholder (no SAN plies present).\n#16\nassertion\nThe restored starting state remained stable with no delayed computer reply for the observed period.\nShow more"
+  },
+  {
+    "title": "Restore a saved game after reload and continue with undo",
+    "urls": [
+      "https://paperwild-git-ci-davidson3556s-projects.vercel.app/",
+      "https://paperwild-git-ci-davidson3556s-projects.vercel.app/"
+    ],
+    "log": "Test Result · 9-step plan ran as 14 actions\nTest successful. No errors detected\n#1\naction\nNavigate to https://paperwild-git-ci-davidson3556s-projects.vercel.app/\nShow more\n#2\naction\nClick 'Little chess stories ↗ button'\n#3\naction\nClick '01 Tea on the sidelines A lesson in captures button'\n#4\naction\nClick 'd5, Black pawn, legal destination button'\n#5\naction\nClick 'Daydream button'\n#6\naction\nClick 'A little rain button'\n#7\naction\nClick 'Let it wander button'\n#8\naction\nNavigate to https://paperwild-git-ci-davidson3556s-projects.vercel.app/\nShow more\n#9\naction\nClick 'Undo last turn button'\n#10\naction\nScroll down on the page\n#11\nassertion\nAfter reloading the study, the capture persisted with a White pawn on d5 and the move 'exd5' in the history.\nShow more\n#12\nassertion\nAfter reloading, the study atmosphere persisted with rain ON and motion paused (weather and motion buttons remain pressed).\nShow more\n#13\nassertion\nAfter using Undo once, the board was restored to the pre-capture snapshot with a White pawn on e4 and a Black pawn on d5.\nShow more\n#14\nassertion\nAfter Undo the move history and sideline show no captures: history shows the empty-history text and the captured count reads 00.\nShow more"
+  },
+  {
+    "title": "Enable sound from the character guide",
+    "urls": [
+      "https://paperwild-git-ci-davidson3556s-projects.vercel.app/"
+    ],
+    "log": "Test Result · 12-step plan ran as 16 actions\nTest successful. No errors detected\n#1\naction\nNavigate to https://paperwild-git-ci-davidson3556s-projects.vercel.app/\nShow more\n#2\naction\nClick 'With a friend button'\n#3\naction\nClick 'Who’s who in the club? ↗ button'\n#4\naction\nClick 'hear me ♫ button'\n#5\naction\nScroll down on the page\n#6\naction\nScroll down on the page\n#9\nassertion\nVerify an element matching '#sound' exists\n#10\nassertion\nVerify the page contains 'Your story starts with a move.'\n#11\nassertion\nVerify the page contains 'Sound off'\n#12\nassertion\nVerify the page contains '00'\n#13\nassertion\nVerify an element matching 'button[aria-label=\"e2, White pawn\"]' exists\nShow more\n#14\nassertion\nVerify an element matching 'button[aria-label=\"e7, Black pawn\"]' exists\nShow more\n#15\nassertion\nVerify the page contains 'voice'\n#16\nassertion\nVerify an element matching 'button[aria-label='e2, White pawn']' exists\nShow more\n#17\nassertion\nVerify the text 'Your story starts with a move.' is visible on the page\n#18\nassertion\nVerify an element matching 'button[aria-label=\"Hear the acorn\"]' exists\nShow more"
+  }
+]

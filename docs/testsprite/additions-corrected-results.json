@@ -1,0 +1,26 @@
+[
+  {
+    "title": "TC301-Notebook opens and repeated illegal attempts preserve chess state",
+    "testStatus": "PASSED",
+    "testError": "",
+    "portalUrl": "https://www.testsprite.com/dashboard/mcp/tests/78b89942-deeb-5cc4-82ea-744261173379/test/a07f15ed-e9b0-4df6-a862-918db6e2bd53",
+    "created": "2026-10-18T23:19:53.882Z",
+    "modified": "2026-10-18T23:34:48.725Z"
+  },
+  {
+    "title": "TC302-Named capture produces a remembrance card and Undo restores both residents",
+    "testStatus": "PASSED",
+    "testError": "",
+    "portalUrl": "https://www.testsprite.com/dashboard/mcp/tests/78b89942-deeb-5cc4-82ea-744261173379/test/c7de43be-e541-426c-89bc-81740399ab68",
+    "created": "2026-10-18T23:19:53.891Z",
+    "modified": "2026-10-18T23:36:17.254Z"
+  },
+  {
+    "title": "TC303-Fresh page and study replacement clear capture ceremonies without reviving old residents",
+    "testStatus": "FAILED",
+    "testError": "TEST FAILURE\n\nThe study replacement cleared the capture state as expected. However, the fresh-game assertion requiring exactly 32 occupied board squares was not directly verified, so the full set of assertions cannot be confirmed.\n\nObservations:\n- After the second Tea capture, one captured piece and Journal 01 were visible.\n- After starting a fresh game, Journal 00, capture total 0, a 64-square board, and no stale notice were observed; the exact occupied-square count was not measured.\n- \u201cRoom to become\u201d showed pieces at a7, h1, and h8, exactly three occupied squares, capture total 0, Journal 00, and no listed obsolete overlays.",
+    "portalUrl": "https://www.testsprite.com/dashboard/mcp/tests/78b89942-deeb-5cc4-82ea-744261173379/test/8d9773fd-6863-41b7-a605-79ab006461b5",
+    "created": "2026-10-18T23:19:53.898Z",
+    "modified": "2026-10-18T23:36:48.450Z"
+  }
+]

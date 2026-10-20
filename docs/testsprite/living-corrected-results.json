@@ -1,0 +1,66 @@
+[
+  {
+    "title": "TC201-Local illegal move remains atomic and a legal opening updates exact squares and journal",
+    "testStatus": "PASSED",
+    "testError": "",
+    "portalUrl": "https://www.testsprite.com/dashboard/mcp/tests/78b89942-deeb-5cc4-82ea-744261173379/test/ce873af1-7936-48ac-9ee9-50dfee042d6f",
+    "created": "2026-10-18T02:51:00.312Z",
+    "modified": "2026-10-18T03:04:53.384Z"
+  },
+  {
+    "title": "TC202-Capture story resolves to the winner and Undo restores both original characters",
+    "testStatus": "FAILED",
+    "testError": "TEST FAILURE\n\nUndo restored the original pawn positions and cleared the recorded move history, but the final turn and move indicators are inconsistent with the expected restored state. The complete capture-state assertions, including the settled capture artwork and both teams\u2019 mittens, were not fully verified.\n\nObservations:\n- After Undo, e4 showed a White pawn, d5 showed a Black pawn, history showed \u201cYour story starts with a move,\u201d captures were 00, and 32 direct character sprites were present.\n- The current page shows \u201cAmber to move\u201d and \u201cMove 02,\u201d while Undo is disabled.\n- The capture was previously visible as a White pawn on d5 with e4 empty, and the prior extraction reported the capture ply and one capture.",
+    "portalUrl": "https://www.testsprite.com/dashboard/mcp/tests/78b89942-deeb-5cc4-82ea-744261173379/test/00094106-9aa4-4b0a-80af-cfed07bb17d4",
+    "created": "2026-10-18T02:51:00.319Z",
+    "modified": "2026-10-18T03:05:43.899Z"
+  },
+  {
+    "title": "TC203-En passant fights the adjacent victim and Undo restores the exact position",
+    "testStatus": "PASSED",
+    "testError": "",
+    "portalUrl": "https://www.testsprite.com/dashboard/mcp/tests/78b89942-deeb-5cc4-82ea-744261173379/test/20124b02-30d1-4bd4-b316-a677d12ad4f8",
+    "created": "2026-10-18T02:51:00.327Z",
+    "modified": "2026-10-18T03:06:53.172Z"
+  },
+  {
+    "title": "TC204-Promotion cancellation is atomic and knight promotion yields a reversible draw",
+    "testStatus": "PASSED",
+    "testError": "",
+    "portalUrl": "https://www.testsprite.com/dashboard/mcp/tests/78b89942-deeb-5cc4-82ea-744261173379/test/e506a9d2-01b2-4be7-ae3a-94533be77422",
+    "created": "2026-10-18T02:51:00.334Z",
+    "modified": "2026-10-18T03:05:11.830Z"
+  },
+  {
+    "title": "TC205-Checkmate story announces the winner, blocks extra moves and can be undone",
+    "testStatus": "PASSED",
+    "testError": "",
+    "portalUrl": "https://www.testsprite.com/dashboard/mcp/tests/78b89942-deeb-5cc4-82ea-744261173379/test/3999d133-48b7-4c18-af61-b2cb0e52d562",
+    "created": "2026-10-18T02:51:00.343Z",
+    "modified": "2026-10-18T03:04:59.645Z"
+  },
+  {
+    "title": "TC206-Captured game and reduced-motion, rain and light preferences survive reload",
+    "testStatus": "PASSED",
+    "testError": "",
+    "portalUrl": "https://www.testsprite.com/dashboard/mcp/tests/78b89942-deeb-5cc4-82ea-744261173379/test/68520043-98a3-4489-be57-7052a85e218c",
+    "created": "2026-10-18T02:51:00.352Z",
+    "modified": "2026-10-18T03:05:53.643Z"
+  },
+  {
+    "title": "TC207-Computer makes exactly one legal reply and Undo restores a full human/computer turn",
+    "testStatus": "PASSED",
+    "testError": "",
+    "portalUrl": "https://www.testsprite.com/dashboard/mcp/tests/78b89942-deeb-5cc4-82ea-744261173379/test/debe2bf0-065b-43fa-a767-8d2f5ea53028",
+    "created": "2026-10-18T02:51:00.361Z",
+    "modified": "2026-10-18T03:05:26.570Z"
+  },
+  {
+    "title": "TC209-All six character auditions update activity counters and mute cancels new voices",
+    "testStatus": "PASSED",
+    "testError": "",
+    "portalUrl": "https://www.testsprite.com/dashboard/mcp/tests/78b89942-deeb-5cc4-82ea-744261173379/test/d50e91ab-af8f-4846-83ca-2e945b645e98",
+    "created": "2026-10-18T02:51:00.379Z",
+    "modified": "2026-10-18T03:07:16.076Z"
+  }
+]

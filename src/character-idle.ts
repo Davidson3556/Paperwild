@@ -4,6 +4,7 @@ import { characterArt } from './character-art.ts';
 import { AMBER_PARTS } from './character-rig-amber.ts';
 import { INDIGO_PARTS } from './character-rig-indigo.ts';
 import type { Point } from './character-rig-types.ts';
+import { createMitten } from './character-mittens.ts';
 
 const PARTS = { w: AMBER_PARTS, b: INDIGO_PARTS } as const;
 const SIZE = 1254;
@@ -24,18 +25,24 @@ export function createCharacterIdle(color: Color, type: PieceSymbol, seed: numbe
   const loaded = new Set<number>();
   let failed = false;
   parts.forEach((part, index) => {
+    // The wrapper is the animated appendage. Its painted cutout and, for hands,
+    // the team mitten share one transform, so every gesture moves them together.
+    const limb = document.createElement('div');
+    limb.className = `character-idle-part character-idle-${part.name}`;
+    limb.dataset.part = part.name;
+    limb.style.transformOrigin = `${percentage(part.origin[0])} ${percentage(part.origin[1])}`;
     const image = document.createElement('img');
-    image.className = `character-idle-part character-idle-${part.name}`;
-    image.dataset.part = part.name;
+    image.className = 'character-idle-paint';
     image.alt = ''; image.draggable = false; image.decoding = 'async';
     image.style.clipPath = `polygon(${part.outline.map(([x, y]) => `${percentage(x)} ${percentage(y)}`).join(',')})`;
-    image.style.transformOrigin = `${percentage(part.origin[0])} ${percentage(part.origin[1])}`;
     // Never expose complementary holes before every replacement is available.
     const decoded = () => { loaded.add(index); element.dataset.ready = String(!failed && loaded.size === parts.length); };
     image.onload = decoded;
     image.onerror = () => { failed = true; element.dataset.ready = 'false'; };
     image.src = characterArt(color, type);
-    element.append(image);
+    limb.append(image);
+    if (part.name.endsWith('-hand')) limb.append(createMitten(color, part));
+    element.append(limb);
     if (image.complete && image.naturalWidth > 0) decoded();
   });
   // Internal luminance masking produces transparent alpha holes. Overlapping

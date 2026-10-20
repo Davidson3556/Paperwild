@@ -5,7 +5,7 @@ import type { CharacterActivity } from '../src/character-voice.ts';
 import type { PieceSymbol } from '../src/game.ts';
 
 const ROLES: readonly PieceSymbol[] = ['p', 'r', 'n', 'b', 'q', 'k'];
-const ACTIVITIES: readonly CharacterActivity[] = ['select', 'move', 'land', 'capture', 'captured', 'promotion', 'check', 'win', 'draw', 'idle', 'greet', 'blocked'];
+const ACTIVITIES: readonly CharacterActivity[] = ['select', 'move', 'land', 'capture', 'captured', 'promotion', 'check', 'win', 'draw', 'idle', 'greet', 'blocked', 'happy', 'cheer', 'dizzy', 'challenge', 'startled', 'farewell', 'angry', 'sad'];
 
 function rms(samples: Float32Array, start = 0, end = samples.length): number {
   let energy = 0;

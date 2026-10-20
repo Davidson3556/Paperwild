@@ -1,0 +1,74 @@
+[
+  {
+    "title": "TC201-Local illegal move remains atomic and a legal opening updates exact squares and journal",
+    "testStatus": "PASSED",
+    "testError": "",
+    "portalUrl": "https://www.testsprite.com/dashboard/mcp/tests/78b89942-deeb-5cc4-82ea-744261173379/test/ce873af1-7936-48ac-9ee9-50dfee042d6f",
+    "created": "2026-10-18T02:51:00.312Z",
+    "modified": "2026-10-18T02:53:21.973Z"
+  },
+  {
+    "title": "TC202-Capture story resolves to the winner and Undo restores both original characters",
+    "testStatus": "PASSED",
+    "testError": "",
+    "portalUrl": "https://www.testsprite.com/dashboard/mcp/tests/78b89942-deeb-5cc4-82ea-744261173379/test/00094106-9aa4-4b0a-80af-cfed07bb17d4",
+    "created": "2026-10-18T02:51:00.319Z",
+    "modified": "2026-10-18T02:53:13.362Z"
+  },
+  {
+    "title": "TC203-En passant fights the adjacent victim and Undo restores the exact position",
+    "testStatus": "BLOCKED",
+    "testError": "TEST BLOCKED\n\nUndo restored the visible board position, White's turn, and the empty capture memorial. The post-undo move history could not be confirmed from the visible page state, so the complete undo assertion remains unverified.\n\nObservations:\n- White is on e5; Black is on f5 and d5; f6 is empty.\n- The turn indicator reads \u201cAmber to move.\u201d\n- The send-off panel says \u201cNo little send-offs yet.\u201d",
+    "portalUrl": "https://www.testsprite.com/dashboard/mcp/tests/78b89942-deeb-5cc4-82ea-744261173379/test/20124b02-30d1-4bd4-b316-a677d12ad4f8",
+    "created": "2026-10-18T02:51:00.327Z",
+    "modified": "2026-10-18T02:53:56.154Z"
+  },
+  {
+    "title": "TC204-Promotion cancellation is atomic and knight promotion yields a reversible draw",
+    "testStatus": "PASSED",
+    "testError": "",
+    "portalUrl": "https://www.testsprite.com/dashboard/mcp/tests/78b89942-deeb-5cc4-82ea-744261173379/test/e506a9d2-01b2-4be7-ae3a-94533be77422",
+    "created": "2026-10-18T02:51:00.334Z",
+    "modified": "2026-10-18T02:53:02.627Z"
+  },
+  {
+    "title": "TC205-Checkmate story announces the winner, blocks extra moves and can be undone",
+    "testStatus": "PASSED",
+    "testError": "",
+    "portalUrl": "https://www.testsprite.com/dashboard/mcp/tests/78b89942-deeb-5cc4-82ea-744261173379/test/3999d133-48b7-4c18-af61-b2cb0e52d562",
+    "created": "2026-10-18T02:51:00.343Z",
+    "modified": "2026-10-18T02:53:30.933Z"
+  },
+  {
+    "title": "TC206-Captured game and reduced-motion, rain and light preferences survive reload",
+    "testStatus": "FAILED",
+    "testError": "TEST FAILURE\n\nThe rain setting did not survive the reload. Moonlight and paused motion remained active, and Undo reverted the board, but the weather setting was Clear skies rather than rain.\n\nObservations:\n- After reload, the page showed \u201cClear skies\u201d; after Undo it still showed \u201cClear skies.\u201d\n- The page confirmed \u201cYour last turn is undone\u201d; e4 held a White pawn, d5 held a Black pawn, and no send-offs were shown.\n- Moonlight and \u201cThe world, paused\u201d remained active.",
+    "portalUrl": "https://www.testsprite.com/dashboard/mcp/tests/78b89942-deeb-5cc4-82ea-744261173379/test/68520043-98a3-4489-be57-7052a85e218c",
+    "created": "2026-10-18T02:51:00.352Z",
+    "modified": "2026-10-18T02:54:07.794Z"
+  },
+  {
+    "title": "TC207-Computer makes exactly one legal reply and Undo restores a full human/computer turn",
+    "testStatus": "PASSED",
+    "testError": "",
+    "portalUrl": "https://www.testsprite.com/dashboard/mcp/tests/78b89942-deeb-5cc4-82ea-744261173379/test/debe2bf0-065b-43fa-a767-8d2f5ea53028",
+    "created": "2026-10-18T02:51:00.361Z",
+    "modified": "2026-10-18T02:53:50.747Z"
+  },
+  {
+    "title": "TC208-Phone layout keeps board and capture clearing in one viewport and camp responds",
+    "testStatus": "BLOCKED",
+    "testError": "TEST BLOCKED\n\nThe camp responses were verified, but the phone-layout behavior could not be tested because the browser viewport could not be set to the requested phone size. The board and camp controls are visible in the current desktop view; that does not verify that they fit together in a phone viewport without scrolling.\n\nObservations:\n- The capture study left a White pawn on d5 and e4 empty.\n- The post and radio stations displayed visible responses.\n- After leaving flowers, Acorn\u2019s memorial displayed \u201cA tiny oak is considering its options.\u201d",
+    "portalUrl": "https://www.testsprite.com/dashboard/mcp/tests/78b89942-deeb-5cc4-82ea-744261173379/test/742e471c-98a1-4840-8cfb-10808c58f5ca",
+    "created": "2026-10-18T02:51:00.371Z",
+    "modified": "2026-10-18T02:53:48.373Z"
+  },
+  {
+    "title": "TC209-All six character auditions update activity counters and mute cancels new voices",
+    "testStatus": "PASSED",
+    "testError": "",
+    "portalUrl": "https://www.testsprite.com/dashboard/mcp/tests/78b89942-deeb-5cc4-82ea-744261173379/test/d50e91ab-af8f-4846-83ca-2e945b645e98",
+    "created": "2026-10-18T02:51:00.379Z",
+    "modified": "2026-10-18T02:55:25.578Z"
+  }
+]

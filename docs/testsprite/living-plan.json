@@ -1,0 +1,279 @@
+[
+  {
+    "id": "TC201",
+    "title": "Local illegal move remains atomic and a legal opening updates exact squares and journal",
+    "description": "Local illegal move remains atomic and a legal opening updates exact squares and journal\n\n1. ACTION: Navigate to the configured local tunnel root / in a fresh isolated browser context; no login. Reset only that test origin storage if reused. Use real UI actions, no game-state injection. Wait for 64 #board-access .square-hit buttons. Coordinate buttons have data-testid square-X and exact data-piece codes wp/bp/wn/bn etc. Between moves wait #game-status[data-moving=false][data-thinking=false] (allow 15 seconds for 4.26-second captures and computer work). On compact layouts use #field-options (Field kit) to reveal mode and #studies controls; close open dialogs before board actions. Each study PRESELECTS its source, so click its destination directly. History #move-history li represents a fullmove with two SAN spans; empty history contains .history-empty. Decorative .sketch-piece images are not input targets. Assertions must inspect actual board/history/turn state, never URL-only.\n\n2. ACTION: Open Field kit. Choose With a friend [data-mode=local]. If necessary use Begin a new game and confirm Begin again; close kit. Snapshot all 64 data-piece values, #move-history, #field-capture-count, #game-status data-turn. Select e2 then attempt e5.\n\n3. ASSERTION: All 64 squares, move history, turn and capture count remain unchanged: e2=wp, e5 empty, White turn, captures00.\n\n4. ACTION: The e2 source stays selected after the illegal destination: click e4 directly, wait settled; select e7 then e5, wait settled. Open Journal via #field-notes.\n\n5. ASSERTION: e2/e7 empty, e4=wp,e5=bp; White turn, captures00. Journal SAN exactly e4 then e5; no extra ply. No fallback board or console exception.",
+    "category": "Current living field notebook acceptance",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to the configured local tunnel root / in a fresh isolated browser context; no login. Reset only that test origin storage if reused. Use real UI actions, no game-state injection. Wait for 64 #board-access .square-hit buttons. Coordinate buttons have data-testid square-X and exact data-piece codes wp/bp/wn/bn etc. Between moves wait #game-status[data-moving=false][data-thinking=false] (allow 15 seconds for 4.26-second captures and computer work). On compact layouts use #field-options (Field kit) to reveal mode and #studies controls; close open dialogs before board actions. Each study PRESELECTS its source, so click its destination directly. History #move-history li represents a fullmove with two SAN spans; empty history contains .history-empty. Decorative .sketch-piece images are not input targets. Assertions must inspect actual board/history/turn state, never URL-only."
+      },
+      {
+        "type": "action",
+        "description": "Open Field kit. Choose With a friend [data-mode=local]. If necessary use Begin a new game and confirm Begin again; close kit. Snapshot all 64 data-piece values, #move-history, #field-capture-count, #game-status data-turn. Select e2 then attempt e5."
+      },
+      {
+        "type": "assertion",
+        "description": "All 64 squares, move history, turn and capture count remain unchanged: e2=wp, e5 empty, White turn, captures00."
+      },
+      {
+        "type": "action",
+        "description": "The e2 source stays selected after the illegal destination: click e4 directly, wait settled; select e7 then e5, wait settled. Open Journal via #field-notes."
+      },
+      {
+        "type": "assertion",
+        "description": "e2/e7 empty, e4=wp,e5=bp; White turn, captures00. Journal SAN exactly e4 then e5; no extra ply. No fallback board or console exception."
+      }
+    ]
+  },
+  {
+    "id": "TC202",
+    "title": "Capture story resolves to the winner and Undo restores both original characters",
+    "description": "Capture story resolves to the winner and Undo restores both original characters\n\n1. ACTION: Navigate to the configured local tunnel root / in a fresh isolated browser context; no login. Reset only that test origin storage if reused. Use real UI actions, no game-state injection. Wait for 64 #board-access .square-hit buttons. Coordinate buttons have data-testid square-X and exact data-piece codes wp/bp/wn/bn etc. Between moves wait #game-status[data-moving=false][data-thinking=false] (allow 15 seconds for 4.26-second captures and computer work). On compact layouts use #field-options (Field kit) to reveal mode and #studies controls; close open dialogs before board actions. Each study PRESELECTS its source, so click its destination directly. History #move-history li represents a fullmove with two SAN spans; empty history contains .history-empty. Decorative .sketch-piece images are not input targets. Assertions must inspect actual board/history/turn state, never URL-only.\n\n2. ACTION: Open Field kit then Explore the chess studies and choose Tea on the sidelines [data-study=bloom]. This preselects e4. Activate d5 directly. Observe capture-skirmish/capture-stretcher if possible but do not click squares to skip. Wait board settled. The preset FEN starts on FULLMOVE2 (ends w KQkq - 0 2), not fullmove1. Amber means White, Indigo means Black.\n\n3. ASSERTION: e4 empty,d5=wp,Black turn,one exd5 ply,capture count01,31 direct .sketch-cast>.sketch-piece residents. No .sketch-skirmish, .sketch-stretcher or .is-awaiting-stretcher remains after settling. .capture-pageant data-total-count=1. Both teams have character mittens.\n\n4. ACTION: Click Undo last turn and wait settled.\n\n5. ASSERTION: e4=wp,d5=bp,White turn,empty recorded history,captures00,32 direct resident sprites,no stale duel/stretcher or memorial. Pawn artwork/role matches restored squares. Restored turn label MUST be Amber to move (White), counter MUST remain Move02 because that is the initial custom study FEN; Undo MUST be disabled because recorded study history is empty. These observations are correct, not inconsistency. Make all capture-state assertions BEFORE clicking Undo, and only restored-state assertions AFTER Undo; never assert the mutually exclusive captured state after Undo.",
+    "category": "Current living field notebook acceptance",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to the configured local tunnel root / in a fresh isolated browser context; no login. Reset only that test origin storage if reused. Use real UI actions, no game-state injection. Wait for 64 #board-access .square-hit buttons. Coordinate buttons have data-testid square-X and exact data-piece codes wp/bp/wn/bn etc. Between moves wait #game-status[data-moving=false][data-thinking=false] (allow 15 seconds for 4.26-second captures and computer work). On compact layouts use #field-options (Field kit) to reveal mode and #studies controls; close open dialogs before board actions. Each study PRESELECTS its source, so click its destination directly. History #move-history li represents a fullmove with two SAN spans; empty history contains .history-empty. Decorative .sketch-piece images are not input targets. Assertions must inspect actual board/history/turn state, never URL-only."
+      },
+      {
+        "type": "action",
+        "description": "Open Field kit then Explore the chess studies and choose Tea on the sidelines [data-study=bloom]. This preselects e4. Activate d5 directly. Observe capture-skirmish/capture-stretcher if possible but do not click squares to skip. Wait board settled. The preset FEN starts on FULLMOVE2 (ends w KQkq - 0 2), not fullmove1. Amber means White, Indigo means Black."
+      },
+      {
+        "type": "assertion",
+        "description": "e4 empty,d5=wp,Black turn,one exd5 ply,capture count01,31 direct .sketch-cast>.sketch-piece residents. No .sketch-skirmish, .sketch-stretcher or .is-awaiting-stretcher remains after settling. .capture-pageant data-total-count=1. Both teams have character mittens."
+      },
+      {
+        "type": "action",
+        "description": "Click Undo last turn and wait settled."
+      },
+      {
+        "type": "assertion",
+        "description": "e4=wp,d5=bp,White turn,empty recorded history,captures00,32 direct resident sprites,no stale duel/stretcher or memorial. Pawn artwork/role matches restored squares. Restored turn label MUST be Amber to move (White), counter MUST remain Move02 because that is the initial custom study FEN; Undo MUST be disabled because recorded study history is empty. These observations are correct, not inconsistency. Make all capture-state assertions BEFORE clicking Undo, and only restored-state assertions AFTER Undo; never assert the mutually exclusive captured state after Undo."
+      }
+    ]
+  },
+  {
+    "id": "TC203",
+    "title": "En passant fights the adjacent victim and Undo restores the exact position",
+    "description": "En passant fights the adjacent victim and Undo restores the exact position\n\n1. ACTION: Navigate to the configured local tunnel root / in a fresh isolated browser context; no login. Reset only that test origin storage if reused. Use real UI actions, no game-state injection. Wait for 64 #board-access .square-hit buttons. Coordinate buttons have data-testid square-X and exact data-piece codes wp/bp/wn/bn etc. Between moves wait #game-status[data-moving=false][data-thinking=false] (allow 15 seconds for 4.26-second captures and computer work). On compact layouts use #field-options (Field kit) to reveal mode and #studies controls; close open dialogs before board actions. Each study PRESELECTS its source, so click its destination directly. History #move-history li represents a fullmove with two SAN spans; empty history contains .history-empty. Decorative .sketch-piece images are not input targets. Assertions must inspect actual board/history/turn state, never URL-only.\n\n2. ACTION: Open the bloom capture study. Source e4 is preselected; click e5 (a normal move), wait. Select f7 then f5, wait. Select e5; verify f6 is marked legal, then activate f6. Wait settled.\n\n3. ASSERTION: f6=wp,e5 empty,f5 empty,d5 still bp; Black turn,captures01,history includes e5,f5,exf6,31 resident sprites. No stale duel or stretcher remains.\n\n4. ACTION: Click Undo last turn. Then OPEN JOURNAL using #field-notes before verifying move history; the journal is intentionally in an overlay, so open it to inspect visible SAN.\n\n5. ASSERTION: AFTER Undo: e5=wp,f5=bp,f6 EMPTY,d5=bp; White turn,captures00. Visible Journal shows only e5 and f5, with exf6 ABSENT. Do not assert f6 pawn after Undo. History rows are fullmoves, not plies.",
+    "category": "Current living field notebook acceptance",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to the configured local tunnel root / in a fresh isolated browser context; no login. Reset only that test origin storage if reused. Use real UI actions, no game-state injection. Wait for 64 #board-access .square-hit buttons. Coordinate buttons have data-testid square-X and exact data-piece codes wp/bp/wn/bn etc. Between moves wait #game-status[data-moving=false][data-thinking=false] (allow 15 seconds for 4.26-second captures and computer work). On compact layouts use #field-options (Field kit) to reveal mode and #studies controls; close open dialogs before board actions. Each study PRESELECTS its source, so click its destination directly. History #move-history li represents a fullmove with two SAN spans; empty history contains .history-empty. Decorative .sketch-piece images are not input targets. Assertions must inspect actual board/history/turn state, never URL-only."
+      },
+      {
+        "type": "action",
+        "description": "Open the bloom capture study. Source e4 is preselected; click e5 (a normal move), wait. Select f7 then f5, wait. Select e5; verify f6 is marked legal, then activate f6. Wait settled."
+      },
+      {
+        "type": "assertion",
+        "description": "f6=wp,e5 empty,f5 empty,d5 still bp; Black turn,captures01,history includes e5,f5,exf6,31 resident sprites. No stale duel or stretcher remains."
+      },
+      {
+        "type": "action",
+        "description": "Click Undo last turn. Then OPEN JOURNAL using #field-notes before verifying move history; the journal is intentionally in an overlay, so open it to inspect visible SAN."
+      },
+      {
+        "type": "assertion",
+        "description": "AFTER Undo: e5=wp,f5=bp,f6 EMPTY,d5=bp; White turn,captures00. Visible Journal shows only e5 and f5, with exf6 ABSENT. Do not assert f6 pawn after Undo. History rows are fullmoves, not plies."
+      }
+    ]
+  },
+  {
+    "id": "TC204",
+    "title": "Promotion cancellation is atomic and knight promotion yields a reversible draw",
+    "description": "Promotion cancellation is atomic and knight promotion yields a reversible draw\n\n1. ACTION: Navigate to the configured local tunnel root / in a fresh isolated browser context; no login. Reset only that test origin storage if reused. Use real UI actions, no game-state injection. Wait for 64 #board-access .square-hit buttons. Coordinate buttons have data-testid square-X and exact data-piece codes wp/bp/wn/bn etc. Between moves wait #game-status[data-moving=false][data-thinking=false] (allow 15 seconds for 4.26-second captures and computer work). On compact layouts use #field-options (Field kit) to reveal mode and #studies controls; close open dialogs before board actions. Each study PRESELECTS its source, so click its destination directly. History #move-history li represents a fullmove with two SAN spans; empty history contains .history-empty. Decorative .sketch-piece images are not input targets. Assertions must inspect actual board/history/turn state, never URL-only.\n\n2. ACTION: Open Field kit then Explore the chess studies and Room to become [data-study=promotion]. Source a7 is preselected. Snapshot all squares/history. Activate a8 then Choose a different move.\n\n3. ASSERTION: Promotion dialog closes; all squares/history equal snapshot,a7=wp,a8 empty,White turn,no SAN move.\n\n4. ACTION: a7 remains selected after cancel. Activate a8, choose Knight [data-promotion=n], wait settled.\n\n5. ASSERTION: a7 empty,a8=wn,history contains a8=N,game-over true,Draw/Insufficient material result. Current sprite on a8 has .sketch-n and decoded /wn.png artwork, not stale pawn.\n\n6. ACTION: Click Undo last turn, closing result if needed.\n\n7. ASSERTION: a7=wp,a8 empty,game-over false,history empty; pawn artwork returns with no duplicate knight.",
+    "category": "Current living field notebook acceptance",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to the configured local tunnel root / in a fresh isolated browser context; no login. Reset only that test origin storage if reused. Use real UI actions, no game-state injection. Wait for 64 #board-access .square-hit buttons. Coordinate buttons have data-testid square-X and exact data-piece codes wp/bp/wn/bn etc. Between moves wait #game-status[data-moving=false][data-thinking=false] (allow 15 seconds for 4.26-second captures and computer work). On compact layouts use #field-options (Field kit) to reveal mode and #studies controls; close open dialogs before board actions. Each study PRESELECTS its source, so click its destination directly. History #move-history li represents a fullmove with two SAN spans; empty history contains .history-empty. Decorative .sketch-piece images are not input targets. Assertions must inspect actual board/history/turn state, never URL-only."
+      },
+      {
+        "type": "action",
+        "description": "Open Field kit then Explore the chess studies and Room to become [data-study=promotion]. Source a7 is preselected. Snapshot all squares/history. Activate a8 then Choose a different move."
+      },
+      {
+        "type": "assertion",
+        "description": "Promotion dialog closes; all squares/history equal snapshot,a7=wp,a8 empty,White turn,no SAN move."
+      },
+      {
+        "type": "action",
+        "description": "a7 remains selected after cancel. Activate a8, choose Knight [data-promotion=n], wait settled."
+      },
+      {
+        "type": "assertion",
+        "description": "a7 empty,a8=wn,history contains a8=N,game-over true,Draw/Insufficient material result. Current sprite on a8 has .sketch-n and decoded /wn.png artwork, not stale pawn."
+      },
+      {
+        "type": "action",
+        "description": "Click Undo last turn, closing result if needed."
+      },
+      {
+        "type": "assertion",
+        "description": "a7=wp,a8 empty,game-over false,history empty; pawn artwork returns with no duplicate knight."
+      }
+    ]
+  },
+  {
+    "id": "TC205",
+    "title": "Checkmate story announces the winner, blocks extra moves and can be undone",
+    "description": "Checkmate story announces the winner, blocks extra moves and can be undone\n\n1. ACTION: Navigate to the configured local tunnel root / in a fresh isolated browser context; no login. Reset only that test origin storage if reused. Use real UI actions, no game-state injection. Wait for 64 #board-access .square-hit buttons. Coordinate buttons have data-testid square-X and exact data-piece codes wp/bp/wn/bn etc. Between moves wait #game-status[data-moving=false][data-thinking=false] (allow 15 seconds for 4.26-second captures and computer work). On compact layouts use #field-options (Field kit) to reveal mode and #studies controls; close open dialogs before board actions. Each study PRESELECTS its source, so click its destination directly. History #move-history li represents a fullmove with two SAN spans; empty history contains .history-empty. Decorative .sketch-piece images are not input targets. Assertions must inspect actual board/history/turn state, never URL-only.\n\n2. ACTION: Open Field kit then Explore the chess studies and One final move [data-study=mate]. g6 is preselected; activate g7. Wait settled.\n\n3. ASSERTION: g6 empty,g7=wq,game-over true,history Qg7#,result says Checkmate and White wins.\n\n4. ACTION: Close result using its close control. Snapshot board/history. Attempt to select/move a remaining piece on the ended board.\n\n5. ASSERTION: No board/history change after the terminal input.\n\n6. ACTION: Undo last turn.\n\n7. ASSERTION: g6=wq,g7 empty,game-over false,history empty and White can select the queen again.",
+    "category": "Current living field notebook acceptance",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to the configured local tunnel root / in a fresh isolated browser context; no login. Reset only that test origin storage if reused. Use real UI actions, no game-state injection. Wait for 64 #board-access .square-hit buttons. Coordinate buttons have data-testid square-X and exact data-piece codes wp/bp/wn/bn etc. Between moves wait #game-status[data-moving=false][data-thinking=false] (allow 15 seconds for 4.26-second captures and computer work). On compact layouts use #field-options (Field kit) to reveal mode and #studies controls; close open dialogs before board actions. Each study PRESELECTS its source, so click its destination directly. History #move-history li represents a fullmove with two SAN spans; empty history contains .history-empty. Decorative .sketch-piece images are not input targets. Assertions must inspect actual board/history/turn state, never URL-only."
+      },
+      {
+        "type": "action",
+        "description": "Open Field kit then Explore the chess studies and One final move [data-study=mate]. g6 is preselected; activate g7. Wait settled."
+      },
+      {
+        "type": "assertion",
+        "description": "g6 empty,g7=wq,game-over true,history Qg7#,result says Checkmate and White wins."
+      },
+      {
+        "type": "action",
+        "description": "Close result using its close control. Snapshot board/history. Attempt to select/move a remaining piece on the ended board."
+      },
+      {
+        "type": "assertion",
+        "description": "No board/history change after the terminal input."
+      },
+      {
+        "type": "action",
+        "description": "Undo last turn."
+      },
+      {
+        "type": "assertion",
+        "description": "g6=wq,g7 empty,game-over false,history empty and White can select the queen again."
+      }
+    ]
+  },
+  {
+    "id": "TC206",
+    "title": "Captured game and reduced-motion, rain and light preferences survive reload",
+    "description": "Captured game and reduced-motion, rain and light preferences survive reload\n\n1. ACTION: Navigate to the configured local tunnel root / in a fresh isolated browser context; no login. Reset only that test origin storage if reused. Use real UI actions, no game-state injection. Wait for 64 #board-access .square-hit buttons. Coordinate buttons have data-testid square-X and exact data-piece codes wp/bp/wn/bn etc. Between moves wait #game-status[data-moving=false][data-thinking=false] (allow 15 seconds for 4.26-second captures and computer work). On compact layouts use #field-options (Field kit) to reveal mode and #studies controls; close open dialogs before board actions. Each study PRESELECTS its source, so click its destination directly. History #move-history li represents a fullmove with two SAN spans; empty history contains .history-empty. Decorative .sketch-piece images are not input targets. Assertions must inspect actual board/history/turn state, never URL-only.\n\n2. ACTION: Open bloom study and activate preselected destination d5, wait capture settled. Set #atmosphere to dusk/Moonlight, turn #weather rain on, set #motion aria-pressed=true (paused). Reload the SAME configured target origin.\n\n3. ASSERTION: AFTER same-origin reload: e4 empty,d5=wp,Black turn,history exd5,captures01,study name retained. #motion aria-pressed=true,.sketch-scene[data-motion=still]. Rain is ON if #weather aria-pressed=true and .sketch-scene[data-weather=rain]; the control intentionally offers the NEXT action, so its visible text Clear skies and accessible label Let it clear mean RAIN IS CURRENTLY ON. Do NOT expect A little rain when rain is on. document.documentElement[data-atmosphere=dusk] confirms Moonlight.\n\n4. ACTION: Undo last turn.\n\n5. ASSERTION: e4=wp,d5=bp,captures00,history empty; saved preferences remain enabled.",
+    "category": "Current living field notebook acceptance",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to the configured local tunnel root / in a fresh isolated browser context; no login. Reset only that test origin storage if reused. Use real UI actions, no game-state injection. Wait for 64 #board-access .square-hit buttons. Coordinate buttons have data-testid square-X and exact data-piece codes wp/bp/wn/bn etc. Between moves wait #game-status[data-moving=false][data-thinking=false] (allow 15 seconds for 4.26-second captures and computer work). On compact layouts use #field-options (Field kit) to reveal mode and #studies controls; close open dialogs before board actions. Each study PRESELECTS its source, so click its destination directly. History #move-history li represents a fullmove with two SAN spans; empty history contains .history-empty. Decorative .sketch-piece images are not input targets. Assertions must inspect actual board/history/turn state, never URL-only."
+      },
+      {
+        "type": "action",
+        "description": "Open bloom study and activate preselected destination d5, wait capture settled. Set #atmosphere to dusk/Moonlight, turn #weather rain on, set #motion aria-pressed=true (paused). Reload the SAME configured target origin."
+      },
+      {
+        "type": "assertion",
+        "description": "AFTER same-origin reload: e4 empty,d5=wp,Black turn,history exd5,captures01,study name retained. #motion aria-pressed=true,.sketch-scene[data-motion=still]. Rain is ON if #weather aria-pressed=true and .sketch-scene[data-weather=rain]; the control intentionally offers the NEXT action, so its visible text Clear skies and accessible label Let it clear mean RAIN IS CURRENTLY ON. Do NOT expect A little rain when rain is on. document.documentElement[data-atmosphere=dusk] confirms Moonlight."
+      },
+      {
+        "type": "action",
+        "description": "Undo last turn."
+      },
+      {
+        "type": "assertion",
+        "description": "e4=wp,d5=bp,captures00,history empty; saved preferences remain enabled."
+      }
+    ]
+  },
+  {
+    "id": "TC207",
+    "title": "Computer makes exactly one legal reply and Undo restores a full human/computer turn",
+    "description": "Computer makes exactly one legal reply and Undo restores a full human/computer turn\n\n1. ACTION: Navigate to the configured local tunnel root / in a fresh isolated browser context; no login. Reset only that test origin storage if reused. Use real UI actions, no game-state injection. Wait for 64 #board-access .square-hit buttons. Coordinate buttons have data-testid square-X and exact data-piece codes wp/bp/wn/bn etc. Between moves wait #game-status[data-moving=false][data-thinking=false] (allow 15 seconds for 4.26-second captures and computer work). On compact layouts use #field-options (Field kit) to reveal mode and #studies controls; close open dialogs before board actions. Each study PRESELECTS its source, so click its destination directly. History #move-history li represents a fullmove with two SAN spans; empty history contains .history-empty. Decorative .sketch-piece images are not input targets. Assertions must inspect actual board/history/turn state, never URL-only.\n\n2. ACTION: Open Field kit, choose Against the club [data-mode=computer], set Sleepy difficulty; start a fresh full game if needed and close kit. Snapshot standard position. Select e2 then e4. Wait moving=false,thinking=false,White turn; allow bounded worker time.\n\n3. ASSERTION: Exactly two SAN plies, first e4 and one legal Black reply (no fixed reply required). e2 empty,White pawn e4 unless legally captured (Black cannot capture it in its first legal reply),32 board pieces,captures00. No continuously thinking state.\n\n4. ACTION: Undo last turn and wait settled.\n\n5. ASSERTION: All64 data-piece values equal initial snapshot,White turn,history empty,captures00. No stale computer reply appears after undo.",
+    "category": "Current living field notebook acceptance",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to the configured local tunnel root / in a fresh isolated browser context; no login. Reset only that test origin storage if reused. Use real UI actions, no game-state injection. Wait for 64 #board-access .square-hit buttons. Coordinate buttons have data-testid square-X and exact data-piece codes wp/bp/wn/bn etc. Between moves wait #game-status[data-moving=false][data-thinking=false] (allow 15 seconds for 4.26-second captures and computer work). On compact layouts use #field-options (Field kit) to reveal mode and #studies controls; close open dialogs before board actions. Each study PRESELECTS its source, so click its destination directly. History #move-history li represents a fullmove with two SAN spans; empty history contains .history-empty. Decorative .sketch-piece images are not input targets. Assertions must inspect actual board/history/turn state, never URL-only."
+      },
+      {
+        "type": "action",
+        "description": "Open Field kit, choose Against the club [data-mode=computer], set Sleepy difficulty; start a fresh full game if needed and close kit. Snapshot standard position. Select e2 then e4. Wait moving=false,thinking=false,White turn; allow bounded worker time."
+      },
+      {
+        "type": "assertion",
+        "description": "Exactly two SAN plies, first e4 and one legal Black reply (no fixed reply required). e2 empty,White pawn e4 unless legally captured (Black cannot capture it in its first legal reply),32 board pieces,captures00. No continuously thinking state."
+      },
+      {
+        "type": "action",
+        "description": "Undo last turn and wait settled."
+      },
+      {
+        "type": "assertion",
+        "description": "All64 data-piece values equal initial snapshot,White turn,history empty,captures00. No stale computer reply appears after undo."
+      }
+    ]
+  },
+  {
+    "id": "TC208",
+    "title": "Phone layout keeps board and capture clearing in one viewport and camp responds",
+    "description": "Phone layout keeps board and capture clearing in one viewport and camp responds\n\n1. ACTION: Navigate to the configured local tunnel root / in a fresh isolated browser context; no login. Reset only that test origin storage if reused. Use real UI actions, no game-state injection. Wait for 64 #board-access .square-hit buttons. Coordinate buttons have data-testid square-X and exact data-piece codes wp/bp/wn/bn etc. Between moves wait #game-status[data-moving=false][data-thinking=false] (allow 15 seconds for 4.26-second captures and computer work). On compact layouts use #field-options (Field kit) to reveal mode and #studies controls; close open dialogs before board actions. Each study PRESELECTS its source, so click its destination directly. History #move-history li represents a fullmove with two SAN spans; empty history contains .history-empty. Decorative .sketch-piece images are not input targets. Assertions must inspect actual board/history/turn state, never URL-only.\n\n2. ACTION: Set viewport390x844. Open Field kit then bloom study and activate d5 directly. Wait settled. Inspect document dimensions and visible board/footer/ceremony actions. Use #motion pause to settle the ceremony if needed.\n\n3. ASSERTION: Document scrollWidth<=innerWidth and scrollHeight<=innerHeight. Entire #board-access rect and footer are inside viewport; all64 square buttons remain present. Captured board d5=wp/e4empty and capture count01 remain correct.\n\n4. ACTION: Activate visible camp station tabs for post and radio when idle; use the named delivery/radio button and inspect its response. Leave flowers on the visible memorial.\n\n5. ASSERTION: A station response changes visibly and memorial responds; these interactions do not alter board/history/capture count. No page scrolling required to reach gameplay or ceremony controls.",
+    "category": "Current living field notebook acceptance",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to the configured local tunnel root / in a fresh isolated browser context; no login. Reset only that test origin storage if reused. Use real UI actions, no game-state injection. Wait for 64 #board-access .square-hit buttons. Coordinate buttons have data-testid square-X and exact data-piece codes wp/bp/wn/bn etc. Between moves wait #game-status[data-moving=false][data-thinking=false] (allow 15 seconds for 4.26-second captures and computer work). On compact layouts use #field-options (Field kit) to reveal mode and #studies controls; close open dialogs before board actions. Each study PRESELECTS its source, so click its destination directly. History #move-history li represents a fullmove with two SAN spans; empty history contains .history-empty. Decorative .sketch-piece images are not input targets. Assertions must inspect actual board/history/turn state, never URL-only."
+      },
+      {
+        "type": "action",
+        "description": "Set viewport390x844. Open Field kit then bloom study and activate d5 directly. Wait settled. Inspect document dimensions and visible board/footer/ceremony actions. Use #motion pause to settle the ceremony if needed."
+      },
+      {
+        "type": "assertion",
+        "description": "Document scrollWidth<=innerWidth and scrollHeight<=innerHeight. Entire #board-access rect and footer are inside viewport; all64 square buttons remain present. Captured board d5=wp/e4empty and capture count01 remain correct."
+      },
+      {
+        "type": "action",
+        "description": "Activate visible camp station tabs for post and radio when idle; use the named delivery/radio button and inspect its response. Leave flowers on the visible memorial."
+      },
+      {
+        "type": "assertion",
+        "description": "A station response changes visibly and memorial responds; these interactions do not alter board/history/capture count. No page scrolling required to reach gameplay or ceremony controls."
+      }
+    ]
+  },
+  {
+    "id": "TC209",
+    "title": "All six character auditions update activity counters and mute cancels new voices",
+    "description": "All six character auditions update activity counters and mute cancels new voices\n\n1. ACTION: Navigate to the configured local tunnel root / in a fresh isolated browser context; no login. Reset only that test origin storage if reused. Use real UI actions, no game-state injection. Wait for 64 #board-access .square-hit buttons. Coordinate buttons have data-testid square-X and exact data-piece codes wp/bp/wn/bn etc. Between moves wait #game-status[data-moving=false][data-thinking=false] (allow 15 seconds for 4.26-second captures and computer work). On compact layouts use #field-options (Field kit) to reveal mode and #studies controls; close open dialogs before board actions. Each study PRESELECTS its source, so click its destination directly. History #move-history li represents a fullmove with two SAN spans; empty history contains .history-empty. Decorative .sketch-piece images are not input targets. Assertions must inspect actual board/history/turn state, never URL-only.\n\n2. ACTION: Verify no saved opt-in creates voice activity on load. Open How to play and activate the six buttons with data-voice p,r,n,b,q,k, one at a time; inspect #sound data-voice-events and data-voice-count. These buttons are actual trusted clicks. Audio may require one first unlock gesture.\n\n3. ASSERTION: Voice counter increases and recorded events include all6 role prefixes with greeting activity; no Sound unavailable message. Do not claim perceived audio quality from counters alone.\n\n4. ACTION: Close guide. Switch Sound off; snapshot voice count. Click a piece, make a legal move if possible and wait; inspect sound off state/counter.\n\n5. ASSERTION: Sound aria-pressed=false and voice activity counter does not increase while muted. No audio availability or browser exception.",
+    "category": "Current living field notebook acceptance",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to the configured local tunnel root / in a fresh isolated browser context; no login. Reset only that test origin storage if reused. Use real UI actions, no game-state injection. Wait for 64 #board-access .square-hit buttons. Coordinate buttons have data-testid square-X and exact data-piece codes wp/bp/wn/bn etc. Between moves wait #game-status[data-moving=false][data-thinking=false] (allow 15 seconds for 4.26-second captures and computer work). On compact layouts use #field-options (Field kit) to reveal mode and #studies controls; close open dialogs before board actions. Each study PRESELECTS its source, so click its destination directly. History #move-history li represents a fullmove with two SAN spans; empty history contains .history-empty. Decorative .sketch-piece images are not input targets. Assertions must inspect actual board/history/turn state, never URL-only."
+      },
+      {
+        "type": "action",
+        "description": "Verify no saved opt-in creates voice activity on load. Open How to play and activate the six buttons with data-voice p,r,n,b,q,k, one at a time; inspect #sound data-voice-events and data-voice-count. These buttons are actual trusted clicks. Audio may require one first unlock gesture."
+      },
+      {
+        "type": "assertion",
+        "description": "Voice counter increases and recorded events include all6 role prefixes with greeting activity; no Sound unavailable message. Do not claim perceived audio quality from counters alone."
+      },
+      {
+        "type": "action",
+        "description": "Close guide. Switch Sound off; snapshot voice count. Click a piece, make a legal move if possible and wait; inspect sound off state/counter."
+      },
+      {
+        "type": "assertion",
+        "description": "Sound aria-pressed=false and voice activity counter does not increase while muted. No audio availability or browser exception."
+      }
+    ]
+  }
+]

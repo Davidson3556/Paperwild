@@ -1,0 +1,143 @@
+[
+  {
+    "id": "TC301",
+    "title": "Notebook opens and repeated illegal attempts preserve chess state",
+    "description": "Notebook opens and repeated illegal attempts preserve chess state\n\n1. ACTION: Open the configured local tunnel root / in an isolated browser context; no login and no game-state injection. Wait up to 30 seconds for #paperwild-loading to disappear; if it remains after 18 seconds, reload once and wait again (never hide/remove it with injected code). Capture console/network failures if it still cannot load. Wait and for 64 #board-access .square-hit controls. Use actual UI controls and square data-testid values square-e2 etc, whose data-piece values are wp/bp/wq etc. Between moves wait #game-status[data-moving=false][data-thinking=false]; allow 15 seconds. On compact layouts open Field kit #field-options to reach hidden mode/study controls, then close dialogs before board actions. Studies preselect their source: click the destination directly. Assert actual state before performing the next action. Do not invent viewport tools or use unsupported browser-resize actions. A service pass must have concrete UI assertions. Select With a friend [data-mode=local]. Begin a new game and confirm Begin again if a saved game exists. Close any Field kit dialog. Select e2 and click e5 three times.\n\n2. ASSERTION: e2 remains wp and e5 remains empty; #game-status data-turn=w; #field-capture-count is 00 and Journal is empty. An invalid/refusal hint appears, but no move is committed.\n\n3. ACTION: Click e4 directly, since e2 remains selected. Wait settled.\n\n4. ASSERTION: e2 is empty and e4 is wp; turn=b; Open Journal #field-notes and inspect #move-history: it contains exactly one SAN e4. The Journal button badge and #field-capture-count remain00 because they count CAPTURES, not moves;00 is correct after e4 and no finale or stale refusal overlay remains after settling.",
+    "category": "Notebook, remembrance and finale acceptance 2026-10-19",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Open the configured local tunnel root / in an isolated browser context; no login and no game-state injection. Wait up to 30 seconds for #paperwild-loading to disappear; if it remains after 18 seconds, reload once and wait again (never hide/remove it with injected code). Capture console/network failures if it still cannot load. Wait and for 64 #board-access .square-hit controls. Use actual UI controls and square data-testid values square-e2 etc, whose data-piece values are wp/bp/wq etc. Between moves wait #game-status[data-moving=false][data-thinking=false]; allow 15 seconds. On compact layouts open Field kit #field-options to reach hidden mode/study controls, then close dialogs before board actions. Studies preselect their source: click the destination directly. Assert actual state before performing the next action. Do not invent viewport tools or use unsupported browser-resize actions. A service pass must have concrete UI assertions. Select With a friend [data-mode=local]. Begin a new game and confirm Begin again if a saved game exists. Close any Field kit dialog. Select e2 and click e5 three times."
+      },
+      {
+        "type": "assertion",
+        "description": "e2 remains wp and e5 remains empty; #game-status data-turn=w; #field-capture-count is 00 and Journal is empty. An invalid/refusal hint appears, but no move is committed."
+      },
+      {
+        "type": "action",
+        "description": "Click e4 directly, since e2 remains selected. Wait settled."
+      },
+      {
+        "type": "assertion",
+        "description": "e2 is empty and e4 is wp; turn=b; Open Journal #field-notes and inspect #move-history: it contains exactly one SAN e4. The Journal button badge and #field-capture-count remain00 because they count CAPTURES, not moves;00 is correct after e4 and no finale or stale refusal overlay remains after settling."
+      }
+    ]
+  },
+  {
+    "id": "TC302",
+    "title": "Named capture produces a remembrance card and Undo restores both residents",
+    "description": "Named capture produces a remembrance card and Undo restores both residents\n\n1. ACTION: Open the configured local tunnel root / in an isolated browser context; no login and no game-state injection. Wait up to 30 seconds for #paperwild-loading to disappear; if it remains after 18 seconds, reload once and wait again (never hide/remove it with injected code). Capture console/network failures if it still cannot load. Wait and for 64 #board-access .square-hit controls. Use actual UI controls and square data-testid values square-e2 etc, whose data-piece values are wp/bp/wq etc. Between moves wait #game-status[data-moving=false][data-thinking=false]; allow 15 seconds. On compact layouts open Field kit #field-options to reach hidden mode/study controls, then close dialogs before board actions. Studies preselect their source: click the destination directly. Assert actual state before performing the next action. Do not invent viewport tools or use unsupported browser-resize actions. A service pass must have concrete UI assertions. Start a fresh full game in With a friend mode. Play e2-e4, d7-d5, e4-d5, waiting after every move. Wait for capture move to settle.\n\n2. ASSERTION: e4 is empty and d5 is wp; turn=b; capture count01; 31 direct .sketch-cast>.sketch-piece residents. The captured original d7 pawn is Rowan, taken by the original e2 pawn Tuck.\n\n3. ACTION: Open Journal #field-notes then #journal-remembrance.\n\n4. ASSERTION: #remembrance-dialog is open; exactly one .remembrance-card; card h3 is Rowan; its detail says taken by Tuck on d5, move 2, Indigo acorn. #remembrance-save is enabled.\n\n5. ACTION: Close remembrance using Close the garden of remembrance; click Undo last turn and wait settled.\n\n6. ASSERTION: e4=wp,d5=bp; turn=w; capture count00;32 direct board residents. Open Journal then remembrance again: no .remembrance-card and #remembrance-save disabled.",
+    "category": "Notebook, remembrance and finale acceptance 2026-10-19",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Open the configured local tunnel root / in an isolated browser context; no login and no game-state injection. Wait up to 30 seconds for #paperwild-loading to disappear; if it remains after 18 seconds, reload once and wait again (never hide/remove it with injected code). Capture console/network failures if it still cannot load. Wait and for 64 #board-access .square-hit controls. Use actual UI controls and square data-testid values square-e2 etc, whose data-piece values are wp/bp/wq etc. Between moves wait #game-status[data-moving=false][data-thinking=false]; allow 15 seconds. On compact layouts open Field kit #field-options to reach hidden mode/study controls, then close dialogs before board actions. Studies preselect their source: click the destination directly. Assert actual state before performing the next action. Do not invent viewport tools or use unsupported browser-resize actions. A service pass must have concrete UI assertions. Start a fresh full game in With a friend mode. Play e2-e4, d7-d5, e4-d5, waiting after every move. Wait for capture move to settle."
+      },
+      {
+        "type": "assertion",
+        "description": "e4 is empty and d5 is wp; turn=b; capture count01; 31 direct .sketch-cast>.sketch-piece residents. The captured original d7 pawn is Rowan, taken by the original e2 pawn Tuck."
+      },
+      {
+        "type": "action",
+        "description": "Open Journal #field-notes then #journal-remembrance."
+      },
+      {
+        "type": "assertion",
+        "description": "#remembrance-dialog is open; exactly one .remembrance-card; card h3 is Rowan; its detail says taken by Tuck on d5, move 2, Indigo acorn. #remembrance-save is enabled."
+      },
+      {
+        "type": "action",
+        "description": "Close remembrance using Close the garden of remembrance; click Undo last turn and wait settled."
+      },
+      {
+        "type": "assertion",
+        "description": "e4=wp,d5=bp; turn=w; capture count00;32 direct board residents. Open Journal then remembrance again: no .remembrance-card and #remembrance-save disabled."
+      }
+    ]
+  },
+  {
+    "id": "TC303",
+    "title": "Fresh page and study replacement clear capture ceremonies without reviving old residents",
+    "description": "Fresh page and study replacement clear capture ceremonies without reviving old residents\n\n1. ACTION: Open the configured local tunnel root / in an isolated browser context; no login and no game-state injection. Wait up to 30 seconds for #paperwild-loading to disappear; if it remains after 18 seconds, reload once and wait again (never hide/remove it with injected code). Capture console/network failures if it still cannot load. Wait and for 64 #board-access .square-hit controls. Use actual UI controls and square data-testid values square-e2 etc, whose data-piece values are wp/bp/wq etc. Between moves wait #game-status[data-moving=false][data-thinking=false]; allow 15 seconds. On compact layouts open Field kit #field-options to reach hidden mode/study controls, then close dialogs before board actions. Studies preselect their source: click the destination directly. Assert actual state before performing the next action. Do not invent viewport tools or use unsupported browser-resize actions. A service pass must have concrete UI assertions. Open chess studies and choose Tea on the sidelines [data-study=bloom]. Click d5 directly and wait settled. Begin a new game and confirm Begin again.\n\n2. ASSERTION: Journal00;capture count00;32 board residents; .capture-pageant data-total-count=0; no .pageant-reviver or .pageant-grave remains; no Not dead yet notice on the fresh game.\n\n3. ACTION: Open capture study again, click d5, wait settled; open chess studies and choose Room to become [data-study=promotion].\n\n4. ASSERTION: a7=wp,h1=wk,h8=bk; exactly3 board residents; captures00,Journal00; no .pageant-grave, .pageant-reviver, .sketch-stretcher, .sketch-skirmish or .is-awaiting-stretcher. The permanent hidden .pageant-stretcher DOM scaffold is expected and MUST NOT be treated as stale animation.",
+    "category": "Notebook, remembrance and finale acceptance 2026-10-19",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Open the configured local tunnel root / in an isolated browser context; no login and no game-state injection. Wait up to 30 seconds for #paperwild-loading to disappear; if it remains after 18 seconds, reload once and wait again (never hide/remove it with injected code). Capture console/network failures if it still cannot load. Wait and for 64 #board-access .square-hit controls. Use actual UI controls and square data-testid values square-e2 etc, whose data-piece values are wp/bp/wq etc. Between moves wait #game-status[data-moving=false][data-thinking=false]; allow 15 seconds. On compact layouts open Field kit #field-options to reach hidden mode/study controls, then close dialogs before board actions. Studies preselect their source: click the destination directly. Assert actual state before performing the next action. Do not invent viewport tools or use unsupported browser-resize actions. A service pass must have concrete UI assertions. Open chess studies and choose Tea on the sidelines [data-study=bloom]. Click d5 directly and wait settled. Begin a new game and confirm Begin again."
+      },
+      {
+        "type": "assertion",
+        "description": "Journal00;capture count00;32 board residents; .capture-pageant data-total-count=0; no .pageant-reviver or .pageant-grave remains; no Not dead yet notice on the fresh game."
+      },
+      {
+        "type": "action",
+        "description": "Open capture study again, click d5, wait settled; open chess studies and choose Room to become [data-study=promotion]."
+      },
+      {
+        "type": "assertion",
+        "description": "a7=wp,h1=wk,h8=bk; exactly3 board residents; captures00,Journal00; no .pageant-grave, .pageant-reviver, .sketch-stretcher, .sketch-skirmish or .is-awaiting-stretcher. The permanent hidden .pageant-stretcher DOM scaffold is expected and MUST NOT be treated as stale animation."
+      }
+    ]
+  },
+  {
+    "id": "TC304",
+    "title": "Checkmate finale resolves once and Undo restores the study",
+    "description": "Checkmate finale resolves once and Undo restores the study\n\n1. ACTION: Open the configured local tunnel root / in an isolated browser context; no login and no game-state injection. Wait up to 30 seconds for #paperwild-loading to disappear; if it remains after 18 seconds, reload once and wait again (never hide/remove it with injected code). Capture console/network failures if it still cannot load. Wait and for 64 #board-access .square-hit controls. Use actual UI controls and square data-testid values square-e2 etc, whose data-piece values are wp/bp/wq etc. Between moves wait #game-status[data-moving=false][data-thinking=false]; allow 15 seconds. On compact layouts open Field kit #field-options to reach hidden mode/study controls, then close dialogs before board actions. Studies preselect their source: click the destination directly. Assert actual state before performing the next action. Do not invent viewport tools or use unsupported browser-resize actions. A service pass must have concrete UI assertions. Ensure motion is enabled: #motion aria-pressed=false and label Let it wander, not Pause the world. Open One final move study [data-study=mate]. Click g7 directly from preselected g6.\n\n2. ASSERTION: If inspected during animation, [data-testid=checkmate-finisher] belongs to teamw. Wait up to15 seconds for #result-dialog[open]. Result description says Checkmate and White wins; g7=wq,g6 empty,h8=bk; one Qg7# SAN. No stale .finale-layer or .is-finale remains after animation settles.\n\n3. ACTION: Close result using Close result then Undo last turn.\n\n4. ASSERTION: g6=wq,g7 empty,h8=bk; White turn; empty recorded history; Undo disabled; result dialog closed; no finale ghost/confetti/layer remains.",
+    "category": "Notebook, remembrance and finale acceptance 2026-10-19",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Open the configured local tunnel root / in an isolated browser context; no login and no game-state injection. Wait up to 30 seconds for #paperwild-loading to disappear; if it remains after 18 seconds, reload once and wait again (never hide/remove it with injected code). Capture console/network failures if it still cannot load. Wait and for 64 #board-access .square-hit controls. Use actual UI controls and square data-testid values square-e2 etc, whose data-piece values are wp/bp/wq etc. Between moves wait #game-status[data-moving=false][data-thinking=false]; allow 15 seconds. On compact layouts open Field kit #field-options to reach hidden mode/study controls, then close dialogs before board actions. Studies preselect their source: click the destination directly. Assert actual state before performing the next action. Do not invent viewport tools or use unsupported browser-resize actions. A service pass must have concrete UI assertions. Ensure motion is enabled: #motion aria-pressed=false and label Let it wander, not Pause the world. Open One final move study [data-study=mate]. Click g7 directly from preselected g6."
+      },
+      {
+        "type": "assertion",
+        "description": "If inspected during animation, [data-testid=checkmate-finisher] belongs to teamw. Wait up to15 seconds for #result-dialog[open]. Result description says Checkmate and White wins; g7=wq,g6 empty,h8=bk; one Qg7# SAN. No stale .finale-layer or .is-finale remains after animation settles."
+      },
+      {
+        "type": "action",
+        "description": "Close result using Close result then Undo last turn."
+      },
+      {
+        "type": "assertion",
+        "description": "g6=wq,g7 empty,h8=bk; White turn; empty recorded history; Undo disabled; result dialog closed; no finale ghost/confetti/layer remains."
+      }
+    ]
+  },
+  {
+    "id": "TC305",
+    "title": "Radio tuning and mute controls retain their state across reload",
+    "description": "Radio tuning and mute controls retain their state across reload\n\n1. ACTION: Open the configured local tunnel root / in an isolated browser context; no login and no game-state injection. Wait up to 30 seconds for #paperwild-loading to disappear; if it remains after 18 seconds, reload once and wait again (never hide/remove it with injected code). Capture console/network failures if it still cannot load. Wait and for 64 #board-access .square-hit controls. Use actual UI controls and square data-testid values square-e2 etc, whose data-piece values are wp/bp/wq etc. Between moves wait #game-status[data-moving=false][data-thinking=false]; allow 15 seconds. On compact layouts open Field kit #field-options to reach hidden mode/study controls, then close dialogs before board actions. Studies preselect their source: click the destination directly. Assert actual state before performing the next action. Do not invent viewport tools or use unsupported browser-resize actions. A service pass must have concrete UI assertions. Visit Radio Small Hours [data-camp=radio]. Click its .camp-radio-toggle to tune in; this is a real gesture and also enables sound.\n\n2. ASSERTION: #sound aria-pressed=true. .camp-radio-toggle aria-pressed=true; it offers tuning out. This verifies UI scheduling state, not subjective audibility.\n\n3. ACTION: Click #sound to mute.\n\n4. ASSERTION: #sound aria-pressed=false; station remains selected and tuned-in but its UI indicates muted. No console error.\n\n5. ACTION: Reload; wait for notebook to disappear; visit Radio Small Hours if necessary.\n\n6. ASSERTION: #sound remains aria-pressed=false, radio preference remains tuned-in, and the station does not falsely indicate audible on-air playback.",
+    "category": "Notebook, remembrance and finale acceptance 2026-10-19",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Open the configured local tunnel root / in an isolated browser context; no login and no game-state injection. Wait up to 30 seconds for #paperwild-loading to disappear; if it remains after 18 seconds, reload once and wait again (never hide/remove it with injected code). Capture console/network failures if it still cannot load. Wait and for 64 #board-access .square-hit controls. Use actual UI controls and square data-testid values square-e2 etc, whose data-piece values are wp/bp/wq etc. Between moves wait #game-status[data-moving=false][data-thinking=false]; allow 15 seconds. On compact layouts open Field kit #field-options to reach hidden mode/study controls, then close dialogs before board actions. Studies preselect their source: click the destination directly. Assert actual state before performing the next action. Do not invent viewport tools or use unsupported browser-resize actions. A service pass must have concrete UI assertions. Visit Radio Small Hours [data-camp=radio]. Click its .camp-radio-toggle to tune in; this is a real gesture and also enables sound."
+      },
+      {
+        "type": "assertion",
+        "description": "#sound aria-pressed=true. .camp-radio-toggle aria-pressed=true; it offers tuning out. This verifies UI scheduling state, not subjective audibility."
+      },
+      {
+        "type": "action",
+        "description": "Click #sound to mute."
+      },
+      {
+        "type": "assertion",
+        "description": "#sound aria-pressed=false; station remains selected and tuned-in but its UI indicates muted. No console error."
+      },
+      {
+        "type": "action",
+        "description": "Reload; wait for notebook to disappear; visit Radio Small Hours if necessary."
+      },
+      {
+        "type": "assertion",
+        "description": "#sound remains aria-pressed=false, radio preference remains tuned-in, and the station does not falsely indicate audible on-air playback."
+      }
+    ]
+  }
+]

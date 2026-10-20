@@ -1,0 +1,18 @@
+/* The Garden of Remembrance keepsake. */
+.remembrance-modal { width: min(760px, calc(100vw - 32px)); }
+.remembrance-summary { font: 16px/1.3 'Patrick Hand', cursive; color: #7d6a52; margin: -6px 0 14px; }
+.remembrance-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 12px; max-height: min(52vh, 460px); overflow: auto; padding: 4px 4px 10px; }
+.remembrance-card {
+  display: grid; grid-template-columns: 70px 1fr; gap: 8px; align-items: center;
+  padding: 10px 12px 10px 14px; border: 1.4px solid #b39d78; border-radius: 14px 10px 16px 9px;
+  background: linear-gradient(90deg, var(--team-wash, #f6a13c55) 0 6px, #efe2c6 6px);
+}
+.remembrance-card[data-team=b] { --team-wash: #5d70b866; }
+.remembrance-card:nth-child(2n) { rotate: .6deg; } .remembrance-card:nth-child(3n) { rotate: -.5deg; }
+.remembrance-portrait { width: 64px; height: 76px; display: block; }
+.remembrance-portrait .character-portrait { width: 100%; height: 100%; }
+.remembrance-card h3 { margin: 0; font: 400 20px/1.1 'Schoolbell', cursive; color: #5b4733; }
+.remembrance-epitaph { margin: 4px 0 2px; font: 15px/1.2 'Patrick Hand', cursive; color: #7a6550; }
+.remembrance-detail { margin: 0; font: 13px/1.2 'Patrick Hand', cursive; color: #8d7a62; }
+.remembrance-empty { font: 17px/1.4 'Patrick Hand', cursive; color: #8d7a62; text-align: center; padding: 30px 10px; }
+.remembrance-link, .remembrance-open { margin-top: 6px; }

@@ -42,6 +42,22 @@ export interface Capture {
   moveNumber: number;
 }
 
+/** Everything a send-off needs to tell the fallen piece's own story. */
+export interface CaptureStory extends Capture {
+  /** Where it fell. For en passant this differs from the capturing move's destination. */
+  square: Square;
+  /** Its starting square in this game, which gives every resident a lasting identity. */
+  origin: Square;
+  /** The piece it started as; a promoted pawn keeps its pawn identity. */
+  originType: PieceSymbol;
+  capturer: PieceSymbol;
+  capturerOrigin: Square;
+  capturerOriginType: PieceSymbol;
+  /** How many moves it made, and how many squares it travelled, before falling. */
+  moves: number;
+  steps: number;
+}
+
 export interface SavedGame {
   initialFen: string;
   history: MoveCoordinates[];
@@ -178,6 +194,47 @@ export class ConservatoryGame {
         by: move.color,
         moveNumber: Number(move.before.split(' ')[5]),
       }));
+  }
+
+  /** Replays the game from its start, following each piece from its starting
+   * square through moves, castling, promotion and en passant. */
+  captureStories(): CaptureStory[] {
+    interface Identity { origin: Square; originType: PieceSymbol; moves: number; steps: number }
+    const start = new Chess(this.#initialFen);
+    const identities = new Map<Square, Identity>();
+    for (const row of start.board()) for (const piece of row) {
+      if (piece) identities.set(piece.square, { origin: piece.square, originType: piece.type, moves: 0, steps: 0 });
+    }
+    const relocate = (from: Square, to: Square) => {
+      const identity = identities.get(from);
+      if (!identity) return;
+      identities.delete(from);
+      identity.moves += 1;
+      identity.steps += Math.max(Math.abs(from.charCodeAt(0) - to.charCodeAt(0)), Math.abs(Number(from[1]) - Number(to[1])));
+      identities.set(to, identity);
+    };
+    const stories: CaptureStory[] = [];
+    for (const move of this.chess.history({ verbose: true })) {
+      if (move.captured) {
+        const square = (move.flags.includes('e') ? `${move.to[0]}${move.from[1]}` : move.to) as Square;
+        const victim = identities.get(square) ?? { origin: square, originType: move.captured, moves: 0, steps: 0 };
+        const capturer = identities.get(move.from) ?? { origin: move.from, originType: move.piece, moves: 0, steps: 0 };
+        stories.push({
+          color: move.color === 'w' ? 'b' : 'w', type: move.captured, by: move.color,
+          moveNumber: Number(move.before.split(' ')[5]),
+          square, origin: victim.origin, originType: victim.originType,
+          capturer: move.piece, capturerOrigin: capturer.origin, capturerOriginType: capturer.originType,
+          moves: victim.moves, steps: victim.steps,
+        });
+        identities.delete(square);
+      }
+      relocate(move.from, move.to);
+      if (move.flags.includes('k') || move.flags.includes('q')) {
+        const rank = move.from[1], kingSide = move.flags.includes('k');
+        relocate(`${kingSide ? 'h' : 'a'}${rank}` as Square, `${kingSide ? 'f' : 'd'}${rank}` as Square);
+      }
+    }
+    return stories;
   }
 
   serialize(): SavedGame {
