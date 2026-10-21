@@ -4,7 +4,9 @@
 
 [Play the published demo](https://paperwild.vercel.app/) · [TestSprite Hackathon Season 4](https://www.testsprite.com/hackathon-s4) · [Verification records](#testing-and-evidence)
 
-**Version status:** [PR #3](https://github.com/Davidson3556/Paperwild/pull/3) was merged as `e891906`; its source head `5867e28` passed 82 local tests and two **10/10 TestSprite Portal runs**. The October 21 startup correction passes **94/94 local tests**, strict TypeScript, and production build, with direct checks of loading, keyboard skip, completed-game reload, and archive revisiting. This correction is not yet the production release; its new PR must be merged and deployed. The expanded 14-case Portal plan is saved but has not yet run on this fix.
+**Version status:** the startup correction in [PR #4](https://github.com/Davidson3556/Paperwild/pull/4) passed **94/94 local tests** and **14/14 TestSprite cases with auto-heal disabled** on the public preview (`e23a745`, `index-Dg2nj_lq.js`). TypeScript, build, CI and Vercel preview passed for that application revision. Check the current PR head's CI and deployment before merging; this record identifies the tested application revision and assets. Production remains on `main` until the PR is merged.
+
+[Test the correction preview](https://paperwild-git-living-davidson3556s-projects.vercel.app/) · [Startup evidence and runner investigation](docs/STARTUP_VERIFICATION_2026-10-21.md)
 
 ![Actual local field notebook with the woodland cast, team mittens, camp, and remembrance clearing](docs/media/paperwild-additions-desktop.jpg)
 
@@ -193,7 +195,8 @@ The tree highlights the entry points; the implementation table above links the s
 
 Local test files cover chess integrity, deterministic gait/capture plans, resident histories and naming, ceremony queue reconciliation, procedural voice signals, and mocked audio opt-in/cancellation/cleanup. `npm run build` includes strict type checking. These checks are separate from actual browser observations and physical listening quality.
 
-- **October 21 startup correction: 94/94 tests, strict TypeScript, and production build passed**, producing `index-Dg2nj_lq.js`. Direct browser checks on that build verified a readable paused loader, keyboard skip, completed-mate reload to a fresh 32-piece game, and explicit revisit restoring the completed study/history without a replayed finale. The normal pencil/pop-up sequence was observed during development. See the [startup verification record](docs/STARTUP_VERIFICATION_2026-10-21.md) for exact evidence and limits. New Portal execution remains pending; local results do not establish a production deployment.
+- **October 21 startup correction: 94/94 tests, strict TypeScript, and build passed**, producing `index-Dg2nj_lq.js`. CI and Vercel preview passed at application revision `e23a745`; recheck [PR #4 checks](https://github.com/Davidson3556/Paperwild/pull/4/checks) after subsequent commits. Direct browser checks verified a readable paused loader, keyboard skip, completed-mate reload to a fresh 32-piece game, and explicit archive revisit without a replayed finale.
+- **TestSprite strict replay: 14 passed / 0 failed / 0 blocked / 0 timed out.** The [full execution](https://www.testsprite.com/dashboard-v3/o/f7454a95-e992-581a-98e0-4edd142a0891/projects/dafdf75c-04a3-467f-acc2-4359af6b1d8e/execution/3ab518d1-9f5f-4718-b9e3-4d71ecdff3f2) exercised all 14 reviewed [stored Python cases](docs/testsprite/overrides/README.md) against that preview with auto-heal disabled. Every stored script was read back byte-for-byte before execution. Coverage includes the visible notebook/pencil/pop-up sequence, saved pause, actual blink and painted-part motion, keyboard skip, deferred computer reply, terminal archive revisit, unfinished restore, chess/Undo and sound scheduling.
 - **Merged-release verification (`5867e28`): 82 tests passed**, plus strict TypeScript and the 44-module production build. The [October 20 UI fixes](docs/UI_FIXES_VERIFICATION_2026-10-20.md) cover live remembrance updates, a matching PNG, and keeping the last memorial visible through Undo's revival. These results predate the startup correction.
 - [October 19 five-case native TestSprite audit](docs/TESTSPRITE_ADDITIONS_RUN_2026-10-19.md), with sanitized [initial results](docs/testsprite/additions-initial-results.json) and [corrected results](docs/testsprite/additions-corrected-results.json).
 - [October 20 Portal PR recovery and final 10-test result](docs/TESTSPRITE_PR_RECOVERY_2026-10-20.md), with [saved Portal evidence](docs/media/paperwild-pr-10-passed-2026-10-20.jpg).
@@ -205,15 +208,9 @@ Local test files cover chess integrity, deterministic gait/capture plans, reside
 - [Watercolor rig observations](docs/WATERCOLOR_VERIFICATION_2026-10-17.md) and [voice/audio evidence](docs/SOUND_VERIFICATION_2026-10-17.md)
 - [Acceptance specification](docs/TESTSPRITE_PLAN.md) and [actual TestSprite Portal record](docs/TESTSPRITE_PORTAL.md)
 
-**Historical native TestSprite result (October 19):** the initial five-case run returned **2 service passes / 2 failures / 1 blocked**; a corrected three-case rerun returned **2 passes / 1 failed**. Latest per-case outcomes were **4 service passes / 1 failed** across those runs. The remaining failure did not measure the expected 32 occupied squares; it did not demonstrate a wrong position. Passed exports omitted other assertions too. See the [audit](docs/TESTSPRITE_ADDITIONS_RUN_2026-10-19.md) for limits; these native runs are separate from later Portal results.
+![TestSprite strict replay: all 14 cases passed](docs/media/paperwild-strict-14-passed-2026-10-21.jpg)
 
-**Merged source head `5867e28`:** the [automatic Portal execution](https://www.testsprite.com/dashboard-v3/o/davidson-awokoyas-workspace-f7454a95/projects/dafdf75c-04a3-467f-acc2-4359af6b1d8e/execution/ce0df644-76de-4cf3-a579-c95dd4cb55a5) and [diagnostic retry](https://www.testsprite.com/dashboard-v3/o/davidson-awokoyas-workspace-f7454a95/projects/dafdf75c-04a3-467f-acc2-4359af6b1d8e/execution/f7a5bf72-766a-4f8d-b926-f050c5e30515) each reported **10 passed / 0 failed / 0 blocked** on the public PR preview. These ran the same ten cases; they do not establish visual loader/animation coverage. [Clean-install CI](https://github.com/Davidson3556/Paperwild/actions/runs/39509914536) and Vercel preview deployment succeeded for that head. The Portal now has 14 saved definitions, including NOTE-001–004; their execution on the correction remains pending. The dated `PAPERWILD_CURRENT_REQUIREMENTS_2026-10-21.md` source is visibly attached in the Portal alongside the earlier document.
-
-**Portal/GitHub execution (October 20, before these additions):** the PR preview returned HTTP 200 without Vercel login. The [full PR #3 suite](https://www.testsprite.com/dashboard-v3/o/davidson-awokoyas-workspace-f7454a95/projects/dafdf75c-04a3-467f-acc2-4359af6b1d8e/execution/94f9ca4e-ebe0-4bf0-b667-08c68cd407a9) at head `869a1f9` reported **10 passed / 0 failed / 0 blocked**, and its GitHub status was successful. The earlier run's nine passes and blocked keyboard case remain recorded: direct reproduction reached the hare and scheduled its greeting, then the test's focus instruction was clarified without removing assertions. These runs predate the additions and do not validate a newer PR commit. See the [recovery record](docs/TESTSPRITE_PR_RECOVERY_2026-10-20.md) for exact targets, history, and limits.
-
-**Earlier GitHub checks:** [PR #3's clean-install CI](https://github.com/Davidson3556/Paperwild/actions/runs/39115157383) and Vercel deployment passed at head `869a1f9`, which had 64 tests. Its [TestSprite bot report](https://github.com/Davidson3556/Paperwild/pull/3#issuecomment-6301978202) records all ten passing tests. An older failed TestSprite CheckRun remains in the PR history alongside that successful status. Its October 18 Free-plan billing rejection is historical: both [live pricing](https://www.testsprite.com/pricing) and the workspace's billing page now list PR auto-testing for one repository on Free. Native MCP results remain separate evidence.
-
-**Earlier Portal evidence:** the manual run on `e2aa53d` reported ten service passes with partial acceptance coverage. Actual background-tab pausing and physical sound quality remain unassessed. Earlier phone observations do not establish a fresh mobile check of the startup correction.
+The [startup verification record](docs/STARTUP_VERIFICATION_2026-10-21.md) preserves the earlier automatic 11/1/2 result, failed 6/8 strict batch, runner investigation and final successful replay. The [result manifest](docs/testsprite/startup-replay-results.json), [actual full-suite summary](docs/testsprite/startup-corrected-strict-summary.json), and [stored-code versions and hashes](docs/testsprite/stored-code-manifest.json) identify the evidence. The 14-case suite does not execute every scenario in the broader acceptance specification; sound counters establish scheduling, while physical sound quality and a fresh phone check remain separate work.
 
 ## Testing and release workflow
 
@@ -223,7 +220,7 @@ Local checks, direct visual observations, native TestSprite, and the Portal PR s
 flowchart TD
     changes["Edit the app"] --> localChecks["npm test and npm run build"]
     localChecks --> localPass{"Local checks pass?"}
-    localPass -->|"No"| correction["Fix the cause"]
+    localPass -->|"No"| correction["Fix the proven app or test cause"]
     correction --> changes
     localPass -->|"Yes"| native["Production preview and native TestSprite"]
     native --> audit["Inspect assertions and save audited evidence"]
@@ -242,7 +239,7 @@ flowchart TD
     class blocked attention
 ```
 
-The [October 20 recovery record](docs/TESTSPRITE_PR_RECOVERY_2026-10-20.md) retains earlier preview/dispatch repair. A later deployment event automatically started the successful ten-case run at `5867e28`. The expanded [Portal plan](docs/testsprite/portal-plan.yaml) is saved in the cloud; the dated current [product requirements](docs/PRODUCT_REQUIREMENTS.md) source is visibly attached. Execute and inspect its new assertions against the correction preview. Repository edits alone do not synchronize the Portal project. The [October 19 native audit](docs/TESTSPRITE_ADDITIONS_RUN_2026-10-19.md) retains separate failed or unmeasured assertions.
+The expanded [Portal plan](docs/testsprite/portal-plan.yaml) is saved in the cloud, the dated current [product requirements](docs/PRODUCT_REQUIREMENTS.md) source is visibly attached, and all 14 reviewed scripts passed strict hosted replay on the correction preview. Check the current PR head's CI and deployment before merging, then verify production after an approved merge. Repository edits alone do not synchronize Portal code.
 
 ## Deployment and hackathon status
 
