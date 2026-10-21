@@ -10,16 +10,13 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Patrick+Hand&family=Schoolbell&display=swap" />
     <title>Paperwild — Chess, drawn to life.</title>
-    <script>
-      // A returning visitor in the same session gets a quicker sketch.
-      try { if (sessionStorage.getItem('paperwild.loaded')) document.documentElement.classList.add('is-quick-load'); } catch {}
-    </script>
     <style>
       /* The loading page: a closed field notebook. While the club loads, the
          acorn sketches itself on the cover and a ribbon bookmark slides out.
          Then the band snaps off, the cover opens and the game comes out of
          the page. Inline, so it appears before any script or stylesheet. */
       html.is-loading, html.is-loading body { overflow: hidden; }
+      .pw-loading, .pw-loading * { box-sizing: border-box; }
       .pw-loading {
         --pace: 1; --progress: 0;
         --ink: #5a4632; --paper: #f3ead6;
@@ -33,7 +30,6 @@
         color: var(--ink);
         font-family: 'Patrick Hand', 'Comic Sans MS', cursive;
       }
-      .is-quick-load .pw-loading { --pace: .45; }
       .pw-desk { perspective: 1700px; perspective-origin: 50% 40%; }
       .pw-book {
         --w: min(370px, 74vw, 50vh); position: relative; width: var(--w); aspect-ratio: 5 / 7;
@@ -91,7 +87,7 @@
         background: #f6efdd; border-radius: 4px;
         box-shadow: 0 0 0 1.5px #8b6a45, 0 0 0 4px #f6efdd, 0 0 0 5.5px #8b6a45, 0 3px 6px #5a463233;
       }
-      .pw-loading-title { margin: 0; font: 400 clamp(34px, 10vw, 58px)/1 'Schoolbell', 'Patrick Hand', cursive; letter-spacing: .01em; }
+      .pw-loading-title { margin: 0; font: 400 min(58px, 11.6vw, 7.84vh)/1 'Schoolbell', 'Patrick Hand', cursive; letter-spacing: .01em; transform: none; }
       .pw-loading-title span { display: inline-block; opacity: 0; animation: pw-letter calc(.5s * var(--pace)) calc((.35s + var(--i) * .07s) * var(--pace)) cubic-bezier(.3, 1.6, .5, 1) both; }
       .pw-loading-title span:nth-child(3n+1) { color: #65769f; }
       .pw-loading-title span:nth-child(3n+2) { color: #b9706b; }
@@ -101,7 +97,7 @@
       .pw-loading-art { width: 104%; margin-top: 4%; height: auto; overflow: visible; }
       /* Elastic band and ribbon bookmark. The ribbon's length is the progress. */
       .pw-band {
-        position: absolute; top: -2%; bottom: -2%; right: 13%; width: 4.2%; border-radius: 3px;
+        position: absolute; top: -2%; bottom: -2%; right: 5%; width: 4.2%; border-radius: 3px;
         background: linear-gradient(90deg, #3d4a6c, #56658c 45%, #3a4566);
         box-shadow: 1px 0 2px #00000033; transform: translateZ(3px); transform-origin: 50% 0;
       }
@@ -124,7 +120,9 @@
       .pw-loading-status { min-height: 30px; margin: 46px 0 0; font-size: clamp(16px, 4.4vw, 21px); color: #8a7458; text-align: center; padding: 0 16px; }
       .pw-loading-status span { display: inline-block; animation: pw-fade .4s ease-out both; }
       .pw-ready { opacity: 0; font: 400 22px 'Schoolbell', cursive; fill: #4f8a4a; }
-      .pw-skip { position: fixed; bottom: 18px; right: 22px; font: 15px 'Patrick Hand', cursive; color: #a08c70; opacity: 0; animation: pw-fade .5s 1.6s ease-out both; }
+      .pw-skip { position: fixed; bottom: 18px; right: 22px; min-height: 44px; padding: 8px 14px; border: 1px dashed #9b8667; border-radius: 5% 9% 4% 8%; background: #f6efdd; font: 16px 'Patrick Hand', cursive; color: #715d43; cursor: pointer; }
+      .pw-skip:focus-visible { outline: 2px solid #65769f; outline-offset: 4px; }
+      .pw-skip:disabled { cursor: wait; opacity: .75; }
       /* Ready: the acorn hops. Opening: the band snaps off and the cover swings
          open with a couple of fluttering pages, recentring the open spread. */
       .pw-loading.is-ready .pw-acorn { animation: pw-hop .5s cubic-bezier(.3, 1.4, .5, 1) 2; }
@@ -135,8 +133,7 @@
       .pw-loading.is-opening .pw-cover { animation: pw-open calc(.95s * var(--pace)) calc(.18s * var(--pace)) cubic-bezier(.5, .05, .3, 1) forwards; }
       .pw-loading.is-opening .pw-flutter { animation: pw-open calc(.75s * var(--pace)) calc(.42s * var(--pace)) cubic-bezier(.5, .05, .3, 1) forwards; }
       .pw-loading.is-opening .pw-flutter.second { animation-delay: calc(.56s * var(--pace)); animation-duration: calc(.7s * var(--pace)); }
-      .pw-loading.is-opening .pw-loading-status, .pw-loading.is-opening .pw-skip { opacity: 0; transition: opacity .2s; }
-      .is-quick-load .pw-flutter { display: none; }
+      .pw-loading.is-opening .pw-loading-status { opacity: 0; transition: opacity .2s; }
       /* Entering: dive into the open page, which becomes the game. */
       .pw-loading.is-entering { animation: pw-enter-fade calc(.62s * var(--pace)) ease-in forwards; }
       .pw-loading.is-entering .pw-book { transition: transform calc(.62s * var(--pace)) cubic-bezier(.6, .0, .7, .4); transform: scale(3.4); }
@@ -160,6 +157,10 @@
       @keyframes pw-band-snap { 0% { transform: translateZ(3px); } 35% { transform: translateZ(3px) scaleY(1.04); } 100% { transform: translateZ(3px) translate(160%, 30%) rotate(18deg); opacity: 0; } }
       @keyframes pw-open { from { transform: translateZ(1px) rotateY(0deg); } to { transform: translateZ(1px) rotateY(-178deg); } }
       @keyframes pw-enter-fade { 0%, 45% { opacity: 1; } 100% { opacity: 0; } }
+      html.reduced-motion .pw-loading *, html.reduced-motion .pw-loading { animation: none !important; transition: none !important; }
+      html.reduced-motion .pw-loading-title span, html.reduced-motion .pw-loading-tagline, html.reduced-motion .pw-hatch, html.reduced-motion .pw-soft, html.reduced-motion .pw-skip { opacity: 1; }
+      html.reduced-motion .pw-draw { stroke-dashoffset: 0; fill-opacity: 1; }
+      html.reduced-motion .pw-pencil { transform: translate(318px, 236px) rotate(-62deg); }
       @media (prefers-reduced-motion: reduce) {
         .pw-loading *, .pw-loading { animation: none !important; transition: none !important; }
         .pw-loading-title span, .pw-loading-tagline, .pw-hatch, .pw-soft, .pw-skip { opacity: 1; }
@@ -234,7 +235,7 @@
         </div>
       </div>
       <p class="pw-loading-status"><span>Sharpening the pencils…</span></p>
-      <span class="pw-skip" aria-hidden="true">tap to open</span>
+      <button id="pw-loading-skip" class="pw-skip" type="button" aria-label="Skip introduction">Open when ready</button>
     </div>
     <noscript><p style="font-family: sans-serif; text-align: center; margin: 40vh 16px 0;">Paperwild needs JavaScript to draw its little chess club.</p></noscript>
     <div id="app"></div>

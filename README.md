@@ -4,9 +4,9 @@
 
 [Play the published demo](https://paperwild.vercel.app/) · [TestSprite Hackathon Season 4](https://www.testsprite.com/hackathon-s4) · [Verification records](#testing-and-evidence)
 
-**Version status:** the [`living` branch](https://github.com/Davidson3556/Paperwild/tree/living) includes the notebook opening, refusal moods, checkmate finale, named capture stories, and Garden of Remembrance. **82 local tests, strict TypeScript, the production build, and focused desktop checks passed.** The updated PR preview and Portal suite must be verified before merging these additions. The public demo was last verified on the earlier `main` baseline; the recorded TestSprite results below identify their own tested commits.
+**Version status:** the startup correction in [PR #4](https://github.com/Davidson3556/Paperwild/pull/4) passed **94/94 local tests** and **14/14 TestSprite cases with auto-heal disabled** on the public preview (`e23a745`, `index-Dg2nj_lq.js`). TypeScript, build, CI and Vercel preview passed for that application revision. Check the current PR head's CI and deployment before merging; this record identifies the tested application revision and assets. Production remains on `main` until the PR is merged.
 
-[Review PR #3](https://github.com/Davidson3556/Paperwild/pull/3) · [Public PR preview](https://paperwild-git-living-davidson3556s-projects.vercel.app/)
+[Test the correction preview](https://paperwild-git-living-davidson3556s-projects.vercel.app/) · [Startup evidence and runner investigation](docs/STARTUP_VERIFICATION_2026-10-21.md)
 
 ![Actual local field notebook with the woodland cast, team mittens, camp, and remembrance clearing](docs/media/paperwild-additions-desktop.jpg)
 
@@ -26,8 +26,8 @@
 - **Captures tell a story.** The attacker approaches, faces off, tumbles into a mitten-filled pencil cloud, celebrates, and claims the square. The legal chess move determines the winner. Beetles carry the dazed loser away, then a separate queued ceremony offers a moth's sermon, burial, sprout, and flower memorial. Ring the bell, scatter petals, or wake the choir.
 - **A living field notebook.** A leaf-tent kettle camp, beetle post office, and mushroom radio respond to visits. The board and compact ceremony share one viewport in the verified desktop layout; settings and history open in overlays. Earlier phone-layout evidence is linked separately from the newest additions.
 - **Voices made in the browser.** Procedural character calls and contact sounds respond to greetings, moves, surprise, cheers, dizziness, and farewells. Sound is opt-in; the character guide lets you audition each voice. Tune in the field camp's mushroom radio for **Radio Small Hours**, an optional generative music-box lullaby: major by day, slower minor by moonlight, dipping under every voice and capture, with a flourish in the winner's key at checkmate. It has its own audio channel, so it never cuts off a voice or footstep. It plays only with sound on, stops when the tab is hidden, and after a reload waits for your first tap.
-- **The game comes out of a notebook.** While the artwork and fonts load, a closed field notebook appears instantly: an acorn sketches itself on the cover and a ribbon bookmark slides out as loading progresses. When the page is ready the acorn hops, the elastic band snaps off, the cover swings open in 3D with a flutter of pages, and the view dives into the page, which becomes the board. The pieces then pop up out of the page like a pop-up book, row by row. Tap while loading to request the opening as soon as assets are ready; tap during the opening to skip. Returning within the same browser session gets a quicker version, and reduced motion skips the opening movement.
-- **A place to return to.** Local save/resume, undo, move history, PGN export, and three short capture/promotion/checkmate studies.
+- **The game comes out of a notebook.** While artwork and fonts load, an acorn sketches itself on the cover and a ribbon bookmark shows progress. The acorn hops, the band snaps, and the cover opens with fluttering pages before the game appears. On the visible board, pencil lines draw and residents rise row by row. Repeat visits retain the full choreography. **Skip introduction** works by keyboard and shortens the notebook opening; visible pencil drawing and pop-up still follow. Reduced motion keeps the cover readable and enters without spins or unfolding pieces.
+- **A place to return to.** Unfinished games resume with their history, captures, and study context. A completed game or study opens a fresh standard board on the next load while preserving the finished chapter separately. Before making a new move, use **Field kit → Revisit last finished game** to recover its history, captured friends, and remembrance garden. Valid settings remain; an ongoing game or study cannot be replaced by this shortcut.
 
 For a short walkthrough, follow the [90-second demo script](docs/DEMO_SCRIPT.md). Its standard-game capture sequence shows named residents, the remembrance garden, and a downloadable keepsake before the checkmate finale.
 
@@ -36,13 +36,13 @@ For a short walkthrough, follow the [90-second demo script](docs/DEMO_SCRIPT.md)
 Requires **Node.js 22.18+** and npm. The app needs no backend, account, API key, or `.env` file.
 
 ```sh
-git clone --branch living https://github.com/Davidson3556/Paperwild.git
+git clone https://github.com/Davidson3556/Paperwild.git
 cd Paperwild
 npm ci
 npm run dev
 ```
 
-Open **http://127.0.0.1:4173**. The command checks out the published `living` branch. Run the newest unpublished additions from the existing working tree; a clone will include them only after they are pushed. The default `main` branch remains the earlier published baseline.
+Open **http://127.0.0.1:4173**. A clone checks out `main`. Startup fixes on an unmerged branch require that branch's working tree or preview; verify the exact deployed commit before comparing results.
 
 ```sh
 npm test              # rules, motion, capture queue, voice PCM, audio lifecycle
@@ -60,18 +60,20 @@ Select a character, then a marked destination. In **Against the club**, you play
 | Control | What it does |
 | --- | --- |
 | **Field kit** | Choose mode/difficulty, begin a fresh game, or open Little chess stories. |
+| **Field kit → Revisit last finished game** | Restore the last completed chapter, available only from an untouched full starting board. |
 | **Journal** | Read SAN move history, see captured friends, and download `paperwild-game.pgn`. |
 | **Journal → The garden of remembrance** | Read each captured resident's name and epitaph. **Save as a picture** downloads `paperwild-garden-of-remembrance.png` when there are captures. |
 | **Sound off/on** / guide **hear me** | Opt into sound or audition a character. A fresh trusted interaction is required after loading, even with a saved sound preference. |
 | Camp **radio** → **tune in ♪ / switch off** | Toggle Radio Small Hours. Tuning in also enables sound; the radio illustration itself toggles the station once selected. |
-| **Let it wander / The world, paused** | Toggle reduced motion. A still board can retain opted-in action sounds. |
+| **Pause animations / Resume animations** | Remember motion preference; paused characters rest with eyes open. A still board can retain opted-in action sounds. |
+| **Skip introduction** | Open when ready or skip the notebook opening; the visible board entry then finishes before play. |
 | **Daydream / Moonlight**, rain, **Say hello** | Change the atmosphere or greet the camp. |
 | Arrow keys, **Enter**, **Escape**, **U** | Explore squares, choose, release selection, and undo. |
 | Click a board square during movement | Settle the visual sequence immediately so play can continue. |
 
 Squares announce their coordinate, side, conventional chess role, and legal-destination state. Visible focus, image-failure fallbacks, system reduced-motion defaults, and sound/motion controls support different ways to play. The single-screen layout keeps the main board visible; overlays may scroll when their contents need more room.
 
-Games and preferences stay in this browser and origin. Both the computer mode and shared-device mode run locally; there is no online multiplayer or cloud save. No Convex service is needed for the current app. Restoring a game rebuilds its capture stories and existing memorials without replaying ceremonies.
+Games and preferences stay in this browser and origin. Both play modes run locally; there is no online multiplayer or cloud save. Restoring an unfinished game rebuilds capture stories and memorials without replaying ceremonies. A completed save opens a fresh board and is archived for explicit revisiting. If the archive cannot be written, startup preserves the original finished save until the player explicitly starts the next chapter. An unfinished computer turn waits until notebook entry settles before replying.
 
 ## Game flow
 
@@ -79,7 +81,17 @@ The solid arrows follow a turn. The dotted arrows show the optional capture cere
 
 ```mermaid
 flowchart TD
-    notebook(["Open the notebook"]) --> mode["Choose computer, shared-device friend, or study"]
+    notebook(["Open the notebook"]) --> saved{"Valid saved game?"}
+    saved -->|"No"| fresh["Fresh standard board"]
+    saved -->|"Yes"| complete{"Saved game complete?"}
+    complete -->|"Yes"| archive["Preserve finished game and study separately"]
+    archive --> fresh
+    complete -->|"No"| restore["Restore exact unfinished game and study"]
+    fresh --> entry["Reveal notebook, draw grid, unfold residents"]
+    restore --> entry
+    entry --> mode["Entry settles; resume turn or choose a mode/study"]
+    mode -.->|"Untouched full board only"| revisit["Field kit: Revisit last finished game"]
+    revisit --> finished["Restore terminal history, captures and remembrance"]
     mode --> selection["Select a character and destination"]
     selection --> legal{"Legal destination?"}
     legal -->|"No"| refusal["Character refuses; position unchanged"]
@@ -108,10 +120,10 @@ flowchart TD
     classDef story fill:#f4ead4,stroke:#9a7c53,color:#3f3428
     classDef decision fill:#e6eddf,stroke:#7e916c,color:#2f3b29
     class notebook,refusal,capture,finale,ceremony,remembrance story
-    class legal,promotion,presentation,gameOver,computerTurn decision
+    class saved,complete,legal,promotion,presentation,gameOver,computerTurn decision
 ```
 
-The rules position commits once. Movement, a capture departure, or the checkmate finale settles before the next turn or result card; the longer memorial ceremony proceeds independently. Reduced motion or clicking the board settles the sequence. Undo, restart, and story replacement cancel obsolete animation, sound, and computer work. Journal can open the remembrance garden during a game, too.
+Valid settings survive either restore path. Entry settles before a restored computer reply. Skip introduction shortens the cover sequence; the board's pencil drawing and pop-up still finish before play. Reduced motion reveals a complete upright board directly. The rules position then commits once per turn. Movement, capture departure, or finale settles before the next turn/result; the memorial ceremony proceeds independently. Undo, restart, and story replacement cancel obsolete animation, sound, and computer work.
 
 ## App architecture
 
@@ -183,8 +195,10 @@ The tree highlights the entry points; the implementation table above links the s
 
 Local test files cover chess integrity, deterministic gait/capture plans, resident histories and naming, ceremony queue reconciliation, procedural voice signals, and mocked audio opt-in/cancellation/cleanup. `npm run build` includes strict type checking. These checks are separate from actual browser observations and physical listening quality.
 
-- **Current local verification: 82 tests passed**, plus strict TypeScript and the 44-module production build. The [October 20 UI fixes](docs/UI_FIXES_VERIFICATION_2026-10-20.md) cover live remembrance updates during the computer's reply, a matching PNG download, and keeping the last memorial visible through Undo's revival. The [October 19 additions record](docs/ADDITIONS_VERIFICATION_2026-10-19.md) retains its earlier 78-test bundle and browser evidence: named capture, remembrance export, fresh-game/revival cleanup, checkmate finale/Undo, and the radio UI changing from on-air to muted. Physical listening was not assessed. Fresh phone resizing was not established; attempted viewport overrides did not apply.
-- [Current five-case native TestSprite audit](docs/TESTSPRITE_ADDITIONS_RUN_2026-10-19.md), with sanitized [initial results](docs/testsprite/additions-initial-results.json) and [corrected results](docs/testsprite/additions-corrected-results.json).
+- **October 21 startup correction: 94/94 tests, strict TypeScript, and build passed**, producing `index-Dg2nj_lq.js`. CI and Vercel preview passed at application revision `e23a745`; recheck [PR #4 checks](https://github.com/Davidson3556/Paperwild/pull/4/checks) after subsequent commits. Direct browser checks verified a readable paused loader, keyboard skip, completed-mate reload to a fresh 32-piece game, and explicit archive revisit without a replayed finale.
+- **TestSprite strict replay: 14 passed / 0 failed / 0 blocked / 0 timed out.** The [full execution](https://www.testsprite.com/dashboard-v3/o/f7454a95-e992-581a-98e0-4edd142a0891/projects/dafdf75c-04a3-467f-acc2-4359af6b1d8e/execution/3ab518d1-9f5f-4718-b9e3-4d71ecdff3f2) exercised all 14 reviewed [stored Python cases](docs/testsprite/overrides/README.md) against that preview with auto-heal disabled. Every stored script was read back byte-for-byte before execution. Coverage includes the visible notebook/pencil/pop-up sequence, saved pause, actual blink and painted-part motion, keyboard skip, deferred computer reply, terminal archive revisit, unfinished restore, chess/Undo and sound scheduling.
+- **Merged-release verification (`5867e28`): 82 tests passed**, plus strict TypeScript and the 44-module production build. The [October 20 UI fixes](docs/UI_FIXES_VERIFICATION_2026-10-20.md) cover live remembrance updates, a matching PNG, and keeping the last memorial visible through Undo's revival. These results predate the startup correction.
+- [October 19 five-case native TestSprite audit](docs/TESTSPRITE_ADDITIONS_RUN_2026-10-19.md), with sanitized [initial results](docs/testsprite/additions-initial-results.json) and [corrected results](docs/testsprite/additions-corrected-results.json).
 - [October 20 Portal PR recovery and final 10-test result](docs/TESTSPRITE_PR_RECOVERY_2026-10-20.md), with [saved Portal evidence](docs/media/paperwild-pr-10-passed-2026-10-20.jpg).
 - The [October 18 release record](docs/LIVING_RELEASE_VERIFICATION_2026-10-18.md) covers its identified earlier build and earlier phone observations.
 - [Earlier nine-scenario TestSprite acceptance plan](docs/testsprite/living-plan.json) and [audited execution report](docs/TESTSPRITE_LIVING_RUN_2026-10-18.md).
@@ -194,23 +208,19 @@ Local test files cover chess integrity, deterministic gait/capture plans, reside
 - [Watercolor rig observations](docs/WATERCOLOR_VERIFICATION_2026-10-17.md) and [voice/audio evidence](docs/SOUND_VERIFICATION_2026-10-17.md)
 - [Acceptance specification](docs/TESTSPRITE_PLAN.md) and [actual TestSprite Portal record](docs/TESTSPRITE_PORTAL.md)
 
-**Current native TestSprite result (October 19):** the initial five-case run returned **2 service passes / 2 failures / 1 blocked**. Correcting the Journal-count and stretcher-scaffold expectations and rerunning three cases returned **2 passes / 1 failed**. Latest outcomes are **4 service passes / 1 failed case across two runs**, not an all-green suite. The remaining failure reports that exactly 32 occupied squares after a fresh game was **not measured**; it does not report an observed wrong board position. Passed exports still omit important phase, history, and named-card assertions, so these service outcomes establish partial coverage. See the [audit](docs/TESTSPRITE_ADDITIONS_RUN_2026-10-19.md) for assertion order and limits.
+![TestSprite strict replay: all 14 cases passed](docs/media/paperwild-strict-14-passed-2026-10-21.jpg)
 
-**Portal/GitHub execution (October 20, before these additions):** the PR preview returned HTTP 200 without Vercel login. The [full PR #3 suite](https://www.testsprite.com/dashboard-v3/o/davidson-awokoyas-workspace-f7454a95/projects/dafdf75c-04a3-467f-acc2-4359af6b1d8e/execution/94f9ca4e-ebe0-4bf0-b667-08c68cd407a9) at head `869a1f9` reported **10 passed / 0 failed / 0 blocked**, and its GitHub status was successful. The earlier run's nine passes and blocked keyboard case remain recorded: direct reproduction reached the hare and scheduled its greeting, then the test's focus instruction was clarified without removing assertions. These runs predate the additions and do not validate a newer PR commit. See the [recovery record](docs/TESTSPRITE_PR_RECOVERY_2026-10-20.md) for exact targets, history, and limits.
-
-**Earlier GitHub checks:** [PR #3's clean-install CI](https://github.com/Davidson3556/Paperwild/actions/runs/39115157383) and Vercel deployment passed at head `869a1f9`, which had 64 tests. Its [TestSprite bot report](https://github.com/Davidson3556/Paperwild/pull/3#issuecomment-6301978202) records all ten passing tests. An older failed TestSprite CheckRun remains in the PR history alongside that successful status. Its October 18 Free-plan billing rejection is historical: both [live pricing](https://www.testsprite.com/pricing) and the workspace's billing page now list PR auto-testing for one repository on Free. Native MCP results remain separate evidence.
-
-**Earlier Portal evidence:** the manual Portal run on PR head `e2aa53d` reported ten service passes with partial acceptance coverage. Those historical results do not validate this branch. Actual background-tab pausing and physical sound quality remain unassessed.
+The [startup verification record](docs/STARTUP_VERIFICATION_2026-10-21.md) preserves the earlier automatic 11/1/2 result, failed 6/8 strict batch, runner investigation and final successful replay. The [result manifest](docs/testsprite/startup-replay-results.json), [actual full-suite summary](docs/testsprite/startup-corrected-strict-summary.json), and [stored-code versions and hashes](docs/testsprite/stored-code-manifest.json) identify the evidence. The 14-case suite does not execute every scenario in the broader acceptance specification; sound counters establish scheduling, while physical sound quality and a fresh phone check remain separate work.
 
 ## Testing and release workflow
 
-Local checks, native TestSprite execution, and the Portal PR suite produce separate evidence. This chart shows the release path; it does not claim the latest additions have completed every stage.
+Local checks, direct visual observations, native TestSprite, and the Portal PR suite produce separate evidence. This chart shows the release path; a new correction needs new evidence even when its parent release was green.
 
 ```mermaid
 flowchart TD
     changes["Edit the app"] --> localChecks["npm test and npm run build"]
     localChecks --> localPass{"Local checks pass?"}
-    localPass -->|"No"| correction["Fix the cause"]
+    localPass -->|"No"| correction["Fix the proven app or test cause"]
     correction --> changes
     localPass -->|"Yes"| native["Production preview and native TestSprite"]
     native --> audit["Inspect assertions and save audited evidence"]
@@ -229,16 +239,16 @@ flowchart TD
     class blocked attention
 ```
 
-The [October 20 recovery record](docs/TESTSPRITE_PR_RECOVERY_2026-10-20.md) documents restored preview access and a successfully dispatched Portal PR suite. A manual test event does not establish that a future deployment will trigger automatically. The [October 19 native audit](docs/TESTSPRITE_ADDITIONS_RUN_2026-10-19.md) retains its separate failed or unmeasured assertions; each report identifies its tested build.
+The expanded [Portal plan](docs/testsprite/portal-plan.yaml) is saved in the cloud, the dated current [product requirements](docs/PRODUCT_REQUIREMENTS.md) source is visibly attached, and all 14 reviewed scripts passed strict hosted replay on the correction preview. Check the current PR head's CI and deployment before merging, then verify production after an approved merge. Repository edits alone do not synchronize Portal code.
 
 ## Deployment and hackathon status
 
 This is a static frontend. On Vercel or another static host, use **`npm ci`**, build with **`npm run build`**, and publish **`dist/`**. No environment variables are required. Verify the deployed URL without a signed-in session, and use that exact build/preview origin for end-to-end testing.
 
-The public source, baseline demo, historical Portal runs, and GitHub integration evidence are available. Before a completed Season 4 submission:
+The public source, merged game, successful automatic Portal execution, and GitHub integration evidence are available. Before a completed Season 4 submission:
 
 - Verify the current build's public deployment and run substantive Portal acceptance assertions against it.
-- Retain a real Portal execution and GitHub result for the updated PR commit; a posted gate failure is not executed coverage. Earlier manual dispatch succeeded, while automatic deployment-triggered execution still needs verification.
+- Retain a real Portal execution and GitHub result for each correction's exact PR commit, including the new startup/motion assertions. A historical ten-case pass does not cover newly added cases.
 - Submit the required PR link, live app URL, and account details through the official hackathon channel.
 
 See the [official hackathon page](https://www.testsprite.com/hackathon-s4) and [Portal setup record](docs/TESTSPRITE_PORTAL.md) for requirements and outstanding work. No completed submission or final eligibility determination is claimed.

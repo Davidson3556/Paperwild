@@ -1,0 +1,92 @@
+{
+  "applicationRevision": "e23a7453057adaaace2df03af52ca97207bbacb9",
+  "applicationBundle": "index-Dg2nj_lq.js",
+  "targetUrl": "https://paperwild-git-living-davidson3556s-projects.vercel.app/",
+  "verification": "Each stored Python code field was read back and byte-compared with the local script before the corrected full-suite replay.",
+  "scripts": [
+    {
+      "case": "BOAR-001",
+      "testId": "9e34b635-85b9-427d-95b2-5584e55f5f7d",
+      "codeVersion": "v-adfd6b33e5fc",
+      "sha256": "9a56506ad600231bef8c8c5b36c111aa92c35f68ca3ae57a4aaf0d7d33c96793"
+    },
+    {
+      "case": "BOAR-002",
+      "testId": "0ad51a00-bdcc-49ab-a155-ad15de21a7a2",
+      "codeVersion": "v-255ac3ea61d3",
+      "sha256": "e7dc76630db5dd3b7d8ca1ae06e3d8b20492f4e5f0610336bda366371f1f9702"
+    },
+    {
+      "case": "BOAR-003",
+      "testId": "6c39a736-f9b2-4731-8560-05df7dcd0449",
+      "codeVersion": "v-4abcf9870eaa",
+      "sha256": "15dbde6db232b9499ea9990b216c81193a8088c447d8929a8cef23520eab9a70"
+    },
+    {
+      "case": "BOAR-004",
+      "testId": "2330c1ea-adda-4d16-a611-d8745fc4cc66",
+      "codeVersion": "v-5baa20c3b4b0",
+      "sha256": "82c1a85a5fade840a1d15b1560599a89584e4c68881a7f5b823427860e5c33c2"
+    },
+    {
+      "case": "BOAR-005",
+      "testId": "c48475e4-8ec0-4875-a5c9-e8b2981d4c87",
+      "codeVersion": "v-583b5a964371",
+      "sha256": "6993bf3255bf99a6e6ec8a0aec98e38d198259664197c793c69ce3a28d8accfc"
+    },
+    {
+      "case": "BOAR-006",
+      "testId": "836e4d28-2b2a-468c-ba69-21bc358eb237",
+      "codeVersion": "v-91ff92a7ef7a",
+      "sha256": "676cb0b8221f8d443ac5cbf23c3a8cea89c230fd4ef306874a80633b669ba462"
+    },
+    {
+      "case": "BOAR-007",
+      "testId": "f52738b9-d0c5-46b4-b914-70d16c6d7e7b",
+      "codeVersion": "v-88c0c9875a43",
+      "sha256": "27f6e9d330164353f88ef6af7e83299912a3daed0cde2f49f5592b048f15dea1"
+    },
+    {
+      "case": "BOAR-008",
+      "testId": "ec570b6b-0423-40cd-a0a7-60e8a8cbb23c",
+      "codeVersion": "v-00654292cad9",
+      "sha256": "4df0f80e575fabd6c3d2929009e711f632fb8002ff5e25eab75bc8ab6f8cee6d"
+    },
+    {
+      "case": "NOTE-001",
+      "testId": "4cb7d4df-04ae-4be5-8295-f69f0f115611",
+      "codeVersion": "v-46256b513908",
+      "sha256": "e083bc5fc66059c1606bbd7dcc0ade676bf2e3250cde43b7be589f846f2b21f0"
+    },
+    {
+      "case": "NOTE-002",
+      "testId": "43d65119-ddde-41e6-9a50-e99a370bb16b",
+      "codeVersion": "v-036dd065a36e",
+      "sha256": "7d5501a6ae6fdfa838bdd63c724fc7d9c4c0caf1730240801fb1643194ed0a55"
+    },
+    {
+      "case": "NOTE-003",
+      "testId": "7615508f-ec1e-4df0-9d67-3c4db951b18e",
+      "codeVersion": "v-3125e1508c49",
+      "sha256": "318b931b3528ab91e0efbb36d27a73c29a0dc7b5a2fa2ab94a43d2e6aa082553"
+    },
+    {
+      "case": "NOTE-004",
+      "testId": "72d4f1a0-dd72-44e9-bf92-0ccbc9a4ea4d",
+      "codeVersion": "v-ada506eb66a4",
+      "sha256": "be2ffebe5279c5b7dcf26e86d85b6de93b3e5627260c205f948a25321a1b9171"
+    },
+    {
+      "case": "PREF-001",
+      "testId": "138f2507-51c6-43ed-9a7c-c00bb2b1657e",
+      "codeVersion": "v-bd27b24e5c30",
+      "sha256": "28bfbe1c76202ed18bacd1699e9534b7c9d855682ceece44a6e20c9e288e7df2"
+    },
+    {
+      "case": "SOUN-001",
+      "testId": "06093f89-2095-4a14-b7db-101e715ae206",
+      "codeVersion": "v-ea0bc7e10d70",
+      "sha256": "aa1f5da5d6f179bf9b04abc95659963cf67856a532f13021015ace9d73d2f63e"
+    }
+  ]
+}

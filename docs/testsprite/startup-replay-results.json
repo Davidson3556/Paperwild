@@ -1,0 +1,185 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-21",
+  "applicationCommit": "e23a745",
+  "pullRequest": "https://github.com/Davidson3556/Paperwild/pull/4",
+  "target": "https://paperwild-git-living-davidson3556s-projects.vercel.app/",
+  "javascriptBundle": "index-Dg2nj_lq.js",
+  "focusedStrictReplays": [
+    {
+      "case": "NOTE-001",
+      "status": "passed",
+      "runId": "e0cce4ed-acfe-409b-ba89-541608de2420",
+      "executionId": "0ad64a4a-c390-4569-b84f-d4c7b3f83c85",
+      "codeVersion": "v-46256b513908",
+      "sha256": "e083bc5fc66059c1606bbd7dcc0ade676bf2e3250cde43b7be589f846f2b21f0",
+      "autoHeal": false,
+      "storedCodeReadback": "byte-identical",
+      "script": "overrides/NOTE-001.py"
+    },
+    {
+      "case": "NOTE-002",
+      "status": "passed",
+      "runId": "d0c56acb-a550-48de-a8aa-f935080410a3",
+      "executionId": "7000d9d5-e129-4a48-b360-2491f5f5d997",
+      "codeVersion": "v-036dd065a36e",
+      "sha256": "7d5501a6ae6fdfa838bdd63c724fc7d9c4c0caf1730240801fb1643194ed0a55",
+      "autoHeal": false,
+      "storedCodeReadback": "byte-identical",
+      "script": "overrides/NOTE-002.py"
+    },
+    {
+      "case": "NOTE-003",
+      "status": "passed",
+      "runId": "940adcb0-57df-46e2-bfdf-5ccbafd3c966",
+      "executionId": "7ed05da6-f36a-4683-b38e-049adba8b6ae",
+      "codeVersion": "v-3125e1508c49",
+      "sha256": "318b931b3528ab91e0efbb36d27a73c29a0dc7b5a2fa2ab94a43d2e6aa082553",
+      "autoHeal": false,
+      "storedCodeReadback": "byte-identical",
+      "script": "overrides/NOTE-003.py"
+    }
+  ],
+  "fullStrictBatch": {
+    "executionId": "3ab518d1-9f5f-4718-b9e3-4d71ecdff3f2",
+    "executionUrl": "https://www.testsprite.com/dashboard-v3/o/f7454a95-e992-581a-98e0-4edd142a0891/projects/dafdf75c-04a3-467f-acc2-4359af6b1d8e/execution/3ab518d1-9f5f-4718-b9e3-4d71ecdff3f2",
+    "startedAt": "2026-10-21T06:49:17Z",
+    "lastCaseFinishedAt": "2026-10-21T06:50:38Z",
+    "status": "completed",
+    "verdict": "passed",
+    "passed": 14,
+    "failed": 0,
+    "blocked": 0,
+    "skipped": 0,
+    "timedOut": 0,
+    "total": 14,
+    "autoHeal": false,
+    "storedCodeReadback": "byte-identical for all 14 reviewed scripts before replay",
+    "summaryArtifact": "startup-corrected-strict-summary.json",
+    "storedCodeManifest": "stored-code-manifest.json",
+    "screenshot": "../media/paperwild-strict-14-passed-2026-10-21.jpg",
+    "caseResults": [
+      {
+        "case": "BOAR-001",
+        "status": "passed",
+        "runId": "40e2d661-8573-42cc-b462-edf55edbb5e1"
+      },
+      {
+        "case": "BOAR-002",
+        "status": "passed",
+        "runId": "d4e8f58d-4199-45c8-abaa-bda9e27dca7b"
+      },
+      {
+        "case": "BOAR-003",
+        "status": "passed",
+        "runId": "b664a989-8439-4248-b856-8b3178c3c706"
+      },
+      {
+        "case": "BOAR-004",
+        "status": "passed",
+        "runId": "29e50d10-83bd-4794-8d43-541604a4be23"
+      },
+      {
+        "case": "BOAR-005",
+        "status": "passed",
+        "runId": "e77aa158-892b-4bfd-b089-4ca0ec1662f9"
+      },
+      {
+        "case": "BOAR-006",
+        "status": "passed",
+        "runId": "1b226944-91d8-4cb8-93b5-7f9825d76465"
+      },
+      {
+        "case": "BOAR-007",
+        "status": "passed",
+        "runId": "6e5bf9cc-ff3a-4519-8b2d-16f4b56675c0"
+      },
+      {
+        "case": "BOAR-008",
+        "status": "passed",
+        "runId": "152ee1ac-9275-41d0-a844-7d33de5a5d65"
+      },
+      {
+        "case": "NOTE-001",
+        "status": "passed",
+        "runId": "0920fc13-f0ca-47ca-a46c-c47343c3e4cf"
+      },
+      {
+        "case": "NOTE-002",
+        "status": "passed",
+        "runId": "a0dbe49c-bc40-48ac-be13-e5cc99355749"
+      },
+      {
+        "case": "NOTE-003",
+        "status": "passed",
+        "runId": "5d4d339f-3b4f-40ed-ae1b-dfb05d8af3da"
+      },
+      {
+        "case": "NOTE-004",
+        "status": "passed",
+        "runId": "14cd41eb-9899-4daf-ba73-1199750c4964"
+      },
+      {
+        "case": "PREF-001",
+        "status": "passed",
+        "runId": "c36101a7-6d47-4f9e-819e-2e5a3c11bba1"
+      },
+      {
+        "case": "SOUN-001",
+        "status": "passed",
+        "runId": "9c91381b-a6f4-4400-896f-48133c8c0ff6"
+      }
+    ]
+  },
+  "cssBundle": "index-B8LLeYdr.css",
+  "releaseState": {
+    "testedApplicationRevision": "e23a745",
+    "environment": "public pull-request preview",
+    "productionUpdatedByThisRun": false,
+    "mergeCheck": "Check the current PR head's CI and deployment before merging; this record identifies the tested application revision/assets."
+  },
+  "historicalAutomaticPortalExecution": {
+    "executionId": "ada30691-cf10-4566-88cd-0f751c9349ef",
+    "passed": 11,
+    "failed": 1,
+    "blocked": 2,
+    "total": 14,
+    "note": "Generated NOTE-003 code omitted its planned actions; green GitHub status was not a clean-suite verdict."
+  },
+  "firstFullStrictBatch": {
+    "batchId": "508a04e8-add2-46c3-8c5c-bab4bcbecdbb",
+    "status": "completed",
+    "verdict": "failed",
+    "passed": 6,
+    "failed": 8,
+    "total": 14,
+    "autoHeal": false,
+    "knownCaseResults": [
+      {
+        "case": "NOTE-001",
+        "status": "passed"
+      },
+      {
+        "case": "NOTE-002",
+        "status": "passed"
+      },
+      {
+        "case": "NOTE-003",
+        "status": "passed"
+      },
+      {
+        "case": "NOTE-004",
+        "status": "failed",
+        "runId": "3a4fdbe7-d191-491a-aabf-b6ae6248af86",
+        "failureCode": "no_stored_code",
+        "appCodeExecuted": false
+      },
+      {
+        "case": "SOUN-001",
+        "status": "failed",
+        "runId": "72b7a9bf-4b80-4476-8c17-ef8fe9351847",
+        "failure": "exported code omitted keyboard activation before asserting sound on"
+      }
+    ]
+  }
+}

@@ -1,9 +1,9 @@
 import { createLoadingScreen } from './loading-screen.ts';
-// Start warming the artwork while the game page is still being built.
-const loading = createLoadingScreen();
 import './style.css';
 import './child-sketch.css';
-import { createGame, restoreGame, chooseComputerMove, isDifficulty, isGameMode, PIECE_NAMES } from './game.ts';
+import { chooseComputerMove, isDifficulty, isGameMode, PIECE_NAMES } from './game.ts';
+import { canRevisitFinishedGame, createStartupGame, preserveFinishedGame, restoreFinishedGame } from './startup-game.ts';
+import type { FinishedGameRecord } from './startup-game.ts';
 import type { Color, MoveCoordinates, MoveInput, PieceSymbol, PromotionPiece, Square } from './game.ts';
 import { createSketchScene } from './sketch-scene.ts';
 import type { FinaleCue, RefusalReaction, SketchMotionEvent, SketchScene } from './sketch-scene.ts';
@@ -41,6 +41,7 @@ const clubNames: Record<PieceSymbol, string> = { k:'The bookish badger',q:'The f
 const voiceNames: Record<PieceSymbol, string> = { k:'badger',q:'fox',r:'stump',b:'moth',n:'hare',p:'acorn' };
 const SAVE_KEY = 'queens-conservatory.game.v1';
 const PREF_KEY = 'queens-conservatory.preferences.v1';
+const FINISHED_KEY = 'queens-conservatory.completed-game.v1';
 const studies: Study[] = [
   { id:'bloom', name:'Tea on the sidelines', label:'A lesson in captures', description:'White’s pawn on e4 can capture the pawn on d5. The woodland stretcher crew has a very small ceremony prepared.', fen:'rnbqkbnr/ppp1pppp/8/3p4/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 0 2', focus:'e4' },
   { id:'promotion', name:'Room to become', label:'A lesson in promotion', description:'Guide White’s pawn from a7 to a8. Choose what it becomes.', fen:'7k/P7/8/8/8/8/8/7K w - - 0 1', focus:'a7' },
@@ -52,10 +53,17 @@ if (!['day','dusk'].includes(prefs.atmosphere)) prefs.atmosphere = 'day';
 if (!['clear','rain'].includes(prefs.weather)) prefs.weather = 'clear';
 prefs.music = prefs.music === true;
 if (!['perspective','overhead'].includes(prefs.view)) prefs.view = 'perspective';
+// The notebook and the residents share the same saved motion preference.
+const loading = createLoadingScreen({ reducedMotion: !!prefs.reducedMotion });
 const saved = read(SAVE_KEY) as { game?: unknown; study?: unknown } | null;
-const restoredGame = restoreGame(saved?.game);
-let game = restoredGame || createGame();
-let activeStudy: Study | null = restoredGame ? studies.find(s => s.id === saved?.study && s.fen === restoredGame.serialize().initialFen) || null : null;
+const startup = createStartupGame(saved?.game, saved?.study);
+const previousFinished = restoreFinishedGame(read(FINISHED_KEY));
+let finishedRecord: FinishedGameRecord | null = startup.finished ?? (previousFinished ? {game:previousFinished.game.serialize(),study:previousFinished.study} : null);
+let protectFinishedSave = !preserveFinishedGame(startup.finished, record => localStorage.setItem(FINISHED_KEY,JSON.stringify(record)));
+let game = startup.game;
+let activeStudy: Study | null = startup.resumed ? studies.find(s => s.id === saved?.study && s.fen === game.serialize().initialFen) || null : null;
+let startupReady = false;
+let appDisposed = false;
 let selected: Square | null = null;
 let focusedSquare: Square = 'e2';
 let thinking = false;
@@ -119,7 +127,7 @@ document.querySelector('#app')!.innerHTML = `
     <footer class="footer"><div class="field-tools"><button id="field-options" aria-haspopup="dialog">Field kit ${icon('view')}</button><button id="field-notes" aria-haspopup="dialog">Journal <span id="field-capture-count">00</span></button></div><span class="field-footer-note">Leave the board. Stay in the story.</span><button id="motion" aria-pressed="false">Let it wander</button></footer>
   </div>
   <dialog id="remembrance-dialog" class="modal remembrance-modal"><button class="modal-close icon-button" data-close aria-label="Close the garden of remembrance">${icon('close')}</button><p class="eyebrow">EVERY FRIEND, REMEMBERED</p><h2>The garden of <em>remembrance.</em></h2><p id="remembrance-summary" class="remembrance-summary"></p><div id="remembrance-list" class="remembrance-list"></div><div class="modal-actions"><button class="secondary-button" data-close>Back to the story</button><button class="primary-button" id="remembrance-save">Save as a picture ${icon('download')}</button></div></dialog>
-  <dialog id="field-options-dialog" class="modal field-options-dialog"><button class="modal-close icon-button" data-close aria-label="Close field kit">${icon('close')}</button><p class="eyebrow">THE FIELD KIT</p><h2>Set out <em>your way.</em></h2><div id="field-options-host"></div></dialog>
+  <dialog id="field-options-dialog" class="modal field-options-dialog"><button class="modal-close icon-button" data-close aria-label="Close field kit">${icon('close')}</button><p class="eyebrow">THE FIELD KIT</p><h2>Set out <em>your way.</em></h2><div id="field-options-host"></div><button id="revisit-finished" class="text-button" hidden>Revisit last finished game <span aria-hidden="true">↗</span></button></dialog>
   <dialog id="field-notes-dialog" class="modal field-notes-dialog"><button class="modal-close icon-button" data-close aria-label="Close field journal">${icon('close')}</button><p class="eyebrow">COLLECTED ALONG THE WAY</p><h2>The field <em>journal.</em></h2><div id="field-notes-host"></div></dialog>
   <dialog id="help-dialog" class="modal"><button class="modal-close icon-button" data-close aria-label="Close instructions">${icon('close')}</button><p class="eyebrow">WELCOME TO THE CLUB</p><h2>Familiar chess.<br><em>Curious company.</em></h2><p>Standard chess, with a woodland cast. Amber is White, indigo is Black. Play the computer or take turns on the same device.</p><p class="voice-invitation">Every friend has a little voice. Tap “hear me” to turn sound on.</p><div class="character-legend">${(['k','q','r','b','n','p'] as const).map(p=>`<div>${portraitSlot('w',p,clubNames[p])}<strong>${PIECE_NAMES[p]}</strong><span>${clubNames[p]}</span><button class="character-voice-button" data-voice="${p}" aria-label="Hear the ${voiceNames[p]}">hear me <span aria-hidden="true">♫</span></button></div>`).join('')}</div><div class="instruction-grid"><div><strong>Choose, then move</strong><p>Select a character, then a marked square. All the usual rules apply, including castling and en passant.</p></div><div><strong>Tea on the sidelines</strong><p>A tiny stretcher crew carries captured friends to the clearing beside the game for a woodland send-off. Ring the bell, scatter petals, or leave a flower. Undo brings everyone back.</p></div><div><strong>The margins are alive</strong><p>Say hello to the little world, invite a shower, or turn the page toward moonlight.</p></div><div><strong>A quieter page</strong><p>Sound is off until you invite it in. Each friend reacts to your moves in its own voice. Pause the wandering for a still, quieter page.</p></div></div><div class="keyboard-note"><kbd>↑</kbd><kbd>↓</kbd><kbd>←</kbd><kbd>→</kbd> explore · <kbd>Enter</kbd> choose · <kbd>Esc</kbd> release · <kbd>U</kbd> undo</div><button class="primary-button" data-close>Back to the story ${icon('arrow')}</button></dialog>
   <dialog id="studies-dialog" class="modal studies-modal"><button class="modal-close icon-button" data-close aria-label="Close chess studies">${icon('close')}</button><p class="eyebrow">THREE LITTLE CHAPTERS</p><h2>Chess <em>stories.</em></h2><p>Small positions. A little room to discover. Both sides are yours to move.</p><div class="study-options">${studies.map((s,i)=>`<button data-study="${s.id}"><span class="study-index">0${i+1}</span><span><strong>${s.name}</strong><small>${s.label}</small></span>${icon('arrow')}</button>`).join('')}</div><p class="fine-print">Opening a story replaces the current game.</p></dialog>
@@ -220,7 +228,13 @@ function showToast(message: string) {
   clearTimeout(toastTimer); $('#toast').textContent=message;$('#toast').classList.add('visible');
   toastTimer=setTimeout(()=>$('#toast').classList.remove('visible'),3500);
 }
-function persist() {
+function persist(explicit = false) {
+  // A fresh-looking starter is safe even with blocked storage, but it must not
+  // silently replace the only copy of the player's completed chapter.
+  if(protectFinishedSave&&!explicit&&!activeStudy&&!game.chess.history().length){
+    $('#saved-note').textContent='Your finished chapter is safe. Make a move to start the next.';return;
+  }
+  protectFinishedSave=false;
   try { localStorage.setItem(SAVE_KEY,JSON.stringify({game:game.serialize(),study:activeStudy?.id ?? null}));$('#saved-note').innerHTML='<span></span> Your place in the story is saved.'; }
   catch { $('#saved-note').textContent='Storage unavailable. Keep this tab open to continue.'; }
 }
@@ -236,7 +250,7 @@ function cancelComputer() {
   computerEpoch++;clearTimeout(computerTimer);computerTimer=undefined;worker?.terminate();worker=null;thinking=false;
 }
 function queueComputer() {
-  if (game.mode!=='computer'||game.chess.turn()!=='b'||game.status().over||thinking) return;
+  if (!startupReady||game.mode!=='computer'||game.chess.turn()!=='b'||game.status().over||thinking) return;
   thinking=true;selected=null;render();
   const id=++computerEpoch,fen=game.chess.fen();
   const complete=(move: MoveCoordinates | null)=>{
@@ -254,6 +268,7 @@ function queueComputer() {
   },prefs.reducedMotion ? 150 : 650);
 }
 function selectSquare(square: Square) {
+  if (!startupReady) return;
   // A click during a capture skips straight to the result; chess resumes as normal.
   if(moving){scene?.settle();return;}
   if (thinking) {showToast('The club is considering a move.');return;}
@@ -345,9 +360,13 @@ function undo() {
   persist();render();sound.undo();showToast('A little room to reconsider. Your last turn is undone.');queueComputer();
 }
 function newGame() {
+  if(game.status().over){
+    finishedRecord={game:game.serialize(),study:activeStudy?.id ?? null};
+    preserveFinishedGame(finishedRecord,record=>localStorage.setItem(FINISHED_KEY,JSON.stringify(record)));
+  }
   cancelFeedback();cancelComputer();activeStudy=null;selected=null;resultDismissed=false;game.reset();focusedSquare='e2';
   pageant.reset();
-  for(const d of all<HTMLDialogElement>('dialog[open]'))d.close();persist();render();$('#garden-observation').textContent='The best things happen between the lines.';showToast('A fresh page. A whole little world.');
+  for(const d of all<HTMLDialogElement>('dialog[open]'))d.close();persist(true);render();$('#garden-observation').textContent='The best things happen between the lines.';showToast('A fresh page. A whole little world.');
 }
 const directions: Record<string, [number, number]> = {ArrowUp:[0,1],ArrowDown:[0,-1],ArrowLeft:[-1,0],ArrowRight:[1,0]};
 function boardKeyboard(event: KeyboardEvent,square: Square) {
@@ -372,16 +391,16 @@ function positionSquares() {
     if(p.points.length)button.style.clipPath=`polygon(${p.points.map(v=>`${((v.x-p.x)/p.width)*100}% ${((v.y-p.y)/p.height)*100}%`).join(',')})`;
   }
 }
-function render() {
+function render(animate = true) {
   const status=game.status(),history=game.chess.history({verbose:true}),last=history.at(-1),captures=game.captures();
   const legal=selected?game.moves(selected).map(m=>m.to):[];
   const checkSquare=status.check?game.chess.board().flat().find(p=>p?.type==='k'&&p.color===status.turn)?.square ?? null:null;
-  scene?.sync({board:game.chess.board(),selected,legal,lastMove:last||null,captures,checkSquare,finale:finaleCue});
+  scene?.sync({board:game.chess.board(),selected,legal,lastMove:last||null,captures,checkSquare,finale:finaleCue,animate});
   // Let the characters finish their tussle and departure before the clearing
   // welcomes the latest capture. Undo/reset still reconcile immediately.
   const stories=game.captureStories();
-  pageant.sync(moving && last?.captured ? stories.slice(0,-1) : stories);
-  $('#board-access').setAttribute('aria-busy',String(moving));
+  pageant.sync(moving && last?.captured ? stories.slice(0,-1) : stories,animate);
+  $('#board-access').setAttribute('aria-busy',String(!startupReady||moving));
   for(const [square,button] of squareButtons){
     const piece=game.chess.get(square),label=`${square}, ${piece?`${piece.color==='w'?'White':'Black'} ${PIECE_NAMES[piece.type]}`:'empty'}${legal.includes(square)?', legal destination':''}`;
     button.setAttribute('aria-label',label);button.setAttribute('aria-pressed',String(selected===square));button.dataset.piece=piece?`${piece.color}${piece.type}`:'';
@@ -392,11 +411,13 @@ function render() {
   const statusText=capturing?'A little tussle…':status.over?status.text:thinking?'A little thinking…':status.check?'Oh, a check!':game.mode==='computer'?'Your move.':`${status.turn==='w'?'Amber':'Indigo'} to move.`;
   $('#game-status').textContent=statusText;
   $('#game-status').dataset.turn=status.turn;$('#game-status').dataset.gameOver=String(status.over);$('#game-status').dataset.thinking=String(thinking);$('#game-status').dataset.moving=String(moving);
+  $('#game-status').dataset.entering=String(!startupReady);
   $('#turn-token').classList.toggle('ink',status.turn==='b');$('#turn-token').classList.toggle('thinking',thinking);
   const selectedType=selected?game.chess.get(selected)?.type:undefined;
   $('#turn-description').textContent=capturing?'A woodland scuffle, then the winner claims the square.':status.over?'A chapter for the club book. Time for tea?':status.check?`${status.turn==='w'?'White’s':'Black’s'} king is in check. Find a safe move.`:thinking?'Even daydreamers need a moment.':selected?`${selectedType?clubNames[selectedType]:'A friend'} on ${selected}. Choose a marked square.`:'Choose a little character to see its possibilities.';
   $('#move-counter').textContent=`Move ${String(Number(game.chess.fen().split(' ')[5])).padStart(2,'0')}`;
   button('#undo').disabled=!history.length;button('#export').disabled=!history.length;
+  button('#revisit-finished').hidden=!finishedRecord||!canRevisitFinishedGame(game,!!activeStudy);
   $('#bloom-count').textContent=String(captures.length).padStart(2,'0');
   $('#field-capture-count').textContent=String(captures.length).padStart(2,'0');
   $('#bloom-display').setAttribute('aria-label',`${captures.length} captured ${captures.length===1?'piece':'pieces'} on the sidelines`);
@@ -442,7 +463,8 @@ function applyPreferences() {
   $('#weather').setAttribute('aria-label',prefs.weather==='rain'?'Let it clear':'Let it rain');
   $('#weather').setAttribute('aria-pressed',String(prefs.weather==='rain'));
   document.documentElement.dataset.weather=prefs.weather;
-  $('#motion').setAttribute('aria-pressed',String(!!prefs.reducedMotion));$('#motion').textContent=prefs.reducedMotion?'The world, paused':'Let it wander';
+  $('#motion').setAttribute('aria-pressed',String(!!prefs.reducedMotion));$('#motion').textContent=prefs.reducedMotion?'Resume animations':'Pause animations';
+  $('#motion').setAttribute('aria-label',prefs.reducedMotion?'Resume animations':'Pause animations');
   scene?.setAtmosphere(prefs.atmosphere);scene?.setWeather(prefs.weather);scene?.setReducedMotion(!!prefs.reducedMotion);scene?.setView(prefs.view);
   atmosphere.setAtmosphere(prefs.atmosphere);atmosphere.setWeather(prefs.weather);atmosphere.setReducedMotion(!!prefs.reducedMotion);
   pageant.setReducedMotion(!!prefs.reducedMotion);
@@ -455,6 +477,16 @@ button('#new-game').onclick=()=>{dialog('#field-options-dialog').close();game.ch
 button('#confirm-new').onclick=newGame;button('#result-new').onclick=newGame;button('#leave-study').onclick=newGame;
 button('#undo').onclick=undo;button('#help').onclick=()=>dialog('#help-dialog').showModal();button('#studies').onclick=()=>{dialog('#field-options-dialog').close();dialog('#studies-dialog').showModal();};
 button('#meet').onclick=()=>dialog('#help-dialog').showModal();
+button('#revisit-finished').onclick=()=>{
+  // Never replace an ongoing chapter or a study, even if an old click arrives.
+  if(appDisposed||!startupReady||!canRevisitFinishedGame(game,!!activeStudy))return;
+  const finished=restoreFinishedGame(finishedRecord);if(!finished)return;
+  cancelFeedback();cancelComputer();game=finished.game;
+  activeStudy=studies.find(study=>study.id===finished.study&&study.fen===game.serialize().initialFen) ?? null;
+  selected=null;pendingPromotion=null;resultDismissed=true;focusedSquare='e2';pageant.reset();
+  for(const d of all<HTMLDialogElement>('dialog[open]'))d.close();persist(true);render(false);
+  showToast('Your finished chapter is back, with every friend remembered.');
+};
 /** A keepsake page of every fallen friend, which can be saved as a picture. */
 function remembranceSummary() {
   const status=game.status(),moves=game.chess.history().length;
@@ -524,10 +556,17 @@ try {
   showToast('The quiet board is ready. All chess features are available.');
 }
 const observer=new ResizeObserver(()=>{cancelAnimationFrame(resizeFrame);resizeFrame=requestAnimationFrame(()=>{scene?.resize();positionSquares();});});observer.observe($('.game-space'));observer.observe($('#scene'));
-applyPreferences();render();queueComputer();
-void loading.finish().then(()=>scene?.popUp(()=>sound.pagePop()));
+applyPreferences();render();
+if (!startup.resumed) persist();
+void loading.finish().then(async()=>{
+  if(appDisposed)return;
+  await scene?.popUp(()=>sound.pagePop());
+  if(appDisposed)return;
+  startupReady=true;render();queueComputer();
+});
 for(const eventName of ['pointerdown','keydown'])document.addEventListener(eventName,event=>{if(event.isTrusted&&prefs.sound)void sound.unlock();},{capture:true});
 window.addEventListener('pagehide',event=>{
+  if(!event.persisted)appDisposed=true;
   persist();cancelFeedback();cancelComputer();
   if(!event.persisted){
     observer.disconnect();cancelAnimationFrame(resizeFrame);clearTimeout(toastTimer);
