@@ -1,0 +1,160 @@
+# PROPOSED — NOT EXECUTED, NOT UPLOADED TO THE TESTSPRITE PORTAL.
+# These local proposal IDs do not identify existing hosted TestSprite cases.
+# The historical 14-case startup suite in portal-plan.yaml is separate evidence.
+#
+# Execution prerequisites:
+# - Use one explicitly configured frontend origin and its matching Convex backend.
+# - Record the exact frontend/backend source revision and deployment before running.
+# - Use independent browser contexts with separate sessionStorage and localStorage.
+# - Each case creates a fresh room; keep its private credentials out of artifacts/logs.
+# - The runner must support multiple contexts, real reloads, and context-level offline
+#   control. Mark a case BLOCKED if its required capability is unavailable; do not
+#   replace missing assertions with click-only or screenshot-only success.
+# - Do not create rooms on production unless that execution is explicitly authorized.
+#
+# Shared observations:
+# - board: all 64 #board-access [data-testid^="square-"] data-piece values.
+# - history: ordered SAN entries in #move-history, excluding move numbers and gaps.
+# - turn/ending/movement: #game-status data-turn, data-game-over, data-moving.
+# - synchronization: .game-space data-online-seat, data-online-revision,
+#   data-online-round, data-online-connection, and data-online-in-sync.
+# - captures: #bloom-count plus the captured side/roles in the journal/sidelines.
+# - Settlement requires both boards in sync and data-moving=false; a matching
+#   screenshot or a connected badge alone is insufficient.
+
+useCases:
+  - useCase: Online friend rooms — proposed, not executed
+    slug: ONLN
+    testCases:
+      - id: ONLN-001
+        priority: High
+        name: Two isolated players create and join through the invitation
+        description: Establishes two independent server-assigned seats and a shared starting game without borrowing saved credentials.
+        steps:
+          - Open the configured execution target in fresh independent contexts A and B. Complete or skip each notebook introduction and wait for entry to settle.
+          - In A open Across the woods and choose Write an invitation. Retain the room code and the invitation link shown by the UI, without reading or logging private credential values.
+          - assert: A has seat w, room revision 0, round 0, waiting-for-friend copy, the standard 32-piece board, no SAN plies, zero captures, and disabled move submission before the friend joins.
+          - assert: The invitation has the configured frontend origin and only the room code as a query parameter. It contains no credential or player-token parameter.
+          - Navigate B to that invitation on the same configured origin and finish its introduction.
+          - assert: B shows the invitation dialog and has no claimed seat before Take a seat is activated. Opening the URL does not silently resume A or submit a join.
+          - In B choose Take a seat. Wait for both contexts to report their own connection as connected and both boards to be in sync.
+          - assert: A remains seat w and B is seat b; their room code, revision 1, round 0, all 64 squares, empty SAN history, turn w, and zero captures agree.
+          - In A play e2-e4 and wait for both boards to settle. In B play e7-e5 and wait again.
+          - assert: Both boards show exactly e4 then e5, wp e4, bp e5, empty e2/e7, unchanged remaining pieces, White turn, zero captures, and the same revision. Neither context generates a computer reply.
+
+      - id: ONLN-002
+        priority: High
+        name: A third independent player cannot replace a taken seat
+        description: Preserves both claimed seats and their game when another browser uses the same invite.
+        steps:
+          - Establish A as White and B as Black in a fresh room. Play e2-e4 and retain each context's complete board, SAN history, turn, captures, revision, round, and seat.
+          - Open the same invitation in fresh independent context C. Finish entry and explicitly choose Take a seat.
+          - assert: C reports that the room already has two players, has no confirmed room seat, and never shows a connected shared board.
+          - assert: A and B retain their original seats and exactly the retained board/history/turn/captures/revision/round. The failed join does not add a move, reset the board, or replace either player's access.
+          - In B play e7-e5 after confirming it is Black's turn and wait for both active players to converge.
+          - assert: A and B receive the same legal second ply; C has gained no seat or shared-game control.
+
+      - id: ONLN-003
+        priority: High
+        name: Wrong-turn and illegal attempts leave both games unchanged
+        description: Checks the player-facing rejection path without optimistic board changes or phantom history.
+        steps:
+          - Establish two independent seats in a fresh room and retain the complete standard starting snapshot from A and B.
+          - In B attempt e7-e5 while White has the turn. In A attempt e2-e5, then clear selection with Escape.
+          - assert: Both complete snapshots remain unchanged, with White turn, no SAN plies, zero captures, and no revision increase caused by those attempts. No temporary unconfirmed piece appears at either destination.
+          - In A play e2-e4 and wait for both boards to settle. Retain the new shared snapshot, then attempt d2-d4 in A while it is Black's turn.
+          - assert: Both contexts keep exactly the one-ply e4 snapshot, with wp still d2 and empty d4; the wrong-turn attempt adds no revision, history, capture, or automatic reply.
+
+      - id: ONLN-004
+        priority: High
+        name: A shared capture agrees on pieces, SAN, and captured residents
+        description: Verifies a real opening capture and the same capture history in both contexts.
+        steps:
+          - Establish a fresh room with A as White and B as Black. Through the actual board controls play A e2-e4, B d7-d5, then A e4-d5, waiting for both displayed histories and movement to settle after each ply.
+          - assert: Both boards have wp d5, empty e2/e4/d7, all other pieces in their expected opening locations, Black turn, exactly e4 then d5 then exd5, and the same revision and round.
+          - assert: Both contexts show capture count 01 and exactly one captured Black pawn in their journal/sideline collection. The board has exactly 31 pieces, with no duplicate white pawn at d5 and no lingering captured pawn there.
+          - Open Journal and the garden of remembrance in each context after the capture ceremony has settled.
+          - assert: Both describe the same fallen Black resident and capturer from the legal history, with no duplicate capture or memorial after closing and reopening the dialogs.
+
+      - id: ONLN-005
+        priority: High
+        name: Shared Undo requires the other player and supports decline, accept, and cancel
+        description: Ensures requests alone never rewind a board and an agreed undo removes exactly one ply for both seats.
+        steps:
+          - Establish a fresh room and play e2-e4 then e7-e5. Retain both two-ply board/history/turn/capture snapshots.
+          - In A ask to undo. Observe A's waiting request and B's incoming request.
+          - assert: Neither board rewinds while awaiting an answer. A can cancel its own request and cannot accept it; B can accept or decline.
+          - In B decline the request and wait for both request panels to clear.
+          - assert: Both two-ply board/history/turn/capture snapshots are unchanged, and the room revision has increased consistently for the request/answer only.
+          - In A ask again and in B accept. Wait for both boards and any revival to settle.
+          - assert: Both games contain only e4, with wp e4, bp back on e7, empty e5, Black turn, zero captures, and matching new revision. Exactly one ply was removed and both seats remain unchanged.
+          - In B ask to undo and cancel that request from B.
+          - assert: The one-ply e4 game remains unchanged in both contexts; no late reply, motion, sound completion, or previous request can reapply e7-e5.
+
+      - id: ONLN-006
+        priority: High
+        name: Another game starts only after rematch consent and changes round
+        description: Distinguishes a newly agreed game from a history echo while keeping player colors.
+        steps:
+          - Establish a fresh room and play e2-e4 then e7-e5. Retain both seats, current round, and the complete two-ply board/history/turn/capture state.
+          - In B ask for another game. In A decline.
+          - assert: Both games keep the retained position and round. No fresh board appears before agreement and neither seat changes color.
+          - Ask again from B and accept in A. Wait for both boards to settle.
+          - assert: Both show the standard 32-piece board, no SAN plies or captures, White turn, matching higher revision, and round exactly one greater than before acceptance. A remains w and B remains b.
+          - In A play d2-d4 and wait for convergence.
+          - assert: Both histories contain only d4 in the new round, with no replay of e4/e5 or obsolete ceremony from the prior game.
+
+      - id: ONLN-007
+        priority: High
+        name: Reload resumes the same seat and reconstructs history without replay
+        description: Preserves per-tab identity, turn, captures, and room round through a real page reload.
+        steps:
+          - Establish a fresh room, play e2-e4, d7-d5, and exd5, then let both capture presentations and ceremonies finish. Retain A's room code, seat, revision, round, all 64 squares, SAN history, turn, and captures.
+          - Reload A on the configured execution origin using the same browser context and tab. Complete its notebook entry.
+          - assert: A resumes only after entry settles and receives the same seat w, room code, revision, round, full history, position, turn, and captured resident. B remains seat b throughout.
+          - assert: Restoring the settled capture does not replay a capture scuffle, capture stretcher, checkmate finisher, or burial ceremony and does not duplicate a captured portrait or memorial. Observe after settlement rather than treating an initial loading snapshot as the result.
+          - In B play a legal next Black move and wait for both browsers.
+          - assert: A still receives updates in its original seat, and both histories append exactly one new ply without replaying the restored history.
+
+      - id: ONLN-008
+        priority: High
+        name: Disconnection blocks submissions and reconnect converges in the same seat
+        description: Requires real context-level offline control and checks that disconnected attempts never become a later queued move.
+        steps:
+          - Establish a fresh room and settle White e2-e4. Retain B's seat b, room code, round, one-ply history, and both complete board snapshots.
+          - Take only B's browser context offline through the runner's network control. Wait until B displays reconnecting; keep A's context online.
+          - In B attempt e7-e5 and an Undo request while offline.
+          - assert: B's board/history remain at e4 with no optimistic e5 pawn or second SAN ply. A's board/history/revision remain unchanged, with no delivered Undo request. The connection copy refers to B's own connection; A does not claim B is currently online merely because its seat remains taken.
+          - Restore B's network and wait for its own connected state and both boards to be in sync.
+          - assert: B retains seat b, room code, and round; both histories still contain only e4. The disconnected move/request attempts do not execute later on reconnect.
+          - Now explicitly play e7-e5 in B and wait for settlement in both contexts.
+          - assert: Both games converge to exactly e4 then e5 with the same revision, turn, captures, and 64-square state. No duplicate Black move appears.
+
+      - id: ONLN-009
+        priority: High
+        name: Online play, failure, leave, and reload preserve the separate local save
+        description: Prevents shared snapshots and failed room attempts from replacing an existing offline game or study.
+        steps:
+          - In A start same-device local play and make d2-d4 then d7-d5. Retain its complete local game snapshot and the queens-conservatory.game.v1 value. Do not read or export online credential-storage values.
+          - In A attempt to join a well-formed fresh room code known not to exist in this isolated test deployment. Wait for the not-found error, then choose Back to my page.
+          - assert: The original local board/history/turn/captures and local save value remain unchanged and usable after the failed attempt.
+          - Create a shared room from A and join from independent B. Play a different online sequence e2-e4 then e7-e5 and settle both boards.
+          - assert: A's local save value still equals the retained d4/d5 save; incoming shared snapshots have not replaced it with e4/e5.
+          - Choose Back to my page in A.
+          - assert: A restores the d4/d5 local game with its original local mode and no active online seat; the local game can continue normally.
+          - Reload A, finish entry, and observe its local board before any explicit saved-seat return.
+          - assert: The d4/d5 local game resumes and does not silently reopen the saved online seat. An explicit Return to my seat remains a separate action.
+
+      - id: ONLN-010
+        priority: High
+        name: Postcard and room dialog remain usable by keyboard and at narrow widths
+        description: Verifies the single-page design without obscuring the board or changing the game through layout controls.
+        steps:
+          - At the execution's desktop viewport open the configured origin, finish entry, and retain the local board/history/turn/captures. Reach Across the woods with Tab and open it using Enter.
+          - assert: A native modal dialog opens with an accessible title, visible keyboard focus, invitation input label, reachable close/create/join/resume controls as applicable, and no new route or replacement dashboard.
+          - Enter a short code and a code with a forbidden 0, O, I, or 1, then submit with Enter.
+          - assert: A visible input error is announced, aria-invalid is set, focus returns to the input, no seat is claimed, and the complete local chess snapshot is unchanged.
+          - Close with Escape. Repeat at 320px and 390px wide viewports, using keyboard controls and scrolling inside the dialog where needed.
+          - assert: The postcard remains reachable, form labels and errors remain legible, every modal action is reachable without page-level horizontal overflow, and closing restores access to the same board.
+          - Establish a two-context room at the narrow viewport, open its dialog, and copy the invitation using the copy button or the visible selectable-link fallback.
+          - assert: Room code, connection status, both seat labels, consent controls, and Back to my page remain reachable. The dialog accurately labels only the user's connection and does not invent live opponent presence.

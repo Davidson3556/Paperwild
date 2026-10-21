@@ -1,0 +1,86 @@
+/* A little piece of woodland post, tucked into the same open notebook. */
+.online-postcard{position:relative;flex:none;margin:8px 0 7px;border:1px solid #a595756b;border-radius:2% 3% 1% 4%;background:linear-gradient(105deg,#f5e9cc50,#f9f5e63d);box-shadow:2px 3px 0 #86745108;isolation:isolate}
+.online-postcard::before{content:'';position:absolute;inset:3px;border:1px dashed #a595752b;pointer-events:none;transform:rotate(-.4deg)}
+.online-entry{position:relative;display:flex;align-items:center;gap:8px;width:100%;min-height:65px;padding:10px 9px;text-align:left}
+.online-entry-copy{display:flex;flex:1;flex-direction:column;gap:4px;min-width:0}
+.online-entry-copy strong{font:17px/1.1 'Schoolbell',cursive;font-weight:400;color:var(--ink);letter-spacing:-.2px}
+.online-card-note{font:11px/1.15 'Patrick Hand',cursive;color:var(--muted);max-width:140px}
+.online-entry-arrow{font:18px/1 'Patrick Hand',cursive;color:var(--rose)}
+.online-envelope{position:relative;display:block;flex:none;width:25px;height:19px;border:1px solid #a08c6b;border-radius:5% 3% 7% 2%;transform:rotate(-9deg);background:#dbc19125;overflow:hidden}
+.online-envelope::before{content:'';position:absolute;width:18px;height:18px;border:1px solid #a08c6b;left:2px;top:-12px;transform:rotate(45deg);background:#eee3c8}
+.online-envelope::after{content:'·';position:absolute;inset:0;color:#a96f5c;text-align:center;font-size:24px;line-height:19px}
+.online-card-code{display:block;text-align:center;border-top:1px dashed #ad9b7352;padding:4px 3px;font:12px/1.2 'Patrick Hand',cursive;letter-spacing:1.8px;color:var(--forest)}
+.online-postcard[data-active=true]{border-color:#8e9a746b;background:linear-gradient(105deg,#dce2c727,#f9f5e63d)}
+.online-postcard[data-needs-reply=true]{border-color:#a47359;background:#d8b48a26}
+.online-postcard[data-needs-reply=true] .online-envelope::after{content:'!';font-size:13px;line-height:17px}
+.online-room-dialog{--online-rose:#986e5b;--online-green:#697b55;position:fixed;box-sizing:border-box;width:485px;max-width:calc(100vw - 28px);max-height:calc(100dvh - 32px);margin:auto;padding:27px 31px 22px;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:#b5a785 transparent;border:1px solid #aa9978;border-radius:1% 2% 1% 1.5%;background:linear-gradient(#faf4e5a1,#f7eedcc4),url('/art/sketchbook-paper.jpg') center/1150px;box-shadow:5px 7px 0 #50452e12;color:var(--ink);font:16px/1.4 'Patrick Hand',cursive;isolation:isolate}
+.online-room-dialog::backdrop{background:#493f3347;backdrop-filter:blur(4px)}
+.online-room-dialog :is(button,input):focus-visible{outline:2px dashed var(--online-rose);outline-offset:4px}
+.online-close{position:absolute;right:9px;top:8px;display:grid;place-items:center;width:35px;height:35px;padding:0;font:28px/1 'Patrick Hand',cursive;border:1px solid transparent;border-radius:48%}
+.online-close:hover{border-color:#a5957559}
+.online-letter-heading{position:relative;padding:0 75px 11px 0;border-bottom:1px dashed #ad9d7c75;margin-bottom:15px;min-height:102px}
+.online-eyebrow{margin:0 0 9px;color:var(--muted);font:10px/1.3 'Patrick Hand',cursive;letter-spacing:1.3px}
+.online-letter-title{max-width:250px;margin:0;font:31px/1.2 'Gloria Hallelujah',cursive;letter-spacing:-1.2px;transform:rotate(-1.5deg);font-weight:400;color:var(--ink)}
+.online-postage{position:absolute;right:8px;top:9px;display:flex;align-items:center;justify-content:center;flex-direction:column;width:64px;height:76px;border:1px dashed #8d977861;outline:1px solid #8d977840;outline-offset:3px;transform:rotate(7deg);background:#9ba87b15;color:#7c8967;font:8px/1.2 'Patrick Hand',cursive;letter-spacing:1px}
+.online-postage::after{content:'';position:absolute;inset:29px -16px 6px -20px;border-top:1px solid #9c977240;border-bottom:1px solid #9c977240;border-radius:50%;transform:rotate(-22deg);pointer-events:none}
+.online-postage .online-stamp-leaf{font-size:36px;line-height:38px;letter-spacing:0;transform:rotate(-10deg)}
+.online-postage small{font:6px/1.8 'Patrick Hand',cursive;letter-spacing:.6px}
+.online-introduction,.online-unavailable{margin:0 0 17px;color:var(--muted);font:16px/1.4 'Patrick Hand',cursive}
+.online-unavailable{padding:9px 0 2px}
+.online-button{min-height:42px;padding:8px 13px;font:16px/1.2 'Patrick Hand',cursive;border:1px dashed #a7957373;border-radius:3% 2% 4% 2%;color:var(--ink);background:#f7f0dd35;text-align:center}
+.online-button:hover:not(:disabled){background:#d8dfc333;color:#5c7049}
+.online-button-primary{border:1px solid #8e9a747d;background:#a9b88725;color:#586b46}
+.online-button-primary:hover:not(:disabled){background:#a9b88742;color:#4e623c}
+.online-button:disabled{opacity:.43}
+.online-create-section>.online-button{width:100%;font:21px/1.2 'Schoolbell',cursive}
+.online-fineprint{margin:7px 0 0;color:var(--muted);font:12px/1.35 'Patrick Hand',cursive}
+.online-create-section>.online-fineprint{text-align:center}
+.online-saved-seat{margin:0 0 18px;padding:10px 12px 12px;border:1px dashed #ac98716b;background:#ddc48b13;transform:rotate(-.4deg)}
+.online-saved-seat>p{margin:0 0 9px;font:18px/1.2 'Schoolbell',cursive}
+.online-saved-seat>.online-button{width:100%}
+.online-join-form{margin:20px 0 0;padding:16px 0 0;border-top:1px dashed #ad9d7c61}
+.online-small-label{display:block;font:10px/1.2 'Patrick Hand',cursive;letter-spacing:1.1px;color:var(--muted)}
+.online-join-row{display:flex;align-items:stretch;gap:8px;margin-top:8px}
+.online-room-dialog input{min-width:0;border:1px solid #b3a27e80;border-radius:2%;background:#fffdf525;color:var(--ink);font:17px/1.2 'Patrick Hand',cursive;padding:9px 10px;box-shadow:inset 1px 1px 0 #8c795d05}
+.online-room-dialog input::placeholder{color:#a39a84;opacity:1}
+.online-code-input{flex:1;width:100%;text-transform:uppercase;letter-spacing:1.2px}
+.online-code-input[aria-invalid=true]{border-color:#ad735a}
+.online-join-button{flex:none;white-space:nowrap}
+.online-room-heading{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.online-connection{font:10px/1.2 'Patrick Hand',cursive;color:var(--online-green);text-align:right}
+.online-room-dialog[data-status=reconnecting] .online-connection,.online-room-dialog[data-status=error] .online-connection{color:var(--online-rose)}
+.online-room-code{margin:13px 0 12px;text-align:center;font:30px/1.2 'Patrick Hand',cursive;letter-spacing:3.3px;color:var(--ink)}
+.online-share-row>.online-button{width:100%;font:20px/1.2 'Schoolbell',cursive}
+.online-copy-note{margin:6px 0 0;color:var(--online-green);font:12px/1.3 'Patrick Hand',cursive}
+.online-copy-note:empty{display:none}
+.online-link-label{display:block;margin:9px 0 4px;font:11px/1.2 'Patrick Hand',cursive;color:var(--muted)}
+.online-room-dialog .online-invitation-link{display:block;width:100%;padding:6px 8px;font-size:11px;line-height:1.4;color:var(--muted);border-style:dashed}
+.online-seats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:16px 0 9px;border-top:1px dashed #ad9d7c61;border-bottom:1px dashed #ad9d7c61;padding:10px 0}
+.online-seat{margin:0;font:13px/1.2 'Patrick Hand',cursive;display:flex;align-items:center;gap:6px}
+.online-seat::before{content:'';display:block;flex:none;width:8px;height:8px;border:1px solid #b39152;border-radius:44% 56% 43% 60%;background:#d3ad6e80}
+.online-seat[data-seat=b]::before{border-color:#75809d;background:#7d88b085}
+.online-permission{margin:10px 0 13px;font:15px/1.4 'Patrick Hand',cursive;color:var(--muted)}
+.online-game-actions,.online-request-actions{display:flex;gap:8px}
+.online-game-actions>.online-button,.online-request-actions>.online-button{flex:1;font-size:14px}
+.online-consent-note{margin-top:7px}
+.online-request{border:1px dashed #aa896c7d;padding:11px 12px 12px;background:#d8bb8a14;transform:rotate(-.25deg)}
+.online-request-title{margin:0;color:var(--ink);font:18px/1.25 'Schoolbell',cursive}
+.online-request .online-fineprint{margin:5px 0 10px}
+.online-request>.online-button{font-size:13px;min-height:36px}
+.online-status-note{margin:13px 0 0;padding:9px 0 0;border-top:1px dashed #ad9d7c61;color:var(--online-green);font:13px/1.35 'Patrick Hand',cursive}
+.online-error{margin:12px 0 0;padding:9px 11px;border-left:2px solid #b38368;background:#c99a6e0c;color:#955d47;font:14px/1.35 'Patrick Hand',cursive;overflow-wrap:anywhere}
+.online-leave-area{display:flex;align-items:center;gap:14px;margin:17px 0 0;padding:13px 0 0;border-top:1px dashed #ad9d7c61}
+.online-leave-area>.online-button{flex:none;padding:8px 0;min-height:42px;border:0;border-bottom:1px dashed #ad9d7c61;font-size:14px;white-space:nowrap;color:var(--online-rose)}
+.online-leave-area>.online-fineprint{margin:0;font-size:11px}
+.online-room-section>.online-button{margin-top:12px;width:100%}
+.field-options-dialog .online-postcard{max-width:100%;margin-top:15px}
+.field-options-dialog .online-entry{min-height:60px;padding:10px 13px}
+.field-options-dialog .online-card-note{max-width:none;font-size:12px}
+.field-options-dialog .online-entry-copy strong{font-size:20px}
+[data-atmosphere=dusk] .online-postcard{background:#c0c5d116;border-color:#8e98ad65}
+[data-atmosphere=dusk] .online-envelope::before{background:#dde0e2}
+[data-atmosphere=dusk] .online-room-dialog{--online-rose:#826a81;--online-green:#647493;background:linear-gradient(#e8e9e6d4,#e2e4e4cf),url('/art/sketchbook-paper.jpg') center/1150px}
+[data-atmosphere=dusk] .online-button-primary{color:#596982;background:#a0b0c526;border-color:#8896ac85}
+@media(min-width:901px) and (max-height:760px){.online-postcard{margin-top:4px;margin-bottom:4px}.online-entry{min-height:54px;padding:7px}.online-entry-copy strong{font-size:15px}.online-card-note{font-size:10px}.online-envelope{width:22px;height:17px}.online-envelope::before{left:0}.online-card-code{font-size:10px;padding:3px}}
+@media(max-width:430px){.online-room-dialog{padding:24px 19px 18px;max-height:calc(100dvh - 20px);max-width:calc(100vw - 20px)}.online-letter-title{font-size:27px;letter-spacing:-1px}.online-letter-heading{padding-right:66px;min-height:95px}.online-postage{right:4px;width:56px;height:68px;top:12px}.online-room-code{font-size:26px;letter-spacing:2px}.online-join-row{gap:5px}.online-room-dialog .online-code-input{padding:9px 7px;font-size:15px;letter-spacing:.6px}.online-join-button{font-size:14px;padding:8px 10px}.online-room-heading{gap:5px}.online-connection{font-size:9px}.online-small-label{font-size:9px}.online-seat{font-size:11px}.online-seats{gap:5px}.online-leave-area{gap:10px}.online-leave-area>.online-fineprint{font-size:10px}.online-game-actions>.online-button,.online-request-actions>.online-button{font-size:13px;padding:8px}}
+@media(prefers-reduced-motion:reduce){.online-room-dialog[open]{animation:none}}

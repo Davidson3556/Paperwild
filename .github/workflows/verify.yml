@@ -36,5 +36,8 @@ jobs:
       - name: Run tests
         run: npm test
 
+      - name: Test multiplayer authorization and transactions
+        run: npm run test:convex
+
       - name: Check types and build production assets
         run: npm run build
