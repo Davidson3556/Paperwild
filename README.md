@@ -2,24 +2,37 @@
 
 **Chess, drawn to life.** A woodland chess club in a pencil field notebook: watercolor characters blink, wave their team mittens, celebrate a good move, and turn every capture into a small cartoon story.
 
-[Play the published demo](https://paperwild.vercel.app/) · [TestSprite Hackathon Season 4](https://www.testsprite.com/hackathon-s4) · [Verification records](#testing-and-evidence)
+[Play the published demo](https://paperwild.vercel.app/) · [Try the PR #5 preview](https://paperwild-git-feat-convex-multiplayer-davidson3556s-projects.vercel.app/) · [Review PR #5](https://github.com/Davidson3556/Paperwild/pull/5) · [TestSprite Hackathon Season 4](https://www.testsprite.com/hackathon-s4) · [Verification records](#testing-and-evidence)
 
-**Version status:** the startup correction in [PR #4](https://github.com/Davidson3556/Paperwild/pull/4) passed **94/94 local tests** and **14/14 TestSprite cases with auto-heal disabled** on the public preview (`e23a745`, `index-Dg2nj_lq.js`). TypeScript, build, CI and Vercel preview passed for that application revision. Check the current PR head's CI and deployment before merging; this record identifies the tested application revision and assets. Production remains on `main` until the PR is merged.
+**Published release:** [PR #4](https://github.com/Davidson3556/Paperwild/pull/4) is merged into `main` at `3240b0d`. Its startup correction passed **94/94 local tests** and **14/14 TestSprite cases with auto-heal disabled** on the identified preview (`e23a745`, `index-Dg2nj_lq.js`). Those results describe the published startup release.
 
-[Test the correction preview](https://paperwild-git-living-davidson3556s-projects.vercel.app/) · [Startup evidence and runner investigation](docs/STARTUP_VERIFICATION_2026-10-21.md)
+**Current draft PR:** [PR #5](https://github.com/Davidson3556/Paperwild/pull/5) publishes `feat/convex-multiplayer`, including first-visit onboarding, mandatory opponent selection and Convex friend rooms. The public preview at `c6648a0` is verified against Cloud Development backend `fast-starling-207`, configured only for that branch's Vercel Preview environment. At that head, [regular CI](https://github.com/Davidson3556/Paperwild/actions/runs/40126724971) passed **150 app/gate tests, 20 backend tests, TypeScript and build**, and the [strict TestSprite workflow](https://github.com/Davidson3556/Paperwild/actions/runs/40126724942) passed **16/16 frontend regression cases**. Full four-case hosted multiplayer acceptance remains pending. See the [cloud verification record](docs/CONVEX_CLOUD_VERIFICATION_2026-10-24.md) for the runner failure and focused recovery evidence. Production remains at `3240b0d`, with no Convex configuration; the PR is unmerged.
+
+**Historical pre-cloud evidence:** The [October 24 sixteen-case TestSprite replay](https://www.testsprite.com/dashboard-v3/o/f7454a95-e992-581a-98e0-4edd142a0891/projects/dafdf75c-04a3-467f-acc2-4359af6b1d8e/execution/625ffd76-0868-49a4-b6f2-f7f878e2e965) passed **16/16**, dispatched with `--no-auto-heal`. The [verification record](docs/TESTSPRITE_ONBOARDING_RUN_2026-10-24.md), [completed replay/source audit](docs/testsprite/pr5-strict-verification.json) and [archived script manifest](docs/testsprite/pr5-pre-cloud-stored-code-manifest.json) identify the earlier frontend without a hosted backend. Those passes do not establish acceptance of the newly configured cloud build.
+
+**Automatic PR check:** The later agent-driven App run finished **8 passed / 3 failed / 3 blocked / 2 cancelled** and remains a failed result. Its [recorded audit](docs/TESTSPRITE_AUTOMATIC_PR_AUDIT_2026-10-24.md) identifies concrete sequence and assertion defects. The [strict Actions workflow in this PR](docs/TESTSPRITE_PR_GATE.md) runs the sixteen reviewed scripts; its encrypted credential is configured and the old trigger is disabled. The App stays installed. Check the actual job and artifacts on the [current PR checks](https://github.com/Davidson3556/Paperwild/pull/5/checks) for the latest-head result.
+
+[Local multiplayer verification and screenshots](docs/CONVEX_VERIFICATION_2026-10-22.md) record two synchronized browsers, captures, agreed Undo/rematch, reload, offline-save separation and phone-size controls against the local backend.
+
+The [October 24 onboarding verification](docs/ONBOARDING_VERIFICATION_2026-10-24.md) records 131 passing app tests, the production build, and browser checks of mandatory first choice, guide replay, returning games and invitations. The earlier [optional chooser checks](docs/NEW_GAME_VERIFICATION_2026-10-24.md) retain their original scope. Follow the [entry and two-window testing walkthrough](docs/CONVEX_SETUP.md#first-visit-and-opponent-choice) to try the local flows yourself.
+
+[Historical startup evidence and runner investigation](docs/STARTUP_VERIFICATION_2026-10-21.md)
 
 ![Actual local field notebook with the woodland cast, team mittens, camp, and remembrance clearing](docs/media/paperwild-additions-desktop.jpg)
 
 ## Contents
 
 - [The game](#the-game) · [Run locally](#run-locally) · [Playing and controls](#playing-and-controls)
-- [Gameplay flowchart](#game-flow) · [App architecture](#app-architecture) · [Project structure](#project-structure)
+- [Gameplay flowchart](#game-flow) · [Online friend flow](#online-friend-flow) · [App architecture](#app-architecture) · [Project structure](#project-structure)
+- [Convex setup and deployment](docs/CONVEX_SETUP.md)
 - [Testing and evidence](#testing-and-evidence) · [Testing and release workflow](#testing-and-release-workflow)
 - [Deployment and hackathon status](#deployment-and-hackathon-status)
 
 ## The game
 
-- **Standard chess, curious company.** Play the computer at three bounded difficulty levels or take turns with a friend on one device. Castling, en passant, four promotion choices, checkmate, and draw conditions follow `chess.js`.
+- **Standard chess, curious company.** Play the computer at three bounded difficulty levels or take turns with a friend on one device. The PR also implements shared online games when a matching Convex backend is configured. Castling, en passant, four promotion choices, checkmate, and draw conditions follow `chess.js`.
+- **A little help before the first move.** A first-visit tour points out the board, Field kit, Journal, and optional sound. Then choose the club or a friend before a fresh game can begin. The first required choice has no preselected opponent. Returning unfinished games keep their history, and **How to play → Take a quick tour** reopens the guide without resetting them.
+- **Across the woods.** A small postcard opens a room dialog on the existing game page. Write an invitation to take Amber/White, then send its link or 12-character code to the friend who takes Indigo/Black. Both seats must be taken before play begins. The server authorizes each turn and publishes the shared board; both browsers present its moves through the existing characters and capture stories. Undo takes back one ply with the other player's agreement, and another game starts only after an accepted rematch. Rooms last 24 hours from creation. Your own connection is shown honestly; a taken friend seat does not claim that the friend is currently online.
 - **A cast with personality.** Acorn pawns, stump rooks, hare knights, moth bishops, fox queens, and badger kings breathe, blink, and move in their own ways. Hover brings a smile and wave; selection adds a delighted jump. Ask for an impossible move and the character scrunches its eyes into “> <”, shakes its head and wags a mitten (“nuh-uh!”, “certainly not!”) while the square is crossed out in red. Touching the other side's piece gets a “not yours!”, a piece with no moves says it's stuck, and the message explains when your king is in check. Keep insisting and the cast shows its temperament: stumps, foxes and badgers scowl with angry eyebrows, flush red, stomp and let off steam (“hmph!” then “GRRR!”), while acorns, hares and moths raise worried eyebrows, droop and cry, with a rain cloud on the third try (“aww…” then “waaah!”). A calm pause or a legal move resets them. Amber/White and Indigo/Black have matching mittens, scarves, and distinct ground washes.
 - **A finishing move for every checkmate.** The mating move becomes a five-second anime-style finisher: cinema bars close in and the page turns pencil-grey, the camera pushes in while the attacker powers up under its move name ("Foxfire Finale!", "Hare-Raising Leap!"), a frozen half-beat ends in a flash, and the attacker dashes in on the drop. A pencil bolt topples the king, CHECKMATE is stamped on the page, and the winning team jumps for joy while the losers droop. A captured piece in the mating move blasts off with a twinkle. It is scored with an original 128 BPM edit-style cue made in code, with a riser, half a beat of silence and a drop on the strike, in the winner's key. Clicking skips to the result. Reduced motion leaves it out, and it never flashes more than twice a second.
 - **Every friend has a name, and a send-off of its own.** The standard starting set's 32 residents are named by their starting square (amber Pip, Tuck and Foxglove; indigo Rowan, Old Grizzle and Vixen Velvet), and the game follows each one through moves, castling, promotion and en passant. Studies and custom starting positions use a species title when the original named identity is unavailable. Sermons tell the real story ("Here lies Rowan of d7, who marched 2 brave steps… Taken by Tuck on d5, move 2") and never repeat back to back. The fallen piece's own team carries and mourns it, and its capturer shuffles over with a flower and a "sorry…". Ceremonies scale with importance: a humble send-off for an acorn, a tolling bell for a stump, and a state funeral for a fox, with a flag at half-mast, a trumpet, mourners and a twenty-one-acorn salute. When several are waiting, the woodland hurries along. Undo is a comedy beat: the friend climbs out of its grave (or sits up on the stretcher) shouting "Not dead yet!" and hops back onto the board with an "I'm back!". The **Garden of Remembrance** lists every fallen friend with its name, epitaph and story, and exports a PNG keepsake. Open it through Journal, or from the result card when the game has captures.
@@ -33,20 +46,24 @@ For a short walkthrough, follow the [90-second demo script](docs/DEMO_SCRIPT.md)
 
 ## Run locally
 
-Requires **Node.js 22.18+** and npm. The app needs no backend, account, API key, or `.env` file.
+Requires **Node.js 22.18+** and npm. Computer and same-device play work without a backend, account, API key, or `.env` file. Online friend play additionally needs a running Convex deployment and its public `VITE_CONVEX_URL`.
 
 ```sh
 git clone https://github.com/Davidson3556/Paperwild.git
 cd Paperwild
+git switch feat/convex-multiplayer
 npm ci
 npm run dev
 ```
 
-Open **http://127.0.0.1:4173**. A clone checks out `main`. Startup fixes on an unmerged branch require that branch's working tree or preview; verify the exact deployed commit before comparing results.
+Open **http://127.0.0.1:4173**. A clone initially checks out the published `main`; the `git switch` above checks out the remote feature branch for PR #5, which contains onboarding and multiplayer.
+
+For online play, start **`npm run convex:dev`** in another terminal and follow the CLI setup prompts. Choose a local deployment to develop on this machine. The CLI generates `.env.local`, including `VITE_CONVEX_URL`, and the generated API files. Keep it running, then restart Vite so the URL is loaded. Two tabs can take separate seats. See [Convex setup](docs/CONVEX_SETUP.md) for the complete local and cloud instructions.
 
 ```sh
-npm test              # rules, motion, capture queue, voice PCM, audio lifecycle
-npm run typecheck     # strict TypeScript
+npm test              # offline behavior, browser transport, snapshot reconciliation
+npm run test:convex   # isolated backend authorization, rules, and transaction tests
+npm run typecheck     # strict frontend and Convex TypeScript
 npm run build         # type-check, then create dist/
 npm run preview       # serve dist/ locally
 ```
@@ -55,11 +72,21 @@ Development and preview both default to port 4173; stop one before starting the 
 
 ## Playing and controls
 
-Select a character, then a marked destination. In **Against the club**, you play Amber/White; **With a friend** shares both sides on the same device. Difficulty labels are Sleepy, Thoughtful, and Mischievous, not Elo ratings.
+On your first visit, let the notebook entry finish and follow the short tour of the board, **Field kit**, **Journal**, and **Sound**. The guide explains where to play, change settings, read moves, and opt into voices; completing it does not choose an opponent or enable sound for you. Open **How to play → Take a quick tour** to see it again without replacing your game.
+
+A fresh page then requires **Who will you play?** before chess input is enabled. No opponent is preselected: choose **Against the club**, **With a friend**, or configured **Across the woods**, then confirm. Escape, closing a dialog, and reloading an unconfirmed fresh page cannot silently start a club game. A valid unfinished game with history, an explicit study, or an already confirmed empty starting board can resume without being replaced by this first-game flow. Tour completion and opponent confirmation are remembered separately.
+
+Once your choice is confirmed, select a character, then a marked destination. In **Against the club**, you play Amber/White; **With a friend** shares both sides on the same device. **Across the woods** opens the online invitation dialog when Convex is configured. Difficulty labels apply to the computer and are Sleepy, Thoughtful, and Mischievous, not Elo ratings.
+
+After a game has been chosen, starting another offline game opens **Who will you play?** with **Against the club** selected by default. Opening, changing, or canceling this optional choice with **Keep this page** preserves the current game; confirming a computer or same-device game starts a standard board. **Open invitation** keeps your local game safe while you acquire a seat. When no local opponent has been confirmed, dismissing an invitation returns to the required chooser, with the board still gated. An active online game's new-game action requests a rematch from the other player.
 
 | Control | What it does |
 | --- | --- |
 | **Field kit** | Choose mode/difficulty, begin a fresh game, or open Little chess stories. |
+| **How to play → Take a quick tour** | Replay the brief navigation guide without resetting the board, history, or opponent. |
+| **A fresh page / Another adventure / Return to a full game** | Choose an opponent before replacing an offline game or study; **Against the club** is the default. An active online room requests a rematch instead. |
+| **Across the woods** | Create or join a shared game, copy its invitation, resume a seat, or return to the local page. |
+| Online **Ask to undo / Ask for another game** | Ask the other player to take back one ply or start a new game. They can accept or decline; the sender can cancel. |
 | **Field kit → Revisit last finished game** | Restore the last completed chapter, available only from an untouched full starting board. |
 | **Journal** | Read SAN move history, see captured friends, and download `paperwild-game.pgn`. |
 | **Journal → The garden of remembrance** | Read each captured resident's name and epitaph. **Save as a picture** downloads `paperwild-garden-of-remembrance.png` when there are captures. |
@@ -68,16 +95,22 @@ Select a character, then a marked destination. In **Against the club**, you play
 | **Pause animations / Resume animations** | Remember motion preference; paused characters rest with eyes open. A still board can retain opted-in action sounds. |
 | **Skip introduction** | Open when ready or skip the notebook opening; the visible board entry then finishes before play. |
 | **Daydream / Moonlight**, rain, **Say hello** | Change the atmosphere or greet the camp. |
-| Arrow keys, **Enter**, **Escape**, **U** | Explore squares, choose, release selection, and undo. |
-| Click a board square during movement | Settle the visual sequence immediately so play can continue. |
+| Arrow keys, **Enter**, **Escape**, **U** | Explore squares, choose, release selection, and undo; online Undo sends a request. |
+| Click a board square during movement | Settle the visual sequence immediately. Online move submission still waits for the displayed board to match the server. |
 
 Squares announce their coordinate, side, conventional chess role, and legal-destination state. Visible focus, image-failure fallbacks, system reduced-motion defaults, and sound/motion controls support different ways to play. The single-screen layout keeps the main board visible; overlays may scroll when their contents need more room.
 
-Games and preferences stay in this browser and origin. Both play modes run locally; there is no online multiplayer or cloud save. Restoring an unfinished game rebuilds capture stories and memorials without replaying ceremonies. A completed save opens a fresh board and is archived for explicit revisiting. If the archive cannot be written, startup preserves the original finished save until the player explicitly starts the next chapter. An unfinished computer turn waits until notebook entry settles before replying.
+Computer games, same-device games, studies, and preferences stay in this browser and origin. Restoring an unfinished local game rebuilds capture stories and memorials without replaying ceremonies. A completed local save opens a fresh board and is archived for explicit revisiting. If the archive cannot be written, startup preserves the original finished save until the player explicitly starts the next chapter. An unfinished computer turn waits until notebook entry settles before replying.
+
+Online rooms keep their shared history in Convex while your local game waits safely. Joining, reconnecting, and receiving online moves do not replace that local save; **Back to my page** restores it. A failed room attempt restores the local page and offers a retry or return. Moves cannot be submitted while disconnected or while the displayed board is catching up, and a click never advances an unconfirmed online board.
+
+For a hands-on multiplayer check, use a normal and private window on this computer: create an invitation, join as the second player, then play **e2 → e4**, **d7 → d5**, and **e4 → d5** in alternating windows. Compare the capture, history, agreed Undo, reload, and rematch in both. Enable **Sound on** separately in each window. The [two-seat walkthrough](docs/CONVEX_SETUP.md#try-two-seats) includes expected results, smaller-screen controls, expired-room recovery, and the hosted-backend requirement for remote friends.
+
+Each seat uses a private random credential whose SHA-256 hash is stored by the backend. Invitation URLs contain only the room code. The active seat is stored per tab for reload; a separate saved seat requires an explicit return action in a new tab. Automatic resume waits until the notebook introduction finishes and uses only that tab's active credential. Reconnection keeps the same seat, and expired rooms report an error instead of remaining apparently connected. Clearing browser storage can lose access to a seat; there are no accounts or account-based seat recovery.
 
 ## Game flow
 
-The solid arrows follow a turn. The dotted arrows show the optional capture ceremony, which continues beside the game after board movement settles.
+This diagram follows computer and same-device play. Dotted arrows show the optional capture ceremony, which continues beside the game after board movement settles. Online play uses the same presentation after the server confirms its board, as shown in the next flow.
 
 ```mermaid
 flowchart TD
@@ -89,7 +122,16 @@ flowchart TD
     complete -->|"No"| restore["Restore exact unfinished game and study"]
     fresh --> entry["Reveal notebook, draw grid, unfold residents"]
     restore --> entry
-    entry --> mode["Entry settles; resume turn or choose a mode/study"]
+    entry --> resumable{"Chosen unfinished game or study?"}
+    resumable -->|"Yes"| mode["Resume preserved game or study"]
+    resumable -->|"No"| tour{"First-visit tour completed?"}
+    tour -->|"No"| guide["Explain board, Field kit, Journal, and Sound"]
+    guide --> required["Required opponent chooser; nothing preselected"]
+    tour -->|"Yes"| required
+    required -->|"Confirm club or same-device friend"| firstReady["Remember choice; enable the chosen game"]
+    firstReady --> selection
+    required -->|"Choose online"| online["Open invitation; retain local game until taking a seat"]
+    required -.->|"Escape or dismissal"| required
     mode -.->|"Untouched full board only"| revisit["Field kit: Revisit last finished game"]
     revisit --> finished["Restore terminal history, captures and remembrance"]
     mode --> selection["Select a character and destination"]
@@ -109,7 +151,13 @@ flowchart TD
     capture --> settled
     finale --> settled
     settled --> gameOver{"Game over?"}
-    gameOver -->|"Yes"| result["Show result; offer a fresh game"]
+    gameOver -->|"Yes"| result["Show result; offer Another adventure"]
+    mode -.->|"A fresh page or Return to a full game"| opponent["Choose an opponent; Against the club selected"]
+    result --> opponent
+    opponent -->|"Keep this page"| unchanged["Keep current game or study unchanged"]
+    opponent -->|"Confirm computer or same-device"| reset["Reset standard board in chosen mode"]
+    reset --> selection
+    opponent -->|"Choose online when configured"| online
     gameOver -->|"No"| computerTurn{"Computer turn?"}
     computerTurn -->|"No"| selection
     computerTurn -->|"Yes"| search["Find a legal computer reply"]
@@ -120,14 +168,49 @@ flowchart TD
     classDef story fill:#f4ead4,stroke:#9a7c53,color:#3f3428
     classDef decision fill:#e6eddf,stroke:#7e916c,color:#2f3b29
     class notebook,refusal,capture,finale,ceremony,remembrance story
-    class saved,complete,legal,promotion,presentation,gameOver,computerTurn decision
+    class saved,complete,resumable,tour,legal,promotion,presentation,gameOver,computerTurn decision
 ```
 
-Valid settings survive either restore path. Entry settles before a restored computer reply. Skip introduction shortens the cover sequence; the board's pencil drawing and pop-up still finish before play. Reduced motion reveals a complete upright board directly. The rules position then commits once per turn. Movement, capture departure, or finale settles before the next turn/result; the memorial ceremony proceeds independently. Undo, restart, and story replacement cancel obsolete animation, sound, and computer work.
+Valid settings survive either restore path. Entry settles before a restored computer reply. Skip introduction shortens the cover sequence; the board's pencil drawing and pop-up still finish before play. Reduced motion reveals a complete upright board directly. New visitors see the navigation guide before choosing their first opponent; a returning chosen game or study is not reset for onboarding. Completing the guide alone cannot release an unconfirmed board. The rules position then commits once per turn. Movement, capture departure, or finale settles before the next turn/result; the memorial ceremony proceeds independently. Undo, restart, and story replacement cancel obsolete animation, sound, and computer work.
+
+## Online friend flow
+
+The postcard and dialog stay on the existing game page. An invitation keeps its prefilled code through any first-visit tour, then opens the dialog; taking a seat remains an explicit action. No invitation silently occupies a seat or releases an unconfirmed local board. A returning active seat waits for server confirmation before input is enabled. The first friend to join claims the available Indigo seat.
+
+```mermaid
+flowchart TD
+    entry["Notebook introduction and any first-visit guide settle"] --> postcard["Open Across the woods or prefilled invitation"]
+    postcard --> choose{"Create, join, or resume?"}
+    choose -->|"Create or join"| credential["Persist a private seat credential in this tab"]
+    credential --> reserve["Convex transaction reserves the seat"]
+    choose -->|"Resume own tab or explicit saved seat"| subscribe["Subscribe with the same credential"]
+    reserve --> subscribe
+    subscribe --> confirmed["Server confirms seat and room snapshot"]
+    confirmed --> ready{"Both seats taken?"}
+    ready -->|"No"| invite["Copy invitation and wait"]
+    invite --> confirmed
+    ready -->|"Yes"| play["Choose a legal move on your turn"]
+    play --> submit["Send move with expected revision"]
+    submit --> server["Server authorizes the change against revision, expiry, and chess history"]
+    server --> snapshot["Reactive snapshot reaches both players"]
+    snapshot --> present["Append confirmed moves or restore undo and rematch"]
+    present --> settled["Displayed history catches up and motion settles"]
+    settled --> play
+    play -.-> consent["Ask for undo or rematch"]
+    consent --> answer["Friend accepts or declines; sender can cancel"]
+    answer --> server
+    subscribe -.-> lost["Connection lost: submissions wait"]
+    lost -->|"Reconnect using the same seat"| subscribe
+    postcard -.-> leave["Back to my page restores the local game"]
+    subscribe -.-> failure["Missing, expired, or invalid seat: visible error"]
+    failure --> leave
+```
+
+A new move cancels outstanding requests. An accepted undo removes one ply; an accepted rematch resets the board with the same colors and room expiry. The room revision always increases, and the rematch round changes so a new game is presented as a fresh page. A reconnect restores the latest authoritative history without inventing moves or assigning a new seat.
 
 ## App architecture
 
-Everything below runs in the player's browser. Vite produces static files for hosting; the computer search runs in a Web Worker. Games and preferences are saved to this browser's origin.
+Vite produces static frontend files. Local chess, computer search, and presentation run in the browser; online rooms use Convex functions and database transactions. The frontend build selects its backend through the public `VITE_CONVEX_URL`.
 
 ```mermaid
 flowchart TD
@@ -135,6 +218,13 @@ flowchart TD
     lifecycle <-->|"Validate and update"| rules["game.ts and chess.js"]
     lifecycle <-->|"Position in; reply out"| worker["ai.worker.ts: bounded search"]
     lifecycle <-->|"Save and restore"| saves[("Browser localStorage")]
+    postcard["Online postcard and dialog"] --> lifecycle
+    lifecycle <-->|"Moves, requests, and authoritative snapshots"| session["online-session.ts: seat and connection lifecycle"]
+    lifecycle <-->|"Compare displayed and server history"| sync["online-sync.ts: append or restore"]
+    session <-->|"Private active and saved seats"| seatStorage[("sessionStorage and separate localStorage keys")]
+    session <-->|"Reactive WebSocket queries and mutations"| rooms["Convex rooms.ts: authorize and transact"]
+    rooms --> serverRules["Server chess.js: replay history and validate moves"]
+    rooms <-->|"Room, hashes, history, revision, round, expiry"| database[("Convex rooms database")]
     lifecycle -->|"Board state"| scene["sketch-scene.ts: characters and motion"]
     rules -->|"Full capture history"| residents["Resident identities and stories"]
     residents -->|"Named captures"| memorials["Ceremonies and remembrance export"]
@@ -148,7 +238,7 @@ flowchart TD
     class scene,residents,memorials,audio story
 ```
 
-The rules and recorded move history determine the result, names, and capture stories. Animations present that state. If a worker reply becomes obsolete after Undo or a new game, it is discarded; a worker failure falls back to local search. Online multiplayer and Convex remain deferred.
+The rules and recorded move history determine the result, names, and capture stories. Animations present that state. If a worker reply becomes obsolete after Undo or a new game, it is discarded; a worker failure falls back to local search. In online play the backend validates every change, while the client subscribes to seat-specific snapshots and uses the normal move animations only for confirmed history extensions. Rewinds, divergent history, and new rematch rounds replace the displayed position safely. Connection status describes this browser's transport; there is no opponent-presence service.
 
 ## Implementation
 
@@ -158,6 +248,8 @@ The rules and recorded move history determine the result, names, and capture sto
 | --- | --- |
 | Rules, saves, bounded computer search | [game.ts](src/game.ts), [ai.worker.ts](src/ai.worker.ts) |
 | Controls, preferences, turn sequencing | [main.ts](src/main.ts) |
+| Online postcard, credentials, transport, and reconciliation | [online-room-ui.ts](src/online-room-ui.ts), [online-session.ts](src/online-session.ts), [online-sync.ts](src/online-sync.ts), [online-types.ts](src/online-types.ts) |
+| Shared room transactions, rules, and authorization | [rooms.ts](convex/rooms.ts), [schema.ts](convex/schema.ts) |
 | Board, character rigs, gait and capture plans | [sketch-scene.ts](src/sketch-scene.ts), [piece-motion.ts](src/piece-motion.ts), [capture-motion.ts](src/capture-motion.ts) |
 | Faces, moving appendages, team mittens | [character-face.ts](src/character-face.ts), [character-idle.ts](src/character-idle.ts), [character-mittens.ts](src/character-mittens.ts) |
 | Notebook opening and checkmate clock | [loading-screen.ts](src/loading-screen.ts), [finale-motion.ts](src/finale-motion.ts) |
@@ -176,13 +268,18 @@ Paperwild/
 │   ├── main.ts                 # Controls, saves, and turn lifecycle
 │   ├── game.ts                 # Chess rules and capture history
 │   ├── ai.worker.ts            # Computer search
+│   ├── online-session.ts       # Convex subscriptions and private seat lifecycle
+│   ├── online-sync.ts          # Authoritative history reconciliation
+│   ├── online-room-ui.ts       # Postcard and invitation dialog
 │   ├── sketch-scene.ts         # Illustrated board and character animation
 │   ├── capture-pageant.ts      # Queued ceremonies and memorials
 │   ├── resident-stories.ts     # Names, sermons, and epitaphs
 │   ├── remembrance.ts          # Remembrance cards and PNG download
 │   └── sound.ts                # Procedural sound and radio
 ├── public/                     # Watercolor artwork and static assets
+├── convex/                     # Room schema, server functions, and backend tests
 ├── tests/                      # Rules, motion, story, and audio tests
+│   └── integration/            # Opt-in local Convex WebSocket integration tests
 ├── docs/
 │   ├── media/                  # Screenshots and exported keepsakes
 │   └── testsprite/             # Acceptance plans and sanitized results
@@ -193,9 +290,17 @@ The tree highlights the entry points; the implementation table above links the s
 
 ## Testing and evidence
 
-Local test files cover chess integrity, deterministic gait/capture plans, resident histories and naming, ceremony queue reconciliation, procedural voice signals, and mocked audio opt-in/cancellation/cleanup. `npm run build` includes strict type checking. These checks are separate from actual browser observations and physical listening quality.
+Local test files cover chess integrity, deterministic gait/capture plans, resident histories and naming, ceremony queue reconciliation, procedural voice signals, mocked audio lifecycle, and online transport/history reconciliation. Backend tests exercise real Convex function handlers in `convex-test`; separate opt-in integration tests connect real WebSocket clients to a local backend. `npm run build` includes strict frontend and backend type checking. These checks are separate from actual browser observations and physical listening quality.
 
-- **October 21 startup correction: 94/94 tests, strict TypeScript, and build passed**, producing `index-Dg2nj_lq.js`. CI and Vercel preview passed at application revision `e23a745`; recheck [PR #4 checks](https://github.com/Davidson3556/Paperwild/pull/4/checks) after subsequent commits. Direct browser checks verified a readable paused loader, keyboard skip, completed-mate reload to a fresh 32-piece game, and explicit archive revisit without a replayed finale.
+- **October 24 cloud preview at `c6648a0`:** [CI](https://github.com/Davidson3556/Paperwild/actions/runs/40126724971) passed **150/150 app/gate tests, 20/20 backend tests, TypeScript and build**. The [strict TestSprite workflow](https://github.com/Davidson3556/Paperwild/actions/runs/40126724942) passed **16/16 frontend regression cases** on the cloud-configured preview. Its `index-EfeOJs9J.js` build is bound to `fast-starling-207`; the backend was deployed from `5633a86` with unchanged application/backend source from `6f17355`.
+
+- **Hosted multiplayer remains incomplete:** The initial [four-case execution](https://www.testsprite.com/dashboard-v3/o/f7454a95-e992-581a-98e0-4edd142a0891/projects/5ac48e78-b1a2-4509-ad73-0b3efe0c3343/execution/0c2b161d-1e85-4f83-9d5a-fce3f222c94d) failed all four at `BrowserContext.new_page` with `TargetClosedError`, before navigation; it exercised neither Paperwild nor Convex. A [focused ONLN-001 retry](https://www.testsprite.com/dashboard-v3/o/f7454a95-e992-581a-98e0-4edd142a0891/projects/5ac48e78-b1a2-4509-ad73-0b3efe0c3343/execution/ff4c6d65-c789-456d-83b5-5fc63b2742cf) passed the original multiplayer assertions using an **uncommitted guarded-bootstrap candidate** (`v-8c8f963a53be`). Source readbacks, the exact application head and all 48 public payloads were verified. A manual same-Chrome-profile two-tab check also completed `e4 d5 exd5` and agreed Undo; those tabs were not independent contexts. The [cloud verification record](docs/CONVEX_CLOUD_VERIFICATION_2026-10-24.md) keeps these evidence scopes separate. No complete four-case pass or merge is claimed.
+
+- **Historical October 24 PR #5 checks:** At `6f17355`, **131/131 app tests, 20/20 backend tests, strict TypeScript and the production build passed**. The [strict TestSprite replay](https://www.testsprite.com/dashboard-v3/o/f7454a95-e992-581a-98e0-4edd142a0891/projects/dafdf75c-04a3-467f-acc2-4359af6b1d8e/execution/625ffd76-0868-49a4-b6f2-f7f878e2e965) recorded **16 passed / 0 failed / 0 blocked / 0 timed out** at `9ba27bc`, with `--no-auto-heal`. The [verification record](docs/TESTSPRITE_ONBOARDING_RUN_2026-10-24.md) and [completed replay/source audit](docs/testsprite/pr5-strict-verification.json) identify the pre-cloud build and its 48 matching public payloads. These results do not cover the newly configured backend.
+
+- **October 22 local Convex verification:** `npm test` recorded **122/122** passing tests, including **20 transport** and **8 snapshot-planning** tests. Backend authorization/rules/transaction coverage recorded **20/20** through `npm run test:convex`; **2/2** opt-in live integration tests passed against a local Convex deployment. Those two tests cover client convergence, consent, reconnect, and concurrent seat/move transactions; they do not establish browser layout, later onboarding acceptance, or cloud TestSprite acceptance. Use `CONVEX_TEST_URL` with a loopback endpoint to run `npm run test:online:live`; see [setup and test commands](docs/CONVEX_SETUP.md).
+
+- **Published October 21 startup correction: 94/94 tests, strict TypeScript, and build passed**, producing `index-Dg2nj_lq.js`. CI and Vercel preview passed at application revision `e23a745`; [PR #4](https://github.com/Davidson3556/Paperwild/pull/4) is merged at `3240b0d`. Direct browser checks verified a readable paused loader, keyboard skip, completed-mate reload to a fresh 32-piece game, and explicit archive revisit without a replayed finale.
 - **TestSprite strict replay: 14 passed / 0 failed / 0 blocked / 0 timed out.** The [full execution](https://www.testsprite.com/dashboard-v3/o/f7454a95-e992-581a-98e0-4edd142a0891/projects/dafdf75c-04a3-467f-acc2-4359af6b1d8e/execution/3ab518d1-9f5f-4718-b9e3-4d71ecdff3f2) exercised all 14 reviewed [stored Python cases](docs/testsprite/overrides/README.md) against that preview with auto-heal disabled. Every stored script was read back byte-for-byte before execution. Coverage includes the visible notebook/pencil/pop-up sequence, saved pause, actual blink and painted-part motion, keyboard skip, deferred computer reply, terminal archive revisit, unfinished restore, chess/Undo and sound scheduling.
 - **Merged-release verification (`5867e28`): 82 tests passed**, plus strict TypeScript and the 44-module production build. The [October 20 UI fixes](docs/UI_FIXES_VERIFICATION_2026-10-20.md) cover live remembrance updates, a matching PNG, and keeping the last memorial visible through Undo's revival. These results predate the startup correction.
 - [October 19 five-case native TestSprite audit](docs/TESTSPRITE_ADDITIONS_RUN_2026-10-19.md), with sanitized [initial results](docs/testsprite/additions-initial-results.json) and [corrected results](docs/testsprite/additions-corrected-results.json).
@@ -208,9 +313,13 @@ Local test files cover chess integrity, deterministic gait/capture plans, reside
 - [Watercolor rig observations](docs/WATERCOLOR_VERIFICATION_2026-10-17.md) and [voice/audio evidence](docs/SOUND_VERIFICATION_2026-10-17.md)
 - [Acceptance specification](docs/TESTSPRITE_PLAN.md) and [actual TestSprite Portal record](docs/TESTSPRITE_PORTAL.md)
 
+![Historical October 24 pre-cloud TestSprite replay: all 16 cases passed](docs/media/paperwild-testsprite-16-passed-2026-10-24.png)
+
+Historical October 21 evidence:
+
 ![TestSprite strict replay: all 14 cases passed](docs/media/paperwild-strict-14-passed-2026-10-21.jpg)
 
-The [startup verification record](docs/STARTUP_VERIFICATION_2026-10-21.md) preserves the earlier automatic 11/1/2 result, failed 6/8 strict batch, runner investigation and final successful replay. The [result manifest](docs/testsprite/startup-replay-results.json), [actual full-suite summary](docs/testsprite/startup-corrected-strict-summary.json), and [stored-code versions and hashes](docs/testsprite/stored-code-manifest.json) identify the evidence. The 14-case suite does not execute every scenario in the broader acceptance specification; sound counters establish scheduling, while physical sound quality and a fresh phone check remain separate work.
+The [startup verification record](docs/STARTUP_VERIFICATION_2026-10-21.md) preserves the earlier automatic 11/1/2 result, failed 6/8 strict batch, runner investigation and final successful replay. Its pre-merge release-state wording is historical; PR #4 is now merged. The [result manifest](docs/testsprite/startup-replay-results.json), [actual full-suite summary](docs/testsprite/startup-corrected-strict-summary.json), and [stored-code versions and hashes](docs/testsprite/stored-code-manifest.json) identify that evidence. The 14-case suite does not cover the new Convex invitations, two-player synchronization, or reconnect behavior. It also does not execute every scenario in the broader acceptance specification; sound counters establish scheduling, while physical sound quality and a fresh phone check remain separate work.
 
 ## Testing and release workflow
 
@@ -218,17 +327,18 @@ Local checks, direct visual observations, native TestSprite, and the Portal PR s
 
 ```mermaid
 flowchart TD
-    changes["Edit the app"] --> localChecks["npm test and npm run build"]
+    changes["Edit the app"] --> localChecks["npm test, npm run test:convex, and npm run build"]
     localChecks --> localPass{"Local checks pass?"}
     localPass -->|"No"| correction["Fix the proven app or test cause"]
     correction --> changes
-    localPass -->|"Yes"| native["Production preview and native TestSprite"]
+    localPass -->|"Yes"| live["Local WebSocket tests and two-browser flow"]
+    live --> native["Matching frontend/backend preview and new TestSprite acceptance"]
     native --> audit["Inspect assertions and save audited evidence"]
     localPass -.->|"When published"| pullRequest["Push branch and open or update PR"]
     pullRequest --> hosting["GitHub CI and Vercel preview"]
     hosting --> portalReady{"Preview reachable and Portal dispatch ready?"}
     portalReady -->|"No"| blocked["Resolve access or dispatch failure"]
-    portalReady -->|"Yes"| portal["GitHub App runs the Portal suite"]
+    portalReady -->|"Yes"| portal["Strict Actions job replays the 16 reviewed scripts"]
     portal --> acceptance{"Required assertions pass?"}
     acceptance -->|"No"| correction
     acceptance -->|"Yes"| release["Review PR and verify the published build"]
@@ -239,11 +349,17 @@ flowchart TD
     class blocked attention
 ```
 
-The expanded [Portal plan](docs/testsprite/portal-plan.yaml) is saved in the cloud, the dated current [product requirements](docs/PRODUCT_REQUIREMENTS.md) source is visibly attached, and all 14 reviewed scripts passed strict hosted replay on the correction preview. Check the current PR head's CI and deployment before merging, then verify production after an approved merge. Repository edits alone do not synchronize Portal code.
+The saved [Portal plan](docs/testsprite/portal-plan.yaml) describes sixteen cases, including onboarding and required opponent choice. All **16 reviewed scripts passed** the historical [October 24 pre-cloud replay](https://www.testsprite.com/dashboard-v3/o/f7454a95-e992-581a-98e0-4edd142a0891/projects/dafdf75c-04a3-467f-acc2-4359af6b1d8e/execution/625ffd76-0868-49a4-b6f2-f7f878e2e965), dispatched with `--no-auto-heal`. The [verification record](docs/TESTSPRITE_ONBOARDING_RUN_2026-10-24.md) preserves the initial shared-setup failure, correction, exact earlier build identity and [completed post-run audit](docs/testsprite/pr5-strict-verification.json). All sixteen replay/source checks and 48 public payloads matched that build. The API omits per-run `autoHeal` and returns null code versions; the evidence retains those nulls. The October 24 pre-cloud requirements were uploaded and processed in TestSprite Sources. That upload does not synchronize later repository edits automatically.
+
+The later [automatic App result and audit](docs/TESTSPRITE_AUTOMATIC_PR_AUDIT_2026-10-24.md) remain separate: **8 passed, 3 failed, 3 blocked, 2 cancelled**. The [strict Actions workflow](docs/TESTSPRITE_PR_GATE.md) is the approved replacement for that agent-driven trigger. The encrypted secret is configured and the trigger is disabled, while the App remains installed. The [current PR checks](https://github.com/Davidson3556/Paperwild/pull/5/checks) identify the actual latest-head CI job and its evidence; the earlier manual replay alone is not a green automatic gate.
+
+The [four hosted multiplayer scripts](docs/testsprite/online-overrides/README.md) consolidate invitation, shared moves/captures, consent, reload/local-save isolation and real disconnection checks in separate TestSprite project `5ac48e78-b1a2-4509-ad73-0b3efe0c3343`. The initial four-case run failed during browser startup; only a focused, uncommitted ONLN-001 bootstrap candidate has subsequently passed. Full-suite acceptance is pending. Keeping that suite separate preserves the regression gate's exact sixteen-case membership. The original [ten-case online proposal](docs/testsprite/online-plan.yaml) remains **not executed or uploaded**. Recheck exact-head CI, matching frontend/backend deployment and stored-script evidence before release.
 
 ## Deployment and hackathon status
 
-This is a static frontend. On Vercel or another static host, use **`npm ci`**, build with **`npm run build`**, and publish **`dist/`**. No environment variables are required. Verify the deployed URL without a signed-in session, and use that exact build/preview origin for end-to-end testing.
+Computer and same-device play use a static frontend: install with **`npm ci`**, build with **`npm run build`**, and publish **`dist/`**. They need no environment variables.
+
+PR #5's public frontend at `c6648a023f041e4e7651951cdd7cf92016a5e19e` is verified against Convex Cloud **Development** backend `https://fast-starling-207.convex.cloud`. **`VITE_CONVEX_URL`** is scoped only to Preview branch `feat/convex-multiplayer`. Production `main` and other previews keep their existing configuration; no production Convex deployment or release is claimed. [CONVEX_SETUP.md](docs/CONVEX_SETUP.md) records the binding, while the [cloud verification record](docs/CONVEX_CLOUD_VERIFICATION_2026-10-24.md) records the incomplete multiplayer suite and focused retry. Full four-case acceptance and merge remain pending. Deployment/admin keys stay private and never belong in `VITE_*`, browser code or Git.
 
 The public source, merged game, successful automatic Portal execution, and GitHub integration evidence are available. Before a completed Season 4 submission:
 

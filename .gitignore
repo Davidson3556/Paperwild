@@ -7,5 +7,9 @@ testsprite_tests/
 .sites/
 .openai/
 .codex/
+.convex/
+.vercel/
+!.env.example
 testsprite_tests/tmp/config.json
 testsprite_tests/tmp/
+testsprite-ci-results/

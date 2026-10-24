@@ -1,0 +1,21 @@
+.new-game-modal{width:470px;max-width:calc(100vw - 28px)}
+.new-game-modal h2{margin-bottom:19px}
+.new-opponents{display:grid;gap:9px;border:0;padding:0;margin:0}
+.new-opponents legend{margin-bottom:10px;font:13px/1.4 'Patrick Hand',cursive;color:var(--muted)}
+.new-opponent{position:relative;display:flex;align-items:center;gap:12px;min-height:78px;padding:8px 12px;border:1px dashed var(--line);border-radius:2% 3% 1% 2%;cursor:pointer;background:#f6edd52b}
+.new-opponent:has(input:checked){border:1px solid var(--forest);background:repeating-linear-gradient(108deg,#a0b47a18 0 1.5px,transparent 1.5px 5px)}
+.new-opponent:has(input:focus-visible){outline:2px dashed var(--forest);outline-offset:3px}
+.new-opponent[data-available=false]{opacity:.5;cursor:default}
+.new-opponent input{flex:none;width:17px;height:17px;margin:0;accent-color:var(--forest)}
+.new-opponent-portrait,.new-opponent-post{display:block;flex:none;width:48px;height:56px}
+.new-opponent-portrait .character-portrait-slot{display:block;width:100%;height:100%}
+.new-opponent-post{height:48px;color:var(--forest);transform:rotate(-7deg)}
+.new-opponent-post svg{width:100%;height:100%}
+.new-opponent-copy{display:flex;flex-direction:column;gap:4px;min-width:0}
+.new-opponent-copy strong{font:22px/1.2 'Schoolbell',cursive;font-weight:400;color:var(--ink)}
+.new-opponent-copy small{font:13px/1.3 'Patrick Hand',cursive;color:var(--muted)}
+.new-game-note{font:14px/1.4 'Patrick Hand',cursive;color:var(--muted);min-height:40px;margin:15px 0 10px}
+.new-game-modal .modal-actions{justify-content:space-between;align-items:center;gap:12px;margin-top:12px}
+.new-game-modal .modal-actions .primary-button{font-size:21px;min-height:46px}
+.new-game-modal .modal-actions .secondary-button{font-size:14px;min-height:44px}
+@media(max-width:430px){.new-game-modal{padding:25px 20px;max-height:calc(100dvh - 24px)}.new-game-modal h2{font-size:41px;margin-bottom:16px}.new-opponent{gap:9px;padding:7px 9px;min-height:73px}.new-opponent-portrait{width:39px;height:48px}.new-opponent-post{width:39px;height:39px}.new-opponent-copy strong{font-size:21px}.new-opponent-copy small{font-size:12px}.new-game-modal .modal-actions{gap:7px}.new-game-modal .modal-actions .primary-button{font-size:18px;padding:10px}.new-game-modal .modal-actions .secondary-button{font-size:13px;padding:8px}.new-game-note{font-size:13px}}

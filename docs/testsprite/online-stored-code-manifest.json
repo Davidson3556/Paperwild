@@ -1,0 +1,170 @@
+{
+  "projectId": "5ac48e78-b1a2-4509-ad73-0b3efe0c3343",
+  "projectName": "Paperwild multiplayer preview",
+  "targetUrl": "https://paperwild-git-feat-convex-multiplayer-davidson3556s-projects.vercel.app/",
+  "status": "four-current-scripts-uploaded-and-readback-verified",
+  "executionStatus": "focused-ONLN-001-passed; current-four-version-suite-not-executed",
+  "testsRun": true,
+  "recordedAt": "2026-10-24T19:42:07.953444+00:00",
+  "verification": "All four currently hosted Python bodies, concrete codeVersions, case/project identities and project membership were read back exactly against the reviewed local files. Only ONLN-002\u2013004 changed in this upload, with explicit original-version guards; focused ONLN-001 remains unchanged at its verified passing version. The initial failures and focused pass remain separate historical evidence. The updated complete four-version suite has not run, and no tests were dispatched by this upload.",
+  "scripts": [
+    {
+      "case": "ONLN-001",
+      "testId": "9aa656fd-f946-4288-bb72-3cc622a01060",
+      "name": "Independent online seats, legal captures and rejected third visitors",
+      "sourcePath": "docs/testsprite/online-overrides/ONLN-001.py",
+      "codeVersion": "v-8c8f963a53be",
+      "sha256": "745e2bdcba98c33bd5881e7f0d00932e30587215f0203afefef8e6e3db8fc7a9",
+      "readbackEqual": true,
+      "created": true,
+      "updated": true,
+      "executionStatus": "passed-focused-strict-bootstrap-probe",
+      "previousCodeVersion": "v-a880f2e2c491",
+      "previousSha256": "d924090af7175f040750698c476c33bba418b966101e687493e840f6dd3c7644",
+      "verifiedExecution": {
+        "runId": "abe708cb-a195-4ff2-bf89-f7c5e16aabc7",
+        "executionUrl": "https://www.testsprite.com/dashboard-v3/o/f7454a95-e992-581a-98e0-4edd142a0891/projects/5ac48e78-b1a2-4509-ad73-0b3efe0c3343/execution/ff4c6d65-c789-456d-83b5-5fc63b2742cf/test/abe708cb-a195-4ff2-bf89-f7c5e16aabc7",
+        "headSha": "c6648a023f041e4e7651951cdd7cf92016a5e19e",
+        "testSourceCommittedAtApplicationHead": false,
+        "summary": "docs/testsprite/online-cloud-bootstrap-probe-summary.json",
+        "verification": "docs/testsprite/online-cloud-bootstrap-probe-verification.json"
+      }
+    },
+    {
+      "case": "ONLN-002",
+      "testId": "d832870e-f2c3-4be2-9b46-785b86c201f0",
+      "name": "Shared Undo and rematch require the other player\u2019s consent",
+      "sourcePath": "docs/testsprite/online-overrides/ONLN-002.py",
+      "codeVersion": "v-36829c66b6fc",
+      "sha256": "8122a2afb8894234e4b01d4e06861a5157cce9972c5c6e1592c9d4ae31333259",
+      "readbackEqual": true,
+      "created": true,
+      "updated": true,
+      "executionStatus": "not-executed-current-version",
+      "initialExecution": {
+        "runId": "e85a31d7-f465-49f3-af01-fce3450c0ea2",
+        "executionUrl": "https://www.testsprite.com/dashboard-v3/o/f7454a95-e992-581a-98e0-4edd142a0891/projects/5ac48e78-b1a2-4509-ad73-0b3efe0c3343/execution/0c2b161d-1e85-4f83-9d5a-fce3f222c94d/test/e85a31d7-f465-49f3-af01-fce3450c0ea2",
+        "summary": "docs/testsprite/online-cloud-summary.json",
+        "verification": "docs/testsprite/online-cloud-verification.json"
+      },
+      "previousCodeVersion": "v-38e67fbbc557",
+      "previousSha256": "170158298b8910f3374c2a8e068dd054c3cff1e2f3c7c3f2200eb21a94d6ad73",
+      "bootstrapUpdate": {
+        "uploadedAt": "2026-10-24T20:29:09.562982+00:00",
+        "sourceStateAtUpload": "uncommitted-working-tree-candidate",
+        "sourceRevisionAtUpload": null,
+        "changeScope": "Same separate-browser bootstrap/diagnostics/cleanup that passed focused ONLN-001; application exercise and helper ASTs unchanged."
+      }
+    },
+    {
+      "case": "ONLN-003",
+      "testId": "7765f1f2-d88d-451c-ab1c-fe1ee4594925",
+      "name": "Reload and saved-seat return preserve the separate local game",
+      "sourcePath": "docs/testsprite/online-overrides/ONLN-003.py",
+      "codeVersion": "v-36a7112662b4",
+      "sha256": "db596f3613055cbcec0f6e172c3616cc98dcb0ddd3fc31e1a5cad0007ec402b3",
+      "readbackEqual": true,
+      "created": true,
+      "updated": true,
+      "executionStatus": "not-executed-current-version",
+      "initialExecution": {
+        "runId": "21eb5486-b6fc-4bd9-9c4b-046e42d9a981",
+        "executionUrl": "https://www.testsprite.com/dashboard-v3/o/f7454a95-e992-581a-98e0-4edd142a0891/projects/5ac48e78-b1a2-4509-ad73-0b3efe0c3343/execution/0c2b161d-1e85-4f83-9d5a-fce3f222c94d/test/21eb5486-b6fc-4bd9-9c4b-046e42d9a981",
+        "summary": "docs/testsprite/online-cloud-summary.json",
+        "verification": "docs/testsprite/online-cloud-verification.json"
+      },
+      "previousCodeVersion": "v-04b74038b958",
+      "previousSha256": "afabc8d1e09e442bc45589126d26efe0363689767f2a6bc147344b03977256b6",
+      "bootstrapUpdate": {
+        "uploadedAt": "2026-10-24T20:29:09.562982+00:00",
+        "sourceStateAtUpload": "uncommitted-working-tree-candidate",
+        "sourceRevisionAtUpload": null,
+        "changeScope": "Same separate-browser bootstrap/diagnostics/cleanup that passed focused ONLN-001; application exercise and helper ASTs unchanged."
+      }
+    },
+    {
+      "case": "ONLN-004",
+      "testId": "a1eadd37-181c-4497-897a-fc3aa73d97e8",
+      "name": "A real disconnected player reconnects without queued moves",
+      "sourcePath": "docs/testsprite/online-overrides/ONLN-004.py",
+      "codeVersion": "v-142871521468",
+      "sha256": "a2e37966ba8713811741dac8dd81a2b056482524c11d6b3a6640e3235e523653",
+      "readbackEqual": true,
+      "created": true,
+      "updated": true,
+      "executionStatus": "not-executed-current-version",
+      "initialExecution": {
+        "runId": "e31779b6-a14c-4c8c-8910-e8800cdb6306",
+        "executionUrl": "https://www.testsprite.com/dashboard-v3/o/f7454a95-e992-581a-98e0-4edd142a0891/projects/5ac48e78-b1a2-4509-ad73-0b3efe0c3343/execution/0c2b161d-1e85-4f83-9d5a-fce3f222c94d/test/e31779b6-a14c-4c8c-8910-e8800cdb6306",
+        "summary": "docs/testsprite/online-cloud-summary.json",
+        "verification": "docs/testsprite/online-cloud-verification.json"
+      },
+      "previousCodeVersion": "v-69d2c5f4b940",
+      "previousSha256": "e7a5e08ec3ed0d5f5a2a26153c45e7739fb17af446486dbdbcd07191f232a7c2",
+      "bootstrapUpdate": {
+        "uploadedAt": "2026-10-24T20:29:09.562982+00:00",
+        "sourceStateAtUpload": "uncommitted-working-tree-candidate",
+        "sourceRevisionAtUpload": null,
+        "changeScope": "Same separate-browser bootstrap/diagnostics/cleanup that passed focused ONLN-001; application exercise and helper ASTs unchanged."
+      }
+    }
+  ],
+  "completedAt": "2026-10-24T19:43:58.222324+00:00",
+  "bootstrapProvenance": {
+    "case": "ONLN-001",
+    "applicationRevision": "c6648a023f041e4e7651951cdd7cf92016a5e19e",
+    "applicationBuildChanged": false,
+    "testSourceState": "uncommitted-working-tree-candidate",
+    "testSourceRevision": null,
+    "initialManifest": "docs/testsprite/online-initial-stored-code-manifest.json",
+    "initialExecutionEvidence": [
+      "docs/testsprite/online-cloud-summary.json",
+      "docs/testsprite/online-cloud-verification.json"
+    ],
+    "candidateCodeVersion": "v-8c8f963a53be",
+    "candidateSha256": "745e2bdcba98c33bd5881e7f0d00932e30587215f0203afefef8e6e3db8fc7a9",
+    "candidateExecutionStatus": "passed-focused-strict-probe",
+    "uploadedAt": "2026-10-24T20:11:37.225189+00:00",
+    "reason": "The first four-case cloud replay failed at its first BrowserContext.new_page before application navigation. This focused candidate uses the known-passing single-player launch arguments and one independent Chromium browser/context/page per player; every application assertion is unchanged.",
+    "verification": "The original focused ONLN-001 pass and its unchanged source/run/build proof are preserved. ONLN-002\u2013004 now use the same bootstrap only, with application assertions unchanged, explicit prior-version guards and exact final all-four readback. No updated full-suite execution has been performed; later publication/execution evidence must identify its own matching source revision.",
+    "focusedProbe": {
+      "runId": "abe708cb-a195-4ff2-bf89-f7c5e16aabc7",
+      "executionUrl": "https://www.testsprite.com/dashboard-v3/o/f7454a95-e992-581a-98e0-4edd142a0891/projects/5ac48e78-b1a2-4509-ad73-0b3efe0c3343/execution/ff4c6d65-c789-456d-83b5-5fc63b2742cf/test/abe708cb-a195-4ff2-bf89-f7c5e16aabc7",
+      "summary": "docs/testsprite/online-cloud-bootstrap-probe-summary.json",
+      "verification": "docs/testsprite/online-cloud-bootstrap-probe-verification.json",
+      "headSha": "c6648a023f041e4e7651951cdd7cf92016a5e19e",
+      "deploymentId": "dpl_4KexDkbSJxqX3wVTP4zu7c8RxbQ7",
+      "storedCodeUnchanged": true,
+      "publicPayloadsVerifiedBeforeAndAfter": 48,
+      "sourceCommittedAtApplicationHead": false
+    },
+    "additionalUploadedCandidates": [
+      {
+        "case": "ONLN-002",
+        "codeVersion": "v-36829c66b6fc",
+        "sha256": "8122a2afb8894234e4b01d4e06861a5157cce9972c5c6e1592c9d4ae31333259",
+        "uploaded": true,
+        "executionStatus": "not-executed-current-version",
+        "sourceStateAtUpload": "uncommitted-working-tree-candidate"
+      },
+      {
+        "case": "ONLN-003",
+        "codeVersion": "v-36a7112662b4",
+        "sha256": "db596f3613055cbcec0f6e172c3616cc98dcb0ddd3fc31e1a5cad0007ec402b3",
+        "uploaded": true,
+        "executionStatus": "not-executed-current-version",
+        "sourceStateAtUpload": "uncommitted-working-tree-candidate"
+      },
+      {
+        "case": "ONLN-004",
+        "codeVersion": "v-142871521468",
+        "sha256": "a2e37966ba8713811741dac8dd81a2b056482524c11d6b3a6640e3235e523653",
+        "uploaded": true,
+        "executionStatus": "not-executed-current-version",
+        "sourceStateAtUpload": "uncommitted-working-tree-candidate"
+      }
+    ],
+    "fullSuiteExecutionStatus": "not-executed-current-four-version-set"
+  },
+  "updatedAt": "2026-10-24T20:29:09.562982+00:00"
+}

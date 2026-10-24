@@ -1,0 +1,155 @@
+{
+  "verified": true,
+  "checkedAt": "2026-10-24T20:13:35.517Z",
+  "projectId": "5ac48e78-b1a2-4509-ad73-0b3efe0c3343",
+  "targetUrl": "https://paperwild-git-feat-convex-multiplayer-davidson3556s-projects.vercel.app/",
+  "headSha": "c6648a023f041e4e7651951cdd7cf92016a5e19e",
+  "applicationRevision": "6f173553c54ed3bee61a502d2d77183a07512913",
+  "convexUrl": "https://fast-starling-207.convex.cloud",
+  "dispatchIntent": {
+    "autoHealSetting": "--no-auto-heal",
+    "evidenceSource": "Explicit caller command; backend null values remain null"
+  },
+  "storedBefore": [
+    {
+      "case": "ONLN-001",
+      "testId": "9aa656fd-f946-4288-bb72-3cc622a01060",
+      "codeVersion": "v-8c8f963a53be",
+      "sha256": "745e2bdcba98c33bd5881e7f0d00932e30587215f0203afefef8e6e3db8fc7a9"
+    }
+  ],
+  "storedAfter": [
+    {
+      "case": "ONLN-001",
+      "testId": "9aa656fd-f946-4288-bb72-3cc622a01060",
+      "codeVersion": "v-8c8f963a53be",
+      "sha256": "745e2bdcba98c33bd5881e7f0d00932e30587215f0203afefef8e6e3db8fc7a9"
+    }
+  ],
+  "runs": [
+    {
+      "case": "ONLN-001",
+      "testId": "9aa656fd-f946-4288-bb72-3cc622a01060",
+      "runId": "abe708cb-a195-4ff2-bf89-f7c5e16aabc7",
+      "status": "passed",
+      "executionUrl": "https://www.testsprite.com/dashboard-v3/o/f7454a95-e992-581a-98e0-4edd142a0891/projects/5ac48e78-b1a2-4509-ad73-0b3efe0c3343/execution/ff4c6d65-c789-456d-83b5-5fc63b2742cf/test/abe708cb-a195-4ff2-bf89-f7c5e16aabc7",
+      "projectId": "5ac48e78-b1a2-4509-ad73-0b3efe0c3343",
+      "source": "cli",
+      "targetUrl": "https://paperwild-git-feat-convex-multiplayer-davidson3556s-projects.vercel.app/",
+      "actualStatus": "passed",
+      "runCodeVersion": null,
+      "autoHeal": null,
+      "autoHealFieldPresent": false,
+      "replay": {
+        "path": "replay",
+        "reason": null,
+        "caveat": null
+      }
+    }
+  ],
+  "deploymentBefore": {
+    "id": "dpl_4KexDkbSJxqX3wVTP4zu7c8RxbQ7",
+    "context": "Vercel",
+    "state": "success",
+    "targetUrl": "https://vercel.com/davidson3556s-projects/paperwild/4KexDkbSJxqX3wVTP4zu7c8RxbQ7"
+  },
+  "runtimeSourceComparison": {
+    "runtimeSourceEquivalentTo": "6f173553c54ed3bee61a502d2d77183a07512913",
+    "packageJsonOnlyChange": {
+      "field": "scripts.test",
+      "previous": "node --test tests/*.test.ts",
+      "current": "node --test tests/*.test.ts tests/*.test.mjs"
+    },
+    "dependenciesAndBuildScriptUnchanged": true
+  },
+  "applicationBundle": "index-EfeOJs9J.js",
+  "applicationStylesheet": "index-DCOXjeBT.css",
+  "buildBefore": {
+    "fileCount": 48,
+    "treeSha256": "b97af1e67c98ca3c5a69e02876d5205a7ff0c47549fbe8c0dec36db2bc3e62ab",
+    "index": {
+      "rawSha256": "7241c280e27ef5b6db70e31881beee076828803fc3441f19c12b19a4b9eaf47f",
+      "normalizedSha256": "fe27546628421d29e109be018d84451237335c315c4ac734794a0d562b2e3c02",
+      "normalization": "one-exact-appended-vercel-feedback-tag",
+      "deploymentId": "dpl_4KexDkbSJxqX3wVTP4zu7c8RxbQ7"
+    }
+  },
+  "testSource": {
+    "case": "ONLN-001",
+    "sourcePath": "docs/testsprite/online-overrides/ONLN-001.py",
+    "sha256": "745e2bdcba98c33bd5881e7f0d00932e30587215f0203afefef8e6e3db8fc7a9",
+    "codeVersion": "v-8c8f963a53be",
+    "committedAtApplicationHead": false,
+    "scope": "Uncommitted browser-launch/isolation compatibility candidate; application source unchanged"
+  },
+  "projectBefore": {
+    "projectId": "5ac48e78-b1a2-4509-ad73-0b3efe0c3343",
+    "testIds": [
+      "7765f1f2-d88d-451c-ab1c-fe1ee4594925",
+      "9aa656fd-f946-4288-bb72-3cc622a01060",
+      "a1eadd37-181c-4497-897a-fc3aa73d97e8",
+      "d832870e-f2c3-4be2-9b46-785b86c201f0"
+    ]
+  },
+  "summary": {
+    "projectId": "5ac48e78-b1a2-4509-ad73-0b3efe0c3343",
+    "targetUrl": "https://paperwild-git-feat-convex-multiplayer-davidson3556s-projects.vercel.app/",
+    "headSha": "c6648a023f041e4e7651951cdd7cf92016a5e19e",
+    "total": 1,
+    "passed": 1,
+    "failed": 0,
+    "skipped": 0,
+    "timedOut": 0,
+    "runs": [
+      {
+        "case": "ONLN-001",
+        "testId": "9aa656fd-f946-4288-bb72-3cc622a01060",
+        "runId": "abe708cb-a195-4ff2-bf89-f7c5e16aabc7",
+        "status": "passed",
+        "executionUrl": "https://www.testsprite.com/dashboard-v3/o/f7454a95-e992-581a-98e0-4edd142a0891/projects/5ac48e78-b1a2-4509-ad73-0b3efe0c3343/execution/ff4c6d65-c789-456d-83b5-5fc63b2742cf/test/abe708cb-a195-4ff2-bf89-f7c5e16aabc7",
+        "projectId": "5ac48e78-b1a2-4509-ad73-0b3efe0c3343",
+        "source": "cli",
+        "targetUrl": "https://paperwild-git-feat-convex-multiplayer-davidson3556s-projects.vercel.app/",
+        "actualStatus": "passed",
+        "runCodeVersion": null,
+        "autoHeal": null,
+        "autoHealFieldPresent": false,
+        "replay": {
+          "path": "replay",
+          "reason": null,
+          "caveat": null
+        }
+      }
+    ]
+  },
+  "allReplayRecordsUnqualified": true,
+  "projectAfter": {
+    "projectId": "5ac48e78-b1a2-4509-ad73-0b3efe0c3343",
+    "testIds": [
+      "7765f1f2-d88d-451c-ab1c-fe1ee4594925",
+      "9aa656fd-f946-4288-bb72-3cc622a01060",
+      "a1eadd37-181c-4497-897a-fc3aa73d97e8",
+      "d832870e-f2c3-4be2-9b46-785b86c201f0"
+    ]
+  },
+  "deploymentAfter": {
+    "id": "dpl_4KexDkbSJxqX3wVTP4zu7c8RxbQ7",
+    "context": "Vercel",
+    "state": "success",
+    "targetUrl": "https://vercel.com/davidson3556s-projects/paperwild/4KexDkbSJxqX3wVTP4zu7c8RxbQ7"
+  },
+  "buildAfter": {
+    "fileCount": 48,
+    "treeSha256": "b97af1e67c98ca3c5a69e02876d5205a7ff0c47549fbe8c0dec36db2bc3e62ab",
+    "index": {
+      "rawSha256": "7241c280e27ef5b6db70e31881beee076828803fc3441f19c12b19a4b9eaf47f",
+      "normalizedSha256": "fe27546628421d29e109be018d84451237335c315c4ac734794a0d562b2e3c02",
+      "normalization": "one-exact-appended-vercel-feedback-tag",
+      "deploymentId": "dpl_4KexDkbSJxqX3wVTP4zu7c8RxbQ7"
+    }
+  },
+  "postRunAuditCompleted": true,
+  "actualRunFactsVerified": true,
+  "storedSourcesUnchanged": true,
+  "finishedAt": "2026-10-24T20:15:58.494Z"
+}

@@ -1,0 +1,824 @@
+{
+  "verified": true,
+  "checkedAt": "2026-10-24T16:33:41.195061+00:00",
+  "projectId": "dafdf75c-04a3-467f-acc2-4359af6b1d8e",
+  "targetUrl": "https://paperwild-git-feat-convex-multiplayer-davidson3556s-projects.vercel.app/",
+  "headSha": "9ba27bc15dc30945dd5b19f4f9290137d1f7393f",
+  "dispatchIntent": {
+    "autoHealSetting": "--no-auto-heal",
+    "evidenceSource": "Explicit caller attestation; not a backend false value"
+  },
+  "note": "Per-run codeVersion/autoHeal nulls are retained. Unqualified replay plus unchanged pre/post source supplies the stored-code evidence.",
+  "summary": {
+    "total": 16,
+    "passed": 16,
+    "failed": 0,
+    "skipped": 0,
+    "timedOut": 0
+  },
+  "runs": [
+    {
+      "case": "BOAR-001",
+      "testId": "9e34b635-85b9-427d-95b2-5584e55f5f7d",
+      "runId": "ecaf8e79-8b59-4f72-b9e8-4066fd28b289",
+      "projectId": "dafdf75c-04a3-467f-acc2-4359af6b1d8e",
+      "status": "passed",
+      "source": "cli",
+      "targetUrl": "https://paperwild-git-feat-convex-multiplayer-davidson3556s-projects.vercel.app/",
+      "reviewedCodeVersion": "v-34c17b1132d7",
+      "runCodeVersion": null,
+      "autoHeal": null,
+      "autoHealFieldPresent": false,
+      "replay": {
+        "path": "replay",
+        "reason": null,
+        "caveat": null
+      }
+    },
+    {
+      "case": "BOAR-002",
+      "testId": "0ad51a00-bdcc-49ab-a155-ad15de21a7a2",
+      "runId": "d165213f-5355-432d-a2b3-5e39a66136b2",
+      "projectId": "dafdf75c-04a3-467f-acc2-4359af6b1d8e",
+      "status": "passed",
+      "source": "cli",
+      "targetUrl": "https://paperwild-git-feat-convex-multiplayer-davidson3556s-projects.vercel.app/",
+      "reviewedCodeVersion": "v-b4f39a6e001a",
+      "runCodeVersion": null,
+      "autoHeal": null,
+      "autoHealFieldPresent": false,
+      "replay": {
+        "path": "replay",
+        "reason": null,
+        "caveat": null
+      }
+    },
+    {
+      "case": "BOAR-003",
+      "testId": "6c39a736-f9b2-4731-8560-05df7dcd0449",
+      "runId": "2acf9ff3-a5d0-4569-b27b-e5a7391927fc",
+      "projectId": "dafdf75c-04a3-467f-acc2-4359af6b1d8e",
+      "status": "passed",
+      "source": "cli",
+      "targetUrl": "https://paperwild-git-feat-convex-multiplayer-davidson3556s-projects.vercel.app/",
+      "reviewedCodeVersion": "v-11b7e8a6016c",
+      "runCodeVersion": null,
+      "autoHeal": null,
+      "autoHealFieldPresent": false,
+      "replay": {
+        "path": "replay",
+        "reason": null,
+        "caveat": null
+      }
+    },
+    {
+      "case": "BOAR-004",
+      "testId": "2330c1ea-adda-4d16-a611-d8745fc4cc66",
+      "runId": "447c8df4-7286-407d-8dc4-a707f6563001",
+      "projectId": "dafdf75c-04a3-467f-acc2-4359af6b1d8e",
+      "status": "passed",
+      "source": "cli",
+      "targetUrl": "https://paperwild-git-feat-convex-multiplayer-davidson3556s-projects.vercel.app/",
+      "reviewedCodeVersion": "v-7c5af6f4e014",
+      "runCodeVersion": null,
+      "autoHeal": null,
+      "autoHealFieldPresent": false,
+      "replay": {
+        "path": "replay",
+        "reason": null,
+        "caveat": null
+      }
+    },
+    {
+      "case": "BOAR-005",
+      "testId": "c48475e4-8ec0-4875-a5c9-e8b2981d4c87",
+      "runId": "c3e3e2aa-ca70-4944-8562-e301823f9ab1",
+      "projectId": "dafdf75c-04a3-467f-acc2-4359af6b1d8e",
+      "status": "passed",
+      "source": "cli",
+      "targetUrl": "https://paperwild-git-feat-convex-multiplayer-davidson3556s-projects.vercel.app/",
+      "reviewedCodeVersion": "v-936581958af2",
+      "runCodeVersion": null,
+      "autoHeal": null,
+      "autoHealFieldPresent": false,
+      "replay": {
+        "path": "replay",
+        "reason": null,
+        "caveat": null
+      }
+    },
+    {
+      "case": "BOAR-006",
+      "testId": "836e4d28-2b2a-468c-ba69-21bc358eb237",
+      "runId": "937fd6f1-80b8-4498-9303-dc4cbc2bc1a8",
+      "projectId": "dafdf75c-04a3-467f-acc2-4359af6b1d8e",
+      "status": "passed",
+      "source": "cli",
+      "targetUrl": "https://paperwild-git-feat-convex-multiplayer-davidson3556s-projects.vercel.app/",
+      "reviewedCodeVersion": "v-1958882ccab5",
+      "runCodeVersion": null,
+      "autoHeal": null,
+      "autoHealFieldPresent": false,
+      "replay": {
+        "path": "replay",
+        "reason": null,
+        "caveat": null
+      }
+    },
+    {
+      "case": "BOAR-007",
+      "testId": "f52738b9-d0c5-46b4-b914-70d16c6d7e7b",
+      "runId": "5e70a4d6-c7ba-4b5c-86ff-cfaf4f352d78",
+      "projectId": "dafdf75c-04a3-467f-acc2-4359af6b1d8e",
+      "status": "passed",
+      "source": "cli",
+      "targetUrl": "https://paperwild-git-feat-convex-multiplayer-davidson3556s-projects.vercel.app/",
+      "reviewedCodeVersion": "v-08b04ac7720c",
+      "runCodeVersion": null,
+      "autoHeal": null,
+      "autoHealFieldPresent": false,
+      "replay": {
+        "path": "replay",
+        "reason": null,
+        "caveat": null
+      }
+    },
+    {
+      "case": "BOAR-008",
+      "testId": "ec570b6b-0423-40cd-a0a7-60e8a8cbb23c",
+      "runId": "02351431-a0c9-44cc-94db-dbe35d028ca1",
+      "projectId": "dafdf75c-04a3-467f-acc2-4359af6b1d8e",
+      "status": "passed",
+      "source": "cli",
+      "targetUrl": "https://paperwild-git-feat-convex-multiplayer-davidson3556s-projects.vercel.app/",
+      "reviewedCodeVersion": "v-d5b215879043",
+      "runCodeVersion": null,
+      "autoHeal": null,
+      "autoHealFieldPresent": false,
+      "replay": {
+        "path": "replay",
+        "reason": null,
+        "caveat": null
+      }
+    },
+    {
+      "case": "NOTE-001",
+      "testId": "4cb7d4df-04ae-4be5-8295-f69f0f115611",
+      "runId": "62f56f92-f29a-4c0f-bf70-1174131cb1ae",
+      "projectId": "dafdf75c-04a3-467f-acc2-4359af6b1d8e",
+      "status": "passed",
+      "source": "cli",
+      "targetUrl": "https://paperwild-git-feat-convex-multiplayer-davidson3556s-projects.vercel.app/",
+      "reviewedCodeVersion": "v-0449b2eb6450",
+      "runCodeVersion": null,
+      "autoHeal": null,
+      "autoHealFieldPresent": false,
+      "replay": {
+        "path": "replay",
+        "reason": null,
+        "caveat": null
+      }
+    },
+    {
+      "case": "NOTE-002",
+      "testId": "43d65119-ddde-41e6-9a50-e99a370bb16b",
+      "runId": "05869281-059f-4ddb-8752-5e1755496b4b",
+      "projectId": "dafdf75c-04a3-467f-acc2-4359af6b1d8e",
+      "status": "passed",
+      "source": "cli",
+      "targetUrl": "https://paperwild-git-feat-convex-multiplayer-davidson3556s-projects.vercel.app/",
+      "reviewedCodeVersion": "v-c36ccbd7694c",
+      "runCodeVersion": null,
+      "autoHeal": null,
+      "autoHealFieldPresent": false,
+      "replay": {
+        "path": "replay",
+        "reason": null,
+        "caveat": null
+      }
+    },
+    {
+      "case": "NOTE-003",
+      "testId": "7615508f-ec1e-4df0-9d67-3c4db951b18e",
+      "runId": "7c118d83-87b0-42f4-a667-0731eaafd7f1",
+      "projectId": "dafdf75c-04a3-467f-acc2-4359af6b1d8e",
+      "status": "passed",
+      "source": "cli",
+      "targetUrl": "https://paperwild-git-feat-convex-multiplayer-davidson3556s-projects.vercel.app/",
+      "reviewedCodeVersion": "v-b680743801da",
+      "runCodeVersion": null,
+      "autoHeal": null,
+      "autoHealFieldPresent": false,
+      "replay": {
+        "path": "replay",
+        "reason": null,
+        "caveat": null
+      }
+    },
+    {
+      "case": "NOTE-004",
+      "testId": "72d4f1a0-dd72-44e9-bf92-0ccbc9a4ea4d",
+      "runId": "d1bb8bb6-aaaa-4a93-b91d-20adf1807248",
+      "projectId": "dafdf75c-04a3-467f-acc2-4359af6b1d8e",
+      "status": "passed",
+      "source": "cli",
+      "targetUrl": "https://paperwild-git-feat-convex-multiplayer-davidson3556s-projects.vercel.app/",
+      "reviewedCodeVersion": "v-6c4c15b0c6e4",
+      "runCodeVersion": null,
+      "autoHeal": null,
+      "autoHealFieldPresent": false,
+      "replay": {
+        "path": "replay",
+        "reason": null,
+        "caveat": null
+      }
+    },
+    {
+      "case": "ONBD-001",
+      "testId": "76e3011a-cb17-4be2-8d00-833670e8644e",
+      "runId": "84caa865-2f3d-453d-bc72-f4f76aae7d38",
+      "projectId": "dafdf75c-04a3-467f-acc2-4359af6b1d8e",
+      "status": "passed",
+      "source": "cli",
+      "targetUrl": "https://paperwild-git-feat-convex-multiplayer-davidson3556s-projects.vercel.app/",
+      "reviewedCodeVersion": "v-62a4e86b577b",
+      "runCodeVersion": null,
+      "autoHeal": null,
+      "autoHealFieldPresent": false,
+      "replay": {
+        "path": "replay",
+        "reason": null,
+        "caveat": null
+      }
+    },
+    {
+      "case": "ONBD-002",
+      "testId": "1dc27669-90de-470e-9681-c5f5026194cb",
+      "runId": "05522655-1b12-4d5a-9a8d-8e4881a1ccd9",
+      "projectId": "dafdf75c-04a3-467f-acc2-4359af6b1d8e",
+      "status": "passed",
+      "source": "cli",
+      "targetUrl": "https://paperwild-git-feat-convex-multiplayer-davidson3556s-projects.vercel.app/",
+      "reviewedCodeVersion": "v-c5fc38b322d6",
+      "runCodeVersion": null,
+      "autoHeal": null,
+      "autoHealFieldPresent": false,
+      "replay": {
+        "path": "replay",
+        "reason": null,
+        "caveat": null
+      }
+    },
+    {
+      "case": "PREF-001",
+      "testId": "138f2507-51c6-43ed-9a7c-c00bb2b1657e",
+      "runId": "efee2efa-4104-4bd8-be7b-352619de80d5",
+      "projectId": "dafdf75c-04a3-467f-acc2-4359af6b1d8e",
+      "status": "passed",
+      "source": "cli",
+      "targetUrl": "https://paperwild-git-feat-convex-multiplayer-davidson3556s-projects.vercel.app/",
+      "reviewedCodeVersion": "v-e46154e3e9ce",
+      "runCodeVersion": null,
+      "autoHeal": null,
+      "autoHealFieldPresent": false,
+      "replay": {
+        "path": "replay",
+        "reason": null,
+        "caveat": null
+      }
+    },
+    {
+      "case": "SOUN-001",
+      "testId": "06093f89-2095-4a14-b7db-101e715ae206",
+      "runId": "9d40b15a-0960-4975-bbfc-42fbf5433e28",
+      "projectId": "dafdf75c-04a3-467f-acc2-4359af6b1d8e",
+      "status": "passed",
+      "source": "cli",
+      "targetUrl": "https://paperwild-git-feat-convex-multiplayer-davidson3556s-projects.vercel.app/",
+      "reviewedCodeVersion": "v-e749a68a45d3",
+      "runCodeVersion": null,
+      "autoHeal": null,
+      "autoHealFieldPresent": false,
+      "replay": {
+        "path": "replay",
+        "reason": null,
+        "caveat": null
+      }
+    }
+  ],
+  "storedCodeAfter": [
+    {
+      "case": "BOAR-001",
+      "testId": "9e34b635-85b9-427d-95b2-5584e55f5f7d",
+      "codeVersion": "v-34c17b1132d7",
+      "sha256": "eb1e048a9e9f3f57b3749d7b0abe46f49b894e2091a0c2919e4e5ac6c238aaf5",
+      "readbackEqual": true
+    },
+    {
+      "case": "BOAR-002",
+      "testId": "0ad51a00-bdcc-49ab-a155-ad15de21a7a2",
+      "codeVersion": "v-b4f39a6e001a",
+      "sha256": "3d4a0566a2fda9333590045eb98646ec3d7b882e24a4663be1940c98f5976c86",
+      "readbackEqual": true
+    },
+    {
+      "case": "BOAR-003",
+      "testId": "6c39a736-f9b2-4731-8560-05df7dcd0449",
+      "codeVersion": "v-11b7e8a6016c",
+      "sha256": "95c10e6ec231ccf18c392351412dc62ad7514f96285fc9d5b35dd7c9c8ae6582",
+      "readbackEqual": true
+    },
+    {
+      "case": "BOAR-004",
+      "testId": "2330c1ea-adda-4d16-a611-d8745fc4cc66",
+      "codeVersion": "v-7c5af6f4e014",
+      "sha256": "351f3e09584a0a319195472050cf1a18ce2c2c5f899b85a1f1077fe7a81d3833",
+      "readbackEqual": true
+    },
+    {
+      "case": "BOAR-005",
+      "testId": "c48475e4-8ec0-4875-a5c9-e8b2981d4c87",
+      "codeVersion": "v-936581958af2",
+      "sha256": "43295cb556ce137bd4d57e44bbe97a8ae65136cc1d9e72732ecd0c156e64c263",
+      "readbackEqual": true
+    },
+    {
+      "case": "BOAR-006",
+      "testId": "836e4d28-2b2a-468c-ba69-21bc358eb237",
+      "codeVersion": "v-1958882ccab5",
+      "sha256": "36526bd1bdf8216a4a21fa63ec2cf4df4ec7ecf9a6efc14e7bbb8afd32b6e290",
+      "readbackEqual": true
+    },
+    {
+      "case": "BOAR-007",
+      "testId": "f52738b9-d0c5-46b4-b914-70d16c6d7e7b",
+      "codeVersion": "v-08b04ac7720c",
+      "sha256": "9d8fdbd68a41a921e1e3737b10dabc3156ed7ed1dd74509a5966d88abfca0b12",
+      "readbackEqual": true
+    },
+    {
+      "case": "BOAR-008",
+      "testId": "ec570b6b-0423-40cd-a0a7-60e8a8cbb23c",
+      "codeVersion": "v-d5b215879043",
+      "sha256": "db97a6053c99a33504c7b58c68b4fc9b25fc8725373d021a8702762845e78971",
+      "readbackEqual": true
+    },
+    {
+      "case": "NOTE-001",
+      "testId": "4cb7d4df-04ae-4be5-8295-f69f0f115611",
+      "codeVersion": "v-0449b2eb6450",
+      "sha256": "2550712a7aa901736db7b52f5b880a61af886d43cfd3bd481c44f3efd7caefbe",
+      "readbackEqual": true
+    },
+    {
+      "case": "NOTE-002",
+      "testId": "43d65119-ddde-41e6-9a50-e99a370bb16b",
+      "codeVersion": "v-c36ccbd7694c",
+      "sha256": "e930977fde055188ae73c6dd5a84d9a832a88a7e850318c6931ec074a5dd0d23",
+      "readbackEqual": true
+    },
+    {
+      "case": "NOTE-003",
+      "testId": "7615508f-ec1e-4df0-9d67-3c4db951b18e",
+      "codeVersion": "v-b680743801da",
+      "sha256": "e89ed185bcafc584c28e847e32dab708462f8752f3b65c6604621710f2bd078a",
+      "readbackEqual": true
+    },
+    {
+      "case": "NOTE-004",
+      "testId": "72d4f1a0-dd72-44e9-bf92-0ccbc9a4ea4d",
+      "codeVersion": "v-6c4c15b0c6e4",
+      "sha256": "b1d782db0445730ab985893d9f2213f549654117dff4b9357231c13c916505ba",
+      "readbackEqual": true
+    },
+    {
+      "case": "ONBD-001",
+      "testId": "76e3011a-cb17-4be2-8d00-833670e8644e",
+      "codeVersion": "v-62a4e86b577b",
+      "sha256": "1c4e8c8e99564c90b39e3ee431a7f1574866912600b00f56a8dd1a14df5ae205",
+      "readbackEqual": true
+    },
+    {
+      "case": "ONBD-002",
+      "testId": "1dc27669-90de-470e-9681-c5f5026194cb",
+      "codeVersion": "v-c5fc38b322d6",
+      "sha256": "4c37a6f1cbf99440062c8c49b5aa2e71327bb1cc79339fe4392a1639492a6286",
+      "readbackEqual": true
+    },
+    {
+      "case": "PREF-001",
+      "testId": "138f2507-51c6-43ed-9a7c-c00bb2b1657e",
+      "codeVersion": "v-e46154e3e9ce",
+      "sha256": "e4b5a4e5b6ea3ff30877b98ce9d1578724f24a82c82b68ff4ff9a3c5b7058fab",
+      "readbackEqual": true
+    },
+    {
+      "case": "SOUN-001",
+      "testId": "06093f89-2095-4a14-b7db-101e715ae206",
+      "codeVersion": "v-e749a68a45d3",
+      "sha256": "361cf1cdea2523f8c89d50e12900745ddbfd25ff3987d7945dc30f1f3713568d",
+      "readbackEqual": true
+    }
+  ],
+  "artifactProof": {
+    "referenceSourceRevision": "822312cebc142c7a2f298fae1e69a3f0117f72d1",
+    "referenceCheckedAt": "2026-10-24T16:21:42.586252+00:00",
+    "fileCount": 48,
+    "applicationPayloadMatches": true,
+    "runtimeSourceEquivalentToHead": true,
+    "afterRunRefresh": {
+      "checkedAt": "2026-10-24T16:34:44.180997+00:00",
+      "targetUrl": "https://paperwild-git-feat-convex-multiplayer-davidson3556s-projects.vercel.app/",
+      "expectedDeploymentId": "dpl_AfLvv6smqBgMXHpm4pWYjPCGfug5",
+      "fileCount": 48,
+      "applicationPayloadMatches": true,
+      "files": [
+        {
+          "path": "art/marginwood-sprites-source.png",
+          "httpStatus": 200,
+          "localSha256": "7e3e3ce020902da830c0a5780aa386add7ca4fef2131540bf6a237a0292c0b04",
+          "remoteSha256": "7e3e3ce020902da830c0a5780aa386add7ca4fef2131540bf6a237a0292c0b04",
+          "applicationPayloadMatch": true,
+          "normalization": "none"
+        },
+        {
+          "path": "art/marginwood-sprites.png",
+          "httpStatus": 200,
+          "localSha256": "b4541b1d52105b53e7e88d6afc89fb03364c02cbfe0432bbbf84638b27400969",
+          "remoteSha256": "b4541b1d52105b53e7e88d6afc89fb03364c02cbfe0432bbbf84638b27400969",
+          "applicationPayloadMatch": true,
+          "normalization": "none"
+        },
+        {
+          "path": "art/pieces/bb.png",
+          "httpStatus": 200,
+          "localSha256": "8d1f3739da63fc5f9e5ad3f968d81260fd3b525778036fee859f6ecff61c53f1",
+          "remoteSha256": "8d1f3739da63fc5f9e5ad3f968d81260fd3b525778036fee859f6ecff61c53f1",
+          "applicationPayloadMatch": true,
+          "normalization": "none"
+        },
+        {
+          "path": "art/pieces/bk.png",
+          "httpStatus": 200,
+          "localSha256": "3f10dbb234d5eaeb7f33bc82e84afc404e89baa60182d88473a0faa41f495ed7",
+          "remoteSha256": "3f10dbb234d5eaeb7f33bc82e84afc404e89baa60182d88473a0faa41f495ed7",
+          "applicationPayloadMatch": true,
+          "normalization": "none"
+        },
+        {
+          "path": "art/pieces/bn.png",
+          "httpStatus": 200,
+          "localSha256": "690d572c2749bab94f100ed7144763c126693ec0c5509be2fbc437f4765b19a3",
+          "remoteSha256": "690d572c2749bab94f100ed7144763c126693ec0c5509be2fbc437f4765b19a3",
+          "applicationPayloadMatch": true,
+          "normalization": "none"
+        },
+        {
+          "path": "art/pieces/bp.png",
+          "httpStatus": 200,
+          "localSha256": "d1e3455b49bbe524b271752af2bf8dddc91b565889b2ff1f741e0d50026020e2",
+          "remoteSha256": "d1e3455b49bbe524b271752af2bf8dddc91b565889b2ff1f741e0d50026020e2",
+          "applicationPayloadMatch": true,
+          "normalization": "none"
+        },
+        {
+          "path": "art/pieces/bq.png",
+          "httpStatus": 200,
+          "localSha256": "7abd6d5b6e9cabba1fbab3b982d08302b9220122267fc25d932a50a12e46d049",
+          "remoteSha256": "7abd6d5b6e9cabba1fbab3b982d08302b9220122267fc25d932a50a12e46d049",
+          "applicationPayloadMatch": true,
+          "normalization": "none"
+        },
+        {
+          "path": "art/pieces/br.png",
+          "httpStatus": 200,
+          "localSha256": "80824183777f615f3fc71b107409dbed3fdb05dcd3eb3a4a64a1d50b08d29d64",
+          "remoteSha256": "80824183777f615f3fc71b107409dbed3fdb05dcd3eb3a4a64a1d50b08d29d64",
+          "applicationPayloadMatch": true,
+          "normalization": "none"
+        },
+        {
+          "path": "art/pieces/wb.png",
+          "httpStatus": 200,
+          "localSha256": "b252047f3d0cc56bb642fcf03b1f1c89c0bb60475a4adefee2003707c6f81c71",
+          "remoteSha256": "b252047f3d0cc56bb642fcf03b1f1c89c0bb60475a4adefee2003707c6f81c71",
+          "applicationPayloadMatch": true,
+          "normalization": "none"
+        },
+        {
+          "path": "art/pieces/wk.png",
+          "httpStatus": 200,
+          "localSha256": "46662114f68b82f65386c3bb0e1e0eaa3b54b1f1528fc6737c505a5cf09eaea6",
+          "remoteSha256": "46662114f68b82f65386c3bb0e1e0eaa3b54b1f1528fc6737c505a5cf09eaea6",
+          "applicationPayloadMatch": true,
+          "normalization": "none"
+        },
+        {
+          "path": "art/pieces/wn.png",
+          "httpStatus": 200,
+          "localSha256": "15915f22d2118be013ced321b5f2b3f62fc95da94c75faf642db9e1321a32bc5",
+          "remoteSha256": "15915f22d2118be013ced321b5f2b3f62fc95da94c75faf642db9e1321a32bc5",
+          "applicationPayloadMatch": true,
+          "normalization": "none"
+        },
+        {
+          "path": "art/pieces/wp.png",
+          "httpStatus": 200,
+          "localSha256": "3852462e41d2ad4494ccffe97c134104e9e24f2228efa2eb6f8617c84b437086",
+          "remoteSha256": "3852462e41d2ad4494ccffe97c134104e9e24f2228efa2eb6f8617c84b437086",
+          "applicationPayloadMatch": true,
+          "normalization": "none"
+        },
+        {
+          "path": "art/pieces/wq.png",
+          "httpStatus": 200,
+          "localSha256": "27d07637bf434a14ff01846e7068d360cb1465c0b273d4ca01d3b049ba077a74",
+          "remoteSha256": "27d07637bf434a14ff01846e7068d360cb1465c0b273d4ca01d3b049ba077a74",
+          "applicationPayloadMatch": true,
+          "normalization": "none"
+        },
+        {
+          "path": "art/pieces/wr.png",
+          "httpStatus": 200,
+          "localSha256": "221bb117f01ac8d7e41e4c4eb52fc77a228566bea666f2f193e7cf52da376616",
+          "remoteSha256": "221bb117f01ac8d7e41e4c4eb52fc77a228566bea666f2f193e7cf52da376616",
+          "applicationPayloadMatch": true,
+          "normalization": "none"
+        },
+        {
+          "path": "art/sketchbook-paper.jpg",
+          "httpStatus": 200,
+          "localSha256": "1b1893574fc8f097ce5c0cbceea27523395af6a0575994b3e0e504e50f0946f3",
+          "remoteSha256": "1b1893574fc8f097ce5c0cbceea27523395af6a0575994b3e0e504e50f0946f3",
+          "applicationPayloadMatch": true,
+          "normalization": "none"
+        },
+        {
+          "path": "art/sketchbook-paper.png",
+          "httpStatus": 200,
+          "localSha256": "d4c027c572cbb944e7bb987f3ebe78656ceabb65fe581ef1b145b5f0cae57956",
+          "remoteSha256": "d4c027c572cbb944e7bb987f3ebe78656ceabb65fe581ef1b145b5f0cae57956",
+          "applicationPayloadMatch": true,
+          "normalization": "none"
+        },
+        {
+          "path": "art/watercolor/bb.png",
+          "httpStatus": 200,
+          "localSha256": "45db972e7e48568a44dfaff020e89204ff3bfa302c8173e8297d439acb4548f6",
+          "remoteSha256": "45db972e7e48568a44dfaff020e89204ff3bfa302c8173e8297d439acb4548f6",
+          "applicationPayloadMatch": true,
+          "normalization": "none"
+        },
+        {
+          "path": "art/watercolor/bk.png",
+          "httpStatus": 200,
+          "localSha256": "01ce59877bb82490071059edcd483548639ed3661aa91823c23e6a64ecd88797",
+          "remoteSha256": "01ce59877bb82490071059edcd483548639ed3661aa91823c23e6a64ecd88797",
+          "applicationPayloadMatch": true,
+          "normalization": "none"
+        },
+        {
+          "path": "art/watercolor/bn.png",
+          "httpStatus": 200,
+          "localSha256": "30fe07bb755495da1b977d7fd7bd90d7c01809e1acbc4248d8605a6fda22630c",
+          "remoteSha256": "30fe07bb755495da1b977d7fd7bd90d7c01809e1acbc4248d8605a6fda22630c",
+          "applicationPayloadMatch": true,
+          "normalization": "none"
+        },
+        {
+          "path": "art/watercolor/bp.png",
+          "httpStatus": 200,
+          "localSha256": "b5968f72f6dba6e5477ccd75048bbf9757a4c2ea3e93a55841100c36eee6cb2c",
+          "remoteSha256": "b5968f72f6dba6e5477ccd75048bbf9757a4c2ea3e93a55841100c36eee6cb2c",
+          "applicationPayloadMatch": true,
+          "normalization": "none"
+        },
+        {
+          "path": "art/watercolor/bq.png",
+          "httpStatus": 200,
+          "localSha256": "feca87c84b726aff84039c1a073bced111073a25825064255e55c8fbd7d55b62",
+          "remoteSha256": "feca87c84b726aff84039c1a073bced111073a25825064255e55c8fbd7d55b62",
+          "applicationPayloadMatch": true,
+          "normalization": "none"
+        },
+        {
+          "path": "art/watercolor/br.png",
+          "httpStatus": 200,
+          "localSha256": "0ef38e01d6d4b2f196b30aca62434e0042c843c6fee4c021bb344c6b459d074d",
+          "remoteSha256": "0ef38e01d6d4b2f196b30aca62434e0042c843c6fee4c021bb344c6b459d074d",
+          "applicationPayloadMatch": true,
+          "normalization": "none"
+        },
+        {
+          "path": "art/watercolor/wb.png",
+          "httpStatus": 200,
+          "localSha256": "ae3cfc3ec806f962b922f53c386e41a1f469ab85f19b83b27f9a0492da9374ed",
+          "remoteSha256": "ae3cfc3ec806f962b922f53c386e41a1f469ab85f19b83b27f9a0492da9374ed",
+          "applicationPayloadMatch": true,
+          "normalization": "none"
+        },
+        {
+          "path": "art/watercolor/web/bb.png",
+          "httpStatus": 200,
+          "localSha256": "567307453ed01ea420d696d83cce6df41b1562193f9b220b6a3993a79db81262",
+          "remoteSha256": "567307453ed01ea420d696d83cce6df41b1562193f9b220b6a3993a79db81262",
+          "applicationPayloadMatch": true,
+          "normalization": "none"
+        },
+        {
+          "path": "art/watercolor/web/bk.png",
+          "httpStatus": 200,
+          "localSha256": "646ab7394d07b480f495f92e7c485bf655cdfe69e9f21caaa432e3486b9f1a36",
+          "remoteSha256": "646ab7394d07b480f495f92e7c485bf655cdfe69e9f21caaa432e3486b9f1a36",
+          "applicationPayloadMatch": true,
+          "normalization": "none"
+        },
+        {
+          "path": "art/watercolor/web/bn.png",
+          "httpStatus": 200,
+          "localSha256": "1b12bf88194d16109e3fdfba6419d50f26383881079777ed16f707728088053b",
+          "remoteSha256": "1b12bf88194d16109e3fdfba6419d50f26383881079777ed16f707728088053b",
+          "applicationPayloadMatch": true,
+          "normalization": "none"
+        },
+        {
+          "path": "art/watercolor/web/bp.png",
+          "httpStatus": 200,
+          "localSha256": "b59f106f9b6906b4dee9b7685634744d63c469fd787bcef483e767c3ae817d90",
+          "remoteSha256": "b59f106f9b6906b4dee9b7685634744d63c469fd787bcef483e767c3ae817d90",
+          "applicationPayloadMatch": true,
+          "normalization": "none"
+        },
+        {
+          "path": "art/watercolor/web/bq.png",
+          "httpStatus": 200,
+          "localSha256": "3c26435ea8acbd1f2e0bad85f4bdfb1ee87e5d2e53003a6de21484ff1a7ac063",
+          "remoteSha256": "3c26435ea8acbd1f2e0bad85f4bdfb1ee87e5d2e53003a6de21484ff1a7ac063",
+          "applicationPayloadMatch": true,
+          "normalization": "none"
+        },
+        {
+          "path": "art/watercolor/web/br.png",
+          "httpStatus": 200,
+          "localSha256": "f7699bf0394a2f6c4a95077a4e393b61d72ad63453e23cea2d8427a5f08d2c9e",
+          "remoteSha256": "f7699bf0394a2f6c4a95077a4e393b61d72ad63453e23cea2d8427a5f08d2c9e",
+          "applicationPayloadMatch": true,
+          "normalization": "none"
+        },
+        {
+          "path": "art/watercolor/web/wb.png",
+          "httpStatus": 200,
+          "localSha256": "25ec1015b0507e2febafa1af692410f773edab509032d3bc786eef217db6c742",
+          "remoteSha256": "25ec1015b0507e2febafa1af692410f773edab509032d3bc786eef217db6c742",
+          "applicationPayloadMatch": true,
+          "normalization": "none"
+        },
+        {
+          "path": "art/watercolor/web/wk.png",
+          "httpStatus": 200,
+          "localSha256": "f6b3d7274321c1c1aa56983810e78e273e31b14ecb309527a5c01357a8177bf3",
+          "remoteSha256": "f6b3d7274321c1c1aa56983810e78e273e31b14ecb309527a5c01357a8177bf3",
+          "applicationPayloadMatch": true,
+          "normalization": "none"
+        },
+        {
+          "path": "art/watercolor/web/wn.png",
+          "httpStatus": 200,
+          "localSha256": "8bef1103b0ebb16854ae9a588a7266e20751273560c0f020388f16693ec44081",
+          "remoteSha256": "8bef1103b0ebb16854ae9a588a7266e20751273560c0f020388f16693ec44081",
+          "applicationPayloadMatch": true,
+          "normalization": "none"
+        },
+        {
+          "path": "art/watercolor/web/wp.png",
+          "httpStatus": 200,
+          "localSha256": "6a938a551b6dbd56a41b6a105719d7cc35d1ebcd8f429155957f94449b7e3403",
+          "remoteSha256": "6a938a551b6dbd56a41b6a105719d7cc35d1ebcd8f429155957f94449b7e3403",
+          "applicationPayloadMatch": true,
+          "normalization": "none"
+        },
+        {
+          "path": "art/watercolor/web/wq.png",
+          "httpStatus": 200,
+          "localSha256": "89d903af4d18a18fff3f806b3c233cb5ecd1bfd2dadc2245405d626494d5ba9a",
+          "remoteSha256": "89d903af4d18a18fff3f806b3c233cb5ecd1bfd2dadc2245405d626494d5ba9a",
+          "applicationPayloadMatch": true,
+          "normalization": "none"
+        },
+        {
+          "path": "art/watercolor/web/wr.png",
+          "httpStatus": 200,
+          "localSha256": "a92e542a53b55a9ed1a84e4a41c0ac92b251c11969c1e33604b121e7dd1ba72f",
+          "remoteSha256": "a92e542a53b55a9ed1a84e4a41c0ac92b251c11969c1e33604b121e7dd1ba72f",
+          "applicationPayloadMatch": true,
+          "normalization": "none"
+        },
+        {
+          "path": "art/watercolor/wk.png",
+          "httpStatus": 200,
+          "localSha256": "7b5c7d1111536be1a08777e88a267e44a24dd860e44475369ef123de2ad7e88a",
+          "remoteSha256": "7b5c7d1111536be1a08777e88a267e44a24dd860e44475369ef123de2ad7e88a",
+          "applicationPayloadMatch": true,
+          "normalization": "none"
+        },
+        {
+          "path": "art/watercolor/wn.png",
+          "httpStatus": 200,
+          "localSha256": "8b99e710353645cf74e4a708866fb59465c4565a78bdd6571b2a35fbbf0ac63a",
+          "remoteSha256": "8b99e710353645cf74e4a708866fb59465c4565a78bdd6571b2a35fbbf0ac63a",
+          "applicationPayloadMatch": true,
+          "normalization": "none"
+        },
+        {
+          "path": "art/watercolor/wp.png",
+          "httpStatus": 200,
+          "localSha256": "23c70a39c11b350ba471a2617c4cd8d46eefa097c412fe06fd46662657b7621c",
+          "remoteSha256": "23c70a39c11b350ba471a2617c4cd8d46eefa097c412fe06fd46662657b7621c",
+          "applicationPayloadMatch": true,
+          "normalization": "none"
+        },
+        {
+          "path": "art/watercolor/wq.png",
+          "httpStatus": 200,
+          "localSha256": "ffb348a554d28b0a1e19f132923648676146383238e800621f664829f4b91a69",
+          "remoteSha256": "ffb348a554d28b0a1e19f132923648676146383238e800621f664829f4b91a69",
+          "applicationPayloadMatch": true,
+          "normalization": "none"
+        },
+        {
+          "path": "art/watercolor/wr.png",
+          "httpStatus": 200,
+          "localSha256": "3e577099242ff8fc7976b05cb75553f3e76f4980b120c345c3c2013e7211cad5",
+          "remoteSha256": "3e577099242ff8fc7976b05cb75553f3e76f4980b120c345c3c2013e7211cad5",
+          "applicationPayloadMatch": true,
+          "normalization": "none"
+        },
+        {
+          "path": "assets/ai.worker-BEeoXuMC.js",
+          "httpStatus": 200,
+          "localSha256": "759df681d5458f88517e096bd3a33904e0153ef1d6753687f2057ef85b54aa12",
+          "remoteSha256": "759df681d5458f88517e096bd3a33904e0153ef1d6753687f2057ef85b54aa12",
+          "applicationPayloadMatch": true,
+          "normalization": "none"
+        },
+        {
+          "path": "assets/index-B86TWJUu.js",
+          "httpStatus": 200,
+          "localSha256": "b48bc3321d4f2d668b887b68bc9f2aeaa284fdc6fe935218826ca734f6e42f04",
+          "remoteSha256": "b48bc3321d4f2d668b887b68bc9f2aeaa284fdc6fe935218826ca734f6e42f04",
+          "applicationPayloadMatch": true,
+          "normalization": "none"
+        },
+        {
+          "path": "assets/index-DCOXjeBT.css",
+          "httpStatus": 200,
+          "localSha256": "df9b8ee09c8a939dd7ab5983fadf483fcf86ff72a368a069b78fbaee502454fd",
+          "remoteSha256": "df9b8ee09c8a939dd7ab5983fadf483fcf86ff72a368a069b78fbaee502454fd",
+          "applicationPayloadMatch": true,
+          "normalization": "none"
+        },
+        {
+          "path": "favicon.svg",
+          "httpStatus": 200,
+          "localSha256": "9e62e18dfca96e6228171d99e7a8a494ceb671c111b27bb7a17b627b1e12d446",
+          "remoteSha256": "9e62e18dfca96e6228171d99e7a8a494ceb671c111b27bb7a17b627b1e12d446",
+          "applicationPayloadMatch": true,
+          "normalization": "none"
+        },
+        {
+          "path": "index.html",
+          "httpStatus": 200,
+          "localSha256": "91103132bf41ff65132307beb3f61e7fa65910697ba7438f71bcbf78a89eec08",
+          "remoteSha256": "826ef92dca1923ba9cbd07eda6e64d967b037c38825ae2b727c59bddda9c266c",
+          "applicationPayloadMatch": true,
+          "normalization": "one-exact-appended-vercel-feedback-tag"
+        },
+        {
+          "path": "ui/pencil-circle.svg",
+          "httpStatus": 200,
+          "localSha256": "0c5e8b24388ce30caf002ff0e8904c68e1dc66a597e0c39f0b26fb046f0e6756",
+          "remoteSha256": "0c5e8b24388ce30caf002ff0e8904c68e1dc66a597e0c39f0b26fb046f0e6756",
+          "applicationPayloadMatch": true,
+          "normalization": "none"
+        },
+        {
+          "path": "ui/pencil-frame.svg",
+          "httpStatus": 200,
+          "localSha256": "82c896a8d9bf8824b0fe169ce28ef8daa1a23f16a35769459809af1b522a2582",
+          "remoteSha256": "82c896a8d9bf8824b0fe169ce28ef8daa1a23f16a35769459809af1b522a2582",
+          "applicationPayloadMatch": true,
+          "normalization": "none"
+        },
+        {
+          "path": "ui/pencil-underline.svg",
+          "httpStatus": 200,
+          "localSha256": "a17c5bfedf7b618b5d5f229000681d0380c356555910086055f8a10624667ffc",
+          "remoteSha256": "a17c5bfedf7b618b5d5f229000681d0380c356555910086055f8a10624667ffc",
+          "applicationPayloadMatch": true,
+          "normalization": "none"
+        }
+      ]
+    }
+  },
+  "finishedAt": "2026-10-24T16:34:44.190700+00:00"
+}

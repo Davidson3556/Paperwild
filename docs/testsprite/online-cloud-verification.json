@@ -1,0 +1,280 @@
+{
+  "verified": false,
+  "checkedAt": "2026-10-24T19:58:41.910Z",
+  "projectId": "5ac48e78-b1a2-4509-ad73-0b3efe0c3343",
+  "targetUrl": "https://paperwild-git-feat-convex-multiplayer-davidson3556s-projects.vercel.app/",
+  "headSha": "c6648a023f041e4e7651951cdd7cf92016a5e19e",
+  "applicationRevision": "6f173553c54ed3bee61a502d2d77183a07512913",
+  "convexUrl": "https://fast-starling-207.convex.cloud",
+  "dispatchIntent": {
+    "autoHealSetting": "--no-auto-heal",
+    "evidenceSource": "Explicit caller command; backend null values remain null"
+  },
+  "storedBefore": [
+    {
+      "case": "ONLN-001",
+      "testId": "9aa656fd-f946-4288-bb72-3cc622a01060",
+      "codeVersion": "v-a880f2e2c491",
+      "sha256": "d924090af7175f040750698c476c33bba418b966101e687493e840f6dd3c7644"
+    },
+    {
+      "case": "ONLN-002",
+      "testId": "d832870e-f2c3-4be2-9b46-785b86c201f0",
+      "codeVersion": "v-38e67fbbc557",
+      "sha256": "170158298b8910f3374c2a8e068dd054c3cff1e2f3c7c3f2200eb21a94d6ad73"
+    },
+    {
+      "case": "ONLN-003",
+      "testId": "7765f1f2-d88d-451c-ab1c-fe1ee4594925",
+      "codeVersion": "v-04b74038b958",
+      "sha256": "afabc8d1e09e442bc45589126d26efe0363689767f2a6bc147344b03977256b6"
+    },
+    {
+      "case": "ONLN-004",
+      "testId": "a1eadd37-181c-4497-897a-fc3aa73d97e8",
+      "codeVersion": "v-69d2c5f4b940",
+      "sha256": "e7a5e08ec3ed0d5f5a2a26153c45e7739fb17af446486dbdbcd07191f232a7c2"
+    }
+  ],
+  "storedAfter": [
+    {
+      "case": "ONLN-001",
+      "testId": "9aa656fd-f946-4288-bb72-3cc622a01060",
+      "codeVersion": "v-a880f2e2c491",
+      "sha256": "d924090af7175f040750698c476c33bba418b966101e687493e840f6dd3c7644"
+    },
+    {
+      "case": "ONLN-002",
+      "testId": "d832870e-f2c3-4be2-9b46-785b86c201f0",
+      "codeVersion": "v-38e67fbbc557",
+      "sha256": "170158298b8910f3374c2a8e068dd054c3cff1e2f3c7c3f2200eb21a94d6ad73"
+    },
+    {
+      "case": "ONLN-003",
+      "testId": "7765f1f2-d88d-451c-ab1c-fe1ee4594925",
+      "codeVersion": "v-04b74038b958",
+      "sha256": "afabc8d1e09e442bc45589126d26efe0363689767f2a6bc147344b03977256b6"
+    },
+    {
+      "case": "ONLN-004",
+      "testId": "a1eadd37-181c-4497-897a-fc3aa73d97e8",
+      "codeVersion": "v-69d2c5f4b940",
+      "sha256": "e7a5e08ec3ed0d5f5a2a26153c45e7739fb17af446486dbdbcd07191f232a7c2"
+    }
+  ],
+  "runs": [
+    {
+      "case": "ONLN-002",
+      "testId": "d832870e-f2c3-4be2-9b46-785b86c201f0",
+      "runId": "e85a31d7-f465-49f3-af01-fce3450c0ea2",
+      "status": "failed",
+      "executionUrl": "https://www.testsprite.com/dashboard-v3/o/f7454a95-e992-581a-98e0-4edd142a0891/projects/5ac48e78-b1a2-4509-ad73-0b3efe0c3343/execution/0c2b161d-1e85-4f83-9d5a-fce3f222c94d/test/e85a31d7-f465-49f3-af01-fce3450c0ea2",
+      "projectId": "5ac48e78-b1a2-4509-ad73-0b3efe0c3343",
+      "source": "cli",
+      "targetUrl": "https://paperwild-git-feat-convex-multiplayer-davidson3556s-projects.vercel.app/",
+      "actualStatus": "failed",
+      "reviewedCodeVersion": "v-38e67fbbc557",
+      "runCodeVersion": null,
+      "autoHeal": null,
+      "autoHealFieldPresent": false,
+      "replay": {
+        "path": "replay",
+        "reason": null,
+        "caveat": null
+      },
+      "startedAt": "2026-10-24T19:59:23.480Z",
+      "finishedAt": "2026-10-24T19:59:36.190Z",
+      "failurePhase": "playwright-start",
+      "failureOperation": "BrowserContext.new_page",
+      "failureClass": "TargetClosedError",
+      "observedException": "RuntimeError: ONLN-002 phase=playwright-start; TargetClosedError: BrowserContext.new_page: Target page, context or browser has been closed"
+    },
+    {
+      "case": "ONLN-001",
+      "testId": "9aa656fd-f946-4288-bb72-3cc622a01060",
+      "runId": "624f0c8e-e026-4100-a5b1-1149fd67e52c",
+      "status": "failed",
+      "executionUrl": "https://www.testsprite.com/dashboard-v3/o/f7454a95-e992-581a-98e0-4edd142a0891/projects/5ac48e78-b1a2-4509-ad73-0b3efe0c3343/execution/0c2b161d-1e85-4f83-9d5a-fce3f222c94d/test/624f0c8e-e026-4100-a5b1-1149fd67e52c",
+      "projectId": "5ac48e78-b1a2-4509-ad73-0b3efe0c3343",
+      "source": "cli",
+      "targetUrl": "https://paperwild-git-feat-convex-multiplayer-davidson3556s-projects.vercel.app/",
+      "actualStatus": "failed",
+      "reviewedCodeVersion": "v-a880f2e2c491",
+      "runCodeVersion": null,
+      "autoHeal": null,
+      "autoHealFieldPresent": false,
+      "replay": {
+        "path": "replay",
+        "reason": null,
+        "caveat": null
+      },
+      "startedAt": "2026-10-24T19:59:23.480Z",
+      "finishedAt": "2026-10-24T19:59:36.413Z",
+      "failurePhase": "playwright-start",
+      "failureOperation": "BrowserContext.new_page",
+      "failureClass": "TargetClosedError",
+      "observedException": "RuntimeError: ONLN-001 phase=playwright-start; TargetClosedError: BrowserContext.new_page: Target page, context or browser has been closed"
+    },
+    {
+      "case": "ONLN-004",
+      "testId": "a1eadd37-181c-4497-897a-fc3aa73d97e8",
+      "runId": "e31779b6-a14c-4c8c-8910-e8800cdb6306",
+      "status": "failed",
+      "executionUrl": "https://www.testsprite.com/dashboard-v3/o/f7454a95-e992-581a-98e0-4edd142a0891/projects/5ac48e78-b1a2-4509-ad73-0b3efe0c3343/execution/0c2b161d-1e85-4f83-9d5a-fce3f222c94d/test/e31779b6-a14c-4c8c-8910-e8800cdb6306",
+      "projectId": "5ac48e78-b1a2-4509-ad73-0b3efe0c3343",
+      "source": "cli",
+      "targetUrl": "https://paperwild-git-feat-convex-multiplayer-davidson3556s-projects.vercel.app/",
+      "actualStatus": "failed",
+      "reviewedCodeVersion": "v-69d2c5f4b940",
+      "runCodeVersion": null,
+      "autoHeal": null,
+      "autoHealFieldPresent": false,
+      "replay": {
+        "path": "replay",
+        "reason": null,
+        "caveat": null
+      },
+      "startedAt": "2026-10-24T19:59:23.480Z",
+      "finishedAt": "2026-10-24T19:59:38.528Z",
+      "failurePhase": "playwright-start",
+      "failureOperation": "BrowserContext.new_page",
+      "failureClass": "TargetClosedError",
+      "observedException": "RuntimeError: ONLN-004 phase=playwright-start; TargetClosedError: BrowserContext.new_page: Target page, context or browser has been closed"
+    },
+    {
+      "case": "ONLN-003",
+      "testId": "7765f1f2-d88d-451c-ab1c-fe1ee4594925",
+      "runId": "21eb5486-b6fc-4bd9-9c4b-046e42d9a981",
+      "status": "failed",
+      "executionUrl": "https://www.testsprite.com/dashboard-v3/o/f7454a95-e992-581a-98e0-4edd142a0891/projects/5ac48e78-b1a2-4509-ad73-0b3efe0c3343/execution/0c2b161d-1e85-4f83-9d5a-fce3f222c94d/test/21eb5486-b6fc-4bd9-9c4b-046e42d9a981",
+      "projectId": "5ac48e78-b1a2-4509-ad73-0b3efe0c3343",
+      "source": "cli",
+      "targetUrl": "https://paperwild-git-feat-convex-multiplayer-davidson3556s-projects.vercel.app/",
+      "actualStatus": "failed",
+      "reviewedCodeVersion": "v-04b74038b958",
+      "runCodeVersion": null,
+      "autoHeal": null,
+      "autoHealFieldPresent": false,
+      "replay": {
+        "path": "replay",
+        "reason": null,
+        "caveat": null
+      },
+      "startedAt": "2026-10-24T19:59:23.480Z",
+      "finishedAt": "2026-10-24T19:59:38.388Z",
+      "failurePhase": "playwright-start",
+      "failureOperation": "BrowserContext.new_page",
+      "failureClass": "TargetClosedError",
+      "observedException": "RuntimeError: ONLN-003 phase=playwright-start; TargetClosedError: BrowserContext.new_page: Target page, context or browser has been closed"
+    }
+  ],
+  "deploymentBefore": {
+    "id": "dpl_4KexDkbSJxqX3wVTP4zu7c8RxbQ7",
+    "context": "Vercel",
+    "state": "success",
+    "targetUrl": "https://vercel.com/davidson3556s-projects/paperwild/4KexDkbSJxqX3wVTP4zu7c8RxbQ7"
+  },
+  "runtimeSourceComparison": {
+    "runtimeSourceEquivalentTo": "6f173553c54ed3bee61a502d2d77183a07512913",
+    "packageJsonOnlyChange": {
+      "field": "scripts.test",
+      "previous": "node --test tests/*.test.ts",
+      "current": "node --test tests/*.test.ts tests/*.test.mjs"
+    },
+    "dependenciesAndBuildScriptUnchanged": true
+  },
+  "applicationBundle": "index-EfeOJs9J.js",
+  "applicationStylesheet": "index-DCOXjeBT.css",
+  "buildBefore": {
+    "fileCount": 48,
+    "treeSha256": "b97af1e67c98ca3c5a69e02876d5205a7ff0c47549fbe8c0dec36db2bc3e62ab",
+    "index": {
+      "rawSha256": "7241c280e27ef5b6db70e31881beee076828803fc3441f19c12b19a4b9eaf47f",
+      "normalizedSha256": "fe27546628421d29e109be018d84451237335c315c4ac734794a0d562b2e3c02",
+      "normalization": "one-exact-appended-vercel-feedback-tag",
+      "deploymentId": "dpl_4KexDkbSJxqX3wVTP4zu7c8RxbQ7"
+    }
+  },
+  "projectBefore": {
+    "projectId": "5ac48e78-b1a2-4509-ad73-0b3efe0c3343",
+    "testIds": [
+      "7765f1f2-d88d-451c-ab1c-fe1ee4594925",
+      "9aa656fd-f946-4288-bb72-3cc622a01060",
+      "a1eadd37-181c-4497-897a-fc3aa73d97e8",
+      "d832870e-f2c3-4be2-9b46-785b86c201f0"
+    ]
+  },
+  "summary": {
+    "projectId": "5ac48e78-b1a2-4509-ad73-0b3efe0c3343",
+    "targetUrl": "https://paperwild-git-feat-convex-multiplayer-davidson3556s-projects.vercel.app/",
+    "headSha": "c6648a023f041e4e7651951cdd7cf92016a5e19e",
+    "total": 4,
+    "passed": 0,
+    "failed": 4,
+    "skipped": 0,
+    "timedOut": 0,
+    "runs": [
+      {
+        "case": "ONLN-002",
+        "testId": "d832870e-f2c3-4be2-9b46-785b86c201f0",
+        "runId": "e85a31d7-f465-49f3-af01-fce3450c0ea2",
+        "status": "failed",
+        "executionUrl": "https://www.testsprite.com/dashboard-v3/o/f7454a95-e992-581a-98e0-4edd142a0891/projects/5ac48e78-b1a2-4509-ad73-0b3efe0c3343/execution/0c2b161d-1e85-4f83-9d5a-fce3f222c94d/test/e85a31d7-f465-49f3-af01-fce3450c0ea2"
+      },
+      {
+        "case": "ONLN-001",
+        "testId": "9aa656fd-f946-4288-bb72-3cc622a01060",
+        "runId": "624f0c8e-e026-4100-a5b1-1149fd67e52c",
+        "status": "failed",
+        "executionUrl": "https://www.testsprite.com/dashboard-v3/o/f7454a95-e992-581a-98e0-4edd142a0891/projects/5ac48e78-b1a2-4509-ad73-0b3efe0c3343/execution/0c2b161d-1e85-4f83-9d5a-fce3f222c94d/test/624f0c8e-e026-4100-a5b1-1149fd67e52c"
+      },
+      {
+        "case": "ONLN-004",
+        "testId": "a1eadd37-181c-4497-897a-fc3aa73d97e8",
+        "runId": "e31779b6-a14c-4c8c-8910-e8800cdb6306",
+        "status": "failed",
+        "executionUrl": "https://www.testsprite.com/dashboard-v3/o/f7454a95-e992-581a-98e0-4edd142a0891/projects/5ac48e78-b1a2-4509-ad73-0b3efe0c3343/execution/0c2b161d-1e85-4f83-9d5a-fce3f222c94d/test/e31779b6-a14c-4c8c-8910-e8800cdb6306"
+      },
+      {
+        "case": "ONLN-003",
+        "testId": "7765f1f2-d88d-451c-ab1c-fe1ee4594925",
+        "runId": "21eb5486-b6fc-4bd9-9c4b-046e42d9a981",
+        "status": "failed",
+        "executionUrl": "https://www.testsprite.com/dashboard-v3/o/f7454a95-e992-581a-98e0-4edd142a0891/projects/5ac48e78-b1a2-4509-ad73-0b3efe0c3343/execution/0c2b161d-1e85-4f83-9d5a-fce3f222c94d/test/21eb5486-b6fc-4bd9-9c4b-046e42d9a981"
+      }
+    ]
+  },
+  "junitPrivatePath": "/private/tmp/paperwild-online-cloud-strict-tSDl8U/junit.xml",
+  "error": "All four strict cases failed in the TestSprite browser before page creation/navigation: TargetClosedError at BrowserContext.new_page. No Paperwild or Convex interaction was exercised. Exact process-crash cause is not established.",
+  "finishedAt": "2026-10-24T20:05:26.533Z",
+  "allReplayRecordsUnqualified": true,
+  "projectAfter": {
+    "projectId": "5ac48e78-b1a2-4509-ad73-0b3efe0c3343",
+    "testIds": [
+      "7765f1f2-d88d-451c-ab1c-fe1ee4594925",
+      "9aa656fd-f946-4288-bb72-3cc622a01060",
+      "a1eadd37-181c-4497-897a-fc3aa73d97e8",
+      "d832870e-f2c3-4be2-9b46-785b86c201f0"
+    ]
+  },
+  "deploymentAfter": {
+    "id": "dpl_4KexDkbSJxqX3wVTP4zu7c8RxbQ7",
+    "context": "Vercel",
+    "state": "success",
+    "targetUrl": "https://vercel.com/davidson3556s-projects/paperwild/4KexDkbSJxqX3wVTP4zu7c8RxbQ7"
+  },
+  "buildAfter": {
+    "fileCount": 48,
+    "treeSha256": "b97af1e67c98ca3c5a69e02876d5205a7ff0c47549fbe8c0dec36db2bc3e62ab",
+    "index": {
+      "rawSha256": "7241c280e27ef5b6db70e31881beee076828803fc3441f19c12b19a4b9eaf47f",
+      "normalizedSha256": "fe27546628421d29e109be018d84451237335c315c4ac734794a0d562b2e3c02",
+      "normalization": "one-exact-appended-vercel-feedback-tag",
+      "deploymentId": "dpl_4KexDkbSJxqX3wVTP4zu7c8RxbQ7"
+    }
+  },
+  "postRunAuditCompleted": true,
+  "actualRunFactsVerified": true,
+  "storedSourcesUnchanged": true,
+  "allAssertionsPassed": false
+}

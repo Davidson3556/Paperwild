@@ -1,0 +1,568 @@
+{
+  "frontendBuild": "index-BkMmPDw2.js",
+  "backend": "local Convex on3210",
+  "white": {
+    "board": [
+      {
+        "piece": "br",
+        "square": "a8"
+      },
+      {
+        "piece": "bn",
+        "square": "b8"
+      },
+      {
+        "piece": "bb",
+        "square": "c8"
+      },
+      {
+        "piece": "bq",
+        "square": "d8"
+      },
+      {
+        "piece": "bk",
+        "square": "e8"
+      },
+      {
+        "piece": "bb",
+        "square": "f8"
+      },
+      {
+        "piece": "bn",
+        "square": "g8"
+      },
+      {
+        "piece": "br",
+        "square": "h8"
+      },
+      {
+        "piece": "bp",
+        "square": "a7"
+      },
+      {
+        "piece": "bp",
+        "square": "b7"
+      },
+      {
+        "piece": "bp",
+        "square": "c7"
+      },
+      {
+        "piece": "bp",
+        "square": "d7"
+      },
+      {
+        "piece": "",
+        "square": "e7"
+      },
+      {
+        "piece": "bp",
+        "square": "f7"
+      },
+      {
+        "piece": "bp",
+        "square": "g7"
+      },
+      {
+        "piece": "bp",
+        "square": "h7"
+      },
+      {
+        "piece": "",
+        "square": "a6"
+      },
+      {
+        "piece": "",
+        "square": "b6"
+      },
+      {
+        "piece": "",
+        "square": "c6"
+      },
+      {
+        "piece": "",
+        "square": "d6"
+      },
+      {
+        "piece": "",
+        "square": "e6"
+      },
+      {
+        "piece": "",
+        "square": "f6"
+      },
+      {
+        "piece": "",
+        "square": "g6"
+      },
+      {
+        "piece": "",
+        "square": "h6"
+      },
+      {
+        "piece": "",
+        "square": "a5"
+      },
+      {
+        "piece": "",
+        "square": "b5"
+      },
+      {
+        "piece": "",
+        "square": "c5"
+      },
+      {
+        "piece": "",
+        "square": "d5"
+      },
+      {
+        "piece": "bp",
+        "square": "e5"
+      },
+      {
+        "piece": "",
+        "square": "f5"
+      },
+      {
+        "piece": "",
+        "square": "g5"
+      },
+      {
+        "piece": "",
+        "square": "h5"
+      },
+      {
+        "piece": "",
+        "square": "a4"
+      },
+      {
+        "piece": "",
+        "square": "b4"
+      },
+      {
+        "piece": "",
+        "square": "c4"
+      },
+      {
+        "piece": "",
+        "square": "d4"
+      },
+      {
+        "piece": "wp",
+        "square": "e4"
+      },
+      {
+        "piece": "",
+        "square": "f4"
+      },
+      {
+        "piece": "",
+        "square": "g4"
+      },
+      {
+        "piece": "",
+        "square": "h4"
+      },
+      {
+        "piece": "",
+        "square": "a3"
+      },
+      {
+        "piece": "",
+        "square": "b3"
+      },
+      {
+        "piece": "",
+        "square": "c3"
+      },
+      {
+        "piece": "",
+        "square": "d3"
+      },
+      {
+        "piece": "",
+        "square": "e3"
+      },
+      {
+        "piece": "",
+        "square": "f3"
+      },
+      {
+        "piece": "",
+        "square": "g3"
+      },
+      {
+        "piece": "",
+        "square": "h3"
+      },
+      {
+        "piece": "wp",
+        "square": "a2"
+      },
+      {
+        "piece": "wp",
+        "square": "b2"
+      },
+      {
+        "piece": "wp",
+        "square": "c2"
+      },
+      {
+        "piece": "wp",
+        "square": "d2"
+      },
+      {
+        "piece": "",
+        "square": "e2"
+      },
+      {
+        "piece": "wp",
+        "square": "f2"
+      },
+      {
+        "piece": "wp",
+        "square": "g2"
+      },
+      {
+        "piece": "wp",
+        "square": "h2"
+      },
+      {
+        "piece": "wr",
+        "square": "a1"
+      },
+      {
+        "piece": "wn",
+        "square": "b1"
+      },
+      {
+        "piece": "wb",
+        "square": "c1"
+      },
+      {
+        "piece": "wq",
+        "square": "d1"
+      },
+      {
+        "piece": "wk",
+        "square": "e1"
+      },
+      {
+        "piece": "wb",
+        "square": "f1"
+      },
+      {
+        "piece": "wn",
+        "square": "g1"
+      },
+      {
+        "piece": "wr",
+        "square": "h1"
+      }
+    ],
+    "captures": "00",
+    "history": "1.e4e5",
+    "status": {
+      "entering": "false",
+      "gameOver": "false",
+      "moving": "false",
+      "online": "true",
+      "onlineConnection": "connected",
+      "onlineInSync": "true",
+      "onlineRevision": "3",
+      "onlineRound": "0",
+      "onlineSeat": "w",
+      "text": "Your move.",
+      "thinking": "false",
+      "turn": "w"
+    },
+    "viewport": {
+      "documentHeight": 846,
+      "documentWidth": 1272,
+      "height": 846,
+      "width": 1272
+    }
+  },
+  "black": {
+    "board": [
+      {
+        "piece": "br",
+        "square": "a8"
+      },
+      {
+        "piece": "bn",
+        "square": "b8"
+      },
+      {
+        "piece": "bb",
+        "square": "c8"
+      },
+      {
+        "piece": "bq",
+        "square": "d8"
+      },
+      {
+        "piece": "bk",
+        "square": "e8"
+      },
+      {
+        "piece": "bb",
+        "square": "f8"
+      },
+      {
+        "piece": "bn",
+        "square": "g8"
+      },
+      {
+        "piece": "br",
+        "square": "h8"
+      },
+      {
+        "piece": "bp",
+        "square": "a7"
+      },
+      {
+        "piece": "bp",
+        "square": "b7"
+      },
+      {
+        "piece": "bp",
+        "square": "c7"
+      },
+      {
+        "piece": "bp",
+        "square": "d7"
+      },
+      {
+        "piece": "",
+        "square": "e7"
+      },
+      {
+        "piece": "bp",
+        "square": "f7"
+      },
+      {
+        "piece": "bp",
+        "square": "g7"
+      },
+      {
+        "piece": "bp",
+        "square": "h7"
+      },
+      {
+        "piece": "",
+        "square": "a6"
+      },
+      {
+        "piece": "",
+        "square": "b6"
+      },
+      {
+        "piece": "",
+        "square": "c6"
+      },
+      {
+        "piece": "",
+        "square": "d6"
+      },
+      {
+        "piece": "",
+        "square": "e6"
+      },
+      {
+        "piece": "",
+        "square": "f6"
+      },
+      {
+        "piece": "",
+        "square": "g6"
+      },
+      {
+        "piece": "",
+        "square": "h6"
+      },
+      {
+        "piece": "",
+        "square": "a5"
+      },
+      {
+        "piece": "",
+        "square": "b5"
+      },
+      {
+        "piece": "",
+        "square": "c5"
+      },
+      {
+        "piece": "",
+        "square": "d5"
+      },
+      {
+        "piece": "bp",
+        "square": "e5"
+      },
+      {
+        "piece": "",
+        "square": "f5"
+      },
+      {
+        "piece": "",
+        "square": "g5"
+      },
+      {
+        "piece": "",
+        "square": "h5"
+      },
+      {
+        "piece": "",
+        "square": "a4"
+      },
+      {
+        "piece": "",
+        "square": "b4"
+      },
+      {
+        "piece": "",
+        "square": "c4"
+      },
+      {
+        "piece": "",
+        "square": "d4"
+      },
+      {
+        "piece": "wp",
+        "square": "e4"
+      },
+      {
+        "piece": "",
+        "square": "f4"
+      },
+      {
+        "piece": "",
+        "square": "g4"
+      },
+      {
+        "piece": "",
+        "square": "h4"
+      },
+      {
+        "piece": "",
+        "square": "a3"
+      },
+      {
+        "piece": "",
+        "square": "b3"
+      },
+      {
+        "piece": "",
+        "square": "c3"
+      },
+      {
+        "piece": "",
+        "square": "d3"
+      },
+      {
+        "piece": "",
+        "square": "e3"
+      },
+      {
+        "piece": "",
+        "square": "f3"
+      },
+      {
+        "piece": "",
+        "square": "g3"
+      },
+      {
+        "piece": "",
+        "square": "h3"
+      },
+      {
+        "piece": "wp",
+        "square": "a2"
+      },
+      {
+        "piece": "wp",
+        "square": "b2"
+      },
+      {
+        "piece": "wp",
+        "square": "c2"
+      },
+      {
+        "piece": "wp",
+        "square": "d2"
+      },
+      {
+        "piece": "",
+        "square": "e2"
+      },
+      {
+        "piece": "wp",
+        "square": "f2"
+      },
+      {
+        "piece": "wp",
+        "square": "g2"
+      },
+      {
+        "piece": "wp",
+        "square": "h2"
+      },
+      {
+        "piece": "wr",
+        "square": "a1"
+      },
+      {
+        "piece": "wn",
+        "square": "b1"
+      },
+      {
+        "piece": "wb",
+        "square": "c1"
+      },
+      {
+        "piece": "wq",
+        "square": "d1"
+      },
+      {
+        "piece": "wk",
+        "square": "e1"
+      },
+      {
+        "piece": "wb",
+        "square": "f1"
+      },
+      {
+        "piece": "wn",
+        "square": "g1"
+      },
+      {
+        "piece": "wr",
+        "square": "h1"
+      }
+    ],
+    "captures": "00",
+    "history": "1.e4e5",
+    "status": {
+      "entering": "false",
+      "gameOver": "false",
+      "moving": "false",
+      "online": "true",
+      "onlineConnection": "connected",
+      "onlineInSync": "true",
+      "onlineRevision": "3",
+      "onlineRound": "0",
+      "onlineSeat": "b",
+      "text": "Your friend’s move.",
+      "thinking": "false",
+      "turn": "w"
+    },
+    "viewport": {
+      "documentHeight": 846,
+      "documentWidth": 1272,
+      "height": 846,
+      "width": 1272
+    }
+  }
+}

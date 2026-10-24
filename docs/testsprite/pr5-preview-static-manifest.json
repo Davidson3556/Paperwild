@@ -1,0 +1,455 @@
+{
+  "recorded_at": "2026-10-24T16:21:42.586252+00:00",
+  "source_revision": "822312cebc142c7a2f298fae1e69a3f0117f72d1",
+  "preview_origin": "https://paperwild-git-feat-convex-multiplayer-davidson3556s-projects.vercel.app",
+  "build": "Vite 7.3.7 production; envDir false; VITE_CONVEX_URL unset; no source/env-file changes",
+  "expected_file_count": 48,
+  "matched_file_count": 47,
+  "all_match": false,
+  "files": [
+    {
+      "path": "art/marginwood-sprites-source.png",
+      "http_status": "200",
+      "local_bytes": 1818624,
+      "remote_bytes": 1818624,
+      "local_sha256": "7e3e3ce020902da830c0a5780aa386add7ca4fef2131540bf6a237a0292c0b04",
+      "remote_sha256": "7e3e3ce020902da830c0a5780aa386add7ca4fef2131540bf6a237a0292c0b04",
+      "match": true
+    },
+    {
+      "path": "art/marginwood-sprites.png",
+      "http_status": "200",
+      "local_bytes": 1453290,
+      "remote_bytes": 1453290,
+      "local_sha256": "b4541b1d52105b53e7e88d6afc89fb03364c02cbfe0432bbbf84638b27400969",
+      "remote_sha256": "b4541b1d52105b53e7e88d6afc89fb03364c02cbfe0432bbbf84638b27400969",
+      "match": true
+    },
+    {
+      "path": "art/pieces/bb.png",
+      "http_status": "200",
+      "local_bytes": 124988,
+      "remote_bytes": 124988,
+      "local_sha256": "8d1f3739da63fc5f9e5ad3f968d81260fd3b525778036fee859f6ecff61c53f1",
+      "remote_sha256": "8d1f3739da63fc5f9e5ad3f968d81260fd3b525778036fee859f6ecff61c53f1",
+      "match": true
+    },
+    {
+      "path": "art/pieces/bk.png",
+      "http_status": "200",
+      "local_bytes": 124854,
+      "remote_bytes": 124854,
+      "local_sha256": "3f10dbb234d5eaeb7f33bc82e84afc404e89baa60182d88473a0faa41f495ed7",
+      "remote_sha256": "3f10dbb234d5eaeb7f33bc82e84afc404e89baa60182d88473a0faa41f495ed7",
+      "match": true
+    },
+    {
+      "path": "art/pieces/bn.png",
+      "http_status": "200",
+      "local_bytes": 121102,
+      "remote_bytes": 121102,
+      "local_sha256": "690d572c2749bab94f100ed7144763c126693ec0c5509be2fbc437f4765b19a3",
+      "remote_sha256": "690d572c2749bab94f100ed7144763c126693ec0c5509be2fbc437f4765b19a3",
+      "match": true
+    },
+    {
+      "path": "art/pieces/bp.png",
+      "http_status": "200",
+      "local_bytes": 88138,
+      "remote_bytes": 88138,
+      "local_sha256": "d1e3455b49bbe524b271752af2bf8dddc91b565889b2ff1f741e0d50026020e2",
+      "remote_sha256": "d1e3455b49bbe524b271752af2bf8dddc91b565889b2ff1f741e0d50026020e2",
+      "match": true
+    },
+    {
+      "path": "art/pieces/bq.png",
+      "http_status": "200",
+      "local_bytes": 125215,
+      "remote_bytes": 125215,
+      "local_sha256": "7abd6d5b6e9cabba1fbab3b982d08302b9220122267fc25d932a50a12e46d049",
+      "remote_sha256": "7abd6d5b6e9cabba1fbab3b982d08302b9220122267fc25d932a50a12e46d049",
+      "match": true
+    },
+    {
+      "path": "art/pieces/br.png",
+      "http_status": "200",
+      "local_bytes": 149170,
+      "remote_bytes": 149170,
+      "local_sha256": "80824183777f615f3fc71b107409dbed3fdb05dcd3eb3a4a64a1d50b08d29d64",
+      "remote_sha256": "80824183777f615f3fc71b107409dbed3fdb05dcd3eb3a4a64a1d50b08d29d64",
+      "match": true
+    },
+    {
+      "path": "art/pieces/wb.png",
+      "http_status": "200",
+      "local_bytes": 128891,
+      "remote_bytes": 128891,
+      "local_sha256": "b252047f3d0cc56bb642fcf03b1f1c89c0bb60475a4adefee2003707c6f81c71",
+      "remote_sha256": "b252047f3d0cc56bb642fcf03b1f1c89c0bb60475a4adefee2003707c6f81c71",
+      "match": true
+    },
+    {
+      "path": "art/pieces/wk.png",
+      "http_status": "200",
+      "local_bytes": 120365,
+      "remote_bytes": 120365,
+      "local_sha256": "46662114f68b82f65386c3bb0e1e0eaa3b54b1f1528fc6737c505a5cf09eaea6",
+      "remote_sha256": "46662114f68b82f65386c3bb0e1e0eaa3b54b1f1528fc6737c505a5cf09eaea6",
+      "match": true
+    },
+    {
+      "path": "art/pieces/wn.png",
+      "http_status": "200",
+      "local_bytes": 111538,
+      "remote_bytes": 111538,
+      "local_sha256": "15915f22d2118be013ced321b5f2b3f62fc95da94c75faf642db9e1321a32bc5",
+      "remote_sha256": "15915f22d2118be013ced321b5f2b3f62fc95da94c75faf642db9e1321a32bc5",
+      "match": true
+    },
+    {
+      "path": "art/pieces/wp.png",
+      "http_status": "200",
+      "local_bytes": 82909,
+      "remote_bytes": 82909,
+      "local_sha256": "3852462e41d2ad4494ccffe97c134104e9e24f2228efa2eb6f8617c84b437086",
+      "remote_sha256": "3852462e41d2ad4494ccffe97c134104e9e24f2228efa2eb6f8617c84b437086",
+      "match": true
+    },
+    {
+      "path": "art/pieces/wq.png",
+      "http_status": "200",
+      "local_bytes": 122914,
+      "remote_bytes": 122914,
+      "local_sha256": "27d07637bf434a14ff01846e7068d360cb1465c0b273d4ca01d3b049ba077a74",
+      "remote_sha256": "27d07637bf434a14ff01846e7068d360cb1465c0b273d4ca01d3b049ba077a74",
+      "match": true
+    },
+    {
+      "path": "art/pieces/wr.png",
+      "http_status": "200",
+      "local_bytes": 143668,
+      "remote_bytes": 143668,
+      "local_sha256": "221bb117f01ac8d7e41e4c4eb52fc77a228566bea666f2f193e7cf52da376616",
+      "remote_sha256": "221bb117f01ac8d7e41e4c4eb52fc77a228566bea666f2f193e7cf52da376616",
+      "match": true
+    },
+    {
+      "path": "art/sketchbook-paper.jpg",
+      "http_status": "200",
+      "local_bytes": 563850,
+      "remote_bytes": 563850,
+      "local_sha256": "1b1893574fc8f097ce5c0cbceea27523395af6a0575994b3e0e504e50f0946f3",
+      "remote_sha256": "1b1893574fc8f097ce5c0cbceea27523395af6a0575994b3e0e504e50f0946f3",
+      "match": true
+    },
+    {
+      "path": "art/sketchbook-paper.png",
+      "http_status": "200",
+      "local_bytes": 2878781,
+      "remote_bytes": 2878781,
+      "local_sha256": "d4c027c572cbb944e7bb987f3ebe78656ceabb65fe581ef1b145b5f0cae57956",
+      "remote_sha256": "d4c027c572cbb944e7bb987f3ebe78656ceabb65fe581ef1b145b5f0cae57956",
+      "match": true
+    },
+    {
+      "path": "art/watercolor/bb.png",
+      "http_status": "200",
+      "local_bytes": 1792431,
+      "remote_bytes": 1792431,
+      "local_sha256": "45db972e7e48568a44dfaff020e89204ff3bfa302c8173e8297d439acb4548f6",
+      "remote_sha256": "45db972e7e48568a44dfaff020e89204ff3bfa302c8173e8297d439acb4548f6",
+      "match": true
+    },
+    {
+      "path": "art/watercolor/bk.png",
+      "http_status": "200",
+      "local_bytes": 1846898,
+      "remote_bytes": 1846898,
+      "local_sha256": "01ce59877bb82490071059edcd483548639ed3661aa91823c23e6a64ecd88797",
+      "remote_sha256": "01ce59877bb82490071059edcd483548639ed3661aa91823c23e6a64ecd88797",
+      "match": true
+    },
+    {
+      "path": "art/watercolor/bn.png",
+      "http_status": "200",
+      "local_bytes": 1420022,
+      "remote_bytes": 1420022,
+      "local_sha256": "30fe07bb755495da1b977d7fd7bd90d7c01809e1acbc4248d8605a6fda22630c",
+      "remote_sha256": "30fe07bb755495da1b977d7fd7bd90d7c01809e1acbc4248d8605a6fda22630c",
+      "match": true
+    },
+    {
+      "path": "art/watercolor/bp.png",
+      "http_status": "200",
+      "local_bytes": 1787197,
+      "remote_bytes": 1787197,
+      "local_sha256": "b5968f72f6dba6e5477ccd75048bbf9757a4c2ea3e93a55841100c36eee6cb2c",
+      "remote_sha256": "b5968f72f6dba6e5477ccd75048bbf9757a4c2ea3e93a55841100c36eee6cb2c",
+      "match": true
+    },
+    {
+      "path": "art/watercolor/bq.png",
+      "http_status": "200",
+      "local_bytes": 2226944,
+      "remote_bytes": 2226944,
+      "local_sha256": "feca87c84b726aff84039c1a073bced111073a25825064255e55c8fbd7d55b62",
+      "remote_sha256": "feca87c84b726aff84039c1a073bced111073a25825064255e55c8fbd7d55b62",
+      "match": true
+    },
+    {
+      "path": "art/watercolor/br.png",
+      "http_status": "200",
+      "local_bytes": 1884257,
+      "remote_bytes": 1884257,
+      "local_sha256": "0ef38e01d6d4b2f196b30aca62434e0042c843c6fee4c021bb344c6b459d074d",
+      "remote_sha256": "0ef38e01d6d4b2f196b30aca62434e0042c843c6fee4c021bb344c6b459d074d",
+      "match": true
+    },
+    {
+      "path": "art/watercolor/wb.png",
+      "http_status": "200",
+      "local_bytes": 2114992,
+      "remote_bytes": 2114992,
+      "local_sha256": "ae3cfc3ec806f962b922f53c386e41a1f469ab85f19b83b27f9a0492da9374ed",
+      "remote_sha256": "ae3cfc3ec806f962b922f53c386e41a1f469ab85f19b83b27f9a0492da9374ed",
+      "match": true
+    },
+    {
+      "path": "art/watercolor/web/bb.png",
+      "http_status": "200",
+      "local_bytes": 285403,
+      "remote_bytes": 285403,
+      "local_sha256": "567307453ed01ea420d696d83cce6df41b1562193f9b220b6a3993a79db81262",
+      "remote_sha256": "567307453ed01ea420d696d83cce6df41b1562193f9b220b6a3993a79db81262",
+      "match": true
+    },
+    {
+      "path": "art/watercolor/web/bk.png",
+      "http_status": "200",
+      "local_bytes": 282734,
+      "remote_bytes": 282734,
+      "local_sha256": "646ab7394d07b480f495f92e7c485bf655cdfe69e9f21caaa432e3486b9f1a36",
+      "remote_sha256": "646ab7394d07b480f495f92e7c485bf655cdfe69e9f21caaa432e3486b9f1a36",
+      "match": true
+    },
+    {
+      "path": "art/watercolor/web/bn.png",
+      "http_status": "200",
+      "local_bytes": 235226,
+      "remote_bytes": 235226,
+      "local_sha256": "1b12bf88194d16109e3fdfba6419d50f26383881079777ed16f707728088053b",
+      "remote_sha256": "1b12bf88194d16109e3fdfba6419d50f26383881079777ed16f707728088053b",
+      "match": true
+    },
+    {
+      "path": "art/watercolor/web/bp.png",
+      "http_status": "200",
+      "local_bytes": 284816,
+      "remote_bytes": 284816,
+      "local_sha256": "b59f106f9b6906b4dee9b7685634744d63c469fd787bcef483e767c3ae817d90",
+      "remote_sha256": "b59f106f9b6906b4dee9b7685634744d63c469fd787bcef483e767c3ae817d90",
+      "match": true
+    },
+    {
+      "path": "art/watercolor/web/bq.png",
+      "http_status": "200",
+      "local_bytes": 358946,
+      "remote_bytes": 358946,
+      "local_sha256": "3c26435ea8acbd1f2e0bad85f4bdfb1ee87e5d2e53003a6de21484ff1a7ac063",
+      "remote_sha256": "3c26435ea8acbd1f2e0bad85f4bdfb1ee87e5d2e53003a6de21484ff1a7ac063",
+      "match": true
+    },
+    {
+      "path": "art/watercolor/web/br.png",
+      "http_status": "200",
+      "local_bytes": 288117,
+      "remote_bytes": 288117,
+      "local_sha256": "f7699bf0394a2f6c4a95077a4e393b61d72ad63453e23cea2d8427a5f08d2c9e",
+      "remote_sha256": "f7699bf0394a2f6c4a95077a4e393b61d72ad63453e23cea2d8427a5f08d2c9e",
+      "match": true
+    },
+    {
+      "path": "art/watercolor/web/wb.png",
+      "http_status": "200",
+      "local_bytes": 340591,
+      "remote_bytes": 340591,
+      "local_sha256": "25ec1015b0507e2febafa1af692410f773edab509032d3bc786eef217db6c742",
+      "remote_sha256": "25ec1015b0507e2febafa1af692410f773edab509032d3bc786eef217db6c742",
+      "match": true
+    },
+    {
+      "path": "art/watercolor/web/wk.png",
+      "http_status": "200",
+      "local_bytes": 262294,
+      "remote_bytes": 262294,
+      "local_sha256": "f6b3d7274321c1c1aa56983810e78e273e31b14ecb309527a5c01357a8177bf3",
+      "remote_sha256": "f6b3d7274321c1c1aa56983810e78e273e31b14ecb309527a5c01357a8177bf3",
+      "match": true
+    },
+    {
+      "path": "art/watercolor/web/wn.png",
+      "http_status": "200",
+      "local_bytes": 217097,
+      "remote_bytes": 217097,
+      "local_sha256": "8bef1103b0ebb16854ae9a588a7266e20751273560c0f020388f16693ec44081",
+      "remote_sha256": "8bef1103b0ebb16854ae9a588a7266e20751273560c0f020388f16693ec44081",
+      "match": true
+    },
+    {
+      "path": "art/watercolor/web/wp.png",
+      "http_status": "200",
+      "local_bytes": 290784,
+      "remote_bytes": 290784,
+      "local_sha256": "6a938a551b6dbd56a41b6a105719d7cc35d1ebcd8f429155957f94449b7e3403",
+      "remote_sha256": "6a938a551b6dbd56a41b6a105719d7cc35d1ebcd8f429155957f94449b7e3403",
+      "match": true
+    },
+    {
+      "path": "art/watercolor/web/wq.png",
+      "http_status": "200",
+      "local_bytes": 343492,
+      "remote_bytes": 343492,
+      "local_sha256": "89d903af4d18a18fff3f806b3c233cb5ecd1bfd2dadc2245405d626494d5ba9a",
+      "remote_sha256": "89d903af4d18a18fff3f806b3c233cb5ecd1bfd2dadc2245405d626494d5ba9a",
+      "match": true
+    },
+    {
+      "path": "art/watercolor/web/wr.png",
+      "http_status": "200",
+      "local_bytes": 302272,
+      "remote_bytes": 302272,
+      "local_sha256": "a92e542a53b55a9ed1a84e4a41c0ac92b251c11969c1e33604b121e7dd1ba72f",
+      "remote_sha256": "a92e542a53b55a9ed1a84e4a41c0ac92b251c11969c1e33604b121e7dd1ba72f",
+      "match": true
+    },
+    {
+      "path": "art/watercolor/wk.png",
+      "http_status": "200",
+      "local_bytes": 1681586,
+      "remote_bytes": 1681586,
+      "local_sha256": "7b5c7d1111536be1a08777e88a267e44a24dd860e44475369ef123de2ad7e88a",
+      "remote_sha256": "7b5c7d1111536be1a08777e88a267e44a24dd860e44475369ef123de2ad7e88a",
+      "match": true
+    },
+    {
+      "path": "art/watercolor/wn.png",
+      "http_status": "200",
+      "local_bytes": 1294028,
+      "remote_bytes": 1294028,
+      "local_sha256": "8b99e710353645cf74e4a708866fb59465c4565a78bdd6571b2a35fbbf0ac63a",
+      "remote_sha256": "8b99e710353645cf74e4a708866fb59465c4565a78bdd6571b2a35fbbf0ac63a",
+      "match": true
+    },
+    {
+      "path": "art/watercolor/wp.png",
+      "http_status": "200",
+      "local_bytes": 1839356,
+      "remote_bytes": 1839356,
+      "local_sha256": "23c70a39c11b350ba471a2617c4cd8d46eefa097c412fe06fd46662657b7621c",
+      "remote_sha256": "23c70a39c11b350ba471a2617c4cd8d46eefa097c412fe06fd46662657b7621c",
+      "match": true
+    },
+    {
+      "path": "art/watercolor/wq.png",
+      "http_status": "200",
+      "local_bytes": 2078694,
+      "remote_bytes": 2078694,
+      "local_sha256": "ffb348a554d28b0a1e19f132923648676146383238e800621f664829f4b91a69",
+      "remote_sha256": "ffb348a554d28b0a1e19f132923648676146383238e800621f664829f4b91a69",
+      "match": true
+    },
+    {
+      "path": "art/watercolor/wr.png",
+      "http_status": "200",
+      "local_bytes": 1987087,
+      "remote_bytes": 1987087,
+      "local_sha256": "3e577099242ff8fc7976b05cb75553f3e76f4980b120c345c3c2013e7211cad5",
+      "remote_sha256": "3e577099242ff8fc7976b05cb75553f3e76f4980b120c345c3c2013e7211cad5",
+      "match": true
+    },
+    {
+      "path": "assets/ai.worker-BEeoXuMC.js",
+      "http_status": "200",
+      "local_bytes": 37298,
+      "remote_bytes": 37298,
+      "local_sha256": "759df681d5458f88517e096bd3a33904e0153ef1d6753687f2057ef85b54aa12",
+      "remote_sha256": "759df681d5458f88517e096bd3a33904e0153ef1d6753687f2057ef85b54aa12",
+      "match": true
+    },
+    {
+      "path": "assets/index-B86TWJUu.js",
+      "http_status": "200",
+      "local_bytes": 373469,
+      "remote_bytes": 373469,
+      "local_sha256": "b48bc3321d4f2d668b887b68bc9f2aeaa284fdc6fe935218826ca734f6e42f04",
+      "remote_sha256": "b48bc3321d4f2d668b887b68bc9f2aeaa284fdc6fe935218826ca734f6e42f04",
+      "match": true
+    },
+    {
+      "path": "assets/index-DCOXjeBT.css",
+      "http_status": "200",
+      "local_bytes": 151483,
+      "remote_bytes": 151483,
+      "local_sha256": "df9b8ee09c8a939dd7ab5983fadf483fcf86ff72a368a069b78fbaee502454fd",
+      "remote_sha256": "df9b8ee09c8a939dd7ab5983fadf483fcf86ff72a368a069b78fbaee502454fd",
+      "match": true
+    },
+    {
+      "path": "favicon.svg",
+      "http_status": "200",
+      "local_bytes": 592,
+      "remote_bytes": 592,
+      "local_sha256": "9e62e18dfca96e6228171d99e7a8a494ceb671c111b27bb7a17b627b1e12d446",
+      "remote_sha256": "9e62e18dfca96e6228171d99e7a8a494ceb671c111b27bb7a17b627b1e12d446",
+      "match": true
+    },
+    {
+      "path": "index.html",
+      "http_status": "200",
+      "local_bytes": 20088,
+      "remote_bytes": 20251,
+      "local_sha256": "91103132bf41ff65132307beb3f61e7fa65910697ba7438f71bcbf78a89eec08",
+      "remote_sha256": "143302c0552ff2fec005860b3ff885544919b591049c879219b41c128d4d89a9",
+      "match": false,
+      "application_payload_match": true,
+      "application_sha256": "91103132bf41ff65132307beb3f61e7fa65910697ba7438f71bcbf78a89eec08",
+      "hosting_addition": {
+        "kind": "Vercel feedback script appended after </html>",
+        "bytes": 163,
+        "source": "https://vercel.live/_next-live/feedback/feedback.js",
+        "deployment_id": "dpl_8Fq7D1B9cxxJKGMMDq7LvXYK4KN8"
+      }
+    },
+    {
+      "path": "ui/pencil-circle.svg",
+      "http_status": "200",
+      "local_bytes": 361,
+      "remote_bytes": 361,
+      "local_sha256": "0c5e8b24388ce30caf002ff0e8904c68e1dc66a597e0c39f0b26fb046f0e6756",
+      "remote_sha256": "0c5e8b24388ce30caf002ff0e8904c68e1dc66a597e0c39f0b26fb046f0e6756",
+      "match": true
+    },
+    {
+      "path": "ui/pencil-frame.svg",
+      "http_status": "200",
+      "local_bytes": 696,
+      "remote_bytes": 696,
+      "local_sha256": "82c896a8d9bf8824b0fe169ce28ef8daa1a23f16a35769459809af1b522a2582",
+      "remote_sha256": "82c896a8d9bf8824b0fe169ce28ef8daa1a23f16a35769459809af1b522a2582",
+      "match": true
+    },
+    {
+      "path": "ui/pencil-underline.svg",
+      "http_status": "200",
+      "local_bytes": 417,
+      "remote_bytes": 417,
+      "local_sha256": "a17c5bfedf7b618b5d5f229000681d0380c356555910086055f8a10624667ffc",
+      "remote_sha256": "a17c5bfedf7b618b5d5f229000681d0380c356555910086055f8a10624667ffc",
+      "match": true
+    }
+  ],
+  "application_payload_matches": true,
+  "application_matched_file_count": 48,
+  "source_inputs_unchanged_from": "6f17355",
+  "source_input_scope": "src/, convex/, public/, index.html, package.json, package-lock.json; git diff --quiet passed"
+}
