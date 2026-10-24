@@ -1,0 +1,79 @@
+name: TestSprite strict replay
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+
+permissions:
+  contents: read
+  statuses: read
+  pull-requests: read
+
+concurrency:
+  group: testsprite-strict-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  strict-replay:
+    name: Verify all 16 stored TestSprite scripts
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      # Public client configuration for this branch's preview, not a credential.
+      # Keep the strict build and verification report on the same backend URL.
+      VITE_CONVEX_URL: https://fast-starling-207.convex.cloud
+    steps:
+      - name: Require a trusted same-repository PR and configured credential
+        env:
+          PR_REPOSITORY: ${{ github.event.pull_request.head.repo.full_name }}
+          TESTSPRITE_API_KEY: ${{ secrets.TESTSPRITE_API_KEY }}
+        run: |
+          if [ "$PR_REPOSITORY" != "$GITHUB_REPOSITORY" ]; then
+            echo '::error::Strict TestSprite verification requires a trusted same-repository branch. Import the reviewed fork changes before running this credentialed suite.'
+            exit 1
+          fi
+          if [ -z "$TESTSPRITE_API_KEY" ]; then
+            echo '::error::TESTSPRITE_API_KEY is missing. Configure the approved encrypted Actions secret before running this suite.'
+            exit 1
+          fi
+
+      - name: Check out the exact PR head
+        uses: actions/checkout@v7
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          persist-credentials: false
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: '^22.18.0'
+          cache: npm
+          cache-dependency-path: package-lock.json
+
+      - name: Verify the strict gate's failure handling
+        run: node --test tests/testsprite-ci.test.mjs
+
+      - name: Build the exact checked-out PR
+        run: |
+          npm ci
+          npm run build
+
+      - name: Install the verified official TestSprite CLI
+        run: npm install --global @testsprite/testsprite-cli@0.15.0
+
+      - name: Run strict stored-code verification on the exact preview
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TESTSPRITE_API_KEY: ${{ secrets.TESTSPRITE_API_KEY }}
+          PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: node scripts/testsprite-ci.mjs
+
+      - name: Keep sanitized results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: testsprite-strict-${{ github.event.pull_request.head.sha }}
+          path: testsprite-ci-results/
+          if-no-files-found: warn
+          retention-days: 14

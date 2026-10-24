@@ -1,0 +1,83 @@
+{
+  "scope": "Read-only audit of six automatic GitHub App cases, no external mutations or source edits",
+  "confirmedRecordedStateContradictions": [
+    {
+      "case": "BOAR-002",
+      "all64SquaresMatchExpected": true,
+      "pieceCount": 32,
+      "status": {
+        "data-entry-stage": "ready",
+        "data-opponent-chosen": "true",
+        "data-local-opponent-chosen": "true",
+        "data-guide-seen": "true",
+        "data-online": "false",
+        "data-online-seat": "",
+        "data-online-revision": "",
+        "data-online-round": "",
+        "data-online-connection": "idle",
+        "data-online-in-sync": "true",
+        "data-turn": "w",
+        "data-game-over": "false",
+        "data-thinking": "false",
+        "data-moving": "false",
+        "data-entering": "false"
+      },
+      "mode": {
+        "computer": "false",
+        "local": "true"
+      },
+      "bundleCodeMatchesReviewedLocal": true,
+      "sha256": "3d4a0566a2fda9333590045eb98646ec3d7b882e24a4663be1940c98f5976c86",
+      "privateSnapshotArtifact": "09-snapshot.html"
+    },
+    {
+      "case": "ONBD-001",
+      "all64SquaresMatchExpected": true,
+      "pieceCount": 32,
+      "status": {
+        "data-entry-stage": "ready",
+        "data-opponent-chosen": "true",
+        "data-local-opponent-chosen": "true",
+        "data-guide-seen": "true",
+        "data-online": "false",
+        "data-online-seat": "",
+        "data-online-revision": "",
+        "data-online-round": "",
+        "data-online-connection": "idle",
+        "data-online-in-sync": "true",
+        "data-turn": "w",
+        "data-game-over": "false",
+        "data-thinking": "false",
+        "data-moving": "false",
+        "data-entering": "false"
+      },
+      "mode": {
+        "computer": "false",
+        "local": "true"
+      },
+      "bundleCodeMatchesReviewedLocal": true,
+      "sha256": "1c4e8c8e99564c90b39e3ee431a7f1574866912600b00f56a8dd1a14df5ae205",
+      "privateSnapshotArtifact": "09-snapshot.html"
+    }
+  ],
+  "confirmedAgentSequenceProblems": [
+    {
+      "case": "NOTE-001",
+      "observation": "Selects e2, reloads without any e4 destination click, then asserts e4 pawn."
+    },
+    {
+      "case": "NOTE-002",
+      "observation": "Clicks Resume animations at step14, then asserts saved pause is active at step15."
+    },
+    {
+      "case": "NOTE-003",
+      "observation": "Starts Play against the club at steps9 and14, then asserts a local one-ply position and no c6 Black reply."
+    }
+  ],
+  "requirementsMismatch": {
+    "case": "ONBD-001",
+    "observation": "Analysis demands a nonexistent empty-save action and dismissible mandatory chooser, contradicting the required explicit opponent-selection contract."
+  },
+  "limit": "This audit establishes test/agent defects. It does not prove every automatic case or unmeasured visual/audio assertion passes.",
+  "evidenceLocation": "Raw snapshots/action logs were inspected locally and retained privately; this report contains the derived allowlisted observations."
+}

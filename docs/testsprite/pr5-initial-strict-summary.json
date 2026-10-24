@@ -1,0 +1,137 @@
+{
+  "total": 16,
+  "passed": 2,
+  "failed": 14,
+  "skipped": 0,
+  "timedOut": 0,
+  "runs": [
+    {
+      "testId": "1dc27669-90de-470e-9681-c5f5026194cb",
+      "title": "Club choice and replayable tour preserve a playable game",
+      "runId": "3ec77ab4-bd6d-4e05-b120-afcc68b8ad4b",
+      "status": "passed",
+      "dashboardUrl": "https://www.testsprite.com/dashboard-v3/o/f7454a95-e992-581a-98e0-4edd142a0891/projects/dafdf75c-04a3-467f-acc2-4359af6b1d8e/test-cases/1dc27669-90de-470e-9681-c5f5026194cb",
+      "executionUrl": "https://www.testsprite.com/dashboard-v3/o/f7454a95-e992-581a-98e0-4edd142a0891/projects/dafdf75c-04a3-467f-acc2-4359af6b1d8e/execution/b772d259-eeb5-4390-b05f-e2a582e96886/test/3ec77ab4-bd6d-4e05-b120-afcc68b8ad4b"
+    },
+    {
+      "testId": "836e4d28-2b2a-468c-ba69-21bc358eb237",
+      "title": "Knight promotion ends in an insufficient material draw",
+      "runId": "031a019a-551f-415e-9fbe-312b60397adf",
+      "status": "blocked",
+      "dashboardUrl": "https://www.testsprite.com/dashboard-v3/o/f7454a95-e992-581a-98e0-4edd142a0891/projects/dafdf75c-04a3-467f-acc2-4359af6b1d8e/test-cases/836e4d28-2b2a-468c-ba69-21bc358eb237",
+      "executionUrl": "https://www.testsprite.com/dashboard-v3/o/f7454a95-e992-581a-98e0-4edd142a0891/projects/dafdf75c-04a3-467f-acc2-4359af6b1d8e/execution/b772d259-eeb5-4390-b05f-e2a582e96886/test/031a019a-551f-415e-9fbe-312b60397adf"
+    },
+    {
+      "testId": "7615508f-ec1e-4df0-9d67-3c4db951b18e",
+      "title": "Keyboard skip releases notebook entry without stale animation or computer replies",
+      "runId": "851d3740-b855-497a-890b-13bfd259daf1",
+      "status": "blocked",
+      "dashboardUrl": "https://www.testsprite.com/dashboard-v3/o/f7454a95-e992-581a-98e0-4edd142a0891/projects/dafdf75c-04a3-467f-acc2-4359af6b1d8e/test-cases/7615508f-ec1e-4df0-9d67-3c4db951b18e",
+      "executionUrl": "https://www.testsprite.com/dashboard-v3/o/f7454a95-e992-581a-98e0-4edd142a0891/projects/dafdf75c-04a3-467f-acc2-4359af6b1d8e/execution/b772d259-eeb5-4390-b05f-e2a582e96886/test/851d3740-b855-497a-890b-13bfd259daf1"
+    },
+    {
+      "testId": "9e34b635-85b9-427d-95b2-5584e55f5f7d",
+      "title": "Illegal moves leave the board unchanged",
+      "runId": "db6dcdb0-15c4-4960-bcb1-4bcb54c4abf4",
+      "status": "blocked",
+      "dashboardUrl": "https://www.testsprite.com/dashboard-v3/o/f7454a95-e992-581a-98e0-4edd142a0891/projects/dafdf75c-04a3-467f-acc2-4359af6b1d8e/test-cases/9e34b635-85b9-427d-95b2-5584e55f5f7d",
+      "executionUrl": "https://www.testsprite.com/dashboard-v3/o/f7454a95-e992-581a-98e0-4edd142a0891/projects/dafdf75c-04a3-467f-acc2-4359af6b1d8e/execution/b772d259-eeb5-4390-b05f-e2a582e96886/test/db6dcdb0-15c4-4960-bcb1-4bcb54c4abf4"
+    },
+    {
+      "testId": "c48475e4-8ec0-4875-a5c9-e8b2981d4c87",
+      "title": "Queen promotion settles as a playable checking position",
+      "runId": "a3f56d8c-9a5e-4436-91dc-4a87459aff32",
+      "status": "blocked",
+      "dashboardUrl": "https://www.testsprite.com/dashboard-v3/o/f7454a95-e992-581a-98e0-4edd142a0891/projects/dafdf75c-04a3-467f-acc2-4359af6b1d8e/test-cases/c48475e4-8ec0-4875-a5c9-e8b2981d4c87",
+      "executionUrl": "https://www.testsprite.com/dashboard-v3/o/f7454a95-e992-581a-98e0-4edd142a0891/projects/dafdf75c-04a3-467f-acc2-4359af6b1d8e/execution/b772d259-eeb5-4390-b05f-e2a582e96886/test/a3f56d8c-9a5e-4436-91dc-4a87459aff32"
+    },
+    {
+      "testId": "2330c1ea-adda-4d16-a611-d8745fc4cc66",
+      "title": "Promotion can be cancelled without committing a move",
+      "runId": "2749049d-4150-4273-9c72-9d94c1002fd8",
+      "status": "blocked",
+      "dashboardUrl": "https://www.testsprite.com/dashboard-v3/o/f7454a95-e992-581a-98e0-4edd142a0891/projects/dafdf75c-04a3-467f-acc2-4359af6b1d8e/test-cases/2330c1ea-adda-4d16-a611-d8745fc4cc66",
+      "executionUrl": "https://www.testsprite.com/dashboard-v3/o/f7454a95-e992-581a-98e0-4edd142a0891/projects/dafdf75c-04a3-467f-acc2-4359af6b1d8e/execution/b772d259-eeb5-4390-b05f-e2a582e96886/test/2749049d-4150-4273-9c72-9d94c1002fd8"
+    },
+    {
+      "testId": "72d4f1a0-dd72-44e9-bf92-0ccbc9a4ea4d",
+      "title": "Completed game reload starts fresh while unfinished capture studies resume",
+      "runId": "8e2e37f9-9253-472f-bcaf-4a82a0632f6d",
+      "status": "blocked",
+      "dashboardUrl": "https://www.testsprite.com/dashboard-v3/o/f7454a95-e992-581a-98e0-4edd142a0891/projects/dafdf75c-04a3-467f-acc2-4359af6b1d8e/test-cases/72d4f1a0-dd72-44e9-bf92-0ccbc9a4ea4d",
+      "executionUrl": "https://www.testsprite.com/dashboard-v3/o/f7454a95-e992-581a-98e0-4edd142a0891/projects/dafdf75c-04a3-467f-acc2-4359af6b1d8e/execution/b772d259-eeb5-4390-b05f-e2a582e96886/test/8e2e37f9-9253-472f-bcaf-4a82a0632f6d"
+    },
+    {
+      "testId": "138f2507-51c6-43ed-9a7c-c00bb2b1657e",
+      "title": "Restore a saved game after reload and continue with undo",
+      "runId": "a7eaa1c5-bf38-4981-869b-5c8d63b4eebc",
+      "status": "blocked",
+      "dashboardUrl": "https://www.testsprite.com/dashboard-v3/o/f7454a95-e992-581a-98e0-4edd142a0891/projects/dafdf75c-04a3-467f-acc2-4359af6b1d8e/test-cases/138f2507-51c6-43ed-9a7c-c00bb2b1657e",
+      "executionUrl": "https://www.testsprite.com/dashboard-v3/o/f7454a95-e992-581a-98e0-4edd142a0891/projects/dafdf75c-04a3-467f-acc2-4359af6b1d8e/execution/b772d259-eeb5-4390-b05f-e2a582e96886/test/a7eaa1c5-bf38-4981-869b-5c8d63b4eebc"
+    },
+    {
+      "testId": "43d65119-ddde-41e6-9a50-e99a370bb16b",
+      "title": "Saved manual pause keeps the notebook readable and resume restores living characters",
+      "runId": "4c8f25cf-7854-4ece-9bc4-5741d1007eb1",
+      "status": "blocked",
+      "dashboardUrl": "https://www.testsprite.com/dashboard-v3/o/f7454a95-e992-581a-98e0-4edd142a0891/projects/dafdf75c-04a3-467f-acc2-4359af6b1d8e/test-cases/43d65119-ddde-41e6-9a50-e99a370bb16b",
+      "executionUrl": "https://www.testsprite.com/dashboard-v3/o/f7454a95-e992-581a-98e0-4edd142a0891/projects/dafdf75c-04a3-467f-acc2-4359af6b1d8e/execution/b772d259-eeb5-4390-b05f-e2a582e96886/test/4c8f25cf-7854-4ece-9bc4-5741d1007eb1"
+    },
+    {
+      "testId": "ec570b6b-0423-40cd-a0a7-60e8a8cbb23c",
+      "title": "Undo after a computer reply restores the starting position",
+      "runId": "57a7d280-4162-4aae-9e9e-3e039d0b6100",
+      "status": "blocked",
+      "dashboardUrl": "https://www.testsprite.com/dashboard-v3/o/f7454a95-e992-581a-98e0-4edd142a0891/projects/dafdf75c-04a3-467f-acc2-4359af6b1d8e/test-cases/ec570b6b-0423-40cd-a0a7-60e8a8cbb23c",
+      "executionUrl": "https://www.testsprite.com/dashboard-v3/o/f7454a95-e992-581a-98e0-4edd142a0891/projects/dafdf75c-04a3-467f-acc2-4359af6b1d8e/execution/b772d259-eeb5-4390-b05f-e2a582e96886/test/57a7d280-4162-4aae-9e9e-3e039d0b6100"
+    },
+    {
+      "testId": "76e3011a-cb17-4be2-8d00-833670e8644e",
+      "title": "First visit requires an explicit opponent choice before play",
+      "runId": "92861ce0-25f4-4c20-aedf-e7d498aac381",
+      "status": "passed",
+      "dashboardUrl": "https://www.testsprite.com/dashboard-v3/o/f7454a95-e992-581a-98e0-4edd142a0891/projects/dafdf75c-04a3-467f-acc2-4359af6b1d8e/test-cases/76e3011a-cb17-4be2-8d00-833670e8644e",
+      "executionUrl": "https://www.testsprite.com/dashboard-v3/o/f7454a95-e992-581a-98e0-4edd142a0891/projects/dafdf75c-04a3-467f-acc2-4359af6b1d8e/execution/b772d259-eeb5-4390-b05f-e2a582e96886/test/92861ce0-25f4-4c20-aedf-e7d498aac381"
+    },
+    {
+      "testId": "f52738b9-d0c5-46b4-b914-70d16c6d7e7b",
+      "title": "Checkmate story blocks further play after the winning move",
+      "runId": "c99ac920-c868-4155-a50f-2fb4c666b754",
+      "status": "blocked",
+      "dashboardUrl": "https://www.testsprite.com/dashboard-v3/o/f7454a95-e992-581a-98e0-4edd142a0891/projects/dafdf75c-04a3-467f-acc2-4359af6b1d8e/test-cases/f52738b9-d0c5-46b4-b914-70d16c6d7e7b",
+      "executionUrl": "https://www.testsprite.com/dashboard-v3/o/f7454a95-e992-581a-98e0-4edd142a0891/projects/dafdf75c-04a3-467f-acc2-4359af6b1d8e/execution/b772d259-eeb5-4390-b05f-e2a582e96886/test/c99ac920-c868-4155-a50f-2fb4c666b754"
+    },
+    {
+      "testId": "0ad51a00-bdcc-49ab-a155-ad15de21a7a2",
+      "title": "Simple opening advances update history and turn",
+      "runId": "bc9c3bfb-2f2f-48a8-be02-330c413a0bed",
+      "status": "blocked",
+      "dashboardUrl": "https://www.testsprite.com/dashboard-v3/o/f7454a95-e992-581a-98e0-4edd142a0891/projects/dafdf75c-04a3-467f-acc2-4359af6b1d8e/test-cases/0ad51a00-bdcc-49ab-a155-ad15de21a7a2",
+      "executionUrl": "https://www.testsprite.com/dashboard-v3/o/f7454a95-e992-581a-98e0-4edd142a0891/projects/dafdf75c-04a3-467f-acc2-4359af6b1d8e/execution/b772d259-eeb5-4390-b05f-e2a582e96886/test/bc9c3bfb-2f2f-48a8-be02-330c413a0bed"
+    },
+    {
+      "testId": "6c39a736-f9b2-4731-8560-05df7dcd0449",
+      "title": "Undo restores a captured position atomically",
+      "runId": "2e25a3fe-a96f-4d6e-afda-0a052e37464b",
+      "status": "blocked",
+      "dashboardUrl": "https://www.testsprite.com/dashboard-v3/o/f7454a95-e992-581a-98e0-4edd142a0891/projects/dafdf75c-04a3-467f-acc2-4359af6b1d8e/test-cases/6c39a736-f9b2-4731-8560-05df7dcd0449",
+      "executionUrl": "https://www.testsprite.com/dashboard-v3/o/f7454a95-e992-581a-98e0-4edd142a0891/projects/dafdf75c-04a3-467f-acc2-4359af6b1d8e/execution/b772d259-eeb5-4390-b05f-e2a582e96886/test/2e25a3fe-a96f-4d6e-afda-0a052e37464b"
+    },
+    {
+      "testId": "4cb7d4df-04ae-4be5-8295-f69f0f115611",
+      "title": "Full notebook entry remains visible on first and repeat visits",
+      "runId": "4df3860a-173c-4ed3-949c-bce971ca000f",
+      "status": "blocked",
+      "dashboardUrl": "https://www.testsprite.com/dashboard-v3/o/f7454a95-e992-581a-98e0-4edd142a0891/projects/dafdf75c-04a3-467f-acc2-4359af6b1d8e/test-cases/4cb7d4df-04ae-4be5-8295-f69f0f115611",
+      "executionUrl": "https://www.testsprite.com/dashboard-v3/o/f7454a95-e992-581a-98e0-4edd142a0891/projects/dafdf75c-04a3-467f-acc2-4359af6b1d8e/execution/b772d259-eeb5-4390-b05f-e2a582e96886/test/4df3860a-173c-4ed3-949c-bce971ca000f"
+    },
+    {
+      "testId": "06093f89-2095-4a14-b7db-101e715ae206",
+      "title": "Enable sound from the character guide",
+      "runId": "199bcf55-9d28-42d0-8d00-61f3036f9c7f",
+      "status": "blocked",
+      "dashboardUrl": "https://www.testsprite.com/dashboard-v3/o/f7454a95-e992-581a-98e0-4edd142a0891/projects/dafdf75c-04a3-467f-acc2-4359af6b1d8e/test-cases/06093f89-2095-4a14-b7db-101e715ae206",
+      "executionUrl": "https://www.testsprite.com/dashboard-v3/o/f7454a95-e992-581a-98e0-4edd142a0891/projects/dafdf75c-04a3-467f-acc2-4359af6b1d8e/execution/b772d259-eeb5-4390-b05f-e2a582e96886/test/199bcf55-9d28-42d0-8d00-61f3036f9c7f"
+    }
+  ]
+}

@@ -1,0 +1,69 @@
+{
+  "projectId": "5ac48e78-b1a2-4509-ad73-0b3efe0c3343",
+  "projectName": "Paperwild multiplayer preview",
+  "targetUrl": "https://paperwild-git-feat-convex-multiplayer-davidson3556s-projects.vercel.app/",
+  "status": "four-scripts-uploaded-and-readback-verified",
+  "executionStatus": "not-executed",
+  "testsRun": false,
+  "recordedAt": "2026-10-24T19:42:07.953444+00:00",
+  "verification": "Dedicated frontend project identity and target verified. Each exact hosted Python body and concrete codeVersion is read back after guarded storage; no test execution is claimed.",
+  "scripts": [
+    {
+      "case": "ONLN-001",
+      "testId": "9aa656fd-f946-4288-bb72-3cc622a01060",
+      "name": "Independent online seats, legal captures and rejected third visitors",
+      "sourcePath": "docs/testsprite/online-overrides/ONLN-001.py",
+      "codeVersion": "v-a880f2e2c491",
+      "sha256": "d924090af7175f040750698c476c33bba418b966101e687493e840f6dd3c7644",
+      "readbackEqual": true,
+      "created": true,
+      "updated": false,
+      "executionStatus": "not-executed"
+    },
+    {
+      "case": "ONLN-002",
+      "testId": "d832870e-f2c3-4be2-9b46-785b86c201f0",
+      "name": "Shared Undo and rematch require the other player\u2019s consent",
+      "sourcePath": "docs/testsprite/online-overrides/ONLN-002.py",
+      "codeVersion": "v-38e67fbbc557",
+      "sha256": "170158298b8910f3374c2a8e068dd054c3cff1e2f3c7c3f2200eb21a94d6ad73",
+      "readbackEqual": true,
+      "created": true,
+      "updated": false,
+      "executionStatus": "not-executed"
+    },
+    {
+      "case": "ONLN-003",
+      "testId": "7765f1f2-d88d-451c-ab1c-fe1ee4594925",
+      "name": "Reload and saved-seat return preserve the separate local game",
+      "sourcePath": "docs/testsprite/online-overrides/ONLN-003.py",
+      "codeVersion": "v-04b74038b958",
+      "sha256": "afabc8d1e09e442bc45589126d26efe0363689767f2a6bc147344b03977256b6",
+      "readbackEqual": true,
+      "created": true,
+      "updated": false,
+      "executionStatus": "not-executed"
+    },
+    {
+      "case": "ONLN-004",
+      "testId": "a1eadd37-181c-4497-897a-fc3aa73d97e8",
+      "name": "A real disconnected player reconnects without queued moves",
+      "sourcePath": "docs/testsprite/online-overrides/ONLN-004.py",
+      "codeVersion": "v-69d2c5f4b940",
+      "sha256": "e7a5e08ec3ed0d5f5a2a26153c45e7739fb17af446486dbdbcd07191f232a7c2",
+      "readbackEqual": true,
+      "created": true,
+      "updated": false,
+      "executionStatus": "not-executed"
+    }
+  ],
+  "completedAt": "2026-10-24T19:43:58.222324+00:00",
+  "sourceRevision": "c6648a023f041e4e7651951cdd7cf92016a5e19e",
+  "sourceArchive": {
+    "kind": "immutable-git-commit",
+    "repository": "https://github.com/Davidson3556/Paperwild",
+    "revision": "c6648a023f041e4e7651951cdd7cf92016a5e19e",
+    "pathField": "scripts[].sourcePath",
+    "note": "Original Python bodies are retained at this exact commit and verified against every recorded SHA-256; no duplicate source copies are needed. This historical upload manifest does not change the later failed execution results in online-cloud-summary.json and online-cloud-verification.json."
+  }
+}
