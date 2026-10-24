@@ -20,6 +20,8 @@ PAGES = []
 CONTEXTS = []
 BROWSERS = []
 LOG = []
+NETWORK_OBSERVERS = {}
+REALTIME_HOST = 'fast-starling-207.convex.cloud'
 
 
 class EnvironmentBlocked(RuntimeError):
@@ -110,6 +112,50 @@ async def read(page,label=None):
     return state
 
 
+def observe_network(page,name):
+    # Observe only lifecycle/counters for the expected public Convex host.
+    # Never retain a socket URL, query, frame body, error text or credential.
+    counters={'opened':0,'closed':0,'errors':0,'received':0,'sent':0}
+    NETWORK_OBSERVERS[name]=counters
+    def increment(key):
+        counters[key]+=1
+    def opened(socket):
+        if urlsplit(socket.url).hostname!=REALTIME_HOST:
+            return
+        increment('opened')
+        socket.on('close',lambda *_:increment('closed'))
+        socket.on('socketerror',lambda *_:increment('errors'))
+        socket.on('framereceived',lambda *_:increment('received'))
+        socket.on('framesent',lambda *_:increment('sent'))
+    page.on('websocket',opened)
+
+
+async def network_state(page,name,label):
+    state={'navigatorOnline':await page.evaluate('() => navigator.onLine'),
+           'realtimeCounts':dict(NETWORK_OBSERVERS[name])}
+    LOG.append({'checkpoint':label,'player':name,**state})
+    return state
+
+
+async def http_probe(page,label):
+    # A real read-only browser request, not APIRequestContext (which bypasses
+    # browser network emulation). No response body or complete URL is exported.
+    result=await page.evaluate("""async () => {
+      const controller=new AbortController();
+      const timer=setTimeout(()=>controller.abort(),3000);
+      const url=new URL(window.location.pathname,window.location.origin);
+      url.searchParams.set('paperwild-network-probe',Date.now().toString(36)+Math.random().toString(36).slice(2));
+      try {
+        const response=await fetch(url,{cache:'no-store',credentials:'omit',redirect:'error',signal:controller.signal});
+        return {outcome:'response',status:response.status};
+      } catch(error) {
+        return {outcome:error?.name==='AbortError'?'aborted':'network-failure',errorName:error?.name||'Error'};
+      } finally {clearTimeout(timer);}
+    }""")
+    LOG.append({'checkpoint':label,'httpProbe':result})
+    return result
+
+
 async def new_player(browser_type,name):
     # Match the passing single-player runner bootstrap, but give each player
     # its own Chromium browser and exactly one fresh context/page. No browser
@@ -125,6 +171,7 @@ async def new_player(browser_type,name):
     context.set_default_timeout(20000)
     mark(name+'.context.new_page')
     page=await context.new_page()
+    observe_network(page,name)
     PAGES.append((name,page))
     LOG.append({'checkpoint':'player-bootstrap','player':name,'stage':'page-created'})
     return context,page
@@ -399,12 +446,47 @@ async def exercise(browser):
     await move(a,'e2','e4')
     board=position(('e2','e4'))
     before=await agree(a,b,board,['e4'],'b',2)
+    mark('verify-real-network-observation-before-offline')
+    baseline=await network_state(b,'Black','black-online-network-baseline')
+    check(baseline['navigatorOnline'] is True and baseline['realtimeCounts']['opened']>0 and baseline['realtimeCounts']['received']>0,'The real Black Convex connection was not observed before disconnection')
+    online_http=await http_probe(b,'black-online-http-control')
+    check(online_http.get('outcome')=='response' and online_http.get('status')==200,'The public HTTP control is unavailable before the network test')
     mark('real-black-context-offline')
     # Actual browser network control, not route interception, event dispatch,
     # application connection flags, fake snapshots or credential manipulation.
     await cb.set_offline(True)
     try:
-        await expect(b.locator('.game-space')).to_have_attribute('data-online-connection','reconnecting',timeout=35000)
+        await b.wait_for_function('() => navigator.onLine===false',timeout=10000)
+        offline_http=await http_probe(b,'black-offline-uncached-http')
+        friend_http=await http_probe(a,'white-stays-online-http-control')
+        observation_started=asyncio.get_running_loop().time()
+        cut=await network_state(b,'Black','black-browser-network-offline')
+        controls=json.dumps({'blackHttp':offline_http,'whiteHttp':friend_http,'blackNetwork':cut},separators=(',',':'))
+        check(cut['navigatorOnline'] is False and offline_http.get('outcome')=='network-failure','Actual offline browser HTTP failure was not established; an abort alone is insufficient. '+controls)
+        check(friend_http.get('outcome')=='response' and friend_http.get('status')==200,'The connected friend lost the HTTP control too; context isolation is not established. '+controls)
+        # The pinned Convex SDK's inactivity watchdog is 60 seconds. Give the
+        # actual transport/state transition 90 seconds, without altering it.
+        wait_error=None
+        try:
+            await expect(b.locator('.game-space')).to_have_attribute('data-online-connection','reconnecting',timeout=90000)
+        except AssertionError as error:
+            wait_error=error
+        observed=await network_state(b,'Black','black-after-reconnect-detection-wait')
+        observation_ms=round((asyncio.get_running_loop().time()-observation_started)*1000)
+        diagnostics=json.dumps({'blackHttp':offline_http,'whiteHttp':friend_http,'beforeWait':cut,'afterWait':observed,'observationIntervalMs':observation_ms},separators=(',',':'))
+        if observed['realtimeCounts']['received']>cut['realtimeCounts']['received']:
+            raise EnvironmentBlocked('HTTP is offline but the existing Convex WebSocket still received frames; real socket interruption is unproven. '+diagnostics) from wait_error
+        if wait_error is not None:
+            raise AssertionError('Actual reconnecting state was not observed within 90 seconds. '+diagnostics) from wait_error
+        # Convex publishes disconnected after starting close() asynchronously.
+        # The browser close event can follow SDK reconnecting, including after
+        # network restoration; retain its counts as diagnostics, not an ordering
+        # requirement. Actual isolated HTTP failure, zero received-frame increase
+        # and the real reconnecting state remain mandatory above.
+        LOG.append({'checkpoint':'asynchronous-close-observation',
+                    'closeEventObservedAtReconnecting':observed['realtimeCounts']['closed']>baseline['realtimeCounts']['closed'],
+                    'zeroReceivedFrameIncrease':observed['realtimeCounts']['received']==cut['realtimeCounts']['received'],
+                    'observationIntervalMs':observation_ms})
         offline=await read(b,'actual-disconnected-black-context')
         check(offline['seat']=='b' and shared_state(offline)==shared_state(before[1]),'Disconnection changed the saved seat or last confirmed game')
         await attempt(b,'e7','e5')
@@ -419,9 +501,16 @@ async def exercise(browser):
         await expect(a.locator('.online-connection')).to_have_text('your connection · connected')
         await close_room(a)
     finally:
-        await cb.set_offline(False)
+        try:
+            await network_state(b,'Black','black-before-network-restoration')
+        finally:
+            await cb.set_offline(False)
     mark('real-network-restored-same-black-seat')
+    await b.wait_for_function('() => navigator.onLine===true',timeout=10000)
+    restored_http=await http_probe(b,'black-restored-http-control')
+    check(restored_http.get('outcome')=='response' and restored_http.get('status')==200,'The Black browser HTTP connection did not return')
     await agree(a,b,board,['e4'],'b',2)
+    await network_state(b,'Black','black-network-restored-after-convergence')
     await unchanged(a,b,before,seconds=1.5)
     await no_requests(a,b)
     await close_room(b)
