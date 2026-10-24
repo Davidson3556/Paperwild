@@ -8,6 +8,10 @@ The [strict Actions workflow](../.github/workflows/testsprite-strict.yml) in thi
 
 The suite contains the eight board cases, four notebook cases, preference and sound cases, and two onboarding cases in [the stored scripts](testsprite/overrides/README.md). Its scope is notebook entry, required opponent selection, club and same-device games, saved-state recovery, motion and sound scheduling. A pass does not establish remote multiplayer acceptance; that requires the deployed Convex functions and separate tests using two independent browser contexts.
 
+At cloud-configured head `c6648a023f041e4e7651951cdd7cf92016a5e19e`, [strict run 40126724942](https://github.com/Davidson3556/Paperwild/actions/runs/40126724942) passed **16/16** with the preview bound to `fast-starling-207`. [Regular CI 40126724971](https://github.com/Davidson3556/Paperwild/actions/runs/40126724971) passed **150 app/gate tests, 20 backend tests, TypeScript and build**. These results belong to that exact head; later commits require their own checks.
+
+The separate multiplayer project's initial four-case run failed during browser creation before navigation. A focused ONLN-001 run subsequently passed its original assertions using an uncommitted guarded-bootstrap candidate, with source and exact preview payload verification. It does not substitute for the remaining three cases or a passing committed four-case suite. The [cloud verification record](CONVEX_CLOUD_VERIFICATION_2026-10-24.md) preserves both results; full hosted multiplayer acceptance remains pending.
+
 The workflow performs these checks:
 
 1. Reject fork PRs and missing credentials before checking out or building the branch. Trusted same-repository draft PRs run the suite too; PR #5 can stay draft while hosted Convex work remains pending.

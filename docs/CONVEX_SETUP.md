@@ -2,7 +2,7 @@
 
 Paperwild keeps computer and same-device play available without a backend. **Across the woods** adds an optional shared game through Convex while retaining the existing board, postcard, and room dialog.
 
-The implementation is published in draft [PR #5](https://github.com/Davidson3556/Paperwild/pull/5) on `feat/convex-multiplayer`. Its Convex Cloud Development backend is deployed, and its branch-specific frontend configuration is prepared for a fresh preview build. Hosted multiplayer acceptance is pending. Published `main` remains at merged PR #4 (`3240b0d`) with no production Convex configuration.
+The implementation is published in draft [PR #5](https://github.com/Davidson3556/Paperwild/pull/5) on `feat/convex-multiplayer`. Its public frontend at `c6648a0` is verified against the deployed Convex Cloud Development backend. The sixteen-case regression gate passed at that head; full four-case hosted multiplayer acceptance is still pending. Published `main` remains at merged PR #4 (`3240b0d`) with no production Convex configuration, and PR #5 is unmerged.
 
 ## Current cloud preview configuration
 
@@ -13,12 +13,15 @@ On October 24, the Paperwild project in team `awokoya-davidson` deployed its roo
 | Public client URL | `https://fast-starling-207.convex.cloud` |
 | Vercel variable | `VITE_CONVEX_URL`, Preview only, branch `feat/convex-multiplayer` |
 | Frontend origin | [PR #5 preview](https://paperwild-git-feat-convex-multiplayer-davidson3556s-projects.vercel.app/) |
-| Matching cloud frontend build | `index-EfeOJs9J.js`; fresh public deployment still needs verification |
+| Verified frontend head | `c6648a023f041e4e7651951cdd7cf92016a5e19e` |
+| Matching public frontend build | `index-EfeOJs9J.js`; all 48 application payloads verified |
 | Production | `main` at `3240b0d`; no Convex URL configured |
 
-The URL is public client configuration, not a deploy credential. Other previews and Production do not inherit this branch override. The [strict regression workflow](TESTSPRITE_PR_GATE.md) builds with the same URL and compares every public application payload before dispatching tests. A successful backend deployment or a configured variable alone does not establish that the preview serves the matching frontend or that two players can complete a game.
+The URL is public client configuration, not a deploy credential. Other previews and Production do not inherit this branch override. The [strict regression workflow](TESTSPRITE_PR_GATE.md) builds with the same URL and compares every public application payload before dispatching tests. [Run 40126724942](https://github.com/Davidson3556/Paperwild/actions/runs/40126724942) passed all sixteen frontend regression cases at `c6648a0`; those cases do not establish two-player multiplayer acceptance.
 
-The [four prepared hosted multiplayer scripts](testsprite/online-overrides/README.md) target the separate TestSprite project `5ac48e78-b1a2-4509-ad73-0b3efe0c3343`. They have no execution result yet. The earlier sixteen-case frontend passes refer to the pre-cloud build; its [archived manifest](testsprite/pr5-pre-cloud-stored-code-manifest.json) preserves that evidence.
+The [four hosted multiplayer scripts](testsprite/online-overrides/README.md) target separate TestSprite project `5ac48e78-b1a2-4509-ad73-0b3efe0c3343`. The initial four-case run failed at `BrowserContext.new_page` with `TargetClosedError` before navigation, so it exercised neither the app nor Convex. A focused ONLN-001 retry passed its original assertions using an **uncommitted guarded-bootstrap candidate** (`v-8c8f963a53be`, SHA-256 `745e2bdcba98c33bd5881e7f0d00932e30587215f0203afefef8e6e3db8fc7a9`). Its source, exact application head and all 48 public payloads were verified. The other three cases have no successful hosted result. See the [cloud verification record](CONVEX_CLOUD_VERIFICATION_2026-10-24.md) for both executions and their limits.
+
+A manual check in two tabs of the same Chrome profile completed `e4 d5 exd5` and agreed Undo. It is supplementary interaction evidence; those tabs were **not independent browser contexts**. The earlier pre-cloud sixteen-case passes remain identified by their [archived manifest](testsprite/pr5-pre-cloud-stored-code-manifest.json).
 
 ## Start local development
 
@@ -108,7 +111,7 @@ The connection badge reports this browser's WebSocket. **Friend · seat taken** 
 
 ## Run the test layers
 
-Current cloud-configuration preparation passed **150 app/gate tests, 20 backend tests and strict TypeScript locally**. These are separate from hosted browser execution. The [October 24 chooser verification](NEW_GAME_VERIFICATION_2026-10-24.md) records 122 passing app tests, strict TypeScript/build, and browser checks before the first-visit guide and mandatory entry choice were added. The table below preserves the earlier full multiplayer verification date.
+At `c6648a0`, [regular CI](https://github.com/Davidson3556/Paperwild/actions/runs/40126724971) passed **150 app/gate tests, 20 backend tests, TypeScript and build**. These are separate from hosted browser execution. The [October 24 chooser verification](NEW_GAME_VERIFICATION_2026-10-24.md) records 122 passing app tests, strict TypeScript/build, and browser checks before the first-visit guide and mandatory entry choice were added. The table below preserves the earlier full multiplayer verification date.
 
 | Command | Scope | Recorded local result (October 22) |
 | --- | --- | --- |
@@ -126,7 +129,7 @@ CONVEX_TEST_URL=http://127.0.0.1:3210 npm run test:online:live
 
 Replace port `3210` if your CLI prints a different local client URL. The suite requires a loopback host (`127.0.0.1`, `localhost`, or IPv6 loopback) and rejects cloud endpoints. It creates test rooms in that local deployment, checks both clients' snapshots, consent, reconnect, and concurrent room/seat/move transactions. These are protocol tests; browser layout, animation, and accessibility observations are separate evidence.
 
-The earlier **14/14 TestSprite** result belongs to the published startup correction. The later **16/16** frontend regression passes also predate cloud configuration. Neither suite tests invitation, two-player synchronization or reconnect. The [four prepared hosted scripts](testsprite/online-overrides/README.md) have not executed; the original [ten-case online proposal](testsprite/online-plan.yaml) remains **not executed or uploaded**. Both require independent contexts and real network controls for their relevant scenarios. See the [product requirements](PRODUCT_REQUIREMENTS.md) and [historical startup record](STARTUP_VERIFICATION_2026-10-21.md) for the evidence boundary.
+The earlier **14/14 TestSprite** result belongs to the published startup correction, and the archived October 24 **16/16** runs identify their pre-cloud frontend. The new cloud-head **16/16** regression run remains separate from multiplayer acceptance: the regression suite has no invitation, two-player synchronization or reconnect assertions. The four-case multiplayer startup failure and focused candidate pass are recorded above; full-suite acceptance remains pending. The original [ten-case online proposal](testsprite/online-plan.yaml) is still **not executed or uploaded**. See the [product requirements](PRODUCT_REQUIREMENTS.md) and [historical startup record](STARTUP_VERIFICATION_2026-10-21.md) for the evidence boundary.
 
 ## Prepare a cloud backend and matching frontend
 

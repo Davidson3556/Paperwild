@@ -14,10 +14,11 @@ from playwright.async_api import expect
 
 TARGET = os.environ.get('TEST_TARGET_URL', 'https://paperwild-git-feat-convex-multiplayer-davidson3556s-projects.vercel.app/')
 ORIGIN = '{0.scheme}://{0.netloc}'.format(urlsplit(TARGET))
-BROWSER_ARGS = ['--window-size=1440,1000', '--disable-dev-shm-usage', '--ipc=host', '--disable-background-timer-throttling', '--disable-renderer-backgrounding']
+BROWSER_ARGS = ['--window-size=1280,720', '--disable-dev-shm-usage', '--ipc=host', '--single-process']
 PHASE = 'module-loaded'
 PAGES = []
 CONTEXTS = []
+BROWSERS = []
 LOG = []
 
 
@@ -109,14 +110,23 @@ async def read(page,label=None):
     return state
 
 
-async def new_player(browser,name):
-    # Separate contexts isolate cookies, sessionStorage AND localStorage.
-    # No storage_state is supplied or copied from another player.
+async def new_player(browser_type,name):
+    # Match the passing single-player runner bootstrap, but give each player
+    # its own Chromium browser and exactly one fresh context/page. No browser
+    # process, storage_state, cookies or seat credentials are shared.
+    mark(name+'.chromium.launch')
+    browser=await browser_type.launch(headless=True,args=BROWSER_ARGS)
+    BROWSERS.append((name,browser))
+    LOG.append({'checkpoint':'player-bootstrap','player':name,'stage':'browser-launched'})
+    mark(name+'.browser.new_context')
     context=await browser.new_context(viewport={'width':1440,'height':1000},reduced_motion='no-preference')
-    CONTEXTS.append(context)
+    CONTEXTS.append((name,context))
+    LOG.append({'checkpoint':'player-bootstrap','player':name,'stage':'fresh-context-created'})
     context.set_default_timeout(20000)
+    mark(name+'.context.new_page')
     page=await context.new_page()
     PAGES.append((name,page))
+    LOG.append({'checkpoint':'player-bootstrap','player':name,'stage':'page-created'})
     return context,page
 
 
@@ -331,14 +341,14 @@ async def no_requests(a,b):
 
 
 async def run_test():
-    pw=browser=None
+    pw=None
     original=None
     cleanup_errors=[]
     try:
         mark('playwright-start')
         pw=await async_api.async_playwright().start()
-        browser=await pw.chromium.launch(headless=True,args=BROWSER_ARGS)
-        await asyncio.wait_for(exercise(browser),timeout=300)
+        LOG.append({'checkpoint':'playwright-started'})
+        await asyncio.wait_for(exercise(pw.chromium),timeout=300)
     except BaseException as error:
         original=error
         failure_phase=PHASE
@@ -349,16 +359,20 @@ async def run_test():
                     LOG.append({'checkpoint':'final-'+name,'state':await asyncio.wait_for(read(page),timeout=3)})
                 except Exception as error:
                     cleanup_errors.append({'operation':'final-'+name,'type':type(error).__name__})
-        for index,context in enumerate(CONTEXTS):
+        # Close every context before any browser, including partially bootstrapped
+        # players. Keep trying the remaining resources if one cleanup fails.
+        for name,context in reversed(CONTEXTS):
             try:
                 await asyncio.wait_for(context.close(),timeout=5)
+                LOG.append({'checkpoint':'player-cleanup','player':name,'stage':'context-closed'})
             except Exception as error:
-                cleanup_errors.append({'operation':'context-'+str(index)+'.close','type':type(error).__name__})
-        if browser is not None:
+                cleanup_errors.append({'operation':name+'.context.close','type':type(error).__name__})
+        for name,browser in reversed(BROWSERS):
             try:
                 await asyncio.wait_for(browser.close(),timeout=5)
+                LOG.append({'checkpoint':'player-cleanup','player':name,'stage':'browser-closed'})
             except Exception as error:
-                cleanup_errors.append({'operation':'browser.close','type':type(error).__name__})
+                cleanup_errors.append({'operation':name+'.browser.close','type':type(error).__name__})
         if pw is not None:
             try:
                 await asyncio.wait_for(pw.stop(),timeout=5)
@@ -380,9 +394,9 @@ async def run_test():
 CASE_ID='ONLN-001'
 
 
-async def exercise(browser):
-    _,a=await new_player(browser,'White')
-    _,b=await new_player(browser,'Black')
+async def exercise(browser_type):
+    _,a=await new_player(browser_type,'White')
+    _,b=await new_player(browser_type,'Black')
     await visit_fresh(a)
     invite=await invite_from(a)
     waiting=await read(a)
@@ -412,7 +426,7 @@ async def exercise(browser):
         state=await read(page,'one-fallen-resident-one-memorial')
         check(state['memorials']=='1' and state['pageantTotal']=='1','Capture duplicated or lost its memorial')
 
-    _,third=await new_player(browser,'Third visitor')
+    _,third=await new_player(browser_type,'Third visitor')
     await pending_invite(third,invite)
     await third.get_by_test_id('online-join').click()
     await expect(third.locator('.online-error')).to_have_text('This room already has two players.')
