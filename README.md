@@ -10,6 +10,8 @@
 
 [Local multiplayer verification and screenshots](docs/CONVEX_VERIFICATION_2026-10-22.md) record two synchronized browsers, captures, agreed Undo/rematch, reload, offline-save separation and phone-size controls against the local backend.
 
+The [October 24 opponent chooser checks](docs/NEW_GAME_VERIFICATION_2026-10-24.md) cover the new default club choice, cancellation, keyboard controls, studies, results, and phone layout. The [two-window testing walkthrough](docs/CONVEX_SETUP.md#try-two-seats) explains how to try the local multiplayer build yourself.
+
 [Test the correction preview](https://paperwild-git-living-davidson3556s-projects.vercel.app/) · [Startup evidence and runner investigation](docs/STARTUP_VERIFICATION_2026-10-21.md)
 
 ![Actual local field notebook with the woodland cast, team mittens, camp, and remembrance clearing](docs/media/paperwild-additions-desktop.jpg)
@@ -66,9 +68,12 @@ Development and preview both default to port 4173; stop one before starting the 
 
 Select a character, then a marked destination. In **Against the club**, you play Amber/White; **With a friend** shares both sides on the same device. **Across the woods** opens the online invitation dialog when Convex is configured. Difficulty labels apply to the computer and are Sleepy, Thoughtful, and Mischievous, not Elo ratings.
 
+Starting a new offline game opens **Who will you play?** with **Against the club** selected by default. Choose the computer, a friend on the same device, or online friend play when configured. Opening, changing, or canceling the choice with **Keep this page** preserves the current game; confirming a computer or same-device game starts a standard board. **Open invitation** opens the online dialog and keeps your local game safe until you take a seat. An active online game's new-game action still requests a rematch from the other player.
+
 | Control | What it does |
 | --- | --- |
 | **Field kit** | Choose mode/difficulty, begin a fresh game, or open Little chess stories. |
+| **A fresh page / Another adventure / Return to a full game** | Choose an opponent before replacing an offline game or study; **Against the club** is the default. An active online room requests a rematch instead. |
 | **Across the woods** | Create or join a shared game, copy its invitation, resume a seat, or return to the local page. |
 | Online **Ask to undo / Ask for another game** | Ask the other player to take back one ply or start a new game. They can accept or decline; the sender can cancel. |
 | **Field kit → Revisit last finished game** | Restore the last completed chapter, available only from an untouched full starting board. |
@@ -87,6 +92,8 @@ Squares announce their coordinate, side, conventional chess role, and legal-dest
 Computer games, same-device games, studies, and preferences stay in this browser and origin. Restoring an unfinished local game rebuilds capture stories and memorials without replaying ceremonies. A completed local save opens a fresh board and is archived for explicit revisiting. If the archive cannot be written, startup preserves the original finished save until the player explicitly starts the next chapter. An unfinished computer turn waits until notebook entry settles before replying.
 
 Online rooms keep their shared history in Convex while your local game waits safely. Joining, reconnecting, and receiving online moves do not replace that local save; **Back to my page** restores it. A failed room attempt restores the local page and offers a retry or return. Moves cannot be submitted while disconnected or while the displayed board is catching up, and a click never advances an unconfirmed online board.
+
+For a hands-on multiplayer check, use a normal and private window on this computer: create an invitation, join as the second player, then play **e2 → e4**, **d7 → d5**, and **e4 → d5** in alternating windows. Compare the capture, history, agreed Undo, reload, and rematch in both. Enable **Sound on** separately in each window. The [two-seat walkthrough](docs/CONVEX_SETUP.md#try-two-seats) includes expected results, smaller-screen controls, expired-room recovery, and the hosted-backend requirement for remote friends.
 
 Each seat uses a private random credential whose SHA-256 hash is stored by the backend. Invitation URLs contain only the room code. The active seat is stored per tab for reload; a separate saved seat requires an explicit return action in a new tab. Automatic resume waits until the notebook introduction finishes and uses only that tab's active credential. Reconnection keeps the same seat, and expired rooms report an error instead of remaining apparently connected. Clearing browser storage can lose access to a seat; there are no accounts or account-based seat recovery.
 
@@ -124,7 +131,13 @@ flowchart TD
     capture --> settled
     finale --> settled
     settled --> gameOver{"Game over?"}
-    gameOver -->|"Yes"| result["Show result; offer a fresh game"]
+    gameOver -->|"Yes"| result["Show result; offer Another adventure"]
+    mode -.->|"A fresh page or Return to a full game"| opponent["Choose an opponent; Against the club selected"]
+    result --> opponent
+    opponent -->|"Keep this page"| unchanged["Keep current game or study unchanged"]
+    opponent -->|"Confirm computer or same-device"| reset["Reset standard board in chosen mode"]
+    reset --> selection
+    opponent -->|"Choose online when configured"| online["Open invitation; retain local game until taking a seat"]
     gameOver -->|"No"| computerTurn{"Computer turn?"}
     computerTurn -->|"No"| selection
     computerTurn -->|"Yes"| search["Find a legal computer reply"]

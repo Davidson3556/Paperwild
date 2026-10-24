@@ -4,7 +4,7 @@ import './child-sketch.css';
 import { chooseComputerMove, isDifficulty, isGameMode, PIECE_NAMES, restoreGame } from './game.ts';
 import { canRevisitFinishedGame, createStartupGame, preserveFinishedGame, restoreFinishedGame } from './startup-game.ts';
 import type { FinishedGameRecord } from './startup-game.ts';
-import type { Color, Move, MoveCoordinates, MoveInput, PieceSymbol, PromotionPiece, SavedGame, Square } from './game.ts';
+import type { Color, GameMode, Move, MoveCoordinates, MoveInput, PieceSymbol, PromotionPiece, SavedGame, Square } from './game.ts';
 import { createOnlineSession } from './online-session.ts';
 import { createOnlineRoomUI } from './online-room-ui.ts';
 import { planOnlineSync } from './online-sync.ts';
@@ -21,6 +21,7 @@ import { createFieldCamp } from './field-camp.ts';
 import { renderRemembrance, saveRemembrancePicture } from './remembrance.ts';
 import './remembrance.css';
 import './field-notebook.css';
+import './new-game.css';
 
 interface Preferences { atmosphere: Atmosphere; weather: 'clear' | 'rain'; sound: boolean; music: boolean; view: View; reducedMotion: boolean }
 interface Study { id: string; name: string; label: string; description: string; fen: string; focus: Square }
@@ -142,7 +143,19 @@ document.querySelector('#app')!.innerHTML = `
   <dialog id="field-notes-dialog" class="modal field-notes-dialog"><button class="modal-close icon-button" data-close aria-label="Close field journal">${icon('close')}</button><p class="eyebrow">COLLECTED ALONG THE WAY</p><h2>The field <em>journal.</em></h2><div id="field-notes-host"></div></dialog>
   <dialog id="help-dialog" class="modal"><button class="modal-close icon-button" data-close aria-label="Close instructions">${icon('close')}</button><p class="eyebrow">WELCOME TO THE CLUB</p><h2>Familiar chess.<br><em>Curious company.</em></h2><p>Standard chess, with a woodland cast. Amber is White, indigo is Black. Play the computer or take turns on the same device.</p><p class="voice-invitation">Every friend has a little voice. Tap “hear me” to turn sound on.</p><div class="character-legend">${(['k','q','r','b','n','p'] as const).map(p=>`<div>${portraitSlot('w',p,clubNames[p])}<strong>${PIECE_NAMES[p]}</strong><span>${clubNames[p]}</span><button class="character-voice-button" data-voice="${p}" aria-label="Hear the ${voiceNames[p]}">hear me <span aria-hidden="true">♫</span></button></div>`).join('')}</div><div class="instruction-grid"><div><strong>Choose, then move</strong><p>Select a character, then a marked square. All the usual rules apply, including castling and en passant.</p></div><div><strong>Tea on the sidelines</strong><p>A tiny stretcher crew carries captured friends to the clearing beside the game for a woodland send-off. Ring the bell, scatter petals, or leave a flower. Undo brings everyone back.</p></div><div><strong>The margins are alive</strong><p>Say hello to the little world, invite a shower, or turn the page toward moonlight.</p></div><div><strong>A quieter page</strong><p>Sound is off until you invite it in. Each friend reacts to your moves in its own voice. Pause the wandering for a still, quieter page.</p></div></div><div class="keyboard-note"><kbd>↑</kbd><kbd>↓</kbd><kbd>←</kbd><kbd>→</kbd> explore · <kbd>Enter</kbd> choose · <kbd>Esc</kbd> release · <kbd>U</kbd> undo</div><button class="primary-button" data-close>Back to the story ${icon('arrow')}</button></dialog>
   <dialog id="studies-dialog" class="modal studies-modal"><button class="modal-close icon-button" data-close aria-label="Close chess studies">${icon('close')}</button><p class="eyebrow">THREE LITTLE CHAPTERS</p><h2>Chess <em>stories.</em></h2><p>Small positions. A little room to discover. Both sides are yours to move.</p><div class="study-options">${studies.map((s,i)=>`<button data-study="${s.id}"><span class="study-index">0${i+1}</span><span><strong>${s.name}</strong><small>${s.label}</small></span>${icon('arrow')}</button>`).join('')}</div><p class="fine-print">Opening a story replaces the current game.</p></dialog>
-  <dialog id="new-game-dialog" class="modal small-modal"><span class="modal-mark">${leaf}</span><p class="eyebrow">A FRESH SHEET OF POSSIBILITY</p><h2>Another <em>chapter?</em></h2><p>Your current game and sideline society will be cleared.</p><div class="modal-actions"><button class="secondary-button" data-close>Keep playing</button><button class="primary-button" id="confirm-new">Begin again ${icon('arrow')}</button></div></dialog>
+  <dialog id="new-game-dialog" class="modal new-game-modal" aria-labelledby="new-game-title" aria-describedby="new-game-note">
+    <button class="modal-close icon-button" data-close aria-label="Close new game choices">${icon('close')}</button>
+    <p class="eyebrow">A FRESH PAGE</p><h2 id="new-game-title">Who will<br>you <em>play?</em></h2>
+    <form id="new-game-form">
+      <fieldset class="new-opponents"><legend>Choose your opponent</legend>
+        <label class="new-opponent"><input type="radio" name="new-opponent" value="computer" checked><span class="new-opponent-portrait">${portraitSlot('w','k')}</span><span class="new-opponent-copy"><strong>Against the club</strong><small>You play Amber. The club plays Indigo.</small></span></label>
+        <label class="new-opponent"><input type="radio" name="new-opponent" value="local"><span class="new-opponent-portrait">${portraitSlot('w','n')}</span><span class="new-opponent-copy"><strong>With a friend</strong><small>Take turns on this device.</small></span></label>
+        <label class="new-opponent" id="new-online-option"><input type="radio" name="new-opponent" value="online" id="new-opponent-online"><span class="new-opponent-post" aria-hidden="true"><svg viewBox="0 0 48 48" fill="none"><path d="m6 15 34-2 2 24-35 2-1-24Zm1 1 17 13 16-15M8 38l12-13m8 1 13 10" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/><path d="m32 9 3-4m3 6 5-1M9 9 6 6" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg></span><span class="new-opponent-copy"><strong>Across the woods</strong><small id="new-online-description">Invite a friend to play online.</small></span></label>
+      </fieldset>
+      <p id="new-game-note" class="new-game-note">Your current page stays as it is until you choose to begin.</p>
+      <div class="modal-actions"><button class="secondary-button" type="button" data-close>Keep this page</button><button class="primary-button" type="submit" id="confirm-new">Play against the club ${icon('arrow')}</button></div>
+    </form>
+  </dialog>
   <dialog id="promotion-dialog" class="modal small-modal"><p class="eyebrow">A LITTLE ACORN. A BIG POSSIBILITY.</p><h2>Who will you <em>become?</em></h2><p>Choose a new role for your pawn.</p><div class="promotion-options">${(['q','r','b','n'] as const).map(p=>`<button data-promotion="${p}" aria-label="Promote to ${PIECE_NAMES[p]}">${portraitSlot('w',p)}${PIECE_NAMES[p]}</button>`).join('')}</div><button class="text-button" data-close>Choose a different move</button></dialog>
   <dialog id="result-dialog" class="modal result-modal"><button class="modal-close icon-button" data-close aria-label="Close result">${icon('close')}</button><div class="result-flower" aria-hidden="true">✧</div><p class="eyebrow">A CHAPTER FOR THE CLUB BOOK</p><h2 id="result-title">What a little<br><em>adventure.</em></h2><p id="result-description"></p><div class="result-stats"><div><strong id="result-moves"></strong><span>MOVES PLAYED</span></div><div><strong id="result-blooms"></strong><span>FRIENDS ON THE SIDELINES</span></div></div><button class="primary-button" id="result-new">Another little adventure ${icon('arrow')}</button><button class="text-button remembrance-open" id="result-remembrance" hidden>Visit the garden of remembrance <span aria-hidden="true">↗</span></button><button class="text-button" data-close>Stay a little longer</button></dialog>
 `;
@@ -391,7 +404,7 @@ function cancelComputer() {
   computerEpoch++;clearTimeout(computerTimer);computerTimer=undefined;worker?.terminate();worker=null;thinking=false;
 }
 function queueComputer() {
-  if (appDisposed||onlineEngaged()||onlinePresentation||!startupReady||game.mode!=='computer'||game.chess.turn()!=='b'||game.status().over||thinking) return;
+  if (appDisposed||onlineEngaged()||onlinePresentation||!startupReady||dialog('#new-game-dialog').open||document.querySelector('.online-room-dialog[open]')||game.mode!=='computer'||game.chess.turn()!=='b'||game.status().over||thinking) return;
   thinking=true;selected=null;render();
   const id=++computerEpoch,fen=game.chess.fen();
   const complete=(move: MoveCoordinates | null)=>{
@@ -512,13 +525,40 @@ function undo() {
   if(!undone.length){showToast('The story is still at its beginning.');return;}
   persist();render();sound.undo();showToast('A little room to reconsider. Your last turn is undone.');queueComputer();
 }
-function newGame() {
+function newOpponent(): 'computer'|'local'|'online' {
+  const choice=$<HTMLInputElement>('input[name="new-opponent"]:checked').value;
+  return choice==='online'&&onlineState.configured?'online':choice==='local'?'local':'computer';
+}
+function renderNewGameChoices() {
+  const choice=newOpponent();
+  $('#confirm-new').innerHTML=`${choice==='online'?'Open invitation':choice==='local'?'Play together here':'Play against the club'} ${icon('arrow')}`;
+  $('#new-game-note').textContent=choice==='online'
+    ?'Your current page stays saved while you arrange an online game.'
+    :game.chess.history().length||activeStudy?'Starting will replace this page and its sideline society.':'A clean board. Amber moves first.';
+}
+function chooseNewGame() {
+  if(appDisposed||!startupReady)return;
+  dialog('#field-options-dialog').close();
+  if(onlineEngaged()){requestOnline('rematch');return;}
+  // Choosing is not a chess action. Keep a pending club reply on hold until
+  // the player either starts the chosen game or returns to this page.
+  cancelComputer();
+  for(const d of all<HTMLDialogElement>('dialog[open]'))if(d.id!=='new-game-dialog')d.close();
+  $<HTMLInputElement>('input[name="new-opponent"][value="computer"]').checked=true;
+  $<HTMLInputElement>('#new-opponent-online').disabled=!onlineState.configured;
+  $('#new-online-option').dataset.available=String(onlineState.configured);
+  $('#new-online-description').textContent=onlineState.configured?'Invite a friend to play online.':'Online invitations are resting here.';
+  renderNewGameChoices();render();
+  if(!dialog('#new-game-dialog').open)dialog('#new-game-dialog').showModal();
+  $<HTMLInputElement>('input[name="new-opponent"][value="computer"]').focus();
+}
+function newGame(mode:GameMode) {
   if(onlineEngaged()){requestOnline('rematch');return;}
   if(game.status().over){
     finishedRecord={game:game.serialize(),study:activeStudy?.id ?? null};
     preserveFinishedGame(finishedRecord,record=>localStorage.setItem(FINISHED_KEY,JSON.stringify(record)));
   }
-  cancelFeedback();cancelComputer();activeStudy=null;selected=null;resultDismissed=false;game.reset();focusedSquare='e2';
+  cancelFeedback();cancelComputer();activeStudy=null;selected=null;resultDismissed=false;game.reset({mode});focusedSquare='e2';
   pageant.reset();
   for(const d of all<HTMLDialogElement>('dialog[open]'))d.close();persist(true);render();$('#garden-observation').textContent='The best things happen between the lines.';showToast('A fresh page. A whole little world.');
 }
@@ -640,8 +680,18 @@ function applyPreferences() {
   positionSquares();savePreferences();
 }
 
-button('#new-game').onclick=()=>{dialog('#field-options-dialog').close();if(onlineEngaged()){requestOnline('rematch');return;}game.chess.history().length?dialog('#new-game-dialog').showModal():newGame();};
-button('#confirm-new').onclick=newGame;button('#result-new').onclick=newGame;button('#leave-study').onclick=()=>{if(!leaveOnlineFirst())newGame();};
+button('#new-game').onclick=chooseNewGame;button('#result-new').onclick=chooseNewGame;button('#leave-study').onclick=()=>{if(!leaveOnlineFirst())chooseNewGame();};
+for(const option of all<HTMLInputElement>('input[name="new-opponent"]'))option.onchange=renderNewGameChoices;
+$<HTMLFormElement>('#new-game-form').onsubmit=event=>{
+  event.preventDefault();
+  if(appDisposed||!startupReady||!dialog('#new-game-dialog').open)return;
+  if(onlineEngaged()){dialog('#new-game-dialog').close();requestOnline('rematch');return;}
+  const choice=newOpponent();
+  if(choice==='online'){
+    dialog('#new-game-dialog').close();onlineUI.open();return;
+  }
+  newGame(choice);
+};
 button('#undo').onclick=undo;button('#help').onclick=()=>dialog('#help-dialog').showModal();button('#studies').onclick=()=>{if(leaveOnlineFirst())return;dialog('#field-options-dialog').close();dialog('#studies-dialog').showModal();};
 button('#meet').onclick=()=>dialog('#help-dialog').showModal();
 button('#revisit-finished').onclick=()=>{
@@ -693,7 +743,7 @@ for(const b of all('[data-voice]'))b.onclick=()=>{
 $<HTMLSelectElement>('#difficulty').onchange=e=>{if(leaveOnlineFirst()){render();return;}const value=(e.currentTarget as HTMLSelectElement).value;if(!isDifficulty(value))return;cancelFeedback();cancelComputer();game.difficulty=value;persist();render();queueComputer();};
 for(const b of all('[data-mode]'))b.onclick=()=>{if(leaveOnlineFirst())return;const mode=b.dataset.mode;if(!isGameMode(mode))return;cancelFeedback();cancelComputer();game.mode=mode;selected=null;persist();render();queueComputer();};
 for(const b of all('[data-close]'))b.onclick=()=>b.closest('dialog')?.close();
-for(const d of all<HTMLDialogElement>('dialog')){d.addEventListener('click',e=>{if(e.target===d){const r=d.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)d.close();}});d.addEventListener('close',()=>{if(d.id==='promotion-dialog')pendingPromotion=null;if(d.id==='result-dialog')resultDismissed=true;});}
+for(const d of all<HTMLDialogElement>('dialog')){d.addEventListener('click',e=>{if(e.target===d){const r=d.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)d.close();}});d.addEventListener('close',()=>{if(d.id==='promotion-dialog')pendingPromotion=null;if(d.id==='result-dialog')resultDismissed=true;if(d.id==='new-game-dialog'||d.classList.contains('online-room-dialog'))queueComputer();});}
 for(const b of all('[data-study]'))b.onclick=()=>{
   if(leaveOnlineFirst())return;
   const study=studies.find(s=>s.id===b.dataset.study);if(!study)return;

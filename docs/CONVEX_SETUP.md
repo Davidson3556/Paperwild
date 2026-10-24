@@ -40,14 +40,26 @@ Vite reads its environment at startup and substitutes `VITE_*` values into a pro
 
 ## Try two seats
 
-1. Open Paperwild and let the notebook introduction settle. Open **Across the woods**, then choose **Write an invitation**. The creator takes Amber/White.
-2. Copy the invitation. Open it in a separate tab or browser context, or enter the 12-character code in its room dialog, then choose **Take a seat**. The first independent join takes Indigo/Black.
-3. Wait for both seats to be taken and for your own connection to show connected. Move White, then Black, and confirm that both histories and boards agree.
-4. Ask for Undo. The other player can accept or decline; the sender can cancel. Acceptance removes one ply. A new move clears a pending request.
-5. Ask for another game. Acceptance resets both boards with the same colors and original expiry; declining preserves the game.
-6. Reload one tab to resume that tab's active seat after the introduction. **Back to my page** restores its previous local game. A later saved-seat return is explicit.
+Use a normal window and an incognito/private window **on the same computer** for a clear two-player check. Keep the local Convex process and the frontend running. Open the frontend URL printed by Vite or preview; its usual port is `4173`, while the existing local multiplayer preview uses `http://127.0.0.1:4191/` when that process is running.
 
-A new tab does not automatically use the other tab's locally saved seat just because it opened an invitation. For independent browser-context verification, use a separate profile or private window. A loopback backend works for browsers on this machine; remote friends need the cloud setup below.
+1. Open Paperwild in the normal window and let the notebook introduction settle. Open **Across the woods**, then choose **Write an invitation**. On a smaller screen, open **Field kit** to find **Across the woods**. The creator takes Amber/White.
+2. Copy the invitation link. Paste it into the private window, finish its notebook opening, and choose **Take a seat**. You can also enter the 12-character code in its room dialog. The first independent join takes Indigo/Black.
+3. Wait for both seats to be taken and for each window's own connection to show connected. Turn **Sound on** in **each** window if you want to check voices, movement, and capture audio; a trusted interaction must unlock sound separately in each context.
+4. Make **e2 → e4** in the Amber window, then **d7 → d5** in the Indigo window. Make **e4 → d5** in the Amber window to trigger a capture fight. After every move settles, compare the boards and move histories. After the capture, both should show the Amber acorn at d5, e4 empty, `exd5` in the history, and one captured Indigo acorn. Watch the fight and send-off without allowing them to advance the legal position again.
+5. Ask for Undo in one window. First decline it in the other and confirm that neither board changes. Ask again and accept: both boards should return to the position before the capture, with Amber at e4, Indigo at d5, no captured acorns, and Amber to move. The sender can also cancel a pending request; a new move clears one.
+6. Reload one window. After its introduction, confirm that it resumes the same seat and shared history rather than taking a new seat or replaying old captures.
+7. Ask for another game. Decline once and confirm that both boards stay unchanged, then ask and accept. Both should reset to the standard 32-piece position with empty history, the same colors, and the original expiry. Neither player's **A fresh page** action may reset an online board unilaterally.
+8. Choose **Back to my page** to restore that window's previous local game. A later saved-seat return is explicit. If an old room has expired, return to the local page and write a fresh invitation; reloading or accepting a rematch does not renew it.
+
+A new tab does not automatically use the other tab's locally saved seat just because it opened an invitation. Independent normal/private contexts also keep sound and local settings separate. A loopback backend works only for browsers on this machine; playing from separate devices or inviting a remote friend requires the cloud setup below.
+
+## Choose an opponent for a new game
+
+Outside an active online room, **A fresh page**, the result card's **Another adventure**, and a study's **Return to a full game** open **Who will you play?**. **Against the club** is selected by default: choose **Play against the club** to play Amber/White against the computer. Select **With a friend**, then **Play together here** for alternating turns on the same device. Select **Across the woods**, then **Open invitation** for online friend play; that option is unavailable until a backend is configured.
+
+Opening the chooser, changing a choice, or choosing **Keep this page** must preserve the board, history, and study. Confirming a computer or same-device game starts a fresh standard position in that mode. Choosing online opens the invitation dialog without replacing the local game; the shared board takes over only after a room is created or joined, and **Back to my page** restores the waiting local game. Inside an active online room, a new-game action remains an opponent-approved rematch.
+
+To check this flow, make a local move, open the chooser, switch choices, and cancel: the position and history should still match. Open it again and confirm **Against the club**: the full standard board should appear with Amber to move, followed by exactly one computer reply after your first legal move. Repeat with **With a friend** and confirm there is no automatic reply. When configured, select **Across the woods**, close the invitation dialog without taking a seat, and confirm that the original local game is intact.
 
 ## State and authorization
 
@@ -63,7 +75,9 @@ The connection badge reports this browser's WebSocket. **Friend · seat taken** 
 
 ## Run the test layers
 
-| Command | Scope | Current local result |
+The [October 24 chooser verification](NEW_GAME_VERIFICATION_2026-10-24.md) records 122 passing app tests, strict TypeScript/build, and the separate browser interaction checks for the newer opponent-selection flow. The table below preserves the earlier full multiplayer verification date.
+
+| Command | Scope | Recorded local result (October 22) |
 | --- | --- | --- |
 | `npm test` | Browser-independent rules, startup, motion/audio, transport, and snapshot-planning tests | 122 passed, including 20 transport and 8 reconciliation tests |
 | `npm run test:convex` | Room functions in isolated `convex-test` transactions: authorization, races, rules, consent, and expiry | 20 passed |
