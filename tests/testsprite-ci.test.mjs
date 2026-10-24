@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import { createHash } from 'node:crypto';
-import { compareBuildFiles, previewForBranch, selectVercelStatus, validateManifest, vercelDeploymentId, verifyPreviewIndex, verifyRun, verifyStoredCode, verifySummary } from '../scripts/testsprite-ci.mjs';
+import { compareBuildFiles, previewForBranch, selectVercelStatus, validateManifest, vercelDeploymentId, verifyPreviewIndex, verifyProjectCases, verifyRun, verifyStoredCode, verifySummary } from '../scripts/testsprite-ci.mjs';
 
 const manifest = JSON.parse(await readFile(new URL('../docs/testsprite/pr5-stored-code-manifest.json', import.meta.url), 'utf8'));
 const scripts = validateManifest(manifest);
@@ -16,6 +16,20 @@ test('the gate requires all 16 distinct reviewed cases in the intended project',
   assert.throws(() => validateManifest({ ...manifest, scripts: [...scripts.slice(1), scripts[1]] }), /Duplicate/);
   assert.throws(() => validateManifest({ ...manifest, projectId: 'another-project' }), /another project/);
   assert.throws(() => validateManifest({ ...manifest, scripts: scripts.map((row, index) => index ? row : { ...row, readbackEqual: false }) }), /readback/);
+});
+
+test('public project dispatch refuses extra, missing, duplicate, foreign and incompletely listed tests', () => {
+  const listing = { items: scripts.map(row => ({ id: row.testId, projectId: manifest.projectId, type: 'frontend' })), nextToken: null };
+  assert.equal(verifyProjectCases(listing, scripts).testIds.length, 16);
+  assert.throws(() => verifyProjectCases({ ...listing, items: listing.items.slice(1) }, scripts), /exactly the 16/);
+  assert.throws(() => verifyProjectCases({ ...listing, items: [...listing.items, { ...listing.items[0], id: 'unreviewed' }] }, scripts), /exactly the 16/);
+  assert.throws(() => verifyProjectCases({ ...listing, items: [...listing.items.slice(1), listing.items[1]] }, scripts), /duplicate/);
+  assert.throws(() => verifyProjectCases({ ...listing, items: listing.items.map((row, index) => index ? row : { ...row, id: 'unreviewed' }) }, scripts), /unexpected/);
+  assert.throws(() => verifyProjectCases({ ...listing, items: listing.items.map((row, index) => index ? row : { ...row, projectId: 'another-project' }) }, scripts), /another project/);
+  assert.throws(() => verifyProjectCases({ ...listing, items: listing.items.map((row, index) => index ? row : { ...row, type: 'backend' }) }, scripts), /unexpected test type/);
+  assert.throws(() => verifyProjectCases({ ...listing, nextToken: 'more-tests' }, scripts), /complete project/);
+  const missingToken = { ...listing }; delete missingToken.nextToken;
+  assert.throws(() => verifyProjectCases(missingToken, scripts), /complete project/);
 });
 
 test('stored version and both local and hosted bytes must match', () => {

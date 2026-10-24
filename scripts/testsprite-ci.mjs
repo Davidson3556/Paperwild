@@ -30,6 +30,19 @@ export function validateManifest(manifest) {
   return scripts;
 }
 
+export function verifyProjectCases(listing, scripts) {
+  requireThat(Array.isArray(listing?.items) && listing.nextToken === null, 'The complete project test list could not be verified.');
+  requireThat(listing.items.length === scripts.length, 'The project must contain exactly the 16 reviewed tests before using --all.');
+  const expected = new Set(scripts.map(row => row.testId));
+  const actual = new Set();
+  for (const row of listing.items) {
+    requireThat(row.projectId === PROJECT && row.type === 'frontend', 'Project test list contains another project or an unexpected test type.');
+    requireThat(expected.has(row.id) && !actual.has(row.id), 'Project test list contains an unexpected or duplicate test.');
+    actual.add(row.id);
+  }
+  return { projectId: PROJECT, testIds: [...actual].sort() };
+}
+
 export function verifyStoredCode(expected, body, localSource) {
   requireThat(body?.testId === expected.testId, `${expected.case}: stored-code response names another test.`);
   requireThat(body.codeVersion === expected.codeVersion, `${expected.case}: stored code version drifted.`);
@@ -244,6 +257,10 @@ export async function runGate() {
     delete cliEnv.GITHUB_STEP_SUMMARY;
     delete cliEnv.GITHUB_OUTPUT;
     const cli = args => commandJson('testsprite', [...args, '--output', 'json'], cliEnv);
+    // CLI 0.15.0 supports several explicit IDs only through a local tunnel.
+    // Public URL batches require --all; refuse project membership drift before
+    // dispatch, then check membership and every actual run again afterward.
+    report.projectBefore = verifyProjectCases(await cli(['test', 'list', '--project', PROJECT]), scripts);
     for (const script of scripts) {
       const stored = await cli(['test', 'code', 'get', script.testId]);
       report.storedBefore.push(verifyStoredCode(script, stored, await readFile(resolve(root, 'docs/testsprite/overrides', `${script.case}.py`), 'utf8')));
@@ -253,7 +270,7 @@ export async function runGate() {
     const rawSummary = resolve(temporary, 'summary.json');
     let cliFailure = null;
     try {
-      await commandJson('testsprite', ['test', 'run', ...scripts.map(script => script.testId), '--project', PROJECT,
+      await commandJson('testsprite', ['test', 'run', '--all', '--project', PROJECT,
         '--target-url', targetUrl, '--no-auto-heal', '--wait', '--timeout', '600',
         '--report', 'junit', '--report-file', resolve(temporary, 'junit.xml'),
         '--summary-file', rawSummary, '--output', 'json'], cliEnv, 12 * 60 * 1000);
@@ -274,6 +291,7 @@ export async function runGate() {
       report.runs[report.runs.findIndex(row => row.testId === script.testId)] = verified;
       report.storedAfter.push(verifyStoredCode(script, await cli(['test', 'code', 'get', script.testId]), await readFile(resolve(root, 'docs/testsprite/overrides', `${script.case}.py`), 'utf8')));
     }
+    report.projectAfter = verifyProjectCases(await cli(['test', 'list', '--project', PROJECT]), scripts);
     const finalPr = await github(`repos/${repository}/pulls/${prNumber}`);
     requireThat(finalPr.head?.sha === report.headSha && finalPr.state === 'open', 'PR head changed while TestSprite was running.');
     const finalDeploymentId = await waitForVercel(repository, report.headSha);
