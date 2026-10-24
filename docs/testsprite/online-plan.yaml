@@ -7,6 +7,9 @@
 # - Record the exact frontend/backend source revision and deployment before running.
 # - Use independent browser contexts with separate sessionStorage and localStorage.
 # - Each case creates a fresh room; keep its private credentials out of artifacts/logs.
+# - Fresh visitors must complete the guide, then explicitly choose Across the woods
+#   in the required unselected opponent chooser. An invite visitor completes the
+#   guide and sees the prefilled room form, without claiming a seat automatically.
 # - The runner must support multiple contexts, real reloads, and context-level offline
 #   control. Mark a case BLOCKED if its required capability is unavailable; do not
 #   replace missing assertions with click-only or screenshot-only success.
@@ -31,11 +34,11 @@ useCases:
         name: Two isolated players create and join through the invitation
         description: Establishes two independent server-assigned seats and a shared starting game without borrowing saved credentials.
         steps:
-          - Open the configured execution target in fresh independent contexts A and B. Complete or skip each notebook introduction and wait for entry to settle.
+          - Open the configured execution target in fresh independent contexts A and B. Complete each notebook introduction and the first-visit guide. In A explicitly choose Across the woods in the unselected opponent chooser, then Open invitation; its local board stays gated until the server confirms a seat. In B wait to use the invitation URL rather than choosing a local opponent.
           - In A open Across the woods and choose Write an invitation. Retain the room code and the invitation link shown by the UI, without reading or logging private credential values.
           - assert: A has seat w, room revision 0, round 0, waiting-for-friend copy, the standard 32-piece board, no SAN plies, zero captures, and disabled move submission before the friend joins.
           - assert: The invitation has the configured frontend origin and only the room code as a query parameter. It contains no credential or player-token parameter.
-          - Navigate B to that invitation on the same configured origin and finish its introduction.
+          - Navigate B to that invitation on the same configured origin and finish its notebook introduction and first-visit guide.
           - assert: B shows the invitation dialog and has no claimed seat before Take a seat is activated. Opening the URL does not silently resume A or submit a join.
           - In B choose Take a seat. Wait for both contexts to report their own connection as connected and both boards to be in sync.
           - assert: A remains seat w and B is seat b; their room code, revision 1, round 0, all 64 squares, empty SAN history, turn w, and zero captures agree.
@@ -150,7 +153,7 @@ useCases:
         name: Postcard and room dialog remain usable by keyboard and at narrow widths
         description: Verifies the single-page design without obscuring the board or changing the game through layout controls.
         steps:
-          - At the execution's desktop viewport open the configured origin, finish entry, and retain the local board/history/turn/captures. Reach Across the woods with Tab and open it using Enter.
+          - At the execution's desktop viewport open the configured origin, finish notebook entry and the guide, explicitly choose a local opponent, and retain the local board/history/turn/captures. Reach Across the woods with Tab and open it using Enter.
           - assert: A native modal dialog opens with an accessible title, visible keyboard focus, invitation input label, reachable close/create/join/resume controls as applicable, and no new route or replacement dashboard.
           - Enter a short code and a code with a forbidden 0, O, I, or 1, then submit with Enter.
           - assert: A visible input error is announced, aria-invalid is set, focus returns to the input, no seat is claimed, and the complete local chess snapshot is unchanged.

@@ -2,17 +2,17 @@
 
 **Chess, drawn to life.** A woodland chess club in a pencil field notebook: watercolor characters blink, wave their team mittens, celebrate a good move, and turn every capture into a small cartoon story.
 
-[Play the published demo](https://paperwild.vercel.app/) · [TestSprite Hackathon Season 4](https://www.testsprite.com/hackathon-s4) · [Verification records](#testing-and-evidence)
+[Play the published demo](https://paperwild.vercel.app/) · [Try the PR #5 preview](https://paperwild-git-feat-convex-multiplayer-davidson3556s-projects.vercel.app/) · [Review PR #5](https://github.com/Davidson3556/Paperwild/pull/5) · [TestSprite Hackathon Season 4](https://www.testsprite.com/hackathon-s4) · [Verification records](#testing-and-evidence)
 
 **Published release:** [PR #4](https://github.com/Davidson3556/Paperwild/pull/4) is merged into `main` at `3240b0d`. Its startup correction passed **94/94 local tests** and **14/14 TestSprite cases with auto-heal disabled** on the identified preview (`e23a745`, `index-Dg2nj_lq.js`). Those results describe the published startup release.
 
-**New local work:** `feat/convex-multiplayer` adds invite-based friend play with Convex. This branch has not been published or deployed to Convex Cloud or the public frontend. The multiplayer behavior below requires this working tree and a configured backend; the existing public demo does not yet include it. The earlier TestSprite run does not verify multiplayer.
+**Current draft PR:** [PR #5](https://github.com/Davidson3556/Paperwild/pull/5) publishes `feat/convex-multiplayer`, including first-visit onboarding, mandatory opponent selection and the Convex friend-room implementation. Its [public preview](https://paperwild-git-feat-convex-multiplayer-davidson3556s-projects.vercel.app/) supports onboarding, club games and same-device play. A Convex Cloud backend is not configured there, so remote friend invitations are unavailable. The production demo remains on the merged release above. At `6f17355`, GitHub CI passed **131 app tests, 20 backend tests and the production build**; a new TestSprite acceptance run is pending.
 
 [Local multiplayer verification and screenshots](docs/CONVEX_VERIFICATION_2026-10-22.md) record two synchronized browsers, captures, agreed Undo/rematch, reload, offline-save separation and phone-size controls against the local backend.
 
 The [October 24 onboarding verification](docs/ONBOARDING_VERIFICATION_2026-10-24.md) records 131 passing app tests, the production build, and browser checks of mandatory first choice, guide replay, returning games and invitations. The earlier [optional chooser checks](docs/NEW_GAME_VERIFICATION_2026-10-24.md) retain their original scope. Follow the [entry and two-window testing walkthrough](docs/CONVEX_SETUP.md#first-visit-and-opponent-choice) to try the local flows yourself.
 
-[Test the correction preview](https://paperwild-git-living-davidson3556s-projects.vercel.app/) · [Startup evidence and runner investigation](docs/STARTUP_VERIFICATION_2026-10-21.md)
+[Historical startup evidence and runner investigation](docs/STARTUP_VERIFICATION_2026-10-21.md)
 
 ![Actual local field notebook with the woodland cast, team mittens, camp, and remembrance clearing](docs/media/paperwild-additions-desktop.jpg)
 
@@ -26,7 +26,7 @@ The [October 24 onboarding verification](docs/ONBOARDING_VERIFICATION_2026-10-24
 
 ## The game
 
-- **Standard chess, curious company.** Play the computer at three bounded difficulty levels, take turns with a friend on one device, or invite a friend to the same shared game through Convex on the new local branch. Castling, en passant, four promotion choices, checkmate, and draw conditions follow `chess.js`.
+- **Standard chess, curious company.** Play the computer at three bounded difficulty levels or take turns with a friend on one device. The PR also implements shared online games when a matching Convex backend is configured. Castling, en passant, four promotion choices, checkmate, and draw conditions follow `chess.js`.
 - **A little help before the first move.** A first-visit tour points out the board, Field kit, Journal, and optional sound. Then choose the club or a friend before a fresh game can begin. The first required choice has no preselected opponent. Returning unfinished games keep their history, and **How to play → Take a quick tour** reopens the guide without resetting them.
 - **Across the woods.** A small postcard opens a room dialog on the existing game page. Write an invitation to take Amber/White, then send its link or 12-character code to the friend who takes Indigo/Black. Both seats must be taken before play begins. The server authorizes each turn and publishes the shared board; both browsers present its moves through the existing characters and capture stories. Undo takes back one ply with the other player's agreement, and another game starts only after an accepted rematch. Rooms last 24 hours from creation. Your own connection is shown honestly; a taken friend seat does not claim that the friend is currently online.
 - **A cast with personality.** Acorn pawns, stump rooks, hare knights, moth bishops, fox queens, and badger kings breathe, blink, and move in their own ways. Hover brings a smile and wave; selection adds a delighted jump. Ask for an impossible move and the character scrunches its eyes into “> <”, shakes its head and wags a mitten (“nuh-uh!”, “certainly not!”) while the square is crossed out in red. Touching the other side's piece gets a “not yours!”, a piece with no moves says it's stuck, and the message explains when your king is in check. Keep insisting and the cast shows its temperament: stumps, foxes and badgers scowl with angry eyebrows, flush red, stomp and let off steam (“hmph!” then “GRRR!”), while acorns, hares and moths raise worried eyebrows, droop and cry, with a rain cloud on the third try (“aww…” then “waaah!”). A calm pause or a legal move resets them. Amber/White and Indigo/Black have matching mittens, scarves, and distinct ground washes.
@@ -47,11 +47,12 @@ Requires **Node.js 22.18+** and npm. Computer and same-device play work without 
 ```sh
 git clone https://github.com/Davidson3556/Paperwild.git
 cd Paperwild
+git switch feat/convex-multiplayer
 npm ci
 npm run dev
 ```
 
-Open **http://127.0.0.1:4173**. A clone checks out the published `main`; the new multiplayer work is currently on the local `feat/convex-multiplayer` branch.
+Open **http://127.0.0.1:4173**. A clone initially checks out the published `main`; the `git switch` above checks out the remote feature branch for PR #5, which contains onboarding and multiplayer.
 
 For online play, start **`npm run convex:dev`** in another terminal and follow the CLI setup prompts. Choose a local deployment to develop on this machine. The CLI generates `.env.local`, including `VITE_CONVEX_URL`, and the generated API files. Keep it running, then restart Vite so the URL is loaded. Two tabs can take separate seats. See [Convex setup](docs/CONVEX_SETUP.md) for the complete local and cloud instructions.
 
@@ -287,6 +288,8 @@ The tree highlights the entry points; the implementation table above links the s
 
 Local test files cover chess integrity, deterministic gait/capture plans, resident histories and naming, ceremony queue reconciliation, procedural voice signals, mocked audio lifecycle, and online transport/history reconciliation. Backend tests exercise real Convex function handlers in `convex-test`; separate opt-in integration tests connect real WebSocket clients to a local backend. `npm run build` includes strict frontend and backend type checking. These checks are separate from actual browser observations and physical listening quality.
 
+- **October 24 PR #5 checks at `6f17355`: 131/131 app tests and 20/20 backend tests passed**, along with strict frontend/backend TypeScript and the production build. GitHub CI and the public Vercel preview passed. The preview has no Convex Cloud connection, and a new TestSprite run against this PR is pending.
+
 - **October 22 local Convex verification:** `npm test` recorded **122/122** passing tests, including **20 transport** and **8 snapshot-planning** tests. Backend authorization/rules/transaction coverage recorded **20/20** through `npm run test:convex`; **2/2** opt-in live integration tests passed against a local Convex deployment. Those two tests cover client convergence, consent, reconnect, and concurrent seat/move transactions; they do not establish browser layout, later onboarding acceptance, or TestSprite acceptance. Use `CONVEX_TEST_URL` with a loopback endpoint to run `npm run test:online:live`; see [setup and test commands](docs/CONVEX_SETUP.md). This work has not yet received an online TestSprite run or a cloud release.
 
 - **Published October 21 startup correction: 94/94 tests, strict TypeScript, and build passed**, producing `index-Dg2nj_lq.js`. CI and Vercel preview passed at application revision `e23a745`; [PR #4](https://github.com/Davidson3556/Paperwild/pull/4) is merged at `3240b0d`. Direct browser checks verified a readable paused loader, keyboard skip, completed-mate reload to a fresh 32-piece game, and explicit archive revisit without a replayed finale.
@@ -334,13 +337,15 @@ flowchart TD
     class blocked attention
 ```
 
-The saved [Portal plan](docs/testsprite/portal-plan.yaml) and 14 reviewed scripts belong to the startup correction that passed strict hosted replay. The separate [proposed online plan](docs/testsprite/online-plan.yaml) has ten two-context scenarios and is **not executed or uploaded**. Updating the repository's [product requirements](docs/PRODUCT_REQUIREMENTS.md) does not update the Portal attachment or add online assertions. Multiplayer requires its own synchronized acceptance cases and execution against a matching deployed frontend/backend before claiming TestSprite coverage. Recheck exact-head CI, review, and deployment evidence before a later release.
+The saved [Portal plan](docs/testsprite/portal-plan.yaml) records the historical 14-case startup suite. For PR #5, **16 strict scripts are prepared** to account for the new onboarding and required opponent choice; their new hosted run is pending. The updated [product requirements](docs/PRODUCT_REQUIREMENTS.md) have been uploaded and processed in the TestSprite Portal. Uploading requirements or preparing scripts does not establish an acceptance result.
+
+The separate [proposed online plan](docs/testsprite/online-plan.yaml) has ten two-context scenarios and is **not executed or uploaded**. Multiplayer requires synchronized acceptance cases against a matching deployed frontend and Convex backend before claiming TestSprite coverage. Recheck exact-head CI, review, deployment and stored-script evidence before release.
 
 ## Deployment and hackathon status
 
 Computer and same-device play use a static frontend: install with **`npm ci`**, build with **`npm run build`**, and publish **`dist/`**. They need no environment variables.
 
-Online release additionally requires linking a Convex Cloud project and deploying the matching `convex/` functions with **`npm run convex:deploy`**. Set the frontend hosting environment's **`VITE_CONVEX_URL`** to that deployment's public client URL before building, then publish a fresh frontend build from the same revision. The local loopback backend cannot serve remote friends. Keep deployment/admin keys in the CLI or host's private build settings; they never belong in `VITE_*`, browser code, or Git. [CONVEX_SETUP.md](docs/CONVEX_SETUP.md) gives manual and combined Vercel deployment steps, preview separation, and verification. No new cloud/backend/frontend deployment is claimed for the local branch.
+PR #5 has a public frontend preview for onboarding, club games and same-device play. Online release additionally requires linking a Convex Cloud project and deploying the matching `convex/` functions with **`npm run convex:deploy`**. Set the frontend hosting environment's **`VITE_CONVEX_URL`** to that deployment's public client URL before building, then publish a fresh frontend build from the same revision. The local loopback backend cannot serve remote friends. Keep deployment/admin keys in the CLI or host's private build settings; they never belong in `VITE_*`, browser code, or Git. [CONVEX_SETUP.md](docs/CONVEX_SETUP.md) gives manual and combined Vercel deployment steps, preview separation, and verification. Convex Cloud deployment and remote multiplayer acceptance remain pending.
 
 The public source, merged game, successful automatic Portal execution, and GitHub integration evidence are available. Before a completed Season 4 submission:
 
