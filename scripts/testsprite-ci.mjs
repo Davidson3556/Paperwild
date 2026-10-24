@@ -250,6 +250,10 @@ export async function runGate() {
     const manifest = JSON.parse(await readFile(resolve(root, MANIFEST), 'utf8'));
     const scripts = validateManifest(manifest);
     const targetUrl = previewForBranch(pr.head.ref, manifest.targetUrl);
+    requireThat(manifest.convexUrl === 'https://fast-starling-207.convex.cloud'
+      && process.env.VITE_CONVEX_URL === manifest.convexUrl,
+      'Strict preview build must use the reviewed public Convex development URL.');
+    report.buildEnvironment = { publicConvexUrl: manifest.convexUrl };
     const deploymentId = await waitForVercel(repository, report.headSha);
     report.preview = { kind: 'public-branch-alias-with-build-byte-proof', hostname: new URL(targetUrl).hostname, deploymentId };
     report.buildBefore = await verifyPreviewBuild(resolve(root, 'dist'), targetUrl, deploymentId);

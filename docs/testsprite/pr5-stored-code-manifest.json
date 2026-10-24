@@ -1,13 +1,24 @@
 {
-  "recordedAt": "2026-10-24T16:29:31.872536+00:00",
   "projectId": "dafdf75c-04a3-467f-acc2-4359af6b1d8e",
   "targetUrl": "https://paperwild-git-feat-convex-multiplayer-davidson3556s-projects.vercel.app/",
   "applicationRevision": "6f173553c54ed3bee61a502d2d77183a07512913",
-  "applicationBundle": "index-B86TWJUu.js",
   "status": "all-sixteen-stored-and-readback-verified",
-  "verification": "Read back byte-for-byte against local reviewed files; this is code-storage evidence, not a test run.",
-  "completedAt": "2026-10-24T16:31:07.572165+00:00",
-  "previousManifest": "/private/tmp/paperwild-pr5-testsprite-upload-axlg8wm3/manifest.json",
+  "recordedAt": "2026-10-24T19:37:56.611488+00:00",
+  "completedAt": "2026-10-24T19:37:56.611488+00:00",
+  "applicationBundle": "index-EfeOJs9J.js",
+  "applicationStylesheet": "index-DCOXjeBT.css",
+  "convexUrl": "https://fast-starling-207.convex.cloud",
+  "verification": "All16 current stored Python bodies were read back byte-for-byte against reviewed local files. Only three hardcoded JS asset pins changed and were updated using explicit current-version guards. No tests were executed by this rebind.",
+  "preCloudManifest": "docs/testsprite/pr5-pre-cloud-stored-code-manifest.json",
+  "configurationProvenance": {
+    "applicationSourceRevision": "6f173553c54ed3bee61a502d2d77183a07512913",
+    "applicationSourceChanged": false,
+    "previousApplicationBundle": "index-B86TWJUu.js",
+    "newApplicationBundle": "index-EfeOJs9J.js",
+    "publicConvexUrl": "https://fast-starling-207.convex.cloud",
+    "configurationCommit": null,
+    "note": "Cloud configuration enabled the new frontend bundle; configuration commit is pending root publication. Earlier manual-run evidence remains tied to its pre-cloud build; these readbacks are not new cloud acceptance results."
+  },
   "scripts": [
     {
       "case": "ONBD-001",
@@ -15,10 +26,9 @@
       "name": "First visit requires an explicit opponent choice before play",
       "codeVersion": "v-62a4e86b577b",
       "sha256": "1c4e8c8e99564c90b39e3ee431a7f1574866912600b00f56a8dd1a14df5ae205",
-      "created": true,
-      "updated": false,
       "readbackEqual": true,
-      "carriedFromVerifiedManifest": true
+      "cloudBundleBindingUpdated": false,
+      "preCloudCodeVersion": "v-62a4e86b577b"
     },
     {
       "case": "ONBD-002",
@@ -26,10 +36,9 @@
       "name": "Club choice and replayable tour preserve a playable game",
       "codeVersion": "v-c5fc38b322d6",
       "sha256": "4c37a6f1cbf99440062c8c49b5aa2e71327bb1cc79339fe4392a1639492a6286",
-      "created": true,
-      "updated": false,
       "readbackEqual": true,
-      "carriedFromVerifiedManifest": true
+      "cloudBundleBindingUpdated": false,
+      "preCloudCodeVersion": "v-c5fc38b322d6"
     },
     {
       "case": "BOAR-001",
@@ -37,10 +46,9 @@
       "name": "Illegal moves leave the board unchanged",
       "codeVersion": "v-34c17b1132d7",
       "sha256": "eb1e048a9e9f3f57b3749d7b0abe46f49b894e2091a0c2919e4e5ac6c238aaf5",
-      "created": false,
-      "updated": false,
-      "acceptedExactFocusedProbe": true,
-      "readbackEqual": true
+      "readbackEqual": true,
+      "cloudBundleBindingUpdated": false,
+      "preCloudCodeVersion": "v-34c17b1132d7"
     },
     {
       "case": "BOAR-002",
@@ -48,10 +56,9 @@
       "name": "Simple opening advances update history and turn",
       "codeVersion": "v-b4f39a6e001a",
       "sha256": "3d4a0566a2fda9333590045eb98646ec3d7b882e24a4663be1940c98f5976c86",
-      "created": false,
-      "updated": true,
-      "acceptedExactFocusedProbe": false,
-      "readbackEqual": true
+      "readbackEqual": true,
+      "cloudBundleBindingUpdated": false,
+      "preCloudCodeVersion": "v-b4f39a6e001a"
     },
     {
       "case": "BOAR-003",
@@ -59,21 +66,19 @@
       "name": "Undo restores a captured position atomically",
       "codeVersion": "v-11b7e8a6016c",
       "sha256": "95c10e6ec231ccf18c392351412dc62ad7514f96285fc9d5b35dd7c9c8ae6582",
-      "created": false,
-      "updated": true,
-      "acceptedExactFocusedProbe": false,
-      "readbackEqual": true
+      "readbackEqual": true,
+      "cloudBundleBindingUpdated": false,
+      "preCloudCodeVersion": "v-11b7e8a6016c"
     },
     {
       "case": "BOAR-004",
       "testId": "2330c1ea-adda-4d16-a611-d8745fc4cc66",
       "name": "Promotion can be cancelled without committing a move",
-      "codeVersion": "v-7c5af6f4e014",
-      "sha256": "351f3e09584a0a319195472050cf1a18ce2c2c5f899b85a1f1077fe7a81d3833",
-      "created": false,
-      "updated": true,
-      "acceptedExactFocusedProbe": false,
-      "readbackEqual": true
+      "codeVersion": "v-863f4dd45289",
+      "sha256": "fd44a896a491f9ddb791eadf7a22ffdd4bf91f44f79130229e7e0ef5a324aa89",
+      "readbackEqual": true,
+      "cloudBundleBindingUpdated": true,
+      "preCloudCodeVersion": "v-7c5af6f4e014"
     },
     {
       "case": "BOAR-005",
@@ -81,10 +86,9 @@
       "name": "Queen promotion settles as a playable checking position",
       "codeVersion": "v-936581958af2",
       "sha256": "43295cb556ce137bd4d57e44bbe97a8ae65136cc1d9e72732ecd0c156e64c263",
-      "created": false,
-      "updated": true,
-      "acceptedExactFocusedProbe": false,
-      "readbackEqual": true
+      "readbackEqual": true,
+      "cloudBundleBindingUpdated": false,
+      "preCloudCodeVersion": "v-936581958af2"
     },
     {
       "case": "BOAR-006",
@@ -92,10 +96,9 @@
       "name": "Knight promotion ends in an insufficient material draw",
       "codeVersion": "v-1958882ccab5",
       "sha256": "36526bd1bdf8216a4a21fa63ec2cf4df4ec7ecf9a6efc14e7bbb8afd32b6e290",
-      "created": false,
-      "updated": true,
-      "acceptedExactFocusedProbe": false,
-      "readbackEqual": true
+      "readbackEqual": true,
+      "cloudBundleBindingUpdated": false,
+      "preCloudCodeVersion": "v-1958882ccab5"
     },
     {
       "case": "BOAR-007",
@@ -103,32 +106,29 @@
       "name": "Checkmate story blocks further play after the winning move",
       "codeVersion": "v-08b04ac7720c",
       "sha256": "9d8fdbd68a41a921e1e3737b10dabc3156ed7ed1dd74509a5966d88abfca0b12",
-      "created": false,
-      "updated": true,
-      "acceptedExactFocusedProbe": false,
-      "readbackEqual": true
+      "readbackEqual": true,
+      "cloudBundleBindingUpdated": false,
+      "preCloudCodeVersion": "v-08b04ac7720c"
     },
     {
       "case": "BOAR-008",
       "testId": "ec570b6b-0423-40cd-a0a7-60e8a8cbb23c",
       "name": "Undo after a computer reply restores the starting position",
-      "codeVersion": "v-d5b215879043",
-      "sha256": "db97a6053c99a33504c7b58c68b4fc9b25fc8725373d021a8702762845e78971",
-      "created": false,
-      "updated": true,
-      "acceptedExactFocusedProbe": false,
-      "readbackEqual": true
+      "codeVersion": "v-72de3f0ece1d",
+      "sha256": "2a45b47633ef2315122578a47d8ea53e56fe081580dfafca3d329c6cb7393208",
+      "readbackEqual": true,
+      "cloudBundleBindingUpdated": true,
+      "preCloudCodeVersion": "v-d5b215879043"
     },
     {
       "case": "PREF-001",
       "testId": "138f2507-51c6-43ed-9a7c-c00bb2b1657e",
       "name": "Restore a saved game after reload and continue with undo",
-      "codeVersion": "v-e46154e3e9ce",
-      "sha256": "e4b5a4e5b6ea3ff30877b98ce9d1578724f24a82c82b68ff4ff9a3c5b7058fab",
-      "created": false,
-      "updated": true,
-      "acceptedExactFocusedProbe": false,
-      "readbackEqual": true
+      "codeVersion": "v-82ffdaea9f1c",
+      "sha256": "e3082e29ce071f45d6fc40e7757b007200436e3137a07800045abbf0939172c6",
+      "readbackEqual": true,
+      "cloudBundleBindingUpdated": true,
+      "preCloudCodeVersion": "v-e46154e3e9ce"
     },
     {
       "case": "SOUN-001",
@@ -136,10 +136,9 @@
       "name": "Enable sound from the character guide",
       "codeVersion": "v-e749a68a45d3",
       "sha256": "361cf1cdea2523f8c89d50e12900745ddbfd25ff3987d7945dc30f1f3713568d",
-      "created": false,
-      "updated": true,
-      "acceptedExactFocusedProbe": false,
-      "readbackEqual": true
+      "readbackEqual": true,
+      "cloudBundleBindingUpdated": false,
+      "preCloudCodeVersion": "v-e749a68a45d3"
     },
     {
       "case": "NOTE-001",
@@ -147,10 +146,9 @@
       "name": "Full notebook entry remains visible on first and repeat visits",
       "codeVersion": "v-0449b2eb6450",
       "sha256": "2550712a7aa901736db7b52f5b880a61af886d43cfd3bd481c44f3efd7caefbe",
-      "created": false,
-      "updated": true,
-      "acceptedExactFocusedProbe": false,
-      "readbackEqual": true
+      "readbackEqual": true,
+      "cloudBundleBindingUpdated": false,
+      "preCloudCodeVersion": "v-0449b2eb6450"
     },
     {
       "case": "NOTE-002",
@@ -158,10 +156,9 @@
       "name": "Saved manual pause keeps the notebook readable and resume restores living characters",
       "codeVersion": "v-c36ccbd7694c",
       "sha256": "e930977fde055188ae73c6dd5a84d9a832a88a7e850318c6931ec074a5dd0d23",
-      "created": false,
-      "updated": true,
-      "acceptedExactFocusedProbe": false,
-      "readbackEqual": true
+      "readbackEqual": true,
+      "cloudBundleBindingUpdated": false,
+      "preCloudCodeVersion": "v-c36ccbd7694c"
     },
     {
       "case": "NOTE-003",
@@ -169,10 +166,9 @@
       "name": "Keyboard skip releases notebook entry without stale animation or computer replies",
       "codeVersion": "v-b680743801da",
       "sha256": "e89ed185bcafc584c28e847e32dab708462f8752f3b65c6604621710f2bd078a",
-      "created": false,
-      "updated": true,
-      "acceptedExactFocusedProbe": false,
-      "readbackEqual": true
+      "readbackEqual": true,
+      "cloudBundleBindingUpdated": false,
+      "preCloudCodeVersion": "v-b680743801da"
     },
     {
       "case": "NOTE-004",
@@ -180,10 +176,9 @@
       "name": "Completed game reload starts fresh while unfinished capture studies resume",
       "codeVersion": "v-6c4c15b0c6e4",
       "sha256": "b1d782db0445730ab985893d9f2213f549654117dff4b9357231c13c916505ba",
-      "created": false,
-      "updated": true,
-      "acceptedExactFocusedProbe": false,
-      "readbackEqual": true
+      "readbackEqual": true,
+      "cloudBundleBindingUpdated": false,
+      "preCloudCodeVersion": "v-6c4c15b0c6e4"
     }
   ]
 }

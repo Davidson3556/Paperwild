@@ -18,6 +18,10 @@ jobs:
     name: Verify all 16 stored TestSprite scripts
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    env:
+      # Public client configuration for this branch's preview, not a credential.
+      # Keep the strict build and verification report on the same backend URL.
+      VITE_CONVEX_URL: https://fast-starling-207.convex.cloud
     steps:
       - name: Require a trusted same-repository PR and configured credential
         env:

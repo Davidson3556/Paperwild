@@ -13,7 +13,7 @@ from playwright.async_api import expect
 
 TARGET = os.environ.get('TEST_TARGET_URL', 'https://paperwild-git-feat-convex-multiplayer-davidson3556s-projects.vercel.app/')
 ORIGIN = '{0.scheme}://{0.netloc}'.format(urlsplit(TARGET))
-EXPECTED_BUNDLE = os.environ.get('TEST_EXPECTED_BUNDLE', 'index-B86TWJUu.js')
+EXPECTED_BUNDLE = os.environ.get('TEST_EXPECTED_BUNDLE', 'index-EfeOJs9J.js')
 BROWSER_ARGS = ['--window-size=1280,720', '--disable-dev-shm-usage', '--ipc=host', '--single-process']
 PHASE = 'module-loaded'
 
