@@ -87,7 +87,7 @@ def assert_standard(snapshot):
     check(not snapshot['result'], 'Unexpected result on the starting board')
 
 
-async def complete_first_entry(page):
+async def complete_first_entry(page, mode='computer'):
     # Entry is a real user flow, distinct from notebook/pencil animation. These
     # legacy chess cases explicitly choose before playing, without storage tricks.
     await page.wait_for_function("""() => {
@@ -105,9 +105,11 @@ async def complete_first_entry(page):
         await expect(page.locator('input[name="new-opponent"]:checked')).to_have_count(0)
         await expect(page.locator('#confirm-new')).to_be_disabled()
         check(await page.locator('#board-access').evaluate('(el) => el.inert'), 'Board must stay inert until an explicit opponent choice')
-        preferred=await page.locator('[data-mode][aria-pressed="true"]').get_attribute('data-mode')
-        check(preferred in ('computer','local'), 'Unknown retained local mode')
-        await choice.locator('input[name="new-opponent"][value="'+preferred+'"]').check()
+        # Mode buttons are intentionally all unpressed before a first choice.
+        # The scenario supplies its deliberate opponent; never infer a default
+        # from the gated board or accept the disabled confirmation implicitly.
+        check(mode in ('computer','local'), 'Unknown requested local mode')
+        await choice.locator('input[name="new-opponent"][value="'+mode+'"]').check()
         await expect(page.locator('#confirm-new')).to_be_enabled()
         await page.locator('#confirm-new').click()
     await expect(page.locator('#game-status')).to_have_attribute('data-entry-stage','ready')
@@ -181,8 +183,8 @@ async def navigate(page, reload=False):
     check('{0.scheme}://{0.netloc}'.format(urlsplit(page.url)) == ORIGIN, 'Execution changed the configured target origin')
 
 
-async def entry_ready(page):
-    await complete_first_entry(page)
+async def entry_ready(page, startup_mode='computer'):
+    await complete_first_entry(page, mode=startup_mode)
     await page.wait_for_function("""() => {
       const s=document.querySelector('#game-status'), b=document.querySelector('#board-access');
       return s?.dataset.entering==='false' && b?.getAttribute('aria-busy')==='false'
@@ -190,9 +192,9 @@ async def entry_ready(page):
     }""", timeout=25000)
 
 
-async def settled(page):
-    await complete_first_entry(page)
-    await entry_ready(page)
+async def settled(page, startup_mode='computer'):
+    await complete_first_entry(page, mode=startup_mode)
+    await entry_ready(page, startup_mode=startup_mode)
     await page.wait_for_function("""() => {
       const s=document.querySelector('#game-status');
       const images=[...document.querySelectorAll('.sketch-cast > .sketch-piece .sketch-piece-art')];
@@ -353,7 +355,9 @@ async def exercise(browser,resources,log):
     log.append({'actualCompletedMate':terminal,'result':result})
 
     await navigate(page,reload=True)
-    await settled(page)
+    # Studies explicitly run in local mode; choose that same opponent on the
+    # fresh board before checking retained mode/difficulty/preferences.
+    await settled(page, startup_mode='local')
     fresh=await page.evaluate(SNAPSHOT)
     assert_standard(fresh)
     check(fresh['study'] is None and fresh['undoDisabled'] and preferences(fresh)==retained,'Completed reload did not clear study/Undo or retain settings')
@@ -388,7 +392,7 @@ async def exercise(browser,resources,log):
     check(drawn['board']['a8']=='wn' and drawn['board']['a7']=='' and drawn['history']==['a8=N'] and drawn['over']=='true','Knight study did not produce the actual terminal promotion')
     check('insufficient' in (await page.locator('#result-description').inner_text()).lower(),'Promotion result does not describe insufficient material')
     await navigate(page,reload=True)
-    await settled(page)
+    await settled(page, startup_mode='local')
     after_draw=await page.evaluate(SNAPSHOT)
     assert_standard(after_draw)
     check(after_draw['study'] is None and after_draw['undoDisabled'] and preferences(after_draw)==retained,'Draw reload left terminal residue or changed saved settings')

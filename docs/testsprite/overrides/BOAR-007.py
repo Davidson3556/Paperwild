@@ -87,7 +87,7 @@ def assert_position(snapshot, board, history, turn, captures='00'):
     check(not snapshot['result'], 'Unexpected result dialog')
 
 
-async def complete_first_entry(page):
+async def complete_first_entry(page, mode='computer'):
     # Entry is a real user flow, distinct from notebook/pencil animation. These
     # legacy chess cases explicitly choose before playing, without storage tricks.
     await page.wait_for_function("""() => {
@@ -105,9 +105,11 @@ async def complete_first_entry(page):
         await expect(page.locator('input[name="new-opponent"]:checked')).to_have_count(0)
         await expect(page.locator('#confirm-new')).to_be_disabled()
         check(await page.locator('#board-access').evaluate('(el) => el.inert'), 'Board must stay inert until an explicit opponent choice')
-        preferred=await page.locator('[data-mode][aria-pressed="true"]').get_attribute('data-mode')
-        check(preferred in ('computer','local'), 'Unknown retained local mode')
-        await choice.locator('input[name="new-opponent"][value="'+preferred+'"]').check()
+        # Mode buttons are intentionally all unpressed before a first choice.
+        # The scenario supplies its deliberate opponent; never infer a default
+        # from the gated board or accept the disabled confirmation implicitly.
+        check(mode in ('computer','local'), 'Unknown requested local mode')
+        await choice.locator('input[name="new-opponent"][value="'+mode+'"]').check()
         await expect(page.locator('#confirm-new')).to_be_enabled()
         await page.locator('#confirm-new').click()
     await expect(page.locator('#game-status')).to_have_attribute('data-entry-stage','ready')
@@ -115,8 +117,8 @@ async def complete_first_entry(page):
     check(not await page.locator('#board-access').evaluate('(el) => el.inert'), 'Confirmed local game must release the board')
 
 
-async def settled(page):
-    await complete_first_entry(page)
+async def settled(page, startup_mode='computer'):
+    await complete_first_entry(page, mode=startup_mode)
     global RUN_PHASE
     RUN_PHASE = 'wait-entry-and-chess-settlement'
     await page.wait_for_function("""() => {
