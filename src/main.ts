@@ -8,6 +8,8 @@ import type { Color, GameMode, Move, MoveCoordinates, MoveInput, PieceSymbol, Pr
 import { createOnlineSession } from './online-session.ts';
 import { createOnlineRoomUI } from './online-room-ui.ts';
 import { planOnlineSync } from './online-sync.ts';
+import { entryPolicy } from './entry-policy.ts';
+import { createOnboarding } from './onboarding.ts';
 import type { OnlineClientState, OnlineRoomSnapshot } from './online-types.ts';
 import { createSketchScene } from './sketch-scene.ts';
 import type { FinaleCue, RefusalReaction, SketchMotionEvent, SketchScene } from './sketch-scene.ts';
@@ -47,6 +49,7 @@ const voiceNames: Record<PieceSymbol, string> = { k:'badger',q:'fox',r:'stump',b
 const SAVE_KEY = 'queens-conservatory.game.v1';
 const PREF_KEY = 'queens-conservatory.preferences.v1';
 const FINISHED_KEY = 'queens-conservatory.completed-game.v1';
+const ONBOARDING_KEY = 'paperwild.onboarding.v1';
 const studies: Study[] = [
   { id:'bloom', name:'Tea on the sidelines', label:'A lesson in captures', description:'White’s pawn on e4 can capture the pawn on d5. The woodland stretcher crew has a very small ceremony prepared.', fen:'rnbqkbnr/ppp1pppp/8/3p4/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 0 2', focus:'e4' },
   { id:'promotion', name:'Room to become', label:'A lesson in promotion', description:'Guide White’s pawn from a7 to a8. Choose what it becomes.', fen:'7k/P7/8/8/8/8/8/7K w - - 0 1', focus:'a7' },
@@ -60,7 +63,7 @@ prefs.music = prefs.music === true;
 if (!['perspective','overhead'].includes(prefs.view)) prefs.view = 'perspective';
 // The notebook and the residents share the same saved motion preference.
 const loading = createLoadingScreen({ reducedMotion: !!prefs.reducedMotion });
-const saved = read(SAVE_KEY) as { game?: unknown; study?: unknown } | null;
+const saved = read(SAVE_KEY) as { game?: unknown; study?: unknown; opponentChosen?: unknown } | null;
 const startup = createStartupGame(saved?.game, saved?.study);
 const previousFinished = restoreFinishedGame(read(FINISHED_KEY));
 let finishedRecord: FinishedGameRecord | null = startup.finished ?? (previousFinished ? {game:previousFinished.game.serialize(),study:previousFinished.study} : null);
@@ -68,6 +71,11 @@ let protectFinishedSave = !preserveFinishedGame(startup.finished, record => loca
 let game = startup.game;
 let activeStudy: Study | null = startup.resumed ? studies.find(s => s.id === saved?.study && s.fen === game.serialize().initialFen) || null : null;
 let startupReady = false;
+let entryStage: 'opening'|'guide'|'choice'|'invitation'|'ready' = 'opening';
+let localOpponentChosen = false;
+let newGameRequired = false;
+let guideSeen = (read(ONBOARDING_KEY) as {seen?:unknown}|null)?.seen === true;
+let entryInvitation = new URL(window.location.href).searchParams.get('room');
 let appDisposed = false;
 let selected: Square | null = null;
 let focusedSquare: Square = 'e2';
@@ -141,11 +149,11 @@ document.querySelector('#app')!.innerHTML = `
   <dialog id="remembrance-dialog" class="modal remembrance-modal"><button class="modal-close icon-button" data-close aria-label="Close the garden of remembrance">${icon('close')}</button><p class="eyebrow">EVERY FRIEND, REMEMBERED</p><h2>The garden of <em>remembrance.</em></h2><p id="remembrance-summary" class="remembrance-summary"></p><div id="remembrance-list" class="remembrance-list"></div><div class="modal-actions"><button class="secondary-button" data-close>Back to the story</button><button class="primary-button" id="remembrance-save">Save as a picture ${icon('download')}</button></div></dialog>
   <dialog id="field-options-dialog" class="modal field-options-dialog"><button class="modal-close icon-button" data-close aria-label="Close field kit">${icon('close')}</button><p class="eyebrow">THE FIELD KIT</p><h2>Set out <em>your way.</em></h2><div id="field-options-host"></div><button id="revisit-finished" class="text-button" hidden>Revisit last finished game <span aria-hidden="true">↗</span></button></dialog>
   <dialog id="field-notes-dialog" class="modal field-notes-dialog"><button class="modal-close icon-button" data-close aria-label="Close field journal">${icon('close')}</button><p class="eyebrow">COLLECTED ALONG THE WAY</p><h2>The field <em>journal.</em></h2><div id="field-notes-host"></div></dialog>
-  <dialog id="help-dialog" class="modal"><button class="modal-close icon-button" data-close aria-label="Close instructions">${icon('close')}</button><p class="eyebrow">WELCOME TO THE CLUB</p><h2>Familiar chess.<br><em>Curious company.</em></h2><p>Standard chess, with a woodland cast. Amber is White, indigo is Black. Play the computer or take turns on the same device.</p><p class="voice-invitation">Every friend has a little voice. Tap “hear me” to turn sound on.</p><div class="character-legend">${(['k','q','r','b','n','p'] as const).map(p=>`<div>${portraitSlot('w',p,clubNames[p])}<strong>${PIECE_NAMES[p]}</strong><span>${clubNames[p]}</span><button class="character-voice-button" data-voice="${p}" aria-label="Hear the ${voiceNames[p]}">hear me <span aria-hidden="true">♫</span></button></div>`).join('')}</div><div class="instruction-grid"><div><strong>Choose, then move</strong><p>Select a character, then a marked square. All the usual rules apply, including castling and en passant.</p></div><div><strong>Tea on the sidelines</strong><p>A tiny stretcher crew carries captured friends to the clearing beside the game for a woodland send-off. Ring the bell, scatter petals, or leave a flower. Undo brings everyone back.</p></div><div><strong>The margins are alive</strong><p>Say hello to the little world, invite a shower, or turn the page toward moonlight.</p></div><div><strong>A quieter page</strong><p>Sound is off until you invite it in. Each friend reacts to your moves in its own voice. Pause the wandering for a still, quieter page.</p></div></div><div class="keyboard-note"><kbd>↑</kbd><kbd>↓</kbd><kbd>←</kbd><kbd>→</kbd> explore · <kbd>Enter</kbd> choose · <kbd>Esc</kbd> release · <kbd>U</kbd> undo</div><button class="primary-button" data-close>Back to the story ${icon('arrow')}</button></dialog>
+  <dialog id="help-dialog" class="modal"><button class="modal-close icon-button" data-close aria-label="Close instructions">${icon('close')}</button><p class="eyebrow">WELCOME TO THE CLUB</p><h2>Familiar chess.<br><em>Curious company.</em></h2><p>Standard chess, with a woodland cast. Amber is White, indigo is Black. Play the computer or take turns on the same device.</p><p class="voice-invitation">Every friend has a little voice. Tap “hear me” to turn sound on.</p><div class="character-legend">${(['k','q','r','b','n','p'] as const).map(p=>`<div>${portraitSlot('w',p,clubNames[p])}<strong>${PIECE_NAMES[p]}</strong><span>${clubNames[p]}</span><button class="character-voice-button" data-voice="${p}" aria-label="Hear the ${voiceNames[p]}">hear me <span aria-hidden="true">♫</span></button></div>`).join('')}</div><div class="instruction-grid"><div><strong>Choose, then move</strong><p>Select a character, then a marked square. All the usual rules apply, including castling and en passant.</p></div><div><strong>Tea on the sidelines</strong><p>A tiny stretcher crew carries captured friends to the clearing beside the game for a woodland send-off. Ring the bell, scatter petals, or leave a flower. Undo brings everyone back.</p></div><div><strong>The margins are alive</strong><p>Say hello to the little world, invite a shower, or turn the page toward moonlight.</p></div><div><strong>A quieter page</strong><p>Sound is off until you invite it in. Each friend reacts to your moves in its own voice. Pause the wandering for a still, quieter page.</p></div></div><button class="text-button" id="replay-onboarding">Take a quick tour <span aria-hidden="true">↗</span></button><div class="keyboard-note"><kbd>↑</kbd><kbd>↓</kbd><kbd>←</kbd><kbd>→</kbd> explore · <kbd>Enter</kbd> choose · <kbd>Esc</kbd> release · <kbd>U</kbd> undo</div><button class="primary-button" data-close>Back to the story ${icon('arrow')}</button></dialog>
   <dialog id="studies-dialog" class="modal studies-modal"><button class="modal-close icon-button" data-close aria-label="Close chess studies">${icon('close')}</button><p class="eyebrow">THREE LITTLE CHAPTERS</p><h2>Chess <em>stories.</em></h2><p>Small positions. A little room to discover. Both sides are yours to move.</p><div class="study-options">${studies.map((s,i)=>`<button data-study="${s.id}"><span class="study-index">0${i+1}</span><span><strong>${s.name}</strong><small>${s.label}</small></span>${icon('arrow')}</button>`).join('')}</div><p class="fine-print">Opening a story replaces the current game.</p></dialog>
   <dialog id="new-game-dialog" class="modal new-game-modal" aria-labelledby="new-game-title" aria-describedby="new-game-note">
-    <button class="modal-close icon-button" data-close aria-label="Close new game choices">${icon('close')}</button>
-    <p class="eyebrow">A FRESH PAGE</p><h2 id="new-game-title">Who will<br>you <em>play?</em></h2>
+    <button class="modal-close icon-button" id="new-game-close" data-close aria-label="Close new game choices">${icon('close')}</button>
+    <p class="eyebrow" id="new-game-eyebrow">A FRESH PAGE</p><h2 id="new-game-title" tabindex="-1">Who will<br>you <em>play?</em></h2>
     <form id="new-game-form">
       <fieldset class="new-opponents"><legend>Choose your opponent</legend>
         <label class="new-opponent"><input type="radio" name="new-opponent" value="computer" checked><span class="new-opponent-portrait">${portraitSlot('w','k')}</span><span class="new-opponent-copy"><strong>Against the club</strong><small>You play Amber. The club plays Indigo.</small></span></label>
@@ -153,7 +161,7 @@ document.querySelector('#app')!.innerHTML = `
         <label class="new-opponent" id="new-online-option"><input type="radio" name="new-opponent" value="online" id="new-opponent-online"><span class="new-opponent-post" aria-hidden="true"><svg viewBox="0 0 48 48" fill="none"><path d="m6 15 34-2 2 24-35 2-1-24Zm1 1 17 13 16-15M8 38l12-13m8 1 13 10" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/><path d="m32 9 3-4m3 6 5-1M9 9 6 6" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg></span><span class="new-opponent-copy"><strong>Across the woods</strong><small id="new-online-description">Invite a friend to play online.</small></span></label>
       </fieldset>
       <p id="new-game-note" class="new-game-note">Your current page stays as it is until you choose to begin.</p>
-      <div class="modal-actions"><button class="secondary-button" type="button" data-close>Keep this page</button><button class="primary-button" type="submit" id="confirm-new">Play against the club ${icon('arrow')}</button></div>
+      <div class="modal-actions"><button class="secondary-button" type="button" id="new-game-cancel" data-close>Keep this page</button><button class="primary-button" type="submit" id="confirm-new">Play against the club ${icon('arrow')}</button></div>
     </form>
   </dialog>
   <dialog id="promotion-dialog" class="modal small-modal"><p class="eyebrow">A LITTLE ACORN. A BIG POSSIBILITY.</p><h2>Who will you <em>become?</em></h2><p>Choose a new role for your pawn.</p><div class="promotion-options">${(['q','r','b','n'] as const).map(p=>`<button data-promotion="${p}" aria-label="Promote to ${PIECE_NAMES[p]}">${portraitSlot('w',p)}${PIECE_NAMES[p]}</button>`).join('')}</div><button class="text-button" data-close>Choose a different move</button></dialog>
@@ -255,7 +263,7 @@ const onlineUI = createOnlineRoomUI({
   onCreate:()=>beginOnline(()=>{void online.create();}),
   onJoin:code=>beginOnline(()=>{void online.join(code);}),
   onResume:()=>beginOnline(()=>{void online.resume(!online.state.hasActiveSeat);}),
-  onLeave:()=>online.leave(),
+  onLeave:()=>{clearEntryInvitation();online.leave();},
   onRequestUndo:()=>requestOnline('undo'),
   onAnswerUndo:accept=>{void online.answerUndo(accept);},
   onRequestRematch:()=>requestOnline('rematch'),
@@ -263,6 +271,50 @@ const onlineUI = createOnlineRoomUI({
   onCancelRequest:()=>{void online.cancelRequest();},
 });
 onlineUI.render(onlineState);
+const initialEntry = entryPolicy({
+  resumed:startup.resumed,hasHistory:game.chess.history().length>0,hasStudy:!!activeStudy,
+  opponentChosen:saved?.opponentChosen,hasSeenGuide:guideSeen,
+  hasActiveSeat:onlineState.hasActiveSeat,hasInvitation:!!entryInvitation,
+});
+localOpponentChosen=initialEntry.localConfirmed;
+const onboarding = createOnboarding({onFinish:required=>{
+  if(appDisposed)return;
+  if(required){
+    guideSeen=true;
+    try{localStorage.setItem(ONBOARDING_KEY,JSON.stringify({seen:true}));}catch{}
+    continueEntry();
+  }else{render();queueComputer();}
+}});
+
+function entryBlocked(): boolean { return entryStage!=='ready'||onboarding.active; }
+function clearEntryInvitation() {
+  entryInvitation=null;
+  const address=new URL(window.location.href);
+  if(!address.searchParams.has('room'))return;
+  address.searchParams.delete('room');
+  try{window.history.replaceState(window.history.state,'',address);}catch{}
+}
+function continueEntry() {
+  if(appDisposed||!startupReady)return;
+  if(onlineState.hasActiveSeat){entryStage='invitation';render();beginOnline(()=>{void online.resume();});}
+  else if(entryInvitation){entryStage='invitation';render();onlineUI.open(entryInvitation);}
+  else if(localOpponentChosen){entryStage='ready';render();queueComputer();}
+  else openOpponentChoice(true);
+}
+function startEntry() {
+  if(initialEntry.showGuide){entryStage='guide';onboarding.open(true);render();}
+  else continueEntry();
+}
+function finishOnlineDialog() {
+  if(appDisposed||!startupReady||onboarding.active||onlineEngaged())return;
+  if(!localOpponentChosen)openOpponentChoice(true);
+  else{entryStage='ready';render();queueComputer();}
+}
+function replayOnboarding() {
+  if(appDisposed||!startupReady)return;
+  if(entryStage!=='ready'){startEntry();return;}
+  cancelComputer();dialog('#help-dialog').close();onboarding.open(false);render();
+}
 
 function onlineEngaged(): boolean {
   return onlineState.hasActiveSeat||Boolean(onlineState.room)||onlineState.status==='joining'||onlineState.status==='reconnecting';
@@ -283,6 +335,7 @@ function enterOnlinePresentation() {
 function beginOnline(action:()=>void) {
   if(appDisposed)return;
   if(!startupReady){showToast('The page is still opening. Your letter will be ready in a moment.');return;}
+  entryStage='invitation';newGameRequired=false;
   enterOnlinePresentation();
   action();
 }
@@ -302,7 +355,7 @@ function onlineInSync(): boolean {
 }
 function mayMoveOnline(): boolean {
   const room=onlineState.room;
-  return Boolean(startupReady&&!appDisposed&&room&&onlineState.status==='connected'&&!onlineState.pending&&!moving&&!onlineSyncError
+  return Boolean(startupReady&&!entryBlocked()&&!appDisposed&&room&&onlineState.status==='connected'&&!onlineState.pending&&!moving&&!onlineSyncError
     &&room.opponentJoined&&room.phase==='playing'&&room.seat===game.chess.turn()&&onlineInSync());
 }
 function onlineMoveHint(): string {
@@ -332,6 +385,9 @@ function handleOnlineChange(next:OnlineClientState) {
   if(appDisposed)return;
   const previousError=onlineState.error;
   onlineState=next;
+  if(next.room)entryStage='ready';
+  else if(!next.hasActiveSeat&&localOpponentChosen)entryStage='ready';
+  else if(!localOpponentChosen)entryStage='invitation';
   if(next.status==='joining'||next.status==='reconnecting'||next.room){
     enterOnlinePresentation();cancelComputer();
     onlineTarget=next.room;
@@ -383,13 +439,14 @@ function showToast(message: string) {
 }
 function persist(explicit = false) {
   if(onlineEngaged()||onlinePresentation){$('#saved-note').textContent='Your shared page is saved by the woodland post. Your local game is waiting.';return;}
+  if(!localOpponentChosen){$('#saved-note').textContent='Choose your company to begin. Your board is waiting.';return;}
   // A fresh-looking starter is safe even with blocked storage, but it must not
   // silently replace the only copy of the player's completed chapter.
   if(protectFinishedSave&&!explicit&&!activeStudy&&!game.chess.history().length){
     $('#saved-note').textContent='Your finished chapter is safe. Make a move to start the next.';return;
   }
   protectFinishedSave=false;
-  try { localStorage.setItem(SAVE_KEY,JSON.stringify({game:game.serialize(),study:activeStudy?.id ?? null}));$('#saved-note').innerHTML='<span></span> Your place in the story is saved.'; }
+  try { localStorage.setItem(SAVE_KEY,JSON.stringify({game:game.serialize(),study:activeStudy?.id ?? null,opponentChosen:true}));$('#saved-note').innerHTML='<span></span> Your place in the story is saved.'; }
   catch { $('#saved-note').textContent='Storage unavailable. Keep this tab open to continue.'; }
 }
 function savePreferences() { try {localStorage.setItem(PREF_KEY,JSON.stringify(prefs));} catch {} }
@@ -404,7 +461,7 @@ function cancelComputer() {
   computerEpoch++;clearTimeout(computerTimer);computerTimer=undefined;worker?.terminate();worker=null;thinking=false;
 }
 function queueComputer() {
-  if (appDisposed||onlineEngaged()||onlinePresentation||!startupReady||dialog('#new-game-dialog').open||document.querySelector('.online-room-dialog[open]')||game.mode!=='computer'||game.chess.turn()!=='b'||game.status().over||thinking) return;
+  if (appDisposed||onlineEngaged()||onlinePresentation||!startupReady||entryBlocked()||!localOpponentChosen||dialog('#new-game-dialog').open||document.querySelector('.online-room-dialog[open]')||game.mode!=='computer'||game.chess.turn()!=='b'||game.status().over||thinking) return;
   thinking=true;selected=null;render();
   const id=++computerEpoch,fen=game.chess.fen();
   const complete=(move: MoveCoordinates | null)=>{
@@ -422,7 +479,7 @@ function queueComputer() {
   },prefs.reducedMotion ? 150 : 650);
 }
 function selectSquare(square: Square) {
-  if (!startupReady) return;
+  if (!startupReady||entryBlocked()) return;
   // A click during a capture skips straight to the result; chess resumes as normal.
   if(moving){scene?.settle();return;}
   if(onlineEngaged()&&!mayMoveOnline()){showToast(onlineMoveHint());return;}
@@ -481,6 +538,7 @@ function moodHint(reaction: RefusalReaction | null | undefined): string | undefi
     :`${name}’s feelings are a little hurt. Try one of the circled squares.`;
 }
 function commitMove(input: MoveInput) {
+  if(entryBlocked())return;
   if(onlineEngaged()){
     if(!mayMoveOnline()){showToast(onlineMoveHint());return;}
     selected=null;pendingPromotion=null;render();
@@ -519,38 +577,50 @@ function animateCommittedMove(move:Move) {
   });
 }
 function undo() {
+  if(entryBlocked())return;
   if(onlineEngaged()){requestOnline('undo');return;}
   cancelFeedback();cancelComputer();const undone=game.undoTurn();selected=null;pendingPromotion=null;resultDismissed=true;
   if(dialog('#result-dialog').open)dialog('#result-dialog').close();
   if(!undone.length){showToast('The story is still at its beginning.');return;}
   persist();render();sound.undo();showToast('A little room to reconsider. Your last turn is undone.');queueComputer();
 }
-function newOpponent(): 'computer'|'local'|'online' {
-  const choice=$<HTMLInputElement>('input[name="new-opponent"]:checked').value;
+function newOpponent(): 'computer'|'local'|'online'|null {
+  const choice=document.querySelector<HTMLInputElement>('input[name="new-opponent"]:checked')?.value;
+  if(!choice)return null;
   return choice==='online'&&onlineState.configured?'online':choice==='local'?'local':'computer';
 }
 function renderNewGameChoices() {
   const choice=newOpponent();
-  $('#confirm-new').innerHTML=`${choice==='online'?'Open invitation':choice==='local'?'Play together here':'Play against the club'} ${icon('arrow')}`;
-  $('#new-game-note').textContent=choice==='online'
-    ?'Your current page stays saved while you arrange an online game.'
-    :game.chess.history().length||activeStudy?'Starting will replace this page and its sideline society.':'A clean board. Amber moves first.';
+  button('#confirm-new').disabled=!choice;
+  $('#confirm-new').innerHTML=`${!choice?'Choose how to play':choice==='online'?'Open invitation':choice==='local'?'Play together here':'Play against the club'} ${icon('arrow')}`;
+  $('#new-game-note').textContent=!choice?'Choose the club or a friend before your first move.':choice==='online'
+    ?newGameRequired?'Send an invitation or join your friend. Your board will wait for both seats.':'Your current page stays saved while you arrange an online game.'
+    :newGameRequired?'Your company is chosen. Amber makes the first move.':game.chess.history().length||activeStudy?'Starting will replace this page and its sideline society.':'A clean board. Amber moves first.';
 }
 function chooseNewGame() {
   if(appDisposed||!startupReady)return;
   dialog('#field-options-dialog').close();
   if(onlineEngaged()){requestOnline('rematch');return;}
+  openOpponentChoice(!localOpponentChosen);
+}
+function openOpponentChoice(required:boolean) {
+  if(appDisposed||!startupReady)return;
+  newGameRequired=required;
+  if(required)entryStage='choice';
   // Choosing is not a chess action. Keep a pending club reply on hold until
   // the player either starts the chosen game or returns to this page.
   cancelComputer();
   for(const d of all<HTMLDialogElement>('dialog[open]'))if(d.id!=='new-game-dialog')d.close();
-  $<HTMLInputElement>('input[name="new-opponent"][value="computer"]').checked=true;
+  for(const option of all<HTMLInputElement>('input[name="new-opponent"]'))option.checked=!required&&option.value==='computer';
+  button('#new-game-close').hidden=required;button('#new-game-cancel').hidden=required;
+  dialog('#new-game-dialog').dataset.required=String(required);
+  $('#new-game-eyebrow').textContent=required?'BEFORE YOUR FIRST MOVE · 2 OF 2':'A FRESH PAGE';
   $<HTMLInputElement>('#new-opponent-online').disabled=!onlineState.configured;
   $('#new-online-option').dataset.available=String(onlineState.configured);
   $('#new-online-description').textContent=onlineState.configured?'Invite a friend to play online.':'Online invitations are resting here.';
   renderNewGameChoices();render();
   if(!dialog('#new-game-dialog').open)dialog('#new-game-dialog').showModal();
-  $<HTMLInputElement>('input[name="new-opponent"][value="computer"]').focus();
+  if(required)$('#new-game-title').focus();else $<HTMLInputElement>('input[name="new-opponent"][value="computer"]').focus();
 }
 function newGame(mode:GameMode) {
   if(onlineEngaged()){requestOnline('rematch');return;}
@@ -559,6 +629,8 @@ function newGame(mode:GameMode) {
     preserveFinishedGame(finishedRecord,record=>localStorage.setItem(FINISHED_KEY,JSON.stringify(record)));
   }
   cancelFeedback();cancelComputer();activeStudy=null;selected=null;resultDismissed=false;game.reset({mode});focusedSquare='e2';
+  localOpponentChosen=true;newGameRequired=false;entryStage='ready';
+  clearEntryInvitation();
   pageant.reset();
   for(const d of all<HTMLDialogElement>('dialog[open]'))d.close();persist(true);render();$('#garden-observation').textContent='The best things happen between the lines.';showToast('A fresh page. A whole little world.');
 }
@@ -596,9 +668,11 @@ function render(animate = true) {
   // welcomes the latest capture. Undo/reset still reconcile immediately.
   const stories=game.captureStories();
   pageant.sync(moving && last?.captured ? stories.slice(0,-1) : stories,animate);
-  const boardBusy=String(!startupReady||moving||(isOnline&&(onlineState.pending||onlineState.status!=='connected'||!inSync)));
+  const boardBusy=String(!startupReady||entryBlocked()||moving||(isOnline&&(onlineState.pending||onlineState.status!=='connected'||!inSync)));
   $('#board-access').setAttribute('aria-busy',boardBusy);$('#scene-fallback').setAttribute('aria-busy',boardBusy);
+  $('#board-access').inert=entryBlocked();$('#scene-fallback').inert=entryBlocked();
   for(const surface of [document.documentElement,$('.game-space'),$('#game-status')]){
+    surface.dataset.entryStage=entryStage;surface.dataset.opponentChosen=String(isOnline?!!room:localOpponentChosen);surface.dataset.localOpponentChosen=String(localOpponentChosen);surface.dataset.guideSeen=String(guideSeen);
     surface.dataset.online=String(isOnline);surface.dataset.onlineSeat=room?.seat ?? '';
     surface.dataset.onlineRevision=room?String(room.revision):'';surface.dataset.onlineRound=room?String(room.round):'';
     surface.dataset.onlineConnection=onlineState.status;surface.dataset.onlineInSync=String(inSync);
@@ -611,14 +685,14 @@ function render(animate = true) {
   updateSquareFocus();positionSquares();
   const capturing=moving&&!!last?.captured;
   const onlineStatus=onlineSyncError?'Your shared page needs a retry.':onlineState.status==='error'?'Your local page is safe.':onlineState.status==='joining'||!room?'Finding your shared page…':onlineState.status==='reconnecting'?'Finding the clearing again…':!room.opponentJoined?'Waiting for your friend.':onlineState.pending?'Sending your change…':!inSync?'Catching up…':status.over?status.text:room.seat===status.turn?(status.check?'Your king is in check.':'Your move.'):(status.check?'A check for your friend.':'Your friend’s move.');
-  const statusText=capturing?'A little tussle…':isOnline?onlineStatus:status.over?status.text:thinking?'A little thinking…':status.check?'Oh, a check!':game.mode==='computer'?'Your move.':`${status.turn==='w'?'Amber':'Indigo'} to move.`;
+  const statusText=entryStage==='guide'?'Welcome to the club.':entryStage==='choice'?'Choose your company.':entryStage==='invitation'&&!isOnline?'Choose your shared page.':capturing?'A little tussle…':isOnline?onlineStatus:status.over?status.text:thinking?'A little thinking…':status.check?'Oh, a check!':game.mode==='computer'?'Your move.':`${status.turn==='w'?'Amber':'Indigo'} to move.`;
   $('#game-status').textContent=statusText;
   $('#game-status').dataset.turn=status.turn;$('#game-status').dataset.gameOver=String(status.over);$('#game-status').dataset.thinking=String(thinking);$('#game-status').dataset.moving=String(moving);
   $('#game-status').dataset.entering=String(!startupReady);
   $('#turn-token').classList.toggle('ink',status.turn==='b');$('#turn-token').classList.toggle('thinking',thinking);
   const selectedType=selected?game.chess.get(selected)?.type:undefined;
   const onlineDescription=onlineSyncError||onlineState.status==='error'?'Open Across the woods to reconnect, or choose Back to my page.':onlineState.status!=='connected'?'Your local game is waiting safely while the shared page reconnects.':!room?.opponentJoined?'Send your invitation. The first move waits until both seats are taken.':onlineState.pending||!inSync?'One little moment while your shared page catches up.':status.over?'A chapter, shared. A fresh page begins when your friend agrees.':room.seat===status.turn?`You move ${room.seat==='w'?'amber':'indigo'}. Choose one of your little characters.`:'Your friend moves the other side. Your turn will come back to you.';
-  $('#turn-description').textContent=capturing?'A woodland scuffle, then the winner claims the square.':isOnline&&(waitingOnline||!selected)?onlineDescription:status.over?'A chapter for the club book. Time for tea?':status.check?`${status.turn==='w'?'White’s':'Black’s'} king is in check. Find a safe move.`:thinking?'Even daydreamers need a moment.':selected?`${selectedType?clubNames[selectedType]:'A friend'} on ${selected}. Choose a marked square.`:'Choose a little character to see its possibilities.';
+  $('#turn-description').textContent=entryBlocked()&&!isOnline?'Choose the club or a friend before moving. Your little world is ready when you are.':capturing?'A woodland scuffle, then the winner claims the square.':isOnline&&(waitingOnline||!selected)?onlineDescription:status.over?'A chapter for the club book. Time for tea?':status.check?`${status.turn==='w'?'White’s':'Black’s'} king is in check. Find a safe move.`:thinking?'Even daydreamers need a moment.':selected?`${selectedType?clubNames[selectedType]:'A friend'} on ${selected}. Choose a marked square.`:'Choose a little character to see its possibilities.';
   $('#move-counter').textContent=`Move ${String(Number(game.chess.fen().split(' ')[5])).padStart(2,'0')}`;
   button('#undo').disabled=!history.length||(isOnline&&(!room?.opponentJoined||onlineState.status!=='connected'||onlineState.pending||moving||!inSync||Boolean(room.undoRequest||room.rematchRequest)));button('#export').disabled=!history.length;
   button('#undo').setAttribute('aria-label',isOnline?'Request undo from your friend':'Undo last turn');
@@ -644,9 +718,9 @@ function render(animate = true) {
   const rows: {n:number;w:string;b:string}[]=[];for(const m of history){const n=Number(m.before.split(' ')[5]);let row=rows.at(-1);if(!row||row.n!==n){row={n,w:'',b:''};rows.push(row);}row[m.color]=m.san;}
   $('#move-history').innerHTML=rows.length?rows.map((row,i)=>`<li${i===rows.length-1?' class="latest"':''}><span class="move-number">${row.n}.</span><span>${row.w||'…'}</span><span>${row.b||'—'}</span></li>`).join(''):'<li class="history-empty">Your story starts with a move.</li>';
   $('#move-history').scrollTop=$('#move-history').scrollHeight;
-  for(const b of all('[data-mode]'))b.setAttribute('aria-pressed',String(!isOnline&&b.dataset.mode===game.mode));
+  for(const b of all('[data-mode]'))b.setAttribute('aria-pressed',String(localOpponentChosen&&!isOnline&&b.dataset.mode===game.mode));
   $('#mode-description').textContent=isOnline?'Across the woods. One shared page, two places.':game.mode==='computer'?'You play amber. The computer plays indigo.':'One page. Two people. Take turns together.';
-  const difficulty=$<HTMLSelectElement>('#difficulty');difficulty.value=game.difficulty;difficulty.disabled=isOnline||game.mode==='local';
+  const difficulty=$<HTMLSelectElement>('#difficulty');difficulty.value=game.difficulty;difficulty.disabled=entryBlocked()||isOnline||game.mode==='local';
   $('#study-banner').hidden=!activeStudy;$('#scene-label').textContent=isOnline?'a shared woodland clearing':activeStudy?'a little chess story':'our little chess club';
   if(isOnline)$('#saved-note').textContent='Your local game is waiting safely. The woodland post keeps your shared page.';
   if(activeStudy){$('#study-name').textContent=activeStudy.name;$('#study-description').textContent=activeStudy.description;}
@@ -687,13 +761,15 @@ $<HTMLFormElement>('#new-game-form').onsubmit=event=>{
   if(appDisposed||!startupReady||!dialog('#new-game-dialog').open)return;
   if(onlineEngaged()){dialog('#new-game-dialog').close();requestOnline('rematch');return;}
   const choice=newOpponent();
+  if(!choice)return;
   if(choice==='online'){
-    dialog('#new-game-dialog').close();onlineUI.open();return;
+    newGameRequired=false;entryStage='invitation';dialog('#new-game-dialog').close();render();onlineUI.open();return;
   }
   newGame(choice);
 };
 button('#undo').onclick=undo;button('#help').onclick=()=>dialog('#help-dialog').showModal();button('#studies').onclick=()=>{if(leaveOnlineFirst())return;dialog('#field-options-dialog').close();dialog('#studies-dialog').showModal();};
 button('#meet').onclick=()=>dialog('#help-dialog').showModal();
+button('#replay-onboarding').onclick=replayOnboarding;
 button('#revisit-finished').onclick=()=>{
   // Never replace an ongoing chapter or a study, even if an old click arrives.
   if(leaveOnlineFirst()||appDisposed||!startupReady||!canRevisitFinishedGame(game,!!activeStudy))return;
@@ -740,11 +816,24 @@ button('#greet').onclick=()=>{scene?.greetResident();};
 for(const b of all('[data-voice]'))b.onclick=()=>{
   prefs.sound=true;applyPreferences();sound.greeting(b.dataset.voice as PieceSymbol);
 };
-$<HTMLSelectElement>('#difficulty').onchange=e=>{if(leaveOnlineFirst()){render();return;}const value=(e.currentTarget as HTMLSelectElement).value;if(!isDifficulty(value))return;cancelFeedback();cancelComputer();game.difficulty=value;persist();render();queueComputer();};
-for(const b of all('[data-mode]'))b.onclick=()=>{if(leaveOnlineFirst())return;const mode=b.dataset.mode;if(!isGameMode(mode))return;cancelFeedback();cancelComputer();game.mode=mode;selected=null;persist();render();queueComputer();};
+$<HTMLSelectElement>('#difficulty').onchange=e=>{if(!localOpponentChosen&&!onlineEngaged()){openOpponentChoice(true);return;}if(leaveOnlineFirst()){render();return;}const value=(e.currentTarget as HTMLSelectElement).value;if(!isDifficulty(value))return;cancelFeedback();cancelComputer();game.difficulty=value;persist();render();queueComputer();};
+for(const b of all('[data-mode]'))b.onclick=()=>{if(!localOpponentChosen&&!onlineEngaged()){openOpponentChoice(true);return;}if(leaveOnlineFirst())return;const mode=b.dataset.mode;if(!isGameMode(mode))return;cancelFeedback();cancelComputer();game.mode=mode;selected=null;persist();render();queueComputer();};
 for(const b of all('[data-close]'))b.onclick=()=>b.closest('dialog')?.close();
-for(const d of all<HTMLDialogElement>('dialog')){d.addEventListener('click',e=>{if(e.target===d){const r=d.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)d.close();}});d.addEventListener('close',()=>{if(d.id==='promotion-dialog')pendingPromotion=null;if(d.id==='result-dialog')resultDismissed=true;if(d.id==='new-game-dialog'||d.classList.contains('online-room-dialog'))queueComputer();});}
+for(const d of all<HTMLDialogElement>('dialog')){
+  d.addEventListener('click',e=>{if(e.target===d){if(d.id==='new-game-dialog'&&newGameRequired)return;const r=d.getBoundingClientRect();if(e.clientX<r.left||e.clientY<r.top||e.clientX>r.right||e.clientY>r.bottom)d.close();}});
+  d.addEventListener('cancel',e=>{if(d.id==='new-game-dialog'&&newGameRequired)e.preventDefault();});
+  d.addEventListener('close',()=>{
+    if(d.id==='promotion-dialog')pendingPromotion=null;
+    if(d.id==='result-dialog')resultDismissed=true;
+    if(d.id==='new-game-dialog'){
+      if(newGameRequired&&entryStage==='choice'&&!appDisposed){queueMicrotask(()=>{if(!appDisposed&&newGameRequired&&!d.open)d.showModal();});return;}
+      queueComputer();
+    }
+    if(d.classList.contains('online-room-dialog'))finishOnlineDialog();
+  });
+}
 for(const b of all('[data-study]'))b.onclick=()=>{
+  if(!localOpponentChosen&&!onlineEngaged()){openOpponentChoice(true);return;}
   if(leaveOnlineFirst())return;
   const study=studies.find(s=>s.id===b.dataset.study);if(!study)return;
   cancelFeedback();cancelComputer();activeStudy=study;game.reset({fen:study.fen,mode:'local'});selected=study.focus;focusedSquare=study.focus;resultDismissed=false;
@@ -780,17 +869,14 @@ void loading.finish().then(async()=>{
   if(appDisposed)return;
   await scene?.popUp(()=>sound.pagePop());
   if(appDisposed)return;
-  startupReady=true;render();
-  const invitation=new URL(window.location.href).searchParams.get('room');
-  if(invitation)onlineUI.open(invitation);
-  if(onlineState.hasActiveSeat)beginOnline(()=>{void online.resume();});else queueComputer();
+  startupReady=true;startEntry();
 });
 for(const eventName of ['pointerdown','keydown'])document.addEventListener(eventName,event=>{if(event.isTrusted&&prefs.sound)void sound.unlock();},{capture:true});
 window.addEventListener('pagehide',event=>{
   if(!event.persisted)appDisposed=true;
   persist();cancelFeedback();cancelComputer();
   if(!event.persisted){
-    online.dispose();onlineUI.destroy();
+    online.dispose();onlineUI.destroy();onboarding.destroy();
     observer.disconnect();cancelAnimationFrame(resizeFrame);clearTimeout(toastTimer);
     fieldCompact.removeEventListener('change',dockFieldControls);
     fieldShort.removeEventListener('change',dockFieldControls);

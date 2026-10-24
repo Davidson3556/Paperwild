@@ -38,26 +38,43 @@ npm run dev
 
 Vite reads its environment at startup and substitutes `VITE_*` values into a production bundle at build time. Restart development after a URL change, and rebuild a deployed frontend after a hosting-environment change. The client URL is public; private keys must never use a `VITE_` prefix. See [Vite environment variables](https://vite.dev/guide/env-and-mode).
 
+## First visit and opponent choice
+
+Use a new private window to check a first visit without deleting your existing game's storage. After the notebook opens, the short guide introduces the board, **Field kit**, **Journal**, and optional **Sound**. Complete the guide to reach **Who will you play?**. Completing it alone does not enable chess or sound.
+
+For an unconfirmed fresh game, nothing is preselected. Choose **Against the club**, **With a friend**, or configured **Across the woods**, then confirm. The required chooser cannot be escaped or closed into play. Guide completion is remembered separately, so reloading an unconfirmed fresh page still asks for an opponent. An existing unfinished history, explicit study, or previously confirmed empty board resumes without resetting its saved game for onboarding.
+
+Check these entry behaviors before the two-player walkthrough:
+
+1. In a fresh private context, observe guide first, then the required chooser with no selected opponent. Before confirmation, try Escape, dismissal, board input, and reload. The board must remain unavailable and no computer move may occur.
+2. Select **Against the club**, then **Play against the club**. Play **e2 → e4** and wait for exactly one legal Indigo/Black reply. Reload and confirm that the same unfinished game returns.
+3. In another fresh private context, select **With a friend**, then **Play together here**. After **e2 → e4**, Indigo must wait for the second person's input; no computer reply should appear.
+4. From a chosen game, open **How to play → Take a quick tour**. Finish or dismiss the replay and confirm that the position, history, selected opponent, and study context are unchanged. A confirmed starting board must also remain confirmed on reload before its first move.
+5. On an unconfirmed fresh page with online play configured, choose **Across the woods** and open its invitation dialog. Close it without taking a seat. The required opponent chooser must return and the board must remain gated. Repeat from an already chosen local game: closing the dialog must instead preserve that game.
+6. Open a valid invitation in a fresh context. Its code must remain prefilled after any first-visit guide. Do not select **Take a seat** yet: no seat may be occupied and no online game may start merely from opening the link. For a tab with its own active saved credential, reload and wait for the server to confirm the seat before trying a move.
+
+The [onboarding verification record](ONBOARDING_VERIFICATION_2026-10-24.md) documents the local browser observations and 131 passing app tests for this flow. Existing earlier verification files retain their original scope; no TestSprite onboarding execution is claimed.
+
 ## Try two seats
 
 Use a normal window and an incognito/private window **on the same computer** for a clear two-player check. Keep the local Convex process and the frontend running. Open the frontend URL printed by Vite or preview; its usual port is `4173`, while the existing local multiplayer preview uses `http://127.0.0.1:4191/` when that process is running.
 
-1. Open Paperwild in the normal window and let the notebook introduction settle. Open **Across the woods**, then choose **Write an invitation**. On a smaller screen, open **Field kit** to find **Across the woods**. The creator takes Amber/White.
-2. Copy the invitation link. Paste it into the private window, finish its notebook opening, and choose **Take a seat**. You can also enter the 12-character code in its room dialog. The first independent join takes Indigo/Black.
+1. Open Paperwild in the normal window and let the notebook introduction settle. On a first visit, complete the guide, select **Across the woods** in the required opponent chooser, then **Open invitation**. From an already chosen local game, open **Across the woods** directly; on a smaller screen, find it in **Field kit**. Choose **Write an invitation**. The creator takes Amber/White, and moves remain unavailable while the second seat is empty.
+2. Copy the invitation link. Paste it into the private window, finish its notebook opening and any first-visit guide, and check that the invitation code is still prefilled. Choose **Take a seat** explicitly. You can also enter the 12-character code in its room dialog. The first independent join takes Indigo/Black.
 3. Wait for both seats to be taken and for each window's own connection to show connected. Turn **Sound on** in **each** window if you want to check voices, movement, and capture audio; a trusted interaction must unlock sound separately in each context.
 4. Make **e2 → e4** in the Amber window, then **d7 → d5** in the Indigo window. Make **e4 → d5** in the Amber window to trigger a capture fight. After every move settles, compare the boards and move histories. After the capture, both should show the Amber acorn at d5, e4 empty, `exd5` in the history, and one captured Indigo acorn. Watch the fight and send-off without allowing them to advance the legal position again.
 5. Ask for Undo in one window. First decline it in the other and confirm that neither board changes. Ask again and accept: both boards should return to the position before the capture, with Amber at e4, Indigo at d5, no captured acorns, and Amber to move. The sender can also cancel a pending request; a new move clears one.
 6. Reload one window. After its introduction, confirm that it resumes the same seat and shared history rather than taking a new seat or replaying old captures.
 7. Ask for another game. Decline once and confirm that both boards stay unchanged, then ask and accept. Both should reset to the standard 32-piece position with empty history, the same colors, and the original expiry. Neither player's **A fresh page** action may reset an online board unilaterally.
-8. Choose **Back to my page** to restore that window's previous local game. A later saved-seat return is explicit. If an old room has expired, return to the local page and write a fresh invitation; reloading or accepting a rematch does not renew it.
+8. Choose **Back to my page** to restore that window's previous local game. If no local opponent had been confirmed, choose one before the offline board can be played. A later saved-seat return is explicit. If an old room has expired, return to the local page and write a fresh invitation; reloading or accepting a rematch does not renew it.
 
 A new tab does not automatically use the other tab's locally saved seat just because it opened an invitation. Independent normal/private contexts also keep sound and local settings separate. A loopback backend works only for browsers on this machine; playing from separate devices or inviting a remote friend requires the cloud setup below.
 
 ## Choose an opponent for a new game
 
-Outside an active online room, **A fresh page**, the result card's **Another adventure**, and a study's **Return to a full game** open **Who will you play?**. **Against the club** is selected by default: choose **Play against the club** to play Amber/White against the computer. Select **With a friend**, then **Play together here** for alternating turns on the same device. Select **Across the woods**, then **Open invitation** for online friend play; that option is unavailable until a backend is configured.
+For a player with a chosen game or study, **A fresh page**, the result card's **Another adventure**, and a study's **Return to a full game** open the optional **Who will you play?** chooser. **Against the club** is selected by default: choose **Play against the club** to play Amber/White against the computer. Select **With a friend**, then **Play together here** for alternating turns on the same device. Select **Across the woods**, then **Open invitation** for online friend play; that option is unavailable until a backend is configured. The mandatory first-game chooser described above has no default or cancellation into play.
 
-Opening the chooser, changing a choice, or choosing **Keep this page** must preserve the board, history, and study. Confirming a computer or same-device game starts a fresh standard position in that mode. Choosing online opens the invitation dialog without replacing the local game; the shared board takes over only after a room is created or joined, and **Back to my page** restores the waiting local game. Inside an active online room, a new-game action remains an opponent-approved rematch.
+Opening the optional chooser, changing a choice, or choosing **Keep this page** must preserve the board, history, and study. Confirming a computer or same-device game starts a fresh standard position in that mode. Choosing online opens the invitation dialog without replacing the local game; the shared board takes over only after a room is created or joined, and **Back to my page** restores the waiting local game. When that local game is still unconfirmed, its required opponent choice remains in force. Inside an active online room, a new-game action remains an opponent-approved rematch.
 
 To check this flow, make a local move, open the chooser, switch choices, and cancel: the position and history should still match. Open it again and confirm **Against the club**: the full standard board should appear with Amber to move, followed by exactly one computer reply after your first legal move. Repeat with **With a friend** and confirm there is no automatic reply. When configured, select **Across the woods**, close the invitation dialog without taking a seat, and confirm that the original local game is intact.
 
@@ -75,7 +92,7 @@ The connection badge reports this browser's WebSocket. **Friend · seat taken** 
 
 ## Run the test layers
 
-The [October 24 chooser verification](NEW_GAME_VERIFICATION_2026-10-24.md) records 122 passing app tests, strict TypeScript/build, and the separate browser interaction checks for the newer opponent-selection flow. The table below preserves the earlier full multiplayer verification date.
+The [October 24 chooser verification](NEW_GAME_VERIFICATION_2026-10-24.md) records 122 passing app tests, strict TypeScript/build, and separate browser interaction checks for the optional opponent chooser before the first-visit guide and mandatory entry choice were added. It does not establish acceptance of those later changes. The table below preserves the earlier full multiplayer verification date.
 
 | Command | Scope | Recorded local result (October 22) |
 | --- | --- | --- |

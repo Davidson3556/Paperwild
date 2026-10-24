@@ -10,7 +10,7 @@
 
 [Local multiplayer verification and screenshots](docs/CONVEX_VERIFICATION_2026-10-22.md) record two synchronized browsers, captures, agreed Undo/rematch, reload, offline-save separation and phone-size controls against the local backend.
 
-The [October 24 opponent chooser checks](docs/NEW_GAME_VERIFICATION_2026-10-24.md) cover the new default club choice, cancellation, keyboard controls, studies, results, and phone layout. The [two-window testing walkthrough](docs/CONVEX_SETUP.md#try-two-seats) explains how to try the local multiplayer build yourself.
+The [October 24 onboarding verification](docs/ONBOARDING_VERIFICATION_2026-10-24.md) records 131 passing app tests, the production build, and browser checks of mandatory first choice, guide replay, returning games and invitations. The earlier [optional chooser checks](docs/NEW_GAME_VERIFICATION_2026-10-24.md) retain their original scope. Follow the [entry and two-window testing walkthrough](docs/CONVEX_SETUP.md#first-visit-and-opponent-choice) to try the local flows yourself.
 
 [Test the correction preview](https://paperwild-git-living-davidson3556s-projects.vercel.app/) · [Startup evidence and runner investigation](docs/STARTUP_VERIFICATION_2026-10-21.md)
 
@@ -27,6 +27,7 @@ The [October 24 opponent chooser checks](docs/NEW_GAME_VERIFICATION_2026-10-24.m
 ## The game
 
 - **Standard chess, curious company.** Play the computer at three bounded difficulty levels, take turns with a friend on one device, or invite a friend to the same shared game through Convex on the new local branch. Castling, en passant, four promotion choices, checkmate, and draw conditions follow `chess.js`.
+- **A little help before the first move.** A first-visit tour points out the board, Field kit, Journal, and optional sound. Then choose the club or a friend before a fresh game can begin. The first required choice has no preselected opponent. Returning unfinished games keep their history, and **How to play → Take a quick tour** reopens the guide without resetting them.
 - **Across the woods.** A small postcard opens a room dialog on the existing game page. Write an invitation to take Amber/White, then send its link or 12-character code to the friend who takes Indigo/Black. Both seats must be taken before play begins. The server authorizes each turn and publishes the shared board; both browsers present its moves through the existing characters and capture stories. Undo takes back one ply with the other player's agreement, and another game starts only after an accepted rematch. Rooms last 24 hours from creation. Your own connection is shown honestly; a taken friend seat does not claim that the friend is currently online.
 - **A cast with personality.** Acorn pawns, stump rooks, hare knights, moth bishops, fox queens, and badger kings breathe, blink, and move in their own ways. Hover brings a smile and wave; selection adds a delighted jump. Ask for an impossible move and the character scrunches its eyes into “> <”, shakes its head and wags a mitten (“nuh-uh!”, “certainly not!”) while the square is crossed out in red. Touching the other side's piece gets a “not yours!”, a piece with no moves says it's stuck, and the message explains when your king is in check. Keep insisting and the cast shows its temperament: stumps, foxes and badgers scowl with angry eyebrows, flush red, stomp and let off steam (“hmph!” then “GRRR!”), while acorns, hares and moths raise worried eyebrows, droop and cry, with a rain cloud on the third try (“aww…” then “waaah!”). A calm pause or a legal move resets them. Amber/White and Indigo/Black have matching mittens, scarves, and distinct ground washes.
 - **A finishing move for every checkmate.** The mating move becomes a five-second anime-style finisher: cinema bars close in and the page turns pencil-grey, the camera pushes in while the attacker powers up under its move name ("Foxfire Finale!", "Hare-Raising Leap!"), a frozen half-beat ends in a flash, and the attacker dashes in on the drop. A pencil bolt topples the king, CHECKMATE is stamped on the page, and the winning team jumps for joy while the losers droop. A captured piece in the mating move blasts off with a twinkle. It is scored with an original 128 BPM edit-style cue made in code, with a riser, half a beat of silence and a drop on the strike, in the winner's key. Clicking skips to the result. Reduced motion leaves it out, and it never flashes more than twice a second.
@@ -66,13 +67,18 @@ Development and preview both default to port 4173; stop one before starting the 
 
 ## Playing and controls
 
-Select a character, then a marked destination. In **Against the club**, you play Amber/White; **With a friend** shares both sides on the same device. **Across the woods** opens the online invitation dialog when Convex is configured. Difficulty labels apply to the computer and are Sleepy, Thoughtful, and Mischievous, not Elo ratings.
+On your first visit, let the notebook entry finish and follow the short tour of the board, **Field kit**, **Journal**, and **Sound**. The guide explains where to play, change settings, read moves, and opt into voices; completing it does not choose an opponent or enable sound for you. Open **How to play → Take a quick tour** to see it again without replacing your game.
 
-Starting a new offline game opens **Who will you play?** with **Against the club** selected by default. Choose the computer, a friend on the same device, or online friend play when configured. Opening, changing, or canceling the choice with **Keep this page** preserves the current game; confirming a computer or same-device game starts a standard board. **Open invitation** opens the online dialog and keeps your local game safe until you take a seat. An active online game's new-game action still requests a rematch from the other player.
+A fresh page then requires **Who will you play?** before chess input is enabled. No opponent is preselected: choose **Against the club**, **With a friend**, or configured **Across the woods**, then confirm. Escape, closing a dialog, and reloading an unconfirmed fresh page cannot silently start a club game. A valid unfinished game with history, an explicit study, or an already confirmed empty starting board can resume without being replaced by this first-game flow. Tour completion and opponent confirmation are remembered separately.
+
+Once your choice is confirmed, select a character, then a marked destination. In **Against the club**, you play Amber/White; **With a friend** shares both sides on the same device. **Across the woods** opens the online invitation dialog when Convex is configured. Difficulty labels apply to the computer and are Sleepy, Thoughtful, and Mischievous, not Elo ratings.
+
+After a game has been chosen, starting another offline game opens **Who will you play?** with **Against the club** selected by default. Opening, changing, or canceling this optional choice with **Keep this page** preserves the current game; confirming a computer or same-device game starts a standard board. **Open invitation** keeps your local game safe while you acquire a seat. When no local opponent has been confirmed, dismissing an invitation returns to the required chooser, with the board still gated. An active online game's new-game action requests a rematch from the other player.
 
 | Control | What it does |
 | --- | --- |
 | **Field kit** | Choose mode/difficulty, begin a fresh game, or open Little chess stories. |
+| **How to play → Take a quick tour** | Replay the brief navigation guide without resetting the board, history, or opponent. |
 | **A fresh page / Another adventure / Return to a full game** | Choose an opponent before replacing an offline game or study; **Against the club** is the default. An active online room requests a rematch instead. |
 | **Across the woods** | Create or join a shared game, copy its invitation, resume a seat, or return to the local page. |
 | Online **Ask to undo / Ask for another game** | Ask the other player to take back one ply or start a new game. They can accept or decline; the sender can cancel. |
@@ -111,7 +117,16 @@ flowchart TD
     complete -->|"No"| restore["Restore exact unfinished game and study"]
     fresh --> entry["Reveal notebook, draw grid, unfold residents"]
     restore --> entry
-    entry --> mode["Entry settles; resume turn or choose a mode/study"]
+    entry --> resumable{"Chosen unfinished game or study?"}
+    resumable -->|"Yes"| mode["Resume preserved game or study"]
+    resumable -->|"No"| tour{"First-visit tour completed?"}
+    tour -->|"No"| guide["Explain board, Field kit, Journal, and Sound"]
+    guide --> required["Required opponent chooser; nothing preselected"]
+    tour -->|"Yes"| required
+    required -->|"Confirm club or same-device friend"| firstReady["Remember choice; enable the chosen game"]
+    firstReady --> selection
+    required -->|"Choose online"| online["Open invitation; retain local game until taking a seat"]
+    required -.->|"Escape or dismissal"| required
     mode -.->|"Untouched full board only"| revisit["Field kit: Revisit last finished game"]
     revisit --> finished["Restore terminal history, captures and remembrance"]
     mode --> selection["Select a character and destination"]
@@ -137,7 +152,7 @@ flowchart TD
     opponent -->|"Keep this page"| unchanged["Keep current game or study unchanged"]
     opponent -->|"Confirm computer or same-device"| reset["Reset standard board in chosen mode"]
     reset --> selection
-    opponent -->|"Choose online when configured"| online["Open invitation; retain local game until taking a seat"]
+    opponent -->|"Choose online when configured"| online
     gameOver -->|"No"| computerTurn{"Computer turn?"}
     computerTurn -->|"No"| selection
     computerTurn -->|"Yes"| search["Find a legal computer reply"]
@@ -148,18 +163,18 @@ flowchart TD
     classDef story fill:#f4ead4,stroke:#9a7c53,color:#3f3428
     classDef decision fill:#e6eddf,stroke:#7e916c,color:#2f3b29
     class notebook,refusal,capture,finale,ceremony,remembrance story
-    class saved,complete,legal,promotion,presentation,gameOver,computerTurn decision
+    class saved,complete,resumable,tour,legal,promotion,presentation,gameOver,computerTurn decision
 ```
 
-Valid settings survive either restore path. Entry settles before a restored computer reply. Skip introduction shortens the cover sequence; the board's pencil drawing and pop-up still finish before play. Reduced motion reveals a complete upright board directly. The rules position then commits once per turn. Movement, capture departure, or finale settles before the next turn/result; the memorial ceremony proceeds independently. Undo, restart, and story replacement cancel obsolete animation, sound, and computer work.
+Valid settings survive either restore path. Entry settles before a restored computer reply. Skip introduction shortens the cover sequence; the board's pencil drawing and pop-up still finish before play. Reduced motion reveals a complete upright board directly. New visitors see the navigation guide before choosing their first opponent; a returning chosen game or study is not reset for onboarding. Completing the guide alone cannot release an unconfirmed board. The rules position then commits once per turn. Movement, capture departure, or finale settles before the next turn/result; the memorial ceremony proceeds independently. Undo, restart, and story replacement cancel obsolete animation, sound, and computer work.
 
 ## Online friend flow
 
-The postcard and dialog stay on the existing game page. An invitation opens the dialog; taking a seat remains an explicit action. The first friend to join claims the available Indigo seat.
+The postcard and dialog stay on the existing game page. An invitation keeps its prefilled code through any first-visit tour, then opens the dialog; taking a seat remains an explicit action. No invitation silently occupies a seat or releases an unconfirmed local board. A returning active seat waits for server confirmation before input is enabled. The first friend to join claims the available Indigo seat.
 
 ```mermaid
 flowchart TD
-    entry["Notebook introduction settles"] --> postcard["Open Across the woods"]
+    entry["Notebook introduction and any first-visit guide settle"] --> postcard["Open Across the woods or prefilled invitation"]
     postcard --> choose{"Create, join, or resume?"}
     choose -->|"Create or join"| credential["Persist a private seat credential in this tab"]
     credential --> reserve["Convex transaction reserves the seat"]
@@ -272,7 +287,7 @@ The tree highlights the entry points; the implementation table above links the s
 
 Local test files cover chess integrity, deterministic gait/capture plans, resident histories and naming, ceremony queue reconciliation, procedural voice signals, mocked audio lifecycle, and online transport/history reconciliation. Backend tests exercise real Convex function handlers in `convex-test`; separate opt-in integration tests connect real WebSocket clients to a local backend. `npm run build` includes strict frontend and backend type checking. These checks are separate from actual browser observations and physical listening quality.
 
-- **New local Convex branch:** `npm test` passes **122/122** tests, including **20 transport** and **8 snapshot-planning** tests. Backend authorization/rules/transaction coverage passes **20/20** through `npm run test:convex`; **2/2** opt-in live integration tests pass against a local Convex deployment. Those two tests cover client convergence, consent, reconnect, and concurrent seat/move transactions; they do not establish browser layout or TestSprite acceptance. Use `CONVEX_TEST_URL` with a loopback endpoint to run `npm run test:online:live`; see [setup and test commands](docs/CONVEX_SETUP.md). This work has not yet received an online TestSprite run or a cloud release.
+- **October 22 local Convex verification:** `npm test` recorded **122/122** passing tests, including **20 transport** and **8 snapshot-planning** tests. Backend authorization/rules/transaction coverage recorded **20/20** through `npm run test:convex`; **2/2** opt-in live integration tests passed against a local Convex deployment. Those two tests cover client convergence, consent, reconnect, and concurrent seat/move transactions; they do not establish browser layout, later onboarding acceptance, or TestSprite acceptance. Use `CONVEX_TEST_URL` with a loopback endpoint to run `npm run test:online:live`; see [setup and test commands](docs/CONVEX_SETUP.md). This work has not yet received an online TestSprite run or a cloud release.
 
 - **Published October 21 startup correction: 94/94 tests, strict TypeScript, and build passed**, producing `index-Dg2nj_lq.js`. CI and Vercel preview passed at application revision `e23a745`; [PR #4](https://github.com/Davidson3556/Paperwild/pull/4) is merged at `3240b0d`. Direct browser checks verified a readable paused loader, keyboard skip, completed-mate reload to a fresh 32-piece game, and explicit archive revisit without a replayed finale.
 - **TestSprite strict replay: 14 passed / 0 failed / 0 blocked / 0 timed out.** The [full execution](https://www.testsprite.com/dashboard-v3/o/f7454a95-e992-581a-98e0-4edd142a0891/projects/dafdf75c-04a3-467f-acc2-4359af6b1d8e/execution/3ab518d1-9f5f-4718-b9e3-4d71ecdff3f2) exercised all 14 reviewed [stored Python cases](docs/testsprite/overrides/README.md) against that preview with auto-heal disabled. Every stored script was read back byte-for-byte before execution. Coverage includes the visible notebook/pencil/pop-up sequence, saved pause, actual blink and painted-part motion, keyboard skip, deferred computer reply, terminal archive revisit, unfinished restore, chess/Undo and sound scheduling.
