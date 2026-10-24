@@ -2,7 +2,7 @@
 
 Paperwild keeps computer and same-device play available without a backend. **Across the woods** adds an optional shared game through Convex while retaining the existing board, postcard, and room dialog.
 
-The implementation is published in draft [PR #5](https://github.com/Davidson3556/Paperwild/pull/5) on `feat/convex-multiplayer`. Its public frontend at `66cc127` is verified against the deployed Convex Cloud Development backend. The sixteen-case regression gate passed at that head; hosted multiplayer recorded three passes and one failed disconnect check. Full four-case acceptance remains pending. Published `main` remains at merged PR #4 (`3240b0d`) with no production Convex configuration, and PR #5 is unmerged.
+The implementation is published in [PR #5](https://github.com/Davidson3556/Paperwild/pull/5) on `feat/convex-multiplayer`. Acceptance source head `419fdef` passed all four hosted multiplayer cases and sixteen regression cases against the Cloud Development backend. Published `main` remains at merged PR #4 (`3240b0d`) with no production Convex configuration, and PR #5 is unmerged. Later documentation commits require their own CI checks; the identities below preserve the tested source.
 
 ## Current cloud preview configuration
 
@@ -13,14 +13,16 @@ On October 24, the Paperwild project in team `awokoya-davidson` deployed its roo
 | Public client URL | `https://fast-starling-207.convex.cloud` |
 | Vercel variable | `VITE_CONVEX_URL`, Preview only, branch `feat/convex-multiplayer` |
 | Frontend origin | [PR #5 preview](https://paperwild-git-feat-convex-multiplayer-davidson3556s-projects.vercel.app/) |
-| Verified frontend head | `66cc12731984413745f2ea0edcc0de944d15104c` |
-| Vercel deployment | `dpl_BMSpAxoxdf83vWegXWswKESztzuw` |
+| Acceptance source head | `419fdef2b848796fd909aa86656aef760583b07d` |
+| Acceptance Vercel deployment | `dpl_9DNGdtNoT7C1Ldwfo8UkWfY1Cs4W` |
 | Matching public frontend build | `index-EfeOJs9J.js`; all 48 application payloads verified |
 | Production | `main` at `3240b0d`; no Convex URL configured |
 
-The URL is public client configuration, not a deploy credential. Other previews and Production do not inherit this branch override. The [strict regression workflow](TESTSPRITE_PR_GATE.md) builds with the same URL and compares every public application payload before dispatching tests. [Run 40130203055](https://github.com/Davidson3556/Paperwild/actions/runs/40130203055) passed all sixteen frontend regression cases at `66cc127`; those cases do not establish two-player multiplayer acceptance.
+The URL is public client configuration, not a deploy credential. Other previews and Production do not inherit this branch override. The [strict regression workflow](TESTSPRITE_PR_GATE.md) builds with the same URL and compares every public application payload before dispatching tests. [Run 40136980632](https://github.com/Davidson3556/Paperwild/actions/runs/40136980632) passed all sixteen frontend regression cases at acceptance source head `419fdef`; the separate four-case execution establishes its own multiplayer assertions.
 
-The [four hosted multiplayer scripts](testsprite/online-overrides/README.md) target separate TestSprite project `5ac48e78-b1a2-4509-ad73-0b3efe0c3343`. [Execution `657456b3`](https://www.testsprite.com/dashboard-v3/o/f7454a95-e992-581a-98e0-4edd142a0891/projects/5ac48e78-b1a2-4509-ad73-0b3efe0c3343/execution/657456b3-12fc-476a-ad57-247971df4d32) at `66cc127` passed ONLN-001–003 and failed ONLN-004's 35-second wait. The SDK allows 60 seconds of inactivity. A later [90-second diagnostic](https://www.testsprite.com/dashboard-v3/o/f7454a95-e992-581a-98e0-4edd142a0891/projects/5ac48e78-b1a2-4509-ad73-0b3efe0c3343/execution/e7c28f31-014c-4f65-9ceb-f50a34a00070) observed actual reconnecting, Black offline/uncached HTTP failure, White HTTP 200 and no received-frame increase, then failed a new immediate browser-close-counter gate. Original no-queue/recovery assertions were not reached. Browser close events are asynchronous; the reviewed revision keeps their counts diagnostic while requiring all original gameplay assertions and those observed network-loss checks. That revision has no passing result yet. The [first acceptance summary](testsprite/online-cloud-first-acceptance-summary.json), [audit](testsprite/online-cloud-first-acceptance-verification.json) and [cloud verification record](CONVEX_CLOUD_VERIFICATION_2026-10-24.md) preserve both failures and earlier investigations. Full four-case acceptance remains pending.
+The [four hosted multiplayer scripts](testsprite/online-overrides/README.md) target separate TestSprite project `5ac48e78-b1a2-4509-ad73-0b3efe0c3343`. [Execution `5db8197c`](https://www.testsprite.com/dashboard-v3/o/f7454a95-e992-581a-98e0-4edd142a0891/projects/5ac48e78-b1a2-4509-ad73-0b3efe0c3343/execution/5db8197c-e6f9-4342-bc7d-5f98095166d7) at acceptance source head `419fdef` passed **4/4**, with no failed, skipped or timed-out case. All original invitation/capture, consent, reload/local-save and offline/no-queue/same-seat recovery assertions passed. The [summary](testsprite/online-cloud-acceptance-summary.json) and [completed audit](testsprite/online-cloud-acceptance-verification.json) verify committed source and hosted versions before/after, all 48 payloads and stable source/deployment identity. API run-version/auto-heal nulls remain null; replay and source checks are recorded separately.
+
+The [cloud verification record](CONVEX_CLOUD_VERIFICATION_2026-10-24.md) preserves earlier browser-start failures, the [3/1 first acceptance result](testsprite/online-cloud-first-acceptance-verification.json) and the [failed immediate-close-event diagnostic](testsprite/online-cloud-offline-probe-verification.json). Those records remain failed historical results and are not relabeled by the final pass.
 
 A manual check in two tabs of the same Chrome profile completed `e4 d5 exd5` and agreed Undo. It is supplementary interaction evidence; those tabs were **not independent browser contexts**. The earlier pre-cloud sixteen-case passes remain identified by their [archived manifest](testsprite/pr5-pre-cloud-stored-code-manifest.json).
 
@@ -112,7 +114,7 @@ The connection badge reports this browser's WebSocket. **Friend · seat taken** 
 
 ## Run the test layers
 
-At `66cc127`, [regular CI](https://github.com/Davidson3556/Paperwild/actions/runs/40130203087) passed **150 app/gate tests, 20 backend tests, TypeScript and build**. These are separate from hosted browser execution. The [October 24 chooser verification](NEW_GAME_VERIFICATION_2026-10-24.md) records 122 passing app tests, strict TypeScript/build, and browser checks before the first-visit guide and mandatory entry choice were added. The table below preserves the earlier full multiplayer verification date.
+At acceptance source head `419fdef`, [regular CI](https://github.com/Davidson3556/Paperwild/actions/runs/40136980700) passed **150 app/gate tests, 20 backend tests, TypeScript and build**. These are separate from hosted browser execution, and later commits need their own checks. The [October 24 chooser verification](NEW_GAME_VERIFICATION_2026-10-24.md) records 122 passing app tests, strict TypeScript/build, and browser checks before the first-visit guide and mandatory entry choice were added. The table below preserves the earlier local multiplayer verification date.
 
 | Command | Scope | Recorded local result (October 22) |
 | --- | --- | --- |
@@ -130,11 +132,13 @@ CONVEX_TEST_URL=http://127.0.0.1:3210 npm run test:online:live
 
 Replace port `3210` if your CLI prints a different local client URL. The suite requires a loopback host (`127.0.0.1`, `localhost`, or IPv6 loopback) and rejects cloud endpoints. It creates test rooms in that local deployment, checks both clients' snapshots, consent, reconnect, and concurrent room/seat/move transactions. These are protocol tests; browser layout, animation, and accessibility observations are separate evidence.
 
-The earlier **14/14 TestSprite** result belongs to the published startup correction, and the archived October 24 **16/16** runs identify their pre-cloud frontend. The cloud-head **16/16** regression run remains separate from multiplayer acceptance: the regression suite has no invitation, two-player synchronization or reconnect assertions. The separate multiplayer suite's three passes and failed 35-second disconnect check are recorded above; full-suite acceptance is pending. The original [ten-case online proposal](testsprite/online-plan.yaml) is still **not executed or uploaded**. See the [product requirements](PRODUCT_REQUIREMENTS.md) and [historical startup record](STARTUP_VERIFICATION_2026-10-21.md) for the evidence boundary.
+The earlier **14/14 TestSprite** result belongs to the published startup correction, and the archived October 24 **16/16** runs identify their pre-cloud frontend. The **16/16** regression run at acceptance source head `419fdef` remains separate from its **4/4** multiplayer execution. The regression suite has no invitation, two-player synchronization or reconnect assertions. The original [ten-case online proposal](testsprite/online-plan.yaml) is still **not executed or uploaded**; the executed four scripts consolidate those scenarios. See the [product requirements](PRODUCT_REQUIREMENTS.md) and [historical startup record](STARTUP_VERIFICATION_2026-10-21.md) for the evidence boundary.
 
 ## Prepare a cloud backend and matching frontend
 
 Keep the backend and frontend on the same source revision. A hosted frontend must connect to its intended cloud deployment; a loopback URL points each visitor at their own machine.
+
+The accepted preview uses Development only. Merging the frontend alone does not configure Production: online play remains disabled there, while club and same-device play continue. A production multiplayer release requires the backend, public client URL, rebuild and verification below.
 
 1. Sign in to Convex and select or create the intended cloud project. For an anonymous local project, `npx convex login` starts account linking. Configure an existing cloud project with `npm run convex:dev -- --configure existing --dev-deployment cloud`, or use `--configure new --dev-deployment cloud` to create one. Confirm the project/deployment shown by the CLI before proceeding.
 2. Validate the source with `npm test`, `npm run test:convex`, and `npm run build`. Publish the intended production backend using `npm run convex:deploy`. This deploys functions, schema, and indexes to the selected project's production deployment; follow the CLI confirmation. Obtain that production deployment's public client URL from the Convex dashboard.

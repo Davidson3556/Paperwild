@@ -7,10 +7,10 @@ Paperwild's friend-room functions are deployed to Cloud Development backend **`f
 | Item | Verified value |
 | --- | --- |
 | PR | [Paperwild #5](https://github.com/Davidson3556/Paperwild/pull/5) |
-| First committed four-case preview head | `66cc12731984413745f2ea0edcc0de944d15104c` |
+| Verified multiplayer application/test head | `419fdef2b848796fd909aa86656aef760583b07d` |
 | Application and backend source | `6f173553c54ed3bee61a502d2d77183a07512913`; runtime source unchanged at the preview head |
 | Public test target | [PR #5 preview](https://paperwild-git-feat-convex-multiplayer-davidson3556s-projects.vercel.app/) |
-| Vercel deployment | `dpl_BMSpAxoxdf83vWegXWswKESztzuw` |
+| Accepted Vercel deployment | `dpl_9DNGdtNoT7C1Ldwfo8UkWfY1Cs4W` |
 | Cloud build | `index-EfeOJs9J.js`, `index-DCOXjeBT.css`; 48 application payloads |
 | Backend | Cloud Development `fast-starling-207`, deployed from `5633a86` with the same room functions |
 
@@ -18,8 +18,9 @@ The deployment used an approved 24-hour key with only `deployment:deploy` permis
 
 ## Established checks
 
-- [Regular CI at `66cc127`](https://github.com/Davidson3556/Paperwild/actions/runs/40130203087) passed **150 application/gate tests, 20 isolated Convex tests, TypeScript and the production build**.
-- [Strict TestSprite regression CI at the same head](https://github.com/Davidson3556/Paperwild/actions/runs/40130203055) passed **16/16** reviewed frontend scripts against the cloud-configured preview. The [earlier cloud-head sanitized artifact](testsprite/pr5-cloud-regression-summary.json) identifies the preceding `c6648a0` pass; the latest job publishes its own exact-head artifact. These establish regression coverage, not the four new multiplayer cases.
+- [Regular CI at `419fdef`](https://github.com/Davidson3556/Paperwild/actions/runs/40136980700) passed **150 application/gate tests, 20 isolated Convex tests, TypeScript and the production build**.
+- [Strict TestSprite regression CI at the same head](https://github.com/Davidson3556/Paperwild/actions/runs/40136980632) passed **16/16** reviewed frontend scripts against the cloud-configured preview. The [earlier cloud-head sanitized artifact](testsprite/pr5-cloud-regression-summary.json) identifies the preceding `c6648a0` pass; each later job publishes its own exact-head artifact. These establish regression coverage separately from the four new multiplayer cases.
+- [Final hosted multiplayer acceptance](https://www.testsprite.com/dashboard-v3/o/f7454a95-e992-581a-98e0-4edd142a0891/projects/5ac48e78-b1a2-4509-ad73-0b3efe0c3343/execution/5db8197c-e6f9-4342-bc7d-5f98095166d7) passed **4/4**, with zero failures, skips or timeouts. All four exact Python bodies were committed at `419fdef` and matched hosted versions before and after. The [summary](testsprite/online-cloud-acceptance-summary.json) and [completed audit](testsprite/online-cloud-acceptance-verification.json) bind actual strict replays to the stable deployment and all 48 matching public application payloads before/after. This includes every original offline-move, Undo, no-queue, same-seat recovery and explicit-next-move assertion in ONLN-004.
 - Live browser checks created two seats, played `e4 d5 exd5`, displayed the shared capture and ceremony, and accepted an Undo that restored `e4 d5` in both 64-square boards. These were **two tabs in the same Chrome profile**, not independent browser contexts. The [stored DOM observations](testsprite/convex-cloud-two-tab-observations.json) exclude seat credentials.
 
 ## Hosted multiplayer runner investigation
@@ -34,7 +35,11 @@ The [first committed four-case execution](https://www.testsprite.com/dashboard-v
 
 Inspection of the installed Convex SDK found a 60-second server-inactivity watchdog. The 35-second wait did not establish whether the socket was interrupted. A separate, uncommitted ONLN-004 diagnostic (`v-c4051631c928`, SHA-256 `bf6120a0df6bae756be4a276fa17724f3be6511b42f38c591ce1ad622da3ba67`) used a 90-second wait, real browser offline control, same-origin HTTP controls and socket lifecycle/frame counts. It exports no socket URL, frame payload or credential. Its [execution](https://www.testsprite.com/dashboard-v3/o/f7454a95-e992-581a-98e0-4edd142a0891/projects/5ac48e78-b1a2-4509-ad73-0b3efe0c3343/execution/e7c28f31-014c-4f65-9ceb-f50a34a00070) confirmed Black's browser offline state, an actual uncached HTTP failure, White's HTTP 200 control, no additional incoming Convex frames, and the game's actual `reconnecting` state. It then failed a newly added immediate socket-close observation, before the original no-queue assertions. [The completed audit](testsprite/online-cloud-offline-probe-verification.json) and [exact archived Python body](testsprite/online-history/ONLN-004-v-c4051631c928.py.txt) preserve that failure.
 
-Convex starts socket closure asynchronously and publishes its disconnected state without awaiting the browser's close event. The [WebSocket standard](https://websockets.spec.whatwg.org/#dom-websocket-close) likewise separates starting a closing handshake from the later close event. The revised test retains close counts as diagnostic evidence through restoration, while still requiring actual isolated HTTP failure, no incoming-frame increase, real `reconnecting`, unchanged confirmed state, rejected offline move/Undo, no queued work, and same-seat restoration followed by a new explicit move. Every original gameplay assertion remains, and the application source is unchanged. A complete four-case pass remains pending.
+Convex starts socket closure asynchronously and publishes its disconnected state without awaiting the browser's close event. The [WebSocket standard](https://websockets.spec.whatwg.org/#dom-websocket-close) likewise separates starting a closing handshake from the later close event. The revised test retains close counts as diagnostic evidence through restoration, while still requiring actual isolated HTTP failure, no incoming-frame increase, real `reconnecting`, unchanged confirmed state, rejected offline move/Undo, no queued work, and same-seat restoration followed by a new explicit move. Every original gameplay assertion remains, and the application source is unchanged. That committed revision (`v-b27cfd4d1cfa`, SHA-256 `28bfc8308ca72de8418875c70762e6971485c7e4ac9a34e810c3ef254b9836ff`) passed in the complete final four-case execution above.
+
+The final evidence publication changes documentation and report metadata only. The accepted application and all four Python test bodies remain those verified at `419fdef`. The [current PR checks](https://github.com/Davidson3556/Paperwild/pull/5/checks) identify later documentation-head CI separately; the earlier failed runs are never relabeled as passes.
+
+![Final TestSprite multiplayer execution: four passed, zero failed or blocked](media/testsprite-cloud-multiplayer-4-passed.jpg)
 
 Every dispatch explicitly requests `--no-auto-heal`. The API omits the run's auto-heal field and supplies null run code-version fields; these remain null in the reports. Source/version readback and an unqualified actual replay record are separate verified evidence, not invented API attestations.
 

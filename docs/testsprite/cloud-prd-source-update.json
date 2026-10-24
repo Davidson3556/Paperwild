@@ -1,0 +1,22 @@
+{
+  "sourcePath": "docs/PRODUCT_REQUIREMENTS.md",
+  "sha256": "93f37ab12bd81468bc1eceecf0bcd855a0f5270e3cde1acbf248c20d68137242",
+  "size": 34184,
+  "displayName": "Paperwild verified multiplayer requirements (419fdef)",
+  "role": "PRD",
+  "registeredAt": "2026-10-24T22:15:22.756193+00:00",
+  "registrationProcessStatus": "Processing",
+  "portalProcessingCompleteClaimed": false,
+  "projects": [
+    {
+      "projectId": "5ac48e78-b1a2-4509-ad73-0b3efe0c3343",
+      "resourceId": "fc088a10-988e-4785-9807-d8c549384a14",
+      "portalSourceNameListed": true
+    },
+    {
+      "projectId": "dafdf75c-04a3-467f-acc2-4359af6b1d8e",
+      "resourceId": "832ea272-fe06-4309-a548-d51da78c5f8d"
+    }
+  ],
+  "verification": "CLI registration succeeded in both projects, replacing their existing PRD resource identities. Multiplayer Portal Sources lists the new title. Stored test code and recorded executions are separate and unchanged by source registration."
+}

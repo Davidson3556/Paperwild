@@ -2,11 +2,11 @@
   "projectId": "5ac48e78-b1a2-4509-ad73-0b3efe0c3343",
   "projectName": "Paperwild multiplayer preview",
   "targetUrl": "https://paperwild-git-feat-convex-multiplayer-davidson3556s-projects.vercel.app/",
-  "status": "four-current-scripts-uploaded-and-readback-verified; revised004-pending",
-  "executionStatus": "001-003-passed-first-cloud-acceptance; revised004-and-current-full-set-not-executed",
+  "status": "four-case-cloud-acceptance-passed",
+  "executionStatus": "4-passed; 0-failed-skipped-timed-out; committed-source-419fdef",
   "testsRun": true,
   "recordedAt": "2026-10-24T19:42:07.953444+00:00",
-  "verification": "Final concurrent readbacks verified all four project/case identities, Python bodies and concrete versions against reviewed local source. Only004 changed, using explicit prior version/body guards. The original0/4, first3/1 and failed close-order diagnostic probe remain separate immutable historical evidence. Revised004 is uncommitted and has not run; publication and a new complete four-case run are still pending. This upload dispatched no tests.",
+  "verification": "All four committed scripts at 419fdef passed strict hosted replay against the matching Cloud Development preview. Actual run identities/unqualified replay, exact source/version readbacks, project membership and all 48 application payloads were verified before/after. Historical upload-state fields describe their timestamps; earlier failed results remain separate and unchanged.",
   "scripts": [
     {
       "case": "ONLN-001",
@@ -18,7 +18,7 @@
       "readbackEqual": true,
       "created": true,
       "updated": true,
-      "executionStatus": "passed-first-cloud-acceptance-current-version",
+      "executionStatus": "passed-verified-committed-cloud-acceptance",
       "previousCodeVersion": "v-a880f2e2c491",
       "previousSha256": "d924090af7175f040750698c476c33bba418b966101e687493e840f6dd3c7644",
       "verifiedExecution": {
@@ -38,6 +38,17 @@
         "reviewedSha256": "745e2bdcba98c33bd5881e7f0d00932e30587215f0203afefef8e6e3db8fc7a9",
         "summary": "docs/testsprite/online-cloud-first-acceptance-summary.json",
         "verification": "docs/testsprite/online-cloud-first-acceptance-verification.json"
+      },
+      "latestCloudAcceptance": {
+        "status": "passed",
+        "runId": "fadd4c4b-5642-4b27-89d6-5611b08fb23b",
+        "executionUrl": "https://www.testsprite.com/dashboard-v3/o/f7454a95-e992-581a-98e0-4edd142a0891/projects/5ac48e78-b1a2-4509-ad73-0b3efe0c3343/execution/5db8197c-e6f9-4342-bc7d-5f98095166d7/test/fadd4c4b-5642-4b27-89d6-5611b08fb23b",
+        "headSha": "419fdef2b848796fd909aa86656aef760583b07d",
+        "sourceCommittedAtHead": true,
+        "reviewedCodeVersion": "v-8c8f963a53be",
+        "reviewedSha256": "745e2bdcba98c33bd5881e7f0d00932e30587215f0203afefef8e6e3db8fc7a9",
+        "summary": "docs/testsprite/online-cloud-acceptance-summary.json",
+        "verification": "docs/testsprite/online-cloud-acceptance-verification.json"
       }
     },
     {
@@ -50,7 +61,7 @@
       "readbackEqual": true,
       "created": true,
       "updated": true,
-      "executionStatus": "passed-first-cloud-acceptance-current-version",
+      "executionStatus": "passed-verified-committed-cloud-acceptance",
       "initialExecution": {
         "runId": "e85a31d7-f465-49f3-af01-fce3450c0ea2",
         "executionUrl": "https://www.testsprite.com/dashboard-v3/o/f7454a95-e992-581a-98e0-4edd142a0891/projects/5ac48e78-b1a2-4509-ad73-0b3efe0c3343/execution/0c2b161d-1e85-4f83-9d5a-fce3f222c94d/test/e85a31d7-f465-49f3-af01-fce3450c0ea2",
@@ -74,6 +85,17 @@
         "reviewedSha256": "8122a2afb8894234e4b01d4e06861a5157cce9972c5c6e1592c9d4ae31333259",
         "summary": "docs/testsprite/online-cloud-first-acceptance-summary.json",
         "verification": "docs/testsprite/online-cloud-first-acceptance-verification.json"
+      },
+      "latestCloudAcceptance": {
+        "status": "passed",
+        "runId": "eb9ca7a6-ab4b-4164-833c-33e00811bd45",
+        "executionUrl": "https://www.testsprite.com/dashboard-v3/o/f7454a95-e992-581a-98e0-4edd142a0891/projects/5ac48e78-b1a2-4509-ad73-0b3efe0c3343/execution/5db8197c-e6f9-4342-bc7d-5f98095166d7/test/eb9ca7a6-ab4b-4164-833c-33e00811bd45",
+        "headSha": "419fdef2b848796fd909aa86656aef760583b07d",
+        "sourceCommittedAtHead": true,
+        "reviewedCodeVersion": "v-36829c66b6fc",
+        "reviewedSha256": "8122a2afb8894234e4b01d4e06861a5157cce9972c5c6e1592c9d4ae31333259",
+        "summary": "docs/testsprite/online-cloud-acceptance-summary.json",
+        "verification": "docs/testsprite/online-cloud-acceptance-verification.json"
       }
     },
     {
@@ -86,7 +108,7 @@
       "readbackEqual": true,
       "created": true,
       "updated": true,
-      "executionStatus": "passed-first-cloud-acceptance-current-version",
+      "executionStatus": "passed-verified-committed-cloud-acceptance",
       "initialExecution": {
         "runId": "21eb5486-b6fc-4bd9-9c4b-046e42d9a981",
         "executionUrl": "https://www.testsprite.com/dashboard-v3/o/f7454a95-e992-581a-98e0-4edd142a0891/projects/5ac48e78-b1a2-4509-ad73-0b3efe0c3343/execution/0c2b161d-1e85-4f83-9d5a-fce3f222c94d/test/21eb5486-b6fc-4bd9-9c4b-046e42d9a981",
@@ -110,6 +132,17 @@
         "reviewedSha256": "db596f3613055cbcec0f6e172c3616cc98dcb0ddd3fc31e1a5cad0007ec402b3",
         "summary": "docs/testsprite/online-cloud-first-acceptance-summary.json",
         "verification": "docs/testsprite/online-cloud-first-acceptance-verification.json"
+      },
+      "latestCloudAcceptance": {
+        "status": "passed",
+        "runId": "8901f236-f908-4a6a-96d2-53c9130b1828",
+        "executionUrl": "https://www.testsprite.com/dashboard-v3/o/f7454a95-e992-581a-98e0-4edd142a0891/projects/5ac48e78-b1a2-4509-ad73-0b3efe0c3343/execution/5db8197c-e6f9-4342-bc7d-5f98095166d7/test/8901f236-f908-4a6a-96d2-53c9130b1828",
+        "headSha": "419fdef2b848796fd909aa86656aef760583b07d",
+        "sourceCommittedAtHead": true,
+        "reviewedCodeVersion": "v-36a7112662b4",
+        "reviewedSha256": "db596f3613055cbcec0f6e172c3616cc98dcb0ddd3fc31e1a5cad0007ec402b3",
+        "summary": "docs/testsprite/online-cloud-acceptance-summary.json",
+        "verification": "docs/testsprite/online-cloud-acceptance-verification.json"
       }
     },
     {
@@ -122,7 +155,7 @@
       "readbackEqual": true,
       "created": true,
       "updated": true,
-      "executionStatus": "not-executed-current-close-order-correction",
+      "executionStatus": "passed-verified-committed-cloud-acceptance",
       "initialExecution": {
         "runId": "e31779b6-a14c-4c8c-8910-e8800cdb6306",
         "executionUrl": "https://www.testsprite.com/dashboard-v3/o/f7454a95-e992-581a-98e0-4edd142a0891/projects/5ac48e78-b1a2-4509-ad73-0b3efe0c3343/execution/0c2b161d-1e85-4f83-9d5a-fce3f222c94d/test/e31779b6-a14c-4c8c-8910-e8800cdb6306",
@@ -175,6 +208,17 @@
         "sourceCommittedAtApplicationHead": false,
         "applicationHead": "66cc12731984413745f2ea0edcc0de944d15104c",
         "changeScope": "Retain asynchronous socket-close counts as diagnostics through restoration instead of an unsupported immediate ordering gate. Actual offline HTTP isolation, no received-frame increase, actual reconnecting, and every original offline/noqueue/same-seat/recovery/gameplay assertion remain mandatory; monotonic observation duration is recorded. No application change or test execution."
+      },
+      "latestCloudAcceptance": {
+        "status": "passed",
+        "runId": "01a6c0d7-e498-498e-b4ca-8f7f327f0885",
+        "executionUrl": "https://www.testsprite.com/dashboard-v3/o/f7454a95-e992-581a-98e0-4edd142a0891/projects/5ac48e78-b1a2-4509-ad73-0b3efe0c3343/execution/5db8197c-e6f9-4342-bc7d-5f98095166d7/test/01a6c0d7-e498-498e-b4ca-8f7f327f0885",
+        "headSha": "419fdef2b848796fd909aa86656aef760583b07d",
+        "sourceCommittedAtHead": true,
+        "reviewedCodeVersion": "v-b27cfd4d1cfa",
+        "reviewedSha256": "28bfc8308ca72de8418875c70762e6971485c7e4ac9a34e810c3ef254b9836ff",
+        "summary": "docs/testsprite/online-cloud-acceptance-summary.json",
+        "verification": "docs/testsprite/online-cloud-acceptance-verification.json"
       }
     }
   ],
@@ -195,7 +239,7 @@
     "candidateExecutionStatus": "passed-focused-strict-probe",
     "uploadedAt": "2026-10-24T20:11:37.225189+00:00",
     "reason": "The first four-case cloud replay failed at its first BrowserContext.new_page before application navigation. This focused candidate uses the known-passing single-player launch arguments and one independent Chromium browser/context/page per player; every application assertion is unchanged.",
-    "verification": "The initial bootstrap failures and focused001 pass are preserved. The first full compatibility suite then recorded3 passes and004 timing failure, with exact pre/post proof archived separately. A later004-only diagnostic update is uploaded but not run; 001\u2013003 source versions remain unchanged.",
+    "verification": "Initial upload/probe facts and failed executions retain their original scopes. The final four-case committed suite passed at 419fdef; latestCloudAcceptance identifies the completed post-run audit.",
     "focusedProbe": {
       "runId": "abe708cb-a195-4ff2-bf89-f7c5e16aabc7",
       "executionUrl": "https://www.testsprite.com/dashboard-v3/o/f7454a95-e992-581a-98e0-4edd142a0891/projects/5ac48e78-b1a2-4509-ad73-0b3efe0c3343/execution/ff4c6d65-c789-456d-83b5-5fc63b2742cf/test/abe708cb-a195-4ff2-bf89-f7c5e16aabc7",
@@ -233,9 +277,9 @@
         "sourceStateAtUpload": "uncommitted-working-tree-candidate"
       }
     ],
-    "fullSuiteExecutionStatus": "first-cloud-acceptance-3-passed-1-failed; revised004-full-set-pending"
+    "fullSuiteExecutionStatus": "first-cloud-acceptance-3-passed-1-failed; final-419fdef-four-case-cloud-acceptance-passed"
   },
-  "updatedAt": "2026-10-24T22:02:47.160590+00:00",
+  "updatedAt": "2026-10-24T22:11:36.836987+00:00",
   "firstCloudAcceptance": {
     "total": 4,
     "passed": 3,
@@ -244,5 +288,18 @@
     "summary": "docs/testsprite/online-cloud-first-acceptance-summary.json",
     "verification": "docs/testsprite/online-cloud-first-acceptance-verification.json"
   },
-  "readbackVerifiedAt": "2026-10-24T22:02:47.160590+00:00"
+  "readbackVerifiedAt": "2026-10-24T22:02:47.160590+00:00",
+  "latestCloudAcceptance": {
+    "verified": true,
+    "headSha": "419fdef2b848796fd909aa86656aef760583b07d",
+    "deploymentId": "dpl_9DNGdtNoT7C1Ldwfo8UkWfY1Cs4W",
+    "total": 4,
+    "passed": 4,
+    "failed": 0,
+    "skipped": 0,
+    "timedOut": 0,
+    "executionUrl": "https://www.testsprite.com/dashboard-v3/o/f7454a95-e992-581a-98e0-4edd142a0891/projects/5ac48e78-b1a2-4509-ad73-0b3efe0c3343/execution/5db8197c-e6f9-4342-bc7d-5f98095166d7",
+    "summary": "docs/testsprite/online-cloud-acceptance-summary.json",
+    "verification": "docs/testsprite/online-cloud-acceptance-verification.json"
+  }
 }
