@@ -8,6 +8,8 @@
 
 **Current draft PR:** [PR #5](https://github.com/Davidson3556/Paperwild/pull/5) publishes `feat/convex-multiplayer`, including first-visit onboarding, mandatory opponent selection and the Convex friend-room implementation. Its [public preview](https://paperwild-git-feat-convex-multiplayer-davidson3556s-projects.vercel.app/) supports onboarding, club games and same-device play. A Convex Cloud backend is not configured there, so remote friend invitations are unavailable. The production demo remains on the merged release above. At `6f17355`, GitHub CI passed **131 app tests, 20 backend tests and the production build**; the [corrected sixteen-case TestSprite replay](https://www.testsprite.com/dashboard-v3/o/f7454a95-e992-581a-98e0-4edd142a0891/projects/dafdf75c-04a3-467f-acc2-4359af6b1d8e/execution/625ffd76-0868-49a4-b6f2-f7f878e2e965) now reports **16/16 passed**, dispatched with `--no-auto-heal`. The [October 24 verification record](docs/TESTSPRITE_ONBOARDING_RUN_2026-10-24.md) and [completed post-run audit](docs/testsprite/pr5-strict-verification.json) record all sixteen replay/source checks and 48 matching public application payloads.
 
+**Automatic PR check:** The later agent-driven App run finished **8 passed / 3 failed / 3 blocked / 2 cancelled** and remains a failed result. Its [recorded audit](docs/TESTSPRITE_AUTOMATIC_PR_AUDIT_2026-10-24.md) identifies concrete sequence and assertion defects. The [strict Actions workflow in this PR](docs/TESTSPRITE_PR_GATE.md) runs the sixteen reviewed scripts; its encrypted credential is configured and the old trigger is disabled. The App stays installed. Check the actual job and artifacts on the [current PR checks](https://github.com/Davidson3556/Paperwild/pull/5/checks) for the latest-head result.
+
 [Local multiplayer verification and screenshots](docs/CONVEX_VERIFICATION_2026-10-22.md) record two synchronized browsers, captures, agreed Undo/rematch, reload, offline-save separation and phone-size controls against the local backend.
 
 The [October 24 onboarding verification](docs/ONBOARDING_VERIFICATION_2026-10-24.md) records 131 passing app tests, the production build, and browser checks of mandatory first choice, guide replay, returning games and invitations. The earlier [optional chooser checks](docs/NEW_GAME_VERIFICATION_2026-10-24.md) retain their original scope. Follow the [entry and two-window testing walkthrough](docs/CONVEX_SETUP.md#first-visit-and-opponent-choice) to try the local flows yourself.
@@ -330,7 +332,7 @@ flowchart TD
     pullRequest --> hosting["GitHub CI and Vercel preview"]
     hosting --> portalReady{"Preview reachable and Portal dispatch ready?"}
     portalReady -->|"No"| blocked["Resolve access or dispatch failure"]
-    portalReady -->|"Yes"| portal["GitHub App runs the Portal suite"]
+    portalReady -->|"Yes"| portal["Strict Actions job replays the 16 reviewed scripts"]
     portal --> acceptance{"Required assertions pass?"}
     acceptance -->|"No"| correction
     acceptance -->|"Yes"| release["Review PR and verify the published build"]
@@ -342,6 +344,8 @@ flowchart TD
 ```
 
 The saved [Portal plan](docs/testsprite/portal-plan.yaml) now describes sixteen cases, including the new onboarding and required opponent choice. All **16 reviewed scripts passed** the [October 24 strict hosted replay](https://www.testsprite.com/dashboard-v3/o/f7454a95-e992-581a-98e0-4edd142a0891/projects/dafdf75c-04a3-467f-acc2-4359af6b1d8e/execution/625ffd76-0868-49a4-b6f2-f7f878e2e965), dispatched with `--no-auto-heal`. The [verification record](docs/TESTSPRITE_ONBOARDING_RUN_2026-10-24.md) preserves the initial shared-setup failure, focused correction, exact build identity, final results, and [completed post-run audit](docs/testsprite/pr5-strict-verification.json). All sixteen replay/source checks and 48 public application payloads were verified. The API omits per-run `autoHeal` and returns null code versions; the evidence retains those nulls. The updated [product requirements](docs/PRODUCT_REQUIREMENTS.md) were uploaded and processed in TestSprite Sources. A displayed-plan metadata update attempt stopped without mutations; source upload, script verification, and execution results are separate evidence.
+
+The later [automatic App result and audit](docs/TESTSPRITE_AUTOMATIC_PR_AUDIT_2026-10-24.md) remain separate: **8 passed, 3 failed, 3 blocked, 2 cancelled**. The [strict Actions workflow](docs/TESTSPRITE_PR_GATE.md) is the approved replacement for that agent-driven trigger. The encrypted secret is configured and the trigger is disabled, while the App remains installed. The [current PR checks](https://github.com/Davidson3556/Paperwild/pull/5/checks) identify the actual latest-head CI job and its evidence; the earlier manual replay alone is not a green automatic gate.
 
 The separate [proposed online plan](docs/testsprite/online-plan.yaml) has ten two-context scenarios and is **not executed or uploaded**. Multiplayer requires synchronized acceptance cases against a matching deployed frontend and Convex backend before claiming TestSprite coverage. Recheck exact-head CI, review, deployment and stored-script evidence before release.
 

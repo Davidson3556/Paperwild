@@ -12,3 +12,4 @@ testsprite_tests/
 !.env.example
 testsprite_tests/tmp/config.json
 testsprite_tests/tmp/
+testsprite-ci-results/

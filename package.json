@@ -11,7 +11,7 @@
     "typecheck": "tsc --noEmit && tsc --noEmit -p convex/tsconfig.json",
     "build": "npm run typecheck && vite build",
     "preview": "vite preview --host 127.0.0.1 --port 4173",
-    "test": "node --test tests/*.test.ts",
+    "test": "node --test tests/*.test.ts tests/*.test.mjs",
     "test:convex": "vitest run --config vitest.convex.config.ts",
     "test:online:live": "node --test tests/integration/online-live.test.ts",
     "convex:dev": "convex dev",
