@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites><testsuite name="Paperwild strict TestSprite" tests="16" failures="0">
+    <testcase classname="TestSprite.strict" name="ONBD-001"></testcase>
+    <testcase classname="TestSprite.strict" name="ONBD-002"></testcase>
+    <testcase classname="TestSprite.strict" name="BOAR-001"></testcase>
+    <testcase classname="TestSprite.strict" name="BOAR-002"></testcase>
+    <testcase classname="TestSprite.strict" name="BOAR-003"></testcase>
+    <testcase classname="TestSprite.strict" name="BOAR-004"></testcase>
+    <testcase classname="TestSprite.strict" name="BOAR-005"></testcase>
+    <testcase classname="TestSprite.strict" name="BOAR-006"></testcase>
+    <testcase classname="TestSprite.strict" name="BOAR-007"></testcase>
+    <testcase classname="TestSprite.strict" name="BOAR-008"></testcase>
+    <testcase classname="TestSprite.strict" name="PREF-001"></testcase>
+    <testcase classname="TestSprite.strict" name="SOUN-001"></testcase>
+    <testcase classname="TestSprite.strict" name="NOTE-001"></testcase>
+    <testcase classname="TestSprite.strict" name="NOTE-002"></testcase>
+    <testcase classname="TestSprite.strict" name="NOTE-003"></testcase>
+    <testcase classname="TestSprite.strict" name="NOTE-004"></testcase>
+</testsuite></testsuites>

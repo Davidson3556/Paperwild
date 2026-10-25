@@ -14,7 +14,7 @@
     "templateVersion": 1
   },
   "previousManifest": "docs/testsprite/history/pr5-stored-code-manifest-before-public-ci-2026-10-25.json",
-  "status": "all-sixteen-rendered-seeds-readback-verified-full-suite-pending",
+  "status": "canonical-templates-and-rendered-seeds-readback-verified",
   "updatedAt": "2026-10-25T20:27:27.611825+00:00",
   "sourceUncommittedAtUpload": true,
   "sourceTreeSha256": "6939a75d97f1565bff62ed8409abc1e1ae6d7f4edcef3c5ad67dffcb2ac3480e",
@@ -25,7 +25,7 @@
     "codeVersion": "Historical seed version observed at this publication. Future gates use live guarded versions for target-only rebinding; this seed version is not a permanent run pin.",
     "readbackEqual": "The hosted seed body exactly equaled the rendered canonical template at publication."
   },
-  "verification": "All fifteen unchanged hosted scripts first matched the previous manifest and exact PR6 baseline source. ONBD-001 matched its controlled literal-target probe publication. The remaining fifteen were uploaded sequentially with explicit expected-version guards and immediate exact rendered readbacks; a final complete-project audit verified all sixteen current versions and exact seed bodies. Canonical gameplay AST is unchanged in all sixteen templates. Only the controlled ONBD-001 strict replay has passed; the full new sixteen-case gate remains pending.",
+  "verification": "All fifteen unchanged hosted scripts first matched the previous manifest and exact PR6 baseline source. ONBD-001 matched its controlled literal-target probe publication. The remaining fifteen were uploaded sequentially with explicit expected-version guards and immediate exact rendered readbacks; a final complete-project audit verified all sixteen current versions and exact seed bodies. Canonical gameplay AST is unchanged in all sixteen templates. The full sixteen-case strict Actions gate subsequently passed at commit 6c727f4123b09602240ffa3f867ed4d2278708e9, with exact canonical/rendered source and version readbacks plus all 48 public build files verified before and after. The seed versions and hashes above remain historical publication facts; the execution evidence records its own actual bound versions and target.",
   "updateRecord": "docs/testsprite/public-ci-stored-code-update-2026-10-25.json",
   "controlledStrictProbeRunId": "aa368162-4424-4908-9faa-c38f0a4caa6e",
   "scripts": [
@@ -205,5 +205,8 @@
       "previousCodeVersion": "v-4c3dc3c542c6",
       "sourcePath": "docs/testsprite/overrides/NOTE-004.py"
     }
-  ]
+  ],
+  "statusAtSeedPublication": "all-sixteen-rendered-seeds-readback-verified-full-suite-pending",
+  "verificationAtSeedPublication": "All fifteen unchanged hosted scripts first matched the previous manifest and exact PR6 baseline source. ONBD-001 matched its controlled literal-target probe publication. The remaining fifteen were uploaded sequentially with explicit expected-version guards and immediate exact rendered readbacks; a final complete-project audit verified all sixteen current versions and exact seed bodies. Canonical gameplay AST is unchanged in all sixteen templates. Only the controlled ONBD-001 strict replay has passed; the full new sixteen-case gate remains pending.",
+  "executionEvidence": "docs/testsprite/public-ci-acceptance-2026-10-25.json"
 }

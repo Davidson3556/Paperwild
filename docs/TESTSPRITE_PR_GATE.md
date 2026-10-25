@@ -2,7 +2,9 @@
 
 The [Actions workflow](../.github/workflows/testsprite-strict.yml) builds the exact head of each trusted same-repository PR and tests its unique deployment in the dedicated public **paperwild-ci** Vercel project. The main Paperwild project's deployment protection remains separate. Branch aliases and production URLs are not fallback targets.
 
-The check context is **Verify all 16 stored TestSprite scripts**, under **TestSprite strict replay**. Its actual result and proof artifact for the current PR head establish whether that head passed. The first full Actions execution of this public-project flow is still required; a working configuration or an earlier preview result does not establish it.
+The check context is **Verify all 16 stored TestSprite scripts**, under **TestSprite strict replay**. Its first full public-project execution [passed on PR6 head `6c727f4`](https://github.com/Davidson3556/Paperwild/actions/runs/40231487297). The [unaltered sanitized JSON](testsprite/public-ci-acceptance-2026-10-25.json) and [JUnit](testsprite/public-ci-acceptance-2026-10-25.xml) are exact copies of artifact `12613097685`. All sixteen independently read actual runs passed, used the exact discovered CI target, and confirmed unqualified stored-code replay. All sixteen canonical templates and bound source hashes/versions matched before and after; all 48 build files matched the same SHA-256 tree before and after, with the post-run audit complete.
+
+That evidence belongs to `6c727f4123b09602240ffa3f867ed4d2278708e9`, CI deployment `dpl_FQxpHrhj1m1KRkcwPbQs3M3hz8m7`, and its unique public origin. Later heads require their own successful checks; a configuration file or older result does not establish them.
 
 ## Exact deployment discovery
 
@@ -57,7 +59,7 @@ The backend can return `codeVersion: null` and omit `autoHeal` on completed runs
 
 The sixteen cases cover board play, notebook entry, required opponent selection, club and same-device games, save recovery, motion and sound scheduling. They supplement backend tests and separate independent-player multiplayer acceptance. The external Convex development service is not an ephemeral backend deployment of each PR's functions.
 
-Merging is blocked only when the effective rules on `main` require the actual check context. A workflow file alone does not establish that enforcement. The installed GitHub App and this reviewed CLI gate are separate integrations.
+The [active main ruleset](https://github.com/Davidson3556/Paperwild/rules/25836565) now requires both **Tests and production build** and **Verify all 16 stored TestSprite scripts**, each bound to the GitHub Actions integration (`15368`). It requires an up-to-date branch and a pull request, has no bypass actors, and requires zero separate approving reviews. The [ruleset and effective-main-rules readback](testsprite/main-required-checks-2026-10-25.json) records the verified enforcement state. A later head must pass both checks before merging. The installed TestSprite GitHub App and this reviewed CLI gate remain separate integrations.
 
 ## Focused verification and historical evidence
 
@@ -67,6 +69,6 @@ node --test tests/testsprite-ci.test.mjs
 
 The focused tests make no TestSprite request. They cover authenticated deployment discovery, exact origins, stale and foreign metadata, canonical source drift, guarded binding conflicts and readback drift, unknown project activity, secret-safe diagnostics, incomplete results and contradictory actual responses. Historical local-server and HTTPS verification helper contracts remain tested but do not select or serve the current gate target.
 
-PR6's first native-tunnel attempt [failed with sixteen blocked cases](https://github.com/Davidson3556/Paperwild/actions/runs/40196200559): the platform refused deterministic replay through a tunnel before gameplay assertions. A bare target override and a named-environment variable probe also failed to supply the custom Python environment variable. Those failures are preserved separately. The controlled direct-public literal-bound ONBD-001 probe passed; the complete new Actions gate still needs its own current-head result.
+PR6's first native-tunnel attempt [failed with sixteen blocked cases](https://github.com/Davidson3556/Paperwild/actions/runs/40196200559): the platform refused deterministic replay through a tunnel before gameplay assertions. A bare target override and a named-environment variable probe also failed to supply the custom Python environment variable. Those failures are preserved separately. The controlled direct-public literal-bound ONBD-001 probe passed, followed by the complete sixteen-case Actions run linked above. The earlier failed probes remain separate evidence.
 
 PR5's [strict public-preview Actions run](https://github.com/Davidson3556/Paperwild/actions/runs/40136980632), [four-case multiplayer summary](testsprite/online-cloud-acceptance-summary.json) and [source/build audit](testsprite/online-cloud-acceptance-verification.json) remain evidence for their own historical heads and targets. They are not substituted for a future PR's result.

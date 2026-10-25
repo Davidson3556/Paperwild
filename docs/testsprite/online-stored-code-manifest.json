@@ -1,26 +1,25 @@
 {
   "projectId": "5ac48e78-b1a2-4509-ad73-0b3efe0c3343",
   "projectName": "Paperwild multiplayer preview",
-  "targetUrl": "https://paperwild-git-feat-convex-multiplayer-davidson3556s-projects.vercel.app/",
-  "status": "four-case-cloud-acceptance-passed",
-  "executionStatus": "4-passed; 0-failed-skipped-timed-out; committed-source-419fdef",
+  "status": "per-case-production-and-development-bindings-verified",
+  "executionStatus": "ONLN-001/002/003: 3/3 passed with literal Production targets; ONLN-004: historical Development acceptance, unchanged. No current four-case mixed-target execution is claimed.",
   "testsRun": true,
   "recordedAt": "2026-10-24T19:42:07.953444+00:00",
-  "verification": "All four committed scripts at 419fdef passed strict hosted replay against the matching Cloud Development preview. Actual run identities/unqualified replay, exact source/version readbacks, project membership and all 48 application payloads were verified before/after. Historical upload-state fields describe their timestamps; earlier failed results remain separate and unchanged.",
+  "verification": "The latest three Production cases use literal https://paperwild.vercel.app/ targets and passed strict replay with exact guarded source/version readbacks and all 48 Production payloads verified before/after. ONLN-004 retains its exact Development outage source/version. The historical four-case Development receipts and their old reviewed pins remain unchanged; these are different executions and source bindings.",
   "scripts": [
     {
       "case": "ONLN-001",
       "testId": "9aa656fd-f946-4288-bb72-3cc622a01060",
       "name": "Independent online seats, legal captures and rejected third visitors",
       "sourcePath": "docs/testsprite/online-overrides/ONLN-001.py",
-      "codeVersion": "v-8c8f963a53be",
-      "sha256": "745e2bdcba98c33bd5881e7f0d00932e30587215f0203afefef8e6e3db8fc7a9",
+      "codeVersion": "v-11d29e749ff2",
+      "sha256": "6575363a2e73eb14f192948b5e65682ee06405038475b40378378cd89b6b4063",
       "readbackEqual": true,
       "created": true,
       "updated": true,
-      "executionStatus": "passed-verified-committed-cloud-acceptance",
-      "previousCodeVersion": "v-a880f2e2c491",
-      "previousSha256": "d924090af7175f040750698c476c33bba418b966101e687493e840f6dd3c7644",
+      "executionStatus": "passed-verified-production-literal-target",
+      "previousCodeVersion": "v-8c8f963a53be",
+      "previousSha256": "745e2bdcba98c33bd5881e7f0d00932e30587215f0203afefef8e6e3db8fc7a9",
       "verifiedExecution": {
         "runId": "abe708cb-a195-4ff2-bf89-f7c5e16aabc7",
         "executionUrl": "https://www.testsprite.com/dashboard-v3/o/f7454a95-e992-581a-98e0-4edd142a0891/projects/5ac48e78-b1a2-4509-ad73-0b3efe0c3343/execution/ff4c6d65-c789-456d-83b5-5fc63b2742cf/test/abe708cb-a195-4ff2-bf89-f7c5e16aabc7",
@@ -49,6 +48,57 @@
         "reviewedSha256": "745e2bdcba98c33bd5881e7f0d00932e30587215f0203afefef8e6e3db8fc7a9",
         "summary": "docs/testsprite/online-cloud-acceptance-summary.json",
         "verification": "docs/testsprite/online-cloud-acceptance-verification.json"
+      },
+      "targetUrl": "https://paperwild.vercel.app/",
+      "targetScope": "Production multiplayer acceptance",
+      "targetBinding": {
+        "kind": "literal",
+        "environmentOverride": false
+      },
+      "sourceUncommittedAtUpload": true,
+      "productionLiteralTargetUpdate": {
+        "putStartedAt": "2026-10-25T20:36:59.511745+00:00",
+        "putCompletedAt": "2026-10-25T20:37:01.830734+00:00",
+        "previousCodeVersion": "v-8c8f963a53be",
+        "previousSha256": "745e2bdcba98c33bd5881e7f0d00932e30587215f0203afefef8e6e3db8fc7a9",
+        "targetLineOnlyChanged": true,
+        "gameplayASTUnchanged": true,
+        "expectedVersionGuardUsed": true,
+        "readbackEqual": true,
+        "verification": "docs/testsprite/production-literal-target-verification-2026-10-25.json"
+      },
+      "latestProductionAcceptance": {
+        "case": "ONLN-001",
+        "testId": "9aa656fd-f946-4288-bb72-3cc622a01060",
+        "runId": "6de6bb2c-c55e-4619-b860-90d6344bece0",
+        "status": "passed",
+        "summaryStatus": "passed",
+        "cliExitCode": 0,
+        "waitExitCode": 0,
+        "projectId": "5ac48e78-b1a2-4509-ad73-0b3efe0c3343",
+        "source": "cli",
+        "targetUrl": "https://paperwild.vercel.app/",
+        "literalStoredTarget": "https://paperwild.vercel.app/",
+        "reviewedCodeVersion": "v-11d29e749ff2",
+        "sha256": "6575363a2e73eb14f192948b5e65682ee06405038475b40378378cd89b6b4063",
+        "runCodeVersion": null,
+        "autoHeal": null,
+        "autoHealFieldPresent": false,
+        "replay": {
+          "path": "replay",
+          "reason": null,
+          "caveat": null
+        },
+        "unqualifiedReplay": true,
+        "dispatchedAt": "2026-10-25T20:37:15.334419+00:00",
+        "startedAt": "2026-10-25T20:37:17.319Z",
+        "finishedAt": "2026-10-25T20:38:36.242Z",
+        "verified": true,
+        "executionUrl": "https://www.testsprite.com/dashboard-v3/o/f7454a95-e992-581a-98e0-4edd142a0891/projects/5ac48e78-b1a2-4509-ad73-0b3efe0c3343/execution/9432bb36-0d50-4864-91f2-ef49f2402dfc/test/6de6bb2c-c55e-4619-b860-90d6344bece0",
+        "applicationHead": "31e8b02e62d2095716624c173879ff1c902953b4",
+        "sourceCommittedAtApplicationHead": false,
+        "summary": "docs/testsprite/production-literal-target-summary-2026-10-25.json",
+        "verification": "docs/testsprite/production-literal-target-verification-2026-10-25.json"
       }
     },
     {
@@ -56,20 +106,20 @@
       "testId": "d832870e-f2c3-4be2-9b46-785b86c201f0",
       "name": "Shared Undo and rematch require the other player\u2019s consent",
       "sourcePath": "docs/testsprite/online-overrides/ONLN-002.py",
-      "codeVersion": "v-36829c66b6fc",
-      "sha256": "8122a2afb8894234e4b01d4e06861a5157cce9972c5c6e1592c9d4ae31333259",
+      "codeVersion": "v-c96feb712dee",
+      "sha256": "d518fec9b694094410651b9765428c0b860fdc4face7de4ad7d2f28d5889b62f",
       "readbackEqual": true,
       "created": true,
       "updated": true,
-      "executionStatus": "passed-verified-committed-cloud-acceptance",
+      "executionStatus": "passed-verified-production-literal-target",
       "initialExecution": {
         "runId": "e85a31d7-f465-49f3-af01-fce3450c0ea2",
         "executionUrl": "https://www.testsprite.com/dashboard-v3/o/f7454a95-e992-581a-98e0-4edd142a0891/projects/5ac48e78-b1a2-4509-ad73-0b3efe0c3343/execution/0c2b161d-1e85-4f83-9d5a-fce3f222c94d/test/e85a31d7-f465-49f3-af01-fce3450c0ea2",
         "summary": "docs/testsprite/online-cloud-summary.json",
         "verification": "docs/testsprite/online-cloud-verification.json"
       },
-      "previousCodeVersion": "v-38e67fbbc557",
-      "previousSha256": "170158298b8910f3374c2a8e068dd054c3cff1e2f3c7c3f2200eb21a94d6ad73",
+      "previousCodeVersion": "v-36829c66b6fc",
+      "previousSha256": "8122a2afb8894234e4b01d4e06861a5157cce9972c5c6e1592c9d4ae31333259",
       "bootstrapUpdate": {
         "uploadedAt": "2026-10-24T20:29:09.562982+00:00",
         "sourceStateAtUpload": "uncommitted-working-tree-candidate",
@@ -96,6 +146,57 @@
         "reviewedSha256": "8122a2afb8894234e4b01d4e06861a5157cce9972c5c6e1592c9d4ae31333259",
         "summary": "docs/testsprite/online-cloud-acceptance-summary.json",
         "verification": "docs/testsprite/online-cloud-acceptance-verification.json"
+      },
+      "targetUrl": "https://paperwild.vercel.app/",
+      "targetScope": "Production multiplayer acceptance",
+      "targetBinding": {
+        "kind": "literal",
+        "environmentOverride": false
+      },
+      "sourceUncommittedAtUpload": true,
+      "productionLiteralTargetUpdate": {
+        "putStartedAt": "2026-10-25T20:37:04.108041+00:00",
+        "putCompletedAt": "2026-10-25T20:37:06.364883+00:00",
+        "previousCodeVersion": "v-36829c66b6fc",
+        "previousSha256": "8122a2afb8894234e4b01d4e06861a5157cce9972c5c6e1592c9d4ae31333259",
+        "targetLineOnlyChanged": true,
+        "gameplayASTUnchanged": true,
+        "expectedVersionGuardUsed": true,
+        "readbackEqual": true,
+        "verification": "docs/testsprite/production-literal-target-verification-2026-10-25.json"
+      },
+      "latestProductionAcceptance": {
+        "case": "ONLN-002",
+        "testId": "d832870e-f2c3-4be2-9b46-785b86c201f0",
+        "runId": "f599a052-26e7-4e4c-9363-e24772d646c3",
+        "status": "passed",
+        "summaryStatus": "passed",
+        "cliExitCode": 0,
+        "waitExitCode": 0,
+        "projectId": "5ac48e78-b1a2-4509-ad73-0b3efe0c3343",
+        "source": "cli",
+        "targetUrl": "https://paperwild.vercel.app/",
+        "literalStoredTarget": "https://paperwild.vercel.app/",
+        "reviewedCodeVersion": "v-c96feb712dee",
+        "sha256": "d518fec9b694094410651b9765428c0b860fdc4face7de4ad7d2f28d5889b62f",
+        "runCodeVersion": null,
+        "autoHeal": null,
+        "autoHealFieldPresent": false,
+        "replay": {
+          "path": "replay",
+          "reason": null,
+          "caveat": null
+        },
+        "unqualifiedReplay": true,
+        "dispatchedAt": "2026-10-25T20:38:40.632191+00:00",
+        "startedAt": "2026-10-25T20:38:42.268Z",
+        "finishedAt": "2026-10-25T20:39:45.529Z",
+        "verified": true,
+        "executionUrl": "https://www.testsprite.com/dashboard-v3/o/f7454a95-e992-581a-98e0-4edd142a0891/projects/5ac48e78-b1a2-4509-ad73-0b3efe0c3343/execution/c544f6dc-d991-43f3-9a49-f632eeb10499/test/f599a052-26e7-4e4c-9363-e24772d646c3",
+        "applicationHead": "31e8b02e62d2095716624c173879ff1c902953b4",
+        "sourceCommittedAtApplicationHead": false,
+        "summary": "docs/testsprite/production-literal-target-summary-2026-10-25.json",
+        "verification": "docs/testsprite/production-literal-target-verification-2026-10-25.json"
       }
     },
     {
@@ -103,20 +204,20 @@
       "testId": "7765f1f2-d88d-451c-ab1c-fe1ee4594925",
       "name": "Reload and saved-seat return preserve the separate local game",
       "sourcePath": "docs/testsprite/online-overrides/ONLN-003.py",
-      "codeVersion": "v-36a7112662b4",
-      "sha256": "db596f3613055cbcec0f6e172c3616cc98dcb0ddd3fc31e1a5cad0007ec402b3",
+      "codeVersion": "v-2132d695ff06",
+      "sha256": "bbf33bbfca8b402bfd2a0660f5be14bf80566ec9dd9805eb499a7ea1da519066",
       "readbackEqual": true,
       "created": true,
       "updated": true,
-      "executionStatus": "passed-verified-committed-cloud-acceptance",
+      "executionStatus": "passed-verified-production-literal-target",
       "initialExecution": {
         "runId": "21eb5486-b6fc-4bd9-9c4b-046e42d9a981",
         "executionUrl": "https://www.testsprite.com/dashboard-v3/o/f7454a95-e992-581a-98e0-4edd142a0891/projects/5ac48e78-b1a2-4509-ad73-0b3efe0c3343/execution/0c2b161d-1e85-4f83-9d5a-fce3f222c94d/test/21eb5486-b6fc-4bd9-9c4b-046e42d9a981",
         "summary": "docs/testsprite/online-cloud-summary.json",
         "verification": "docs/testsprite/online-cloud-verification.json"
       },
-      "previousCodeVersion": "v-04b74038b958",
-      "previousSha256": "afabc8d1e09e442bc45589126d26efe0363689767f2a6bc147344b03977256b6",
+      "previousCodeVersion": "v-36a7112662b4",
+      "previousSha256": "db596f3613055cbcec0f6e172c3616cc98dcb0ddd3fc31e1a5cad0007ec402b3",
       "bootstrapUpdate": {
         "uploadedAt": "2026-10-24T20:29:09.562982+00:00",
         "sourceStateAtUpload": "uncommitted-working-tree-candidate",
@@ -143,6 +244,57 @@
         "reviewedSha256": "db596f3613055cbcec0f6e172c3616cc98dcb0ddd3fc31e1a5cad0007ec402b3",
         "summary": "docs/testsprite/online-cloud-acceptance-summary.json",
         "verification": "docs/testsprite/online-cloud-acceptance-verification.json"
+      },
+      "targetUrl": "https://paperwild.vercel.app/",
+      "targetScope": "Production multiplayer acceptance",
+      "targetBinding": {
+        "kind": "literal",
+        "environmentOverride": false
+      },
+      "sourceUncommittedAtUpload": true,
+      "productionLiteralTargetUpdate": {
+        "putStartedAt": "2026-10-25T20:37:08.804866+00:00",
+        "putCompletedAt": "2026-10-25T20:37:11.056786+00:00",
+        "previousCodeVersion": "v-36a7112662b4",
+        "previousSha256": "db596f3613055cbcec0f6e172c3616cc98dcb0ddd3fc31e1a5cad0007ec402b3",
+        "targetLineOnlyChanged": true,
+        "gameplayASTUnchanged": true,
+        "expectedVersionGuardUsed": true,
+        "readbackEqual": true,
+        "verification": "docs/testsprite/production-literal-target-verification-2026-10-25.json"
+      },
+      "latestProductionAcceptance": {
+        "case": "ONLN-003",
+        "testId": "7765f1f2-d88d-451c-ab1c-fe1ee4594925",
+        "runId": "042d18eb-9078-4575-978e-2fafad454a65",
+        "status": "passed",
+        "summaryStatus": "passed",
+        "cliExitCode": 0,
+        "waitExitCode": 0,
+        "projectId": "5ac48e78-b1a2-4509-ad73-0b3efe0c3343",
+        "source": "cli",
+        "targetUrl": "https://paperwild.vercel.app/",
+        "literalStoredTarget": "https://paperwild.vercel.app/",
+        "reviewedCodeVersion": "v-2132d695ff06",
+        "sha256": "bbf33bbfca8b402bfd2a0660f5be14bf80566ec9dd9805eb499a7ea1da519066",
+        "runCodeVersion": null,
+        "autoHeal": null,
+        "autoHealFieldPresent": false,
+        "replay": {
+          "path": "replay",
+          "reason": null,
+          "caveat": null
+        },
+        "unqualifiedReplay": true,
+        "dispatchedAt": "2026-10-25T20:39:49.919167+00:00",
+        "startedAt": "2026-10-25T20:39:51.552Z",
+        "finishedAt": "2026-10-25T20:41:19.288Z",
+        "verified": true,
+        "executionUrl": "https://www.testsprite.com/dashboard-v3/o/f7454a95-e992-581a-98e0-4edd142a0891/projects/5ac48e78-b1a2-4509-ad73-0b3efe0c3343/execution/a4424c25-c078-45c0-b046-c4ddfa367618/test/042d18eb-9078-4575-978e-2fafad454a65",
+        "applicationHead": "31e8b02e62d2095716624c173879ff1c902953b4",
+        "sourceCommittedAtApplicationHead": false,
+        "summary": "docs/testsprite/production-literal-target-summary-2026-10-25.json",
+        "verification": "docs/testsprite/production-literal-target-verification-2026-10-25.json"
       }
     },
     {
@@ -219,6 +371,15 @@
         "reviewedSha256": "28bfc8308ca72de8418875c70762e6971485c7e4ac9a34e810c3ef254b9836ff",
         "summary": "docs/testsprite/online-cloud-acceptance-summary.json",
         "verification": "docs/testsprite/online-cloud-acceptance-verification.json"
+      },
+      "targetUrl": "https://paperwild-git-feat-convex-multiplayer-davidson3556s-projects.vercel.app/",
+      "targetScope": "Cloud Development outage acceptance",
+      "targetBinding": {
+        "kind": "legacy-development-default",
+        "overrideVariable": "TEST_TARGET_URL",
+        "overrideRuntimeInjectionVerified": false,
+        "publicRealtimeHost": "fast-starling-207.convex.cloud",
+        "description": "The unchanged stored source defaults to the Development preview and pins the outage WebSocket host. Its latest verified execution is the historical four-case Development acceptance."
       }
     }
   ],
@@ -279,7 +440,7 @@
     ],
     "fullSuiteExecutionStatus": "first-cloud-acceptance-3-passed-1-failed; final-419fdef-four-case-cloud-acceptance-passed"
   },
-  "updatedAt": "2026-10-24T22:11:36.836987+00:00",
+  "updatedAt": "2026-10-25T20:44:47.259370+00:00",
   "firstCloudAcceptance": {
     "total": 4,
     "passed": 3,
@@ -288,7 +449,7 @@
     "summary": "docs/testsprite/online-cloud-first-acceptance-summary.json",
     "verification": "docs/testsprite/online-cloud-first-acceptance-verification.json"
   },
-  "readbackVerifiedAt": "2026-10-24T22:02:47.160590+00:00",
+  "readbackVerifiedAt": "2026-10-25T20:42:08.896993+00:00",
   "latestCloudAcceptance": {
     "verified": true,
     "headSha": "419fdef2b848796fd909aa86656aef760583b07d",
@@ -301,5 +462,25 @@
     "executionUrl": "https://www.testsprite.com/dashboard-v3/o/f7454a95-e992-581a-98e0-4edd142a0891/projects/5ac48e78-b1a2-4509-ad73-0b3efe0c3343/execution/5db8197c-e6f9-4342-bc7d-5f98095166d7",
     "summary": "docs/testsprite/online-cloud-acceptance-summary.json",
     "verification": "docs/testsprite/online-cloud-acceptance-verification.json"
+  },
+  "projectDefaultTargetUrl": "https://paperwild-git-feat-convex-multiplayer-davidson3556s-projects.vercel.app/",
+  "targetBinding": "Per-case reviewed stored sources; the project contains mixed Production and Development scopes. Do not dispatch these four cases together with --all.",
+  "previousManifest": "docs/testsprite/history/online-stored-code-manifest-before-production-literal-2026-10-25.json",
+  "previousManifestSha256": "cc8b8ddb62509cd372b0de340508b8d95e4f2f9309ecd7c56e7fa55bea011ea9",
+  "latestProductionAcceptance": {
+    "verified": true,
+    "applicationHead": "31e8b02e62d2095716624c173879ff1c902953b4",
+    "deploymentId": "dpl_5uZMUS4vArHxYwkdLs5T5zVjKohv",
+    "publicConvexUrl": "https://grateful-cuttlefish-105.convex.cloud",
+    "targetUrl": "https://paperwild.vercel.app/",
+    "total": 3,
+    "passed": 3,
+    "failed": 0,
+    "skipped": 0,
+    "timedOut": 0,
+    "sourceUncommittedAtUpload": true,
+    "publicPayloadsVerifiedBeforeAndAfter": 48,
+    "summary": "docs/testsprite/production-literal-target-summary-2026-10-25.json",
+    "verification": "docs/testsprite/production-literal-target-verification-2026-10-25.json"
   }
 }
