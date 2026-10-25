@@ -17,7 +17,7 @@ A quick tour, about a minute with a second browser ready: finish the first-visit
 
 - **Main CI:** [150 app/gate tests, 20 backend tests, TypeScript and build passed](https://github.com/Davidson3556/Paperwild/actions/runs/40139506887).
 - **PR regression:** [16/16 strict TestSprite cases passed](https://github.com/Davidson3556/Paperwild/actions/runs/40137927136).
-- **Live multiplayer:** [three separate Production TestSprite cases passed](docs/PRODUCTION_VERIFICATION_2026-10-25.md#production-testsprite-results), using independent browsers for shared moves, consent, and saved-seat return. The record distinguishes these passes from the incomplete post-run artifact audit and the Development-only outage test.
+- **Live multiplayer:** [manually checked on Production in two independent browsers](docs/PRODUCTION_VERIFICATION_2026-10-25.md#manual-production-checks). The four-case automated acceptance covers Development; the requested Production runs do not establish their Python runtime origin.
 
 ![Production online game on October 25: Black's connected seat, with White on e4 and Black on d5 after shared play and agreed Undo](docs/media/paperwild-production-multiplayer-2026-10-25.jpg)
 
@@ -292,7 +292,7 @@ The tree highlights the entry points; the implementation table above links the s
 
 Local test files cover chess integrity, deterministic gait/capture plans, resident histories and naming, ceremony queue reconciliation, procedural voice signals, mocked audio lifecycle, and online transport/history reconciliation. Backend tests exercise real Convex function handlers in `convex-test`; separate opt-in integration tests connect real WebSocket clients to a local backend. `npm run build` includes strict frontend and backend type checking. These checks are separate from actual browser observations and physical listening quality.
 
-- **October 25 Production release:** PR #5 is merged at `31e8b02`. [Main CI](https://github.com/Davidson3556/Paperwild/actions/runs/40139506887) passed **150 app/gate tests, 20 backend tests, TypeScript and build**; the [PR #5 strict regression run](https://github.com/Davidson3556/Paperwild/actions/runs/40137927136) passed **16/16**. Three independently dispatched Production TestSprite cases passed against the rebuilt public game. All 48 public payloads matched the reference build before testing, and stored scripts were unchanged afterward; a complete post-run 48-file audit remains incomplete because downloads timed out. The [Production verification record](docs/PRODUCTION_VERIFICATION_2026-10-25.md) links each actual run and identifies the remaining evidence boundary. The outage case was verified on Development, not Production.
+- **October 25 Production release:** PR #5 is merged at `31e8b02`. [Main CI](https://github.com/Davidson3556/Paperwild/actions/runs/40139506887) passed **150 app/gate tests, 20 backend tests, TypeScript and build**; the [PR #5 strict regression run](https://github.com/Davidson3556/Paperwild/actions/runs/40137927136) passed **16/16**. Production multiplayer was checked manually on its actual origin, including the user's independent-browser check. Three additional TestSprite records report passes with a requested Production target, but later probes showed that strict Python does not receive that CLI target: their old Preview fallback leaves their runtime origin unverified. They are not Production gameplay acceptance. All 48 Production payloads matched the reference build before dispatch; a full post-run file audit remains incomplete after timeouts. The [Production record](docs/PRODUCTION_VERIFICATION_2026-10-25.md) preserves this correction and the exact run records. Automated four-case multiplayer acceptance belongs to Development.
 
 - **October 24 acceptance source head `419fdef2b848796fd909aa86656aef760583b07d`:** [CI](https://github.com/Davidson3556/Paperwild/actions/runs/40136980700) passed **150/150 app/gate tests, 20/20 backend tests, TypeScript and build**. The [strict TestSprite workflow](https://github.com/Davidson3556/Paperwild/actions/runs/40136980632) passed **16/16 frontend regression cases**. Vercel deployment `dpl_9DNGdtNoT7C1Ldwfo8UkWfY1Cs4W` serves `index-EfeOJs9J.js`, bound to `fast-starling-207`; the backend was deployed from `5633a86` with unchanged application/backend source from `6f17355`. These checks identify the acceptance source, not a later documentation commit.
 
@@ -327,7 +327,7 @@ The [startup verification record](docs/STARTUP_VERIFICATION_2026-10-21.md) prese
 
 ## Testing and release workflow
 
-Local checks, direct visual observations, native TestSprite, and the Portal PR suite produce separate evidence. The proposed general PR gate below serves the exact checked-out PR build through TestSprite's native tunnel. Its first execution and required-check activation are pending; earlier preview passes remain the historical results linked above.
+Local checks, direct visual observations, native TestSprite, and the Portal PR suite produce separate evidence. The proposed general PR gate below uses a dedicated public Vercel CI deployment. The first native-tunnel attempt was blocked by TestSprite before gameplay because deterministic `--no-auto-heal` replay is unsupported through that tunnel. The public route's execution and required-check activation remain pending; earlier passes retain their own source identities.
 
 ```mermaid
 flowchart TD
@@ -340,10 +340,11 @@ flowchart TD
     native --> audit["Inspect assertions and save audited evidence"]
     localPass -.->|"When published"| pullRequest["Push branch and open or update PR"]
     pullRequest --> ci["Regular tests, backend checks, types and build"]
-    pullRequest --> exactBuild["Build exact PR head; serve 127.0.0.1:4173"]
-    exactBuild --> tunnel["Open native TestSprite tunnel"]
-    tunnel --> preflight["Pin 16 scripts, versions, membership and every build file"]
-    preflight --> portal["Replay all 16 reviewed scripts without auto-heal"]
+    pullRequest --> exactBuild["Build exact PR head with the Development client URL"]
+    exactBuild --> publicCI["Match a public paperwild-ci deployment to that source"]
+    publicCI --> preflight["Verify 16 templates, membership and every build file"]
+    preflight --> bind["Bind only the target URL with guarded version receipts"]
+    bind --> portal["Replay all 16 reviewed scripts without auto-heal"]
     portal --> postflight["Verify replay and repeat source, membership and file checks"]
     postflight --> acceptance{"Both CI jobs and all audits pass?"}
     ci --> acceptance
@@ -358,7 +359,11 @@ The saved [Portal plan](docs/testsprite/portal-plan.yaml) describes sixteen case
 
 The later [automatic App result and audit](docs/TESTSPRITE_AUTOMATIC_PR_AUDIT_2026-10-24.md) remain separate: **8 passed, 3 failed, 3 blocked, 2 cancelled**. The [strict Actions workflow](docs/TESTSPRITE_PR_GATE.md) is the approved replacement for that agent-driven trigger. The encrypted secret is configured and the trigger is disabled, while the App remains installed. The [merged PR #5 checks](https://github.com/Davidson3556/Paperwild/pull/5/checks) preserve that PR's actual results.
 
-The proposed workflow removes the fixed feature-preview dependency: each trusted PR builds its own source, serves `dist/` at `127.0.0.1:4173`, and uses TestSprite's native tunnel. It pins all sixteen stored script bodies/versions, exact project membership, actual replay outcomes, and every public build file before and after execution. It uses the Development `VITE_CONVEX_URL` for this CI build; Production retains its separately configured backend. No public Vercel preview exception is required for the tunnel path. This revised path has not yet produced a passing execution. The planned `main` ruleset will require **Tests and production build** and **Verify all 16 stored TestSprite scripts** after verification; activation is not claimed here.
+The first native-tunnel strict attempt at PR #6 head `31b60ee` returned **16 blocked cases before gameplay**. This service limitation is not an application failure, and generated or auto-healed tests are not substituted for the reviewed scripts.
+
+The replacement being prepared uses a separate public Vercel project, **`paperwild-ci`**, with the Development `VITE_CONVEX_URL`. Each trusted PR must match its exact source and complete reference build to the approved CI deployment before direct-public replay with `--no-auto-heal`. Strict Python did not receive the target from either `--target-url` alone or a named environment variable in controlled probes. The chosen binding therefore verifies each committed template, changes only its single target-URL literal, and publishes it with a guarded version update. Gameplay assertions stay identical; actual bound versions/bodies, exact project membership, replay outcomes, and every public build file are checked before and after execution. A shared project lock prevents two PR jobs from rebinding the scripts at once.
+
+The CI project is identified by GitHub's deployment evidence, CI configuration and Vercel project metadata, rather than a hostname prefix; its ID is `prj_K4XUFAg81KYU0YxfC0ISyU3JRhox`. Existing Production and feature-preview protection settings remain separate. This revised route has not yet produced a passing full-suite execution. The planned `main` ruleset will require **Tests and production build** and **Verify all 16 stored TestSprite scripts** after verification; activation is not claimed here.
 
 The [four hosted multiplayer scripts](docs/testsprite/online-overrides/README.md) passed at acceptance source head `419fdef` in separate TestSprite project `5ac48e78-b1a2-4509-ad73-0b3efe0c3343`. All original gameplay and no-queue/recovery assertions passed, with actual reconnecting, isolated HTTP failure/success and no incoming-frame increase during the outage. Keeping that suite separate preserves the regression gate's exact sixteen-case membership. The original [ten-case online proposal](docs/testsprite/online-plan.yaml) remains **not executed or uploaded**. Recheck exact-head CI, matching frontend/backend deployment and stored-script evidence before release; later documentation commits do not inherit a new exact-head CI result from this acceptance run.
 
@@ -366,9 +371,9 @@ The [four hosted multiplayer scripts](docs/testsprite/online-overrides/README.md
 
 Computer and same-device play use a static frontend: install with **`npm ci`**, build with **`npm run build`**, and publish **`dist/`**. They need no environment variables.
 
-PR #5 is merged into `main` at `31e8b02e62d2095716624c173879ff1c902953b4`. [Production](https://paperwild.vercel.app/) now uses Convex **Production** backend `https://grateful-cuttlefish-105.convex.cloud`, supplied through Production `VITE_CONVEX_URL` and included in a new Ready frontend build. The Development preview remains separate at `https://fast-starling-207.convex.cloud`; room codes do not transfer between them. [Convex setup](docs/CONVEX_SETUP.md) records both bindings, and the [October 25 Production record](docs/PRODUCTION_VERIFICATION_2026-10-25.md) identifies the deployed build, three actual multiplayer passes, and incomplete postflight audit. Deployment/admin keys stay private and never belong in `VITE_*`, browser code or Git.
+PR #5 is merged into `main` at `31e8b02e62d2095716624c173879ff1c902953b4`. [Production](https://paperwild.vercel.app/) now uses Convex **Production** backend `https://grateful-cuttlefish-105.convex.cloud`, supplied through Production `VITE_CONVEX_URL` and included in a new Ready frontend build. The Development preview remains separate at `https://fast-starling-207.convex.cloud`; room codes do not transfer between them. [Convex setup](docs/CONVEX_SETUP.md) records both bindings, and the [October 25 Production record](docs/PRODUCTION_VERIFICATION_2026-10-25.md) identifies actual-origin manual checks, the automated runtime-origin uncertainty, and the incomplete postflight audit. Deployment/admin keys stay private and never belong in `VITE_*`, browser code or Git.
 
-The proposed PR tunnel gate tests the runner's own build independently of Vercel deployment protection. Its pending execution does not replace the recorded Production checks or claim a new deployed release.
+The proposed public CI gate uses its own Vercel project and Development backend binding. Its pending execution does not replace the recorded Production checks or claim a new Production release.
 
 The public source, merged game, successful automatic Portal execution, and GitHub integration evidence are available. Before a completed Season 4 submission:
 

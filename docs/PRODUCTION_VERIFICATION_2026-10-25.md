@@ -1,6 +1,6 @@
 # Production multiplayer verification — October 25, 2026
 
-Paperwild's public game at **[paperwild.vercel.app](https://paperwild.vercel.app/)** supports online friend rooms after [PR #5](https://github.com/Davidson3556/Paperwild/pull/5) merged. Three independently dispatched Production TestSprite cases passed. The complete post-run artifact audit remains incomplete; this record preserves that distinction.
+Paperwild's public game at **[paperwild.vercel.app](https://paperwild.vercel.app/)** supports online friend rooms after [PR #5](https://github.com/Davidson3556/Paperwild/pull/5) merged, with manual verification on the actual Production origin. **Correction:** the three TestSprite records below report passes with a requested Production target, but do not prove that their Python navigated there. Their Preview fallback and later confirmed absence of runtime target injection leave the execution origin unverified. The complete post-run artifact audit also remains incomplete.
 
 ## Release identity
 
@@ -17,19 +17,25 @@ Paperwild's public game at **[paperwild.vercel.app](https://paperwild.vercel.app
 
 The original Production frontend was built before `VITE_CONVEX_URL` was saved, so it could not offer online rooms. The fix saved the Production public client URL and rebuilt the same merged application revision. An intermediate value contained a trailing newline; the client trimmed it for gameplay, but the independent build comparison correctly rejected the byte mismatch before dispatch. The final value has no trailing newline, and the rebuilt public assets matched the reference build before the runs below. No application source change was needed for this configuration repair.
 
-The unique deployment URL remains protected by Vercel authentication. The public alias above is the tested player-facing origin. The Development preview continues to use `https://fast-starling-207.convex.cloud`; it has separate room data and credentials.
+The unique deployment URL remains protected by Vercel authentication. The public alias above is the manually tested player-facing origin. The Development preview continues to use `https://fast-starling-207.convex.cloud`; it has separate room data and credentials.
 
-## Production TestSprite results
+## Manual Production checks
 
-These were **three separate single-case CLI executions**, each run once against the public Production alias. Each script creates independent Chromium browser instances with fresh contexts and interacts through the actual invitation, board, and consent controls.
+The user verified the Production game in two independent browsers on the actual public origin. Separate computer-control checks also observed actual Production gameplay. The saved `production-manual-seat-recovery.json` records the final Production bundle, a connected Black seat, White pawn e4, Black pawn d5, matching `e4 d5` history and revision 6 after explicit seat return and agreed Undo.
 
-| Case | Actual result | Coverage | Actual run |
+That saved computer-control session used two tabs in one Chrome profile; it does not itself establish storage isolation. The user's independent-browser check is separate from it. The [Production screenshot](media/paperwild-production-multiplayer-2026-10-25.jpg) shows the final build. Earlier capture screenshots predate the trailing-newline cleanup and do not identify the final build by themselves.
+
+## Requested Production TestSprite results
+
+These were **three separate single-case CLI executions**, each requested once with target `https://paperwild.vercel.app/`. The scripts create independent Chromium browsers and exercise real invitation, board and consent controls. Their bodies, however, use `os.environ.get('TEST_TARGET_URL', <old PR #5 preview URL>)` to choose where Python navigates. Controlled strict-runtime probes later confirmed that neither `--target-url` alone nor a named environment option injects that variable. The Preview fallback therefore prevents these records from establishing Production runtime origin. No literal-Production rerun is claimed here.
+
+| Case | Recorded result; runtime origin unverified | Script scenario | Actual run |
 | --- | --- | --- | --- |
 | ONLN-001 | Passed | Explicit independent seats, no automatic invite join, shared `e4 d5 exd5`, wrong-turn restrictions, rejected third visitor | [Run `5d1bfc54`](https://www.testsprite.com/dashboard-v3/o/f7454a95-e992-581a-98e0-4edd142a0891/projects/5ac48e78-b1a2-4509-ad73-0b3efe0c3343/execution/99ae01b6-788b-4cf1-a8f6-d1681db604f1/test/5d1bfc54-c74b-4065-985d-a223e43742c1) |
 | ONLN-002 | Passed | Undo and rematch requests, decline/accept, matching histories and turns | [Run `d5fa5cc2`](https://www.testsprite.com/dashboard-v3/o/f7454a95-e992-581a-98e0-4edd142a0891/projects/5ac48e78-b1a2-4509-ad73-0b3efe0c3343/execution/d925857f-a072-40d7-88a8-d3fa48f17c47/test/d5fa5cc2-712e-44b4-8e54-ecf29490e194) |
 | ONLN-003 | Passed | Reload, explicit saved-seat return, and restoration of the separate local game when leaving | [Run `907fd7ea`](https://www.testsprite.com/dashboard-v3/o/f7454a95-e992-581a-98e0-4edd142a0891/projects/5ac48e78-b1a2-4509-ad73-0b3efe0c3343/execution/42a6c42f-5ea8-4802-927f-4911e68f7a73/test/907fd7ea-a9ac-4c5f-a84c-211da433598b) |
 
-The actual backend run records report `source: cli`, the expected project, target `https://paperwild.vercel.app/`, and an unqualified `replay` result for every case. Dispatch used `--no-auto-heal`. Per-run code-version fields are null and the API does not expose an auto-heal field; those omissions are retained rather than treated as positive attestations. Independent stored-code readback established the following unchanged versions before and after execution:
+The backend records report `source: cli`, the expected project, requested target `https://paperwild.vercel.app/`, and an unqualified `replay` result for every case. **That target is metadata, not a readback of the Python browser's actual URL.** Dispatch used `--no-auto-heal`. Per-run code-version fields are null and the API does not expose an auto-heal field; those omissions are retained rather than treated as positive attestations. Stored-code readback established the following unchanged bodies/versions, but does not override their environment-dependent target selection:
 
 | Case | Hosted version | Source SHA-256 |
 | --- | --- | --- |
@@ -39,12 +45,12 @@ The actual backend run records report `source: cli`, the expected project, targe
 
 ## Evidence boundary
 
-- **Completed:** all 48 public application payloads matched the reference build before dispatch; the three actual replay records passed; project membership and stored bodies/versions were unchanged afterward; `main` remained at the recorded merge revision.
-- **Incomplete:** the full post-run 48-file download/hash audit timed out. Read-only retries also encountered transport failures. The saved aggregate verification retains **`verified: false`**. These are three passing gameplay cases with incomplete artifact postflight, rather than a completed strict Production acceptance audit.
+- **Completed:** all 48 Production application payloads matched the reference build before dispatch; the three API replay records reported passes; project membership and stored bodies/versions were unchanged afterward; `main` remained at the recorded merge revision. The actual-origin manual checks are described separately above.
+- **Runtime origin unverified:** the three scripts retained the older Preview fallback, and later controlled probes confirmed absent CLI target/environment injection. Requested Production metadata, Production asset checks and unchanged stored code do not establish that their browsers visited Production. The earlier interpretation of these passes as Production gameplay validation is withdrawn. Automated multiplayer acceptance remains the identified Development record until a correctly bound Production replay is completed.
+- **Artifact postflight incomplete:** the full post-run 48-file download/hash audit timed out. Read-only retries also encountered transport failures. The saved aggregate verification retains **`verified: false`**. Completing an artifact download alone would not resolve the separate Python-origin issue.
 - **Not executed on Production:** ONLN-004, the genuine outage/no-queued-move/same-seat recovery case. Its stored diagnostic pins the Development WebSocket hostname. Its [four-case Development acceptance](CONVEX_CLOUD_VERIFICATION_2026-10-24.md) remains valid for that identified environment; it does not establish Production outage behavior.
-- **Supplementary manual check:** two tabs in one Chrome profile exercised shared moves and agreed Undo. On the final build, an explicitly restored Black seat showed a connected room, White pawn e4, Black pawn d5, matching `e4 d5` history, and revision 6. This is separate from the independent-browser TestSprite evidence. Earlier capture screenshots were taken before the trailing-newline cleanup and do not identify the final build by themselves.
 
-The source evidence is retained in the workspace's `prod-evidence-2026-10-25` collection: its README, `production-online-smoke-2026-10-25T10-08-15.832Z-verification.json`, the corresponding incomplete-postflight record, and `production-manual-seat-recovery.json`. This public record includes stable run links and sanitized identities; private credentials, seat secrets, and signed recording URLs are excluded.
+The source evidence is retained in the workspace's `prod-evidence-2026-10-25` collection: its README, `production-online-smoke-2026-10-25T10-08-15.832Z-verification.json`, the corresponding incomplete-postflight record, and `production-manual-seat-recovery.json`. Earlier saved descriptions predate the runtime-origin discovery; this correction supersedes their interpretation of requested target metadata as Production gameplay proof. Run identities and original outcomes are preserved. Private credentials, seat secrets, and signed recording URLs are excluded.
 
 ## Related checks and walkthrough
 

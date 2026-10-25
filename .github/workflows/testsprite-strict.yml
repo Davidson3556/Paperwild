@@ -7,10 +7,14 @@ on:
 permissions:
   contents: read
   pull-requests: read
+  deployments: read
+  statuses: read
 
 concurrency:
-  group: testsprite-strict-${{ github.event.pull_request.number }}
-  cancel-in-progress: true
+  # All PRs share the reviewed TestSprite project. Serialize transport-only
+  # TARGET bindings through their complete preflight, replay and postflight.
+  group: testsprite-strict-reviewed-project
+  cancel-in-progress: false
 
 jobs:
   strict-replay:
@@ -18,8 +22,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 45
     env:
-      # Public integration-test backend, not a credential. Each exact PR build
-      # is served on its own Actions runner through the native CLI tunnel.
+      # Public integration-test backend, not a credential. The dedicated
+      # paperwild-ci project builds each PR with the same reviewed value.
       VITE_CONVEX_URL: https://fast-starling-207.convex.cloud
     steps:
       - name: Require a trusted same-repository PR and configured credential
@@ -60,7 +64,7 @@ jobs:
       - name: Install the verified official TestSprite CLI
         run: npm install --global @testsprite/testsprite-cli@0.15.0
 
-      - name: Run strict stored-code verification on the owned PR build
+      - name: Run strict stored-code verification on the exact public CI deployment
         env:
           GH_TOKEN: ${{ github.token }}
           TESTSPRITE_API_KEY: ${{ secrets.TESTSPRITE_API_KEY }}

@@ -5,13 +5,199 @@ import { createHash } from 'node:crypto';
 import { request } from 'node:http';
 import { tmpdir } from 'node:os';
 import { resolve } from 'node:path';
-import { compareBuildFiles, LOCAL_TARGET_URL, previewForBranch, selectVercelStatus, startBuildServer, strictLocalTarget, targetForPullRequest, validateManifest, vercelDeploymentId, verifyCheckoutState, verifyPreviewBuild, verifyPreviewIndex, verifyProjectCases, verifyRun, verifyStoredCode, verifySummary, verifyTunnelReceipt, withBuildServer } from '../scripts/testsprite-ci.mjs';
+import { bindStoredTemplate, ciCommentProject, ciDeploymentTarget, ciInspector, compareBuildFiles, LOCAL_TARGET_URL, PUBLIC_CI, publicCiTarget, renderTargetSource, requireIdleProject, normalizeTargetSource, TARGET_PLACEHOLDER, selectCiCommitStatus, selectCiDeployment, previewForBranch, safeCliFailure, safeFailedRun, safePlatformDiagnostic, safeSummaryRuns, selectVercelStatus, startBuildServer, strictLocalTarget, targetForPullRequest, validateManifest, vercelDeploymentId, verifyCheckoutState, verifyPreviewBuild, verifyPreviewIndex, verifyActualPasses, verifyHostedTemplate, verifyProjectCases, verifyPublicReceipt, verifyRun, verifyStoredCode, verifySummary, verifyTunnelReceipt, withBuildServer } from '../scripts/testsprite-ci.mjs';
 
 const manifest = JSON.parse(await readFile(new URL('../docs/testsprite/pr5-stored-code-manifest.json', import.meta.url), 'utf8'));
 const scripts = validateManifest(manifest);
 const target = 'https://paperwild-a1b2c3d4-davidson3556s-projects.vercel.app/';
 const head = 'a'.repeat(40);
-const summary = () => ({ total: 16, passed: 16, failed: 0, skipped: 0, timedOut: 0, runs: scripts.map((row, index) => ({ testId: row.testId, runId: `run-${index}`, status: 'passed' })) });
+const summary = () => ({ total: 16, passed: 16, failed: 0, skipped: 0, timedOut: 0, runs: scripts.map((row, index) => ({ testId: row.testId, runId: `00000000-0000-4000-8000-${String(index).padStart(12, '0')}`, status: 'passed' })) });
+
+test('platform failures expose only fixed classifications and reviewed CLI codes', () => {
+  const secret = 'private-api-key https://video.example/file?signature=private';
+  const known = safeCliFailure({ error: { code: 'INSUFFICIENT_CREDITS', message: secret, details: { key: secret } } }, 12);
+  assert.deepEqual(known, { exitCode: 12, code: 'INSUFFICIENT_CREDITS', diagnostic: 'unclassified-platform-error' });
+  assert.equal(safePlatformDiagnostic(`[Tunnel] Deterministic replay cannot run through a tunnel. ${secret}`), 'strict-replay-tunnel-unsupported');
+  assert.equal(safePlatformDiagnostic(`TEST_TARGET_URL is required. ${secret}`), 'test-target-environment-missing');
+  assert.deepEqual(safeCliFailure({ error: { code: secret, message: secret } }, secret),
+    { exitCode: null, code: null, diagnostic: 'unclassified-platform-error' });
+  assert.ok(!JSON.stringify(known).includes('private'));
+});
+
+test('failure summaries keep validated identities without copying untrusted content', () => {
+  const id = '07cb7ab5-3a1b-48e1-86cd-2a156218679e';
+  const rows = safeSummaryRuns({ runs: [{ testId: scripts[0].testId, runId: id, status: 'blocked', error: 'secret', dashboardUrl: 'https://signed.example/?token=secret' }] }, scripts);
+  assert.deepEqual(rows[0], { case: scripts[0].case, testId: scripts[0].testId, runId: id, status: 'blocked' });
+  assert.equal(rows[1].status, 'missing-or-unknown');
+  assert.equal(safeSummaryRuns({ runs: [{ testId: scripts[0].testId, runId: 'secret', status: 'blocked' }] }, scripts)[0].runId, null);
+  assert.equal(safeSummaryRuns({ runs: [{ testId: scripts[0].testId, runId: id, status: 'blocked' }, { testId: scripts[0].testId, runId: id, status: 'passed' }] }, scripts)[0].status, 'missing-or-unknown');
+  assert.ok(!JSON.stringify(rows).includes('secret'));
+});
+
+test('blocked run evidence retains a safe reason while identity and target mismatches remain explicit', () => {
+  const expected = { case: scripts[0].case, testId: scripts[0].testId, runId: '07cb7ab5-3a1b-48e1-86cd-2a156218679e' };
+  const actual = { ...expected, projectId: manifest.projectId, status: 'blocked', source: 'cli', targetUrl: target,
+    startedAt: '2026-10-25T12:00:01Z', finishedAt: '2026-10-25T12:00:02Z',
+    error: 'TEST_TARGET_URL is required. token=secret', videoUrl: 'https://signed.example/?token=secret' };
+  const facts = safeFailedRun(expected, actual, target, '2026-10-25T12:00:00Z');
+  assert.equal(facts.status, 'blocked');
+  assert.equal(facts.diagnostic, 'test-target-environment-missing');
+  assert.equal(facts.freshDispatch, true);
+  assert.equal(facts.targetMatches, true);
+  assert.equal(safeFailedRun(expected, { ...actual, targetUrl: 'https://other.example/?token=secret' }, target, '2026-10-25T12:00:00Z').targetMatches, false);
+  assert.equal(safeFailedRun(expected, { ...actual, startedAt: null }, target, '2026-10-25T12:00:00Z').freshDispatch, false);
+  assert.throws(() => safeFailedRun(expected, { ...actual, runId: scripts[1].testId }, target, '2026-10-25T12:00:00Z'), /another test/);
+  assert.ok(!JSON.stringify(facts).includes('secret'));
+});
+
+const ciTarget = 'https://paperwild-4s0pac2km-davidson3556s-projects.vercel.app/';
+const ciInspectorUrl = 'https://vercel.com/davidson3556s-projects/paperwild-ci/4wVgjgzzTd5gXZP5RoBvicsCn5EB';
+const actor = { id: 35613825, login: 'vercel[bot]', type: 'Bot' };
+const deployment = () => ({ id: 7318179941, sha: head, ref: head, task: 'deploy', environment: 'Production – paperwild-ci',
+  creator: actor, performed_via_github_app: null, repository_url: 'https://api.github.com/repos/Davidson3556/Paperwild', created_at: '2026-10-25T19:41:33Z' });
+const deploymentStatus = () => ({ id: 20564750493, state: 'success', environment: 'Production – paperwild-ci',
+  creator: actor, performed_via_github_app: null, deployment_url: 'https://api.github.com/repos/Davidson3556/Paperwild/deployments/7318179941',
+  environment_url: ciTarget, target_url: ciTarget, log_url: ciTarget, created_at: '2026-10-25T19:42:33Z' });
+const botComment = project => ({ id: 6398033194, user: actor, updated_at: '2026-10-25T19:42:34Z',
+  body: '[vc]: #observed:' + Buffer.from(JSON.stringify({ type: 'github', projects: [project] })).toString('base64') + '\n' });
+
+test('public CI targets require a unique approved HTTPS origin and reject aliases and credentials', () => {
+  assert.equal(publicCiTarget(ciTarget.slice(0, -1)), ciTarget);
+  assert.equal(publicCiTarget('https://paperwild-ci-bkzn45xm5-davidson3556s-projects.vercel.app/'), 'https://paperwild-ci-bkzn45xm5-davidson3556s-projects.vercel.app/');
+  for (const wrong of ['http://paperwild-4s0pac2km-davidson3556s-projects.vercel.app/', 'https://paperwild-ci.vercel.app/',
+    'https://paperwild-git-feature-davidson3556s-projects.vercel.app/', ciTarget + '?token=secret', ciTarget + '#fragment',
+    ciTarget + 'other', 'https://user:secret@paperwild-4s0pac2km-davidson3556s-projects.vercel.app/',
+    'https://paperwild-4s0pac2km-another-team.vercel.app/']) assert.throws(() => publicCiTarget(wrong));
+});
+
+test('CI discovery requires exact commit and project-bearing successful status metadata', () => {
+  const status = { id: 1, context: 'Vercel – paperwild-ci', state: 'success', target_url: ciInspectorUrl };
+  assert.equal(selectCiCommitStatus({ sha: head, statuses: [status] }, head).deploymentId, 'dpl_4wVgjgzzTd5gXZP5RoBvicsCn5EB');
+  assert.equal(selectCiCommitStatus({ sha: head, statuses: [{ ...status, state: 'pending' }] }, head), null);
+  assert.equal(selectCiCommitStatus({ sha: head, statuses: [{ ...status, context: 'Vercel' }] }, head), null);
+  assert.throws(() => selectCiCommitStatus({ sha: 'b'.repeat(40), statuses: [status] }, head), /another commit/);
+  assert.throws(() => selectCiCommitStatus({ sha: head, statuses: [{ ...status, state: 'failure' }] }, head), /failed/);
+  assert.throws(() => selectCiCommitStatus({ sha: head, statuses: [status, status] }, head), /ambiguous/);
+  assert.throws(() => ciInspector(ciInspectorUrl.replace('/paperwild-ci/', '/paperwild/')), /another team or project/);
+  assert.throws(() => ciInspector(ciInspectorUrl + '?token=secret'), /plain HTTPS/);
+});
+
+test('authenticated bot metadata must bind the same inspector to the actual CI project ID', () => {
+  const project = { name: PUBLIC_CI.projectName, projectId: PUBLIC_CI.projectId, inspectorUrl: ciInspectorUrl };
+  const comment = botComment(project);
+  assert.equal(ciCommentProject([comment], ciInspectorUrl).projectId, PUBLIC_CI.projectId);
+  assert.equal(ciCommentProject([{ ...comment, user: { ...actor, id: 1 } }], ciInspectorUrl), null);
+  assert.equal(ciCommentProject([botComment({ ...project, projectId: 'wrong-project' })], ciInspectorUrl), null);
+  assert.equal(ciCommentProject([comment], ciInspectorUrl + 'another'), null);
+  assert.equal(ciCommentProject([{ ...comment, body: 'malformed metadata' }], ciInspectorUrl), null);
+});
+
+test('deployment selection refuses stale, foreign and untrusted records without reusing an old success', () => {
+  const row = deployment();
+  assert.equal(selectCiDeployment([row], head).id, row.id);
+  assert.equal(selectCiDeployment([{ ...row, environment: 'Preview – paperwild-ci' }], head).id, row.id);
+  assert.equal(selectCiDeployment([{ ...row, environment: 'Production – paperwild' }], head), null);
+  assert.throws(() => selectCiDeployment([{ ...row, sha: 'b'.repeat(40) }], head), /another commit/);
+  assert.throws(() => selectCiDeployment([{ ...row, creator: { ...actor, id: 1 } }], head), /reviewed Vercel/);
+  assert.throws(() => selectCiDeployment([{ ...row, performed_via_github_app: { id: 1, slug: 'untrusted' } }], head), /reviewed Vercel/);
+  assert.throws(() => selectCiDeployment([{ ...row, repository_url: 'https://api.github.com/repos/other/repo' }], head), /repository/);
+  const newer = { ...row, id: row.id + 1, created_at: '2026-10-25T19:45:33Z' };
+  assert.equal(selectCiDeployment([newer, row], head).id, newer.id);
+});
+
+test('latest deployment status must be trusted, successful and consistent across all public URLs', () => {
+  const row = deploymentStatus();
+  assert.equal(ciDeploymentTarget(deployment(), [row]).targetUrl, ciTarget);
+  assert.equal(ciDeploymentTarget(deployment(), [{ ...row, state: 'in_progress' }]), null);
+  const failed = { ...row, id: row.id + 1, state: 'failure', created_at: '2026-10-25T19:45:33Z' };
+  assert.throws(() => ciDeploymentTarget(deployment(), [row, failed]), /latest CI/);
+  assert.throws(() => ciDeploymentTarget(deployment(), [{ ...row, creator: { ...actor, id: 1 } }]), /foreign actor/);
+  assert.throws(() => ciDeploymentTarget(deployment(), [{ ...row, deployment_url: row.deployment_url + '1' }]), /foreign actor/);
+  assert.throws(() => ciDeploymentTarget(deployment(), [{ ...row, environment: 'Production – paperwild' }]), /environment/);
+  assert.throws(() => ciDeploymentTarget(deployment(), [{ ...row, target_url: ciTarget.replace('4s0pac2km', 'bkzn45xm5') }]), /inconsistent/);
+});
+
+const template = `# Example TARGET = "${TARGET_PLACEHOLDER}" stays a comment.\nTARGET = "${TARGET_PLACEHOLDER}"\nassert board_is_playable()\n`;
+const templateExpected = { ...scripts[0], sha256: createHash('sha256').update(template).digest('hex') };
+const renderedBody = (targetUrl = ciTarget, version = 'v-a1') => ({ testId: templateExpected.testId, language: 'python', codeVersion: version, code: renderTargetSource(template, targetUrl) });
+
+test('target rendering changes one anchored literal while preserving every scenario byte', () => {
+  const rendered = renderTargetSource(template, ciTarget);
+  assert.ok(rendered.startsWith(`# Example TARGET = "${TARGET_PLACEHOLDER}" stays a comment.`));
+  assert.equal(normalizeTargetSource(rendered).source, template);
+  assert.equal(verifyHostedTemplate(templateExpected, renderedBody(), template).canonicalSha256, templateExpected.sha256);
+  assert.throws(() => renderTargetSource(template.replace('\nTARGET = ', '\nTARGET='), ciTarget), /canonical/);
+  assert.throws(() => normalizeTargetSource(template), /unbound/);
+  assert.throws(() => normalizeTargetSource(rendered + 'TARGET = "extra"\n'), /exactly one/);
+  assert.throws(() => verifyHostedTemplate(templateExpected, { ...renderedBody(), code: rendered.replace('assert board_is_playable()', 'assert True') }, template), /beyond the one TARGET/);
+  assert.throws(() => verifyHostedTemplate(templateExpected, renderedBody('https://paperwild-ci.vercel.app/'), template));
+  assert.throws(() => verifyHostedTemplate(templateExpected, { ...renderedBody(), codeVersion: null }, template), /optimistic guard/);
+});
+
+test('a target-only binding uses the exact prior version and reads back the new bytes/version', async () => {
+  const next = ciTarget.replace('4s0pac2km', 'bkzn45xm5');
+  let stored = renderedBody(), writes = 0;
+  const bound = await bindStoredTemplate(templateExpected, template, next, { current: stored,
+    put: async request => { writes++; assert.equal(request.expectedVersion, 'v-a1'); assert.equal(request.code, renderTargetSource(template, next)); stored = { ...stored, code: request.code, codeVersion: 'v-a2' }; return { testId: stored.testId, codeVersion: stored.codeVersion }; },
+    get: async () => stored });
+  assert.equal(writes, 1);
+  assert.equal(bound.changed, true);
+  assert.equal(bound.codeVersion, 'v-a2');
+  assert.equal(bound.canonicalSha256, templateExpected.sha256);
+  assert.equal(bound.sha256, createHash('sha256').update(stored.code).digest('hex'));
+  const same = await bindStoredTemplate(templateExpected, template, next, { current: stored,
+    put: async () => assert.fail('identical target must not publish another version'), get: async () => stored });
+  assert.equal(same.changed, false);
+});
+
+test('scenario drift, optimistic conflicts and changed readbacks never retry or pass a binding', async () => {
+  const next = ciTarget.replace('4s0pac2km', 'bkzn45xm5');
+  const current = renderedBody();
+  let puts = 0, gets = 0;
+  const conflict = { current, put: async () => { puts++; throw new Error('PRECONDITION_FAILED'); }, get: async () => { gets++; return current; } };
+  await assert.rejects(bindStoredTemplate(templateExpected, template, next, conflict), /PRECONDITION_FAILED/);
+  assert.equal(puts, 1); assert.equal(gets, 0);
+  await assert.rejects(bindStoredTemplate(templateExpected, template, next, { ...conflict, current: { ...current, code: current.code + '# unexpected change\n' } }), /beyond the one TARGET/);
+  assert.equal(puts, 1);
+  await assert.rejects(bindStoredTemplate(templateExpected, template, next, { current,
+    put: async () => ({ testId: current.testId, codeVersion: 'v-a2' }), get: async () => ({ ...renderedBody(next), codeVersion: 'v-a3' }) }), /version drifted/);
+  await assert.rejects(bindStoredTemplate(templateExpected, template, next, { current,
+    put: async () => ({ testId: current.testId, codeVersion: 'v-a2' }), get: async () => ({ ...renderedBody(next, 'v-a2'), code: renderTargetSource(template, next) + '#' }) }), /hosted source/);
+});
+
+test('active tests in any reported environment prevent shared-source rebinding', () => {
+  requireIdleProject({ items: [{ status: 'passed', statusByEnvironment: [{ status: 'blocked' }] }] });
+  assert.throws(() => requireIdleProject({ items: [{ status: 'running' }] }), /active or unknown/);
+  assert.throws(() => requireIdleProject({ items: [{ status: 'passed', statusByEnvironment: [{ status: 'queued' }] }] }), /active or unknown/);
+});
+
+test('public receipts must contain every exact run without conflicts, deferrals or skipped tests', () => {
+  const runs = summary().runs;
+  const receipt = { accepted: runs, conflicts: [], deferred: [], skippedFrontend: [], skippedIntegration: [] };
+  assert.equal(verifyPublicReceipt(receipt, runs).accepted, 16);
+  assert.throws(() => verifyPublicReceipt({ ...receipt, accepted: runs.slice(1) }, runs), /incomplete/);
+  assert.throws(() => verifyPublicReceipt({ ...receipt, accepted: [...runs.slice(1), runs[1]] }, runs), /disagrees/);
+  for (const field of ['conflicts', 'deferred', 'skippedFrontend', 'skippedIntegration']) {
+    assert.throws(() => verifyPublicReceipt({ ...receipt, [field]: [{}] }, runs), /receipt has/);
+    const missing = { ...receipt }; delete missing[field];
+    assert.throws(() => verifyPublicReceipt(missing, runs), /missing that field/);
+  }
+});
+
+test('batch success cannot override contradictory, missing or unvalidated actual run facts', () => {
+  const rows = summary().runs.map(row => ({ ...row, projectId: manifest.projectId, source: 'cli', replayPath: 'replay', replayReason: null, replayCaveat: null }));
+  verifyActualPasses(rows, scripts);
+  for (const status of ['failed', 'blocked', 'cancelled', 'running']) {
+    assert.throws(() => verifyActualPasses(rows.map((row, index) => index ? row : { ...row, status }), scripts), /independently/);
+  }
+  assert.throws(() => verifyActualPasses(summary().runs, scripts), /independently/);
+  const invalid = summary(); invalid.runs[0].runId = 'not-an-actual-run-id';
+  assert.throws(() => verifySummary(invalid, scripts), /invalid/);
+  assert.throws(() => verifyActualPasses(rows.map((row, index) => index ? row : { ...row, runId: null }), scripts), /independently/);
+  assert.throws(() => requireIdleProject({ items: [{ status: 'unknown' }] }), /unknown/);
+  assert.throws(() => requireIdleProject({ items: [{}] }), /unknown/);
+  assert.throws(() => requireIdleProject({ items: [{ status: 'passed', statusByEnvironment: [{}] }] }), /unknown/);
+});
 
 test('the gate requires all 16 distinct reviewed cases in the intended project', () => {
   assert.equal(scripts.length, 16);

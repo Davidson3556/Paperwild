@@ -7,15 +7,17 @@ Original generated exports remain in the external legacy failure evidence folder
 import asyncio
 import json
 import os
+import re
 from urllib.parse import urlsplit
 from playwright import async_api
 from playwright.async_api import expect
 
-TARGET = os.environ.get('TEST_TARGET_URL', 'http://127.0.0.1:4173/')
+TARGET = "__PAPERWILD_CI_TARGET_URL__"
 _target = urlsplit(TARGET)
-if (_target.scheme != 'http' or _target.netloc != '127.0.0.1:4173'
+if (_target.scheme != 'https' or not re.fullmatch(
+        r'paperwild(?:-ci)?-[a-z0-9]{9}-davidson3556s-projects\.vercel\.app', _target.netloc)
         or _target.path not in ('', '/') or _target.query or _target.fragment):
-    raise RuntimeError('This CI replay requires the owned 127.0.0.1:4173 PR-build tunnel.')
+    raise RuntimeError('Bind this replay to a verified unique CI HTTPS deployment before execution.')
 ORIGIN = '{0.scheme}://{0.netloc}'.format(urlsplit(TARGET))
 BROWSER_ARGS = ['--window-size=1280,720', '--disable-dev-shm-usage', '--ipc=host', '--single-process']
 RUN_PHASE = 'module-loaded'
