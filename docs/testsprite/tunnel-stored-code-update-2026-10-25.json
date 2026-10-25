@@ -1,0 +1,1195 @@
+{
+  "schemaVersion": 1,
+  "projectId": "dafdf75c-04a3-467f-acc2-4359af6b1d8e",
+  "startedAt": "2026-10-25T13:01:30.927161+00:00",
+  "status": "all-sixteen-stored-and-readback-verified-not-yet-executed",
+  "baseSourceRevision": "31e8b02e62d2095716624c173879ff1c902953b4",
+  "previousManifest": "docs/testsprite/history/pr5-stored-code-manifest-before-tunnel-2026-10-25.json",
+  "previousManifestSha256": "d88831b58abacea43d84728d83d58524fabd308839d2b1283d8b51dc1d5d6585",
+  "targetUrl": "http://127.0.0.1:4173/",
+  "convexUrl": "https://fast-starling-207.convex.cloud",
+  "bindingKind": "exact-pr-build-over-testsprite-native-tunnel",
+  "sourceUncommittedAtUpload": true,
+  "testRunsStarted": false,
+  "forceUsed": false,
+  "preflight": {
+    "projectBefore": {
+      "checkedAt": "2026-10-25T13:01:33.720983+00:00",
+      "projectId": "dafdf75c-04a3-467f-acc2-4359af6b1d8e",
+      "completeMembershipVerified": true,
+      "idleStatusesVerified": true,
+      "cases": [
+        {
+          "testId": "06093f89-2095-4a14-b7db-101e715ae206",
+          "status": "passed",
+          "statusByEnvironment": [
+            {
+              "environmentId": "00780229-bad1-480e-b8ca-c2e881241893",
+              "environmentName": "default",
+              "status": "passed"
+            }
+          ]
+        },
+        {
+          "testId": "0ad51a00-bdcc-49ab-a155-ad15de21a7a2",
+          "status": "passed",
+          "statusByEnvironment": [
+            {
+              "environmentId": "00780229-bad1-480e-b8ca-c2e881241893",
+              "environmentName": "default",
+              "status": "passed"
+            }
+          ]
+        },
+        {
+          "testId": "138f2507-51c6-43ed-9a7c-c00bb2b1657e",
+          "status": "passed",
+          "statusByEnvironment": [
+            {
+              "environmentId": "00780229-bad1-480e-b8ca-c2e881241893",
+              "environmentName": "default",
+              "status": "passed"
+            }
+          ]
+        },
+        {
+          "testId": "1dc27669-90de-470e-9681-c5f5026194cb",
+          "status": "passed",
+          "statusByEnvironment": []
+        },
+        {
+          "testId": "2330c1ea-adda-4d16-a611-d8745fc4cc66",
+          "status": "passed",
+          "statusByEnvironment": [
+            {
+              "environmentId": "00780229-bad1-480e-b8ca-c2e881241893",
+              "environmentName": "default",
+              "status": "passed"
+            }
+          ]
+        },
+        {
+          "testId": "43d65119-ddde-41e6-9a50-e99a370bb16b",
+          "status": "passed",
+          "statusByEnvironment": []
+        },
+        {
+          "testId": "4cb7d4df-04ae-4be5-8295-f69f0f115611",
+          "status": "passed",
+          "statusByEnvironment": []
+        },
+        {
+          "testId": "6c39a736-f9b2-4731-8560-05df7dcd0449",
+          "status": "passed",
+          "statusByEnvironment": [
+            {
+              "environmentId": "00780229-bad1-480e-b8ca-c2e881241893",
+              "environmentName": "default",
+              "status": "passed"
+            }
+          ]
+        },
+        {
+          "testId": "72d4f1a0-dd72-44e9-bf92-0ccbc9a4ea4d",
+          "status": "passed",
+          "statusByEnvironment": []
+        },
+        {
+          "testId": "7615508f-ec1e-4df0-9d67-3c4db951b18e",
+          "status": "passed",
+          "statusByEnvironment": []
+        },
+        {
+          "testId": "76e3011a-cb17-4be2-8d00-833670e8644e",
+          "status": "passed",
+          "statusByEnvironment": []
+        },
+        {
+          "testId": "836e4d28-2b2a-468c-ba69-21bc358eb237",
+          "status": "passed",
+          "statusByEnvironment": [
+            {
+              "environmentId": "00780229-bad1-480e-b8ca-c2e881241893",
+              "environmentName": "default",
+              "status": "passed"
+            }
+          ]
+        },
+        {
+          "testId": "9e34b635-85b9-427d-95b2-5584e55f5f7d",
+          "status": "passed",
+          "statusByEnvironment": [
+            {
+              "environmentId": "00780229-bad1-480e-b8ca-c2e881241893",
+              "environmentName": "default",
+              "status": "passed"
+            }
+          ]
+        },
+        {
+          "testId": "c48475e4-8ec0-4875-a5c9-e8b2981d4c87",
+          "status": "passed",
+          "statusByEnvironment": [
+            {
+              "environmentId": "00780229-bad1-480e-b8ca-c2e881241893",
+              "environmentName": "default",
+              "status": "passed"
+            }
+          ]
+        },
+        {
+          "testId": "ec570b6b-0423-40cd-a0a7-60e8a8cbb23c",
+          "status": "passed",
+          "statusByEnvironment": [
+            {
+              "environmentId": "00780229-bad1-480e-b8ca-c2e881241893",
+              "environmentName": "default",
+              "status": "passed"
+            }
+          ]
+        },
+        {
+          "testId": "f52738b9-d0c5-46b4-b914-70d16c6d7e7b",
+          "status": "passed",
+          "statusByEnvironment": [
+            {
+              "environmentId": "00780229-bad1-480e-b8ca-c2e881241893",
+              "environmentName": "default",
+              "status": "passed"
+            }
+          ]
+        }
+      ]
+    },
+    "storedBefore": [
+      {
+        "case": "BOAR-001",
+        "testId": "9e34b635-85b9-427d-95b2-5584e55f5f7d",
+        "codeVersion": "v-34c17b1132d7",
+        "sha256": "eb1e048a9e9f3f57b3749d7b0abe46f49b894e2091a0c2919e4e5ac6c238aaf5",
+        "readbackEqual": true,
+        "checkedAt": "2026-10-25T13:01:36.404969+00:00"
+      },
+      {
+        "case": "BOAR-002",
+        "testId": "0ad51a00-bdcc-49ab-a155-ad15de21a7a2",
+        "codeVersion": "v-b4f39a6e001a",
+        "sha256": "3d4a0566a2fda9333590045eb98646ec3d7b882e24a4663be1940c98f5976c86",
+        "readbackEqual": true,
+        "checkedAt": "2026-10-25T13:01:38.566251+00:00"
+      },
+      {
+        "case": "BOAR-003",
+        "testId": "6c39a736-f9b2-4731-8560-05df7dcd0449",
+        "codeVersion": "v-11b7e8a6016c",
+        "sha256": "95c10e6ec231ccf18c392351412dc62ad7514f96285fc9d5b35dd7c9c8ae6582",
+        "readbackEqual": true,
+        "checkedAt": "2026-10-25T13:01:38.570645+00:00"
+      },
+      {
+        "case": "BOAR-004",
+        "testId": "2330c1ea-adda-4d16-a611-d8745fc4cc66",
+        "codeVersion": "v-863f4dd45289",
+        "sha256": "fd44a896a491f9ddb791eadf7a22ffdd4bf91f44f79130229e7e0ef5a324aa89",
+        "readbackEqual": true,
+        "checkedAt": "2026-10-25T13:01:38.573158+00:00"
+      },
+      {
+        "case": "BOAR-005",
+        "testId": "c48475e4-8ec0-4875-a5c9-e8b2981d4c87",
+        "codeVersion": "v-936581958af2",
+        "sha256": "43295cb556ce137bd4d57e44bbe97a8ae65136cc1d9e72732ecd0c156e64c263",
+        "readbackEqual": true,
+        "checkedAt": "2026-10-25T13:01:40.724351+00:00"
+      },
+      {
+        "case": "BOAR-006",
+        "testId": "836e4d28-2b2a-468c-ba69-21bc358eb237",
+        "codeVersion": "v-1958882ccab5",
+        "sha256": "36526bd1bdf8216a4a21fa63ec2cf4df4ec7ecf9a6efc14e7bbb8afd32b6e290",
+        "readbackEqual": true,
+        "checkedAt": "2026-10-25T13:01:40.732507+00:00"
+      },
+      {
+        "case": "BOAR-007",
+        "testId": "f52738b9-d0c5-46b4-b914-70d16c6d7e7b",
+        "codeVersion": "v-08b04ac7720c",
+        "sha256": "9d8fdbd68a41a921e1e3737b10dabc3156ed7ed1dd74509a5966d88abfca0b12",
+        "readbackEqual": true,
+        "checkedAt": "2026-10-25T13:01:40.736232+00:00"
+      },
+      {
+        "case": "BOAR-008",
+        "testId": "ec570b6b-0423-40cd-a0a7-60e8a8cbb23c",
+        "codeVersion": "v-72de3f0ece1d",
+        "sha256": "2a45b47633ef2315122578a47d8ea53e56fe081580dfafca3d329c6cb7393208",
+        "readbackEqual": true,
+        "checkedAt": "2026-10-25T13:01:42.873606+00:00"
+      },
+      {
+        "case": "NOTE-001",
+        "testId": "4cb7d4df-04ae-4be5-8295-f69f0f115611",
+        "codeVersion": "v-0449b2eb6450",
+        "sha256": "2550712a7aa901736db7b52f5b880a61af886d43cfd3bd481c44f3efd7caefbe",
+        "readbackEqual": true,
+        "checkedAt": "2026-10-25T13:01:45.018418+00:00"
+      },
+      {
+        "case": "NOTE-002",
+        "testId": "43d65119-ddde-41e6-9a50-e99a370bb16b",
+        "codeVersion": "v-c36ccbd7694c",
+        "sha256": "e930977fde055188ae73c6dd5a84d9a832a88a7e850318c6931ec074a5dd0d23",
+        "readbackEqual": true,
+        "checkedAt": "2026-10-25T13:01:45.022344+00:00"
+      },
+      {
+        "case": "NOTE-003",
+        "testId": "7615508f-ec1e-4df0-9d67-3c4db951b18e",
+        "codeVersion": "v-b680743801da",
+        "sha256": "e89ed185bcafc584c28e847e32dab708462f8752f3b65c6604621710f2bd078a",
+        "readbackEqual": true,
+        "checkedAt": "2026-10-25T13:01:44.978184+00:00"
+      },
+      {
+        "case": "NOTE-004",
+        "testId": "72d4f1a0-dd72-44e9-bf92-0ccbc9a4ea4d",
+        "codeVersion": "v-6c4c15b0c6e4",
+        "sha256": "b1d782db0445730ab985893d9f2213f549654117dff4b9357231c13c916505ba",
+        "readbackEqual": true,
+        "checkedAt": "2026-10-25T13:01:47.155847+00:00"
+      },
+      {
+        "case": "ONBD-001",
+        "testId": "76e3011a-cb17-4be2-8d00-833670e8644e",
+        "codeVersion": "v-62a4e86b577b",
+        "sha256": "1c4e8c8e99564c90b39e3ee431a7f1574866912600b00f56a8dd1a14df5ae205",
+        "readbackEqual": true,
+        "checkedAt": "2026-10-25T13:01:36.434965+00:00"
+      },
+      {
+        "case": "ONBD-002",
+        "testId": "1dc27669-90de-470e-9681-c5f5026194cb",
+        "codeVersion": "v-c5fc38b322d6",
+        "sha256": "4c37a6f1cbf99440062c8c49b5aa2e71327bb1cc79339fe4392a1639492a6286",
+        "readbackEqual": true,
+        "checkedAt": "2026-10-25T13:01:36.444331+00:00"
+      },
+      {
+        "case": "PREF-001",
+        "testId": "138f2507-51c6-43ed-9a7c-c00bb2b1657e",
+        "codeVersion": "v-82ffdaea9f1c",
+        "sha256": "e3082e29ce071f45d6fc40e7757b007200436e3137a07800045abbf0939172c6",
+        "readbackEqual": true,
+        "checkedAt": "2026-10-25T13:01:42.868750+00:00"
+      },
+      {
+        "case": "SOUN-001",
+        "testId": "06093f89-2095-4a14-b7db-101e715ae206",
+        "codeVersion": "v-e749a68a45d3",
+        "sha256": "361cf1cdea2523f8c89d50e12900745ddbfd25ff3987d7945dc30f1f3713568d",
+        "readbackEqual": true,
+        "checkedAt": "2026-10-25T13:01:42.878891+00:00"
+      }
+    ],
+    "allOldHostedSourcesEqualMergedBaseline": true,
+    "allNewPythonSourcesParseAndCompile": true,
+    "projectImmediatelyBeforeMutation": {
+      "checkedAt": "2026-10-25T13:01:49.072890+00:00",
+      "projectId": "dafdf75c-04a3-467f-acc2-4359af6b1d8e",
+      "completeMembershipVerified": true,
+      "idleStatusesVerified": true,
+      "cases": [
+        {
+          "testId": "06093f89-2095-4a14-b7db-101e715ae206",
+          "status": "passed",
+          "statusByEnvironment": [
+            {
+              "environmentId": "00780229-bad1-480e-b8ca-c2e881241893",
+              "environmentName": "default",
+              "status": "passed"
+            }
+          ]
+        },
+        {
+          "testId": "0ad51a00-bdcc-49ab-a155-ad15de21a7a2",
+          "status": "passed",
+          "statusByEnvironment": [
+            {
+              "environmentId": "00780229-bad1-480e-b8ca-c2e881241893",
+              "environmentName": "default",
+              "status": "passed"
+            }
+          ]
+        },
+        {
+          "testId": "138f2507-51c6-43ed-9a7c-c00bb2b1657e",
+          "status": "passed",
+          "statusByEnvironment": [
+            {
+              "environmentId": "00780229-bad1-480e-b8ca-c2e881241893",
+              "environmentName": "default",
+              "status": "passed"
+            }
+          ]
+        },
+        {
+          "testId": "1dc27669-90de-470e-9681-c5f5026194cb",
+          "status": "passed",
+          "statusByEnvironment": []
+        },
+        {
+          "testId": "2330c1ea-adda-4d16-a611-d8745fc4cc66",
+          "status": "passed",
+          "statusByEnvironment": [
+            {
+              "environmentId": "00780229-bad1-480e-b8ca-c2e881241893",
+              "environmentName": "default",
+              "status": "passed"
+            }
+          ]
+        },
+        {
+          "testId": "43d65119-ddde-41e6-9a50-e99a370bb16b",
+          "status": "passed",
+          "statusByEnvironment": []
+        },
+        {
+          "testId": "4cb7d4df-04ae-4be5-8295-f69f0f115611",
+          "status": "passed",
+          "statusByEnvironment": []
+        },
+        {
+          "testId": "6c39a736-f9b2-4731-8560-05df7dcd0449",
+          "status": "passed",
+          "statusByEnvironment": [
+            {
+              "environmentId": "00780229-bad1-480e-b8ca-c2e881241893",
+              "environmentName": "default",
+              "status": "passed"
+            }
+          ]
+        },
+        {
+          "testId": "72d4f1a0-dd72-44e9-bf92-0ccbc9a4ea4d",
+          "status": "passed",
+          "statusByEnvironment": []
+        },
+        {
+          "testId": "7615508f-ec1e-4df0-9d67-3c4db951b18e",
+          "status": "passed",
+          "statusByEnvironment": []
+        },
+        {
+          "testId": "76e3011a-cb17-4be2-8d00-833670e8644e",
+          "status": "passed",
+          "statusByEnvironment": []
+        },
+        {
+          "testId": "836e4d28-2b2a-468c-ba69-21bc358eb237",
+          "status": "passed",
+          "statusByEnvironment": [
+            {
+              "environmentId": "00780229-bad1-480e-b8ca-c2e881241893",
+              "environmentName": "default",
+              "status": "passed"
+            }
+          ]
+        },
+        {
+          "testId": "9e34b635-85b9-427d-95b2-5584e55f5f7d",
+          "status": "passed",
+          "statusByEnvironment": [
+            {
+              "environmentId": "00780229-bad1-480e-b8ca-c2e881241893",
+              "environmentName": "default",
+              "status": "passed"
+            }
+          ]
+        },
+        {
+          "testId": "c48475e4-8ec0-4875-a5c9-e8b2981d4c87",
+          "status": "passed",
+          "statusByEnvironment": [
+            {
+              "environmentId": "00780229-bad1-480e-b8ca-c2e881241893",
+              "environmentName": "default",
+              "status": "passed"
+            }
+          ]
+        },
+        {
+          "testId": "ec570b6b-0423-40cd-a0a7-60e8a8cbb23c",
+          "status": "passed",
+          "statusByEnvironment": [
+            {
+              "environmentId": "00780229-bad1-480e-b8ca-c2e881241893",
+              "environmentName": "default",
+              "status": "passed"
+            }
+          ]
+        },
+        {
+          "testId": "f52738b9-d0c5-46b4-b914-70d16c6d7e7b",
+          "status": "passed",
+          "statusByEnvironment": [
+            {
+              "environmentId": "00780229-bad1-480e-b8ca-c2e881241893",
+              "environmentName": "default",
+              "status": "passed"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "updates": [
+    {
+      "case": "ONBD-001",
+      "testId": "76e3011a-cb17-4be2-8d00-833670e8644e",
+      "name": "First visit requires an explicit opponent choice before play",
+      "sourcePath": "docs/testsprite/overrides/ONBD-001.py",
+      "previousCodeVersion": "v-62a4e86b577b",
+      "previousSha256": "1c4e8c8e99564c90b39e3ee431a7f1574866912600b00f56a8dd1a14df5ae205",
+      "sha256": "ac6f8bdff0f334e75a4527cc53cf41cb8bd30d476fd0e4c0c560edae79cc0350",
+      "sourceUncommittedAtUpload": true,
+      "idempotencyKey": "e59b1208-6894-40fe-9ae7-33dbd7ff84a9",
+      "putStartedAt": "2026-10-25T13:01:49.074393+00:00",
+      "putAttempted": true,
+      "readbackEqual": true,
+      "putCompletedAt": "2026-10-25T13:01:51.275524+00:00",
+      "receipt": {
+        "testId": "76e3011a-cb17-4be2-8d00-833670e8644e",
+        "codeVersion": "v-4b3f79e761dd",
+        "updatedAt": "2026-10-25T13:01:50.406Z"
+      },
+      "codeVersion": "v-4b3f79e761dd",
+      "readback": {
+        "case": "ONBD-001",
+        "testId": "76e3011a-cb17-4be2-8d00-833670e8644e",
+        "codeVersion": "v-4b3f79e761dd",
+        "sha256": "ac6f8bdff0f334e75a4527cc53cf41cb8bd30d476fd0e4c0c560edae79cc0350",
+        "readbackEqual": true,
+        "checkedAt": "2026-10-25T13:01:53.391396+00:00"
+      }
+    },
+    {
+      "case": "ONBD-002",
+      "testId": "1dc27669-90de-470e-9681-c5f5026194cb",
+      "name": "Club choice and replayable tour preserve a playable game",
+      "sourcePath": "docs/testsprite/overrides/ONBD-002.py",
+      "previousCodeVersion": "v-c5fc38b322d6",
+      "previousSha256": "4c37a6f1cbf99440062c8c49b5aa2e71327bb1cc79339fe4392a1639492a6286",
+      "sha256": "f2efb14858b059c13157b680c371248d5a1752aaeb87b0c62ca7a7562dc468f3",
+      "sourceUncommittedAtUpload": true,
+      "idempotencyKey": "99b39437-d99a-42b6-8909-79c4bb37f2a9",
+      "putStartedAt": "2026-10-25T13:01:53.392279+00:00",
+      "putAttempted": true,
+      "readbackEqual": true,
+      "putCompletedAt": "2026-10-25T13:01:55.569600+00:00",
+      "receipt": {
+        "testId": "1dc27669-90de-470e-9681-c5f5026194cb",
+        "codeVersion": "v-168d89d5e20b",
+        "updatedAt": "2026-10-25T13:01:54.704Z"
+      },
+      "codeVersion": "v-168d89d5e20b",
+      "readback": {
+        "case": "ONBD-002",
+        "testId": "1dc27669-90de-470e-9681-c5f5026194cb",
+        "codeVersion": "v-168d89d5e20b",
+        "sha256": "f2efb14858b059c13157b680c371248d5a1752aaeb87b0c62ca7a7562dc468f3",
+        "readbackEqual": true,
+        "checkedAt": "2026-10-25T13:01:57.696756+00:00"
+      }
+    },
+    {
+      "case": "BOAR-001",
+      "testId": "9e34b635-85b9-427d-95b2-5584e55f5f7d",
+      "name": "Illegal moves leave the board unchanged",
+      "sourcePath": "docs/testsprite/overrides/BOAR-001.py",
+      "previousCodeVersion": "v-34c17b1132d7",
+      "previousSha256": "eb1e048a9e9f3f57b3749d7b0abe46f49b894e2091a0c2919e4e5ac6c238aaf5",
+      "sha256": "e3b41a3d928aa70c23d983b1de2549bedc06f5b4ce0aacda025040baa5f297c7",
+      "sourceUncommittedAtUpload": true,
+      "idempotencyKey": "c87bf851-a574-47f9-a117-4e811c445662",
+      "putStartedAt": "2026-10-25T13:01:57.697844+00:00",
+      "putAttempted": true,
+      "readbackEqual": true,
+      "putCompletedAt": "2026-10-25T13:01:59.875220+00:00",
+      "receipt": {
+        "testId": "9e34b635-85b9-427d-95b2-5584e55f5f7d",
+        "codeVersion": "v-5fcd564e6962",
+        "updatedAt": "2026-10-25T13:01:59.021Z"
+      },
+      "codeVersion": "v-5fcd564e6962",
+      "readback": {
+        "case": "BOAR-001",
+        "testId": "9e34b635-85b9-427d-95b2-5584e55f5f7d",
+        "codeVersion": "v-5fcd564e6962",
+        "sha256": "e3b41a3d928aa70c23d983b1de2549bedc06f5b4ce0aacda025040baa5f297c7",
+        "readbackEqual": true,
+        "checkedAt": "2026-10-25T13:02:02.148204+00:00"
+      }
+    },
+    {
+      "case": "BOAR-002",
+      "testId": "0ad51a00-bdcc-49ab-a155-ad15de21a7a2",
+      "name": "Simple opening advances update history and turn",
+      "sourcePath": "docs/testsprite/overrides/BOAR-002.py",
+      "previousCodeVersion": "v-b4f39a6e001a",
+      "previousSha256": "3d4a0566a2fda9333590045eb98646ec3d7b882e24a4663be1940c98f5976c86",
+      "sha256": "709247775c6b991d942c6c747364177617976c360afdad5c1a71ce38547cda62",
+      "sourceUncommittedAtUpload": true,
+      "idempotencyKey": "ff3ba827-7cad-4dd4-8893-8d65718c011c",
+      "putStartedAt": "2026-10-25T13:02:02.149157+00:00",
+      "putAttempted": true,
+      "readbackEqual": true,
+      "putCompletedAt": "2026-10-25T13:02:04.119040+00:00",
+      "receipt": {
+        "testId": "0ad51a00-bdcc-49ab-a155-ad15de21a7a2",
+        "codeVersion": "v-c806c6b49336",
+        "updatedAt": "2026-10-25T13:02:03.269Z"
+      },
+      "codeVersion": "v-c806c6b49336",
+      "readback": {
+        "case": "BOAR-002",
+        "testId": "0ad51a00-bdcc-49ab-a155-ad15de21a7a2",
+        "codeVersion": "v-c806c6b49336",
+        "sha256": "709247775c6b991d942c6c747364177617976c360afdad5c1a71ce38547cda62",
+        "readbackEqual": true,
+        "checkedAt": "2026-10-25T13:02:06.262306+00:00"
+      }
+    },
+    {
+      "case": "BOAR-003",
+      "testId": "6c39a736-f9b2-4731-8560-05df7dcd0449",
+      "name": "Undo restores a captured position atomically",
+      "sourcePath": "docs/testsprite/overrides/BOAR-003.py",
+      "previousCodeVersion": "v-11b7e8a6016c",
+      "previousSha256": "95c10e6ec231ccf18c392351412dc62ad7514f96285fc9d5b35dd7c9c8ae6582",
+      "sha256": "9572c4551b4fcf2ad4b0f0efbc5bddc76eb9c3a5929d39091a4109e807ad9386",
+      "sourceUncommittedAtUpload": true,
+      "idempotencyKey": "9cb2f12b-66fb-481a-b097-5b31c5ab045c",
+      "putStartedAt": "2026-10-25T13:02:06.263192+00:00",
+      "putAttempted": true,
+      "readbackEqual": true,
+      "putCompletedAt": "2026-10-25T13:02:08.450355+00:00",
+      "receipt": {
+        "testId": "6c39a736-f9b2-4731-8560-05df7dcd0449",
+        "codeVersion": "v-306e0fe02e27",
+        "updatedAt": "2026-10-25T13:02:07.603Z"
+      },
+      "codeVersion": "v-306e0fe02e27",
+      "readback": {
+        "case": "BOAR-003",
+        "testId": "6c39a736-f9b2-4731-8560-05df7dcd0449",
+        "codeVersion": "v-306e0fe02e27",
+        "sha256": "9572c4551b4fcf2ad4b0f0efbc5bddc76eb9c3a5929d39091a4109e807ad9386",
+        "readbackEqual": true,
+        "checkedAt": "2026-10-25T13:02:10.662137+00:00"
+      }
+    },
+    {
+      "case": "BOAR-004",
+      "testId": "2330c1ea-adda-4d16-a611-d8745fc4cc66",
+      "name": "Promotion can be cancelled without committing a move",
+      "sourcePath": "docs/testsprite/overrides/BOAR-004.py",
+      "previousCodeVersion": "v-863f4dd45289",
+      "previousSha256": "fd44a896a491f9ddb791eadf7a22ffdd4bf91f44f79130229e7e0ef5a324aa89",
+      "sha256": "0a0820f7ef9034bdf3e51f75e5f188f17059b3b806a1a02df9ea91661587d377",
+      "sourceUncommittedAtUpload": true,
+      "idempotencyKey": "29e05efd-9365-4f82-983e-da8d49fafe9e",
+      "putStartedAt": "2026-10-25T13:02:10.663042+00:00",
+      "putAttempted": true,
+      "readbackEqual": true,
+      "putCompletedAt": "2026-10-25T13:02:12.659593+00:00",
+      "receipt": {
+        "testId": "2330c1ea-adda-4d16-a611-d8745fc4cc66",
+        "codeVersion": "v-b3ccf6c99eca",
+        "updatedAt": "2026-10-25T13:02:11.797Z"
+      },
+      "codeVersion": "v-b3ccf6c99eca",
+      "readback": {
+        "case": "BOAR-004",
+        "testId": "2330c1ea-adda-4d16-a611-d8745fc4cc66",
+        "codeVersion": "v-b3ccf6c99eca",
+        "sha256": "0a0820f7ef9034bdf3e51f75e5f188f17059b3b806a1a02df9ea91661587d377",
+        "readbackEqual": true,
+        "checkedAt": "2026-10-25T13:02:14.821457+00:00"
+      }
+    },
+    {
+      "case": "BOAR-005",
+      "testId": "c48475e4-8ec0-4875-a5c9-e8b2981d4c87",
+      "name": "Queen promotion settles as a playable checking position",
+      "sourcePath": "docs/testsprite/overrides/BOAR-005.py",
+      "previousCodeVersion": "v-936581958af2",
+      "previousSha256": "43295cb556ce137bd4d57e44bbe97a8ae65136cc1d9e72732ecd0c156e64c263",
+      "sha256": "fca9ddd49ce8e062021239a95ee1333db45dc2142d9f42b794e93f4edc6b1c20",
+      "sourceUncommittedAtUpload": true,
+      "idempotencyKey": "64f73858-a268-4eba-800e-1ca24bf97235",
+      "putStartedAt": "2026-10-25T13:02:14.822263+00:00",
+      "putAttempted": true,
+      "readbackEqual": true,
+      "putCompletedAt": "2026-10-25T13:02:17.012824+00:00",
+      "receipt": {
+        "testId": "c48475e4-8ec0-4875-a5c9-e8b2981d4c87",
+        "codeVersion": "v-e5798c1048cf",
+        "updatedAt": "2026-10-25T13:02:16.167Z"
+      },
+      "codeVersion": "v-e5798c1048cf",
+      "readback": {
+        "case": "BOAR-005",
+        "testId": "c48475e4-8ec0-4875-a5c9-e8b2981d4c87",
+        "codeVersion": "v-e5798c1048cf",
+        "sha256": "fca9ddd49ce8e062021239a95ee1333db45dc2142d9f42b794e93f4edc6b1c20",
+        "readbackEqual": true,
+        "checkedAt": "2026-10-25T13:02:19.168825+00:00"
+      }
+    },
+    {
+      "case": "BOAR-006",
+      "testId": "836e4d28-2b2a-468c-ba69-21bc358eb237",
+      "name": "Knight promotion ends in an insufficient material draw",
+      "sourcePath": "docs/testsprite/overrides/BOAR-006.py",
+      "previousCodeVersion": "v-1958882ccab5",
+      "previousSha256": "36526bd1bdf8216a4a21fa63ec2cf4df4ec7ecf9a6efc14e7bbb8afd32b6e290",
+      "sha256": "651eb38a23b4917348c61a643ae42372789592a0763f7fbee66de06240166068",
+      "sourceUncommittedAtUpload": true,
+      "idempotencyKey": "bdd4ee70-427c-442f-a6e0-f44f75a58fc6",
+      "putStartedAt": "2026-10-25T13:02:19.169742+00:00",
+      "putAttempted": true,
+      "readbackEqual": true,
+      "putCompletedAt": "2026-10-25T13:02:21.393585+00:00",
+      "receipt": {
+        "testId": "836e4d28-2b2a-468c-ba69-21bc358eb237",
+        "codeVersion": "v-12548a371ada",
+        "updatedAt": "2026-10-25T13:02:20.512Z"
+      },
+      "codeVersion": "v-12548a371ada",
+      "readback": {
+        "case": "BOAR-006",
+        "testId": "836e4d28-2b2a-468c-ba69-21bc358eb237",
+        "codeVersion": "v-12548a371ada",
+        "sha256": "651eb38a23b4917348c61a643ae42372789592a0763f7fbee66de06240166068",
+        "readbackEqual": true,
+        "checkedAt": "2026-10-25T13:02:23.557844+00:00"
+      }
+    },
+    {
+      "case": "BOAR-007",
+      "testId": "f52738b9-d0c5-46b4-b914-70d16c6d7e7b",
+      "name": "Checkmate story blocks further play after the winning move",
+      "sourcePath": "docs/testsprite/overrides/BOAR-007.py",
+      "previousCodeVersion": "v-08b04ac7720c",
+      "previousSha256": "9d8fdbd68a41a921e1e3737b10dabc3156ed7ed1dd74509a5966d88abfca0b12",
+      "sha256": "16c0c5c9df83fabbd81225aec5439676380efffe6e4b79d73fb5ef156ba73db9",
+      "sourceUncommittedAtUpload": true,
+      "idempotencyKey": "99225c7a-9865-4bb1-a6b2-59640eab0a26",
+      "putStartedAt": "2026-10-25T13:02:23.558881+00:00",
+      "putAttempted": true,
+      "readbackEqual": true,
+      "putCompletedAt": "2026-10-25T13:02:25.709003+00:00",
+      "receipt": {
+        "testId": "f52738b9-d0c5-46b4-b914-70d16c6d7e7b",
+        "codeVersion": "v-dc73353dc11d",
+        "updatedAt": "2026-10-25T13:02:24.872Z"
+      },
+      "codeVersion": "v-dc73353dc11d",
+      "readback": {
+        "case": "BOAR-007",
+        "testId": "f52738b9-d0c5-46b4-b914-70d16c6d7e7b",
+        "codeVersion": "v-dc73353dc11d",
+        "sha256": "16c0c5c9df83fabbd81225aec5439676380efffe6e4b79d73fb5ef156ba73db9",
+        "readbackEqual": true,
+        "checkedAt": "2026-10-25T13:02:27.873173+00:00"
+      }
+    },
+    {
+      "case": "BOAR-008",
+      "testId": "ec570b6b-0423-40cd-a0a7-60e8a8cbb23c",
+      "name": "Undo after a computer reply restores the starting position",
+      "sourcePath": "docs/testsprite/overrides/BOAR-008.py",
+      "previousCodeVersion": "v-72de3f0ece1d",
+      "previousSha256": "2a45b47633ef2315122578a47d8ea53e56fe081580dfafca3d329c6cb7393208",
+      "sha256": "0bfe7b5fcefca98a28ac8b0e855f7f42abe04463555f998cce0e50028059d917",
+      "sourceUncommittedAtUpload": true,
+      "idempotencyKey": "c62a2f23-3157-4cc3-ae78-2bdb769f17f9",
+      "putStartedAt": "2026-10-25T13:02:27.874371+00:00",
+      "putAttempted": true,
+      "readbackEqual": true,
+      "putCompletedAt": "2026-10-25T13:02:30.082990+00:00",
+      "receipt": {
+        "testId": "ec570b6b-0423-40cd-a0a7-60e8a8cbb23c",
+        "codeVersion": "v-a856f7892283",
+        "updatedAt": "2026-10-25T13:02:29.209Z"
+      },
+      "codeVersion": "v-a856f7892283",
+      "readback": {
+        "case": "BOAR-008",
+        "testId": "ec570b6b-0423-40cd-a0a7-60e8a8cbb23c",
+        "codeVersion": "v-a856f7892283",
+        "sha256": "0bfe7b5fcefca98a28ac8b0e855f7f42abe04463555f998cce0e50028059d917",
+        "readbackEqual": true,
+        "checkedAt": "2026-10-25T13:02:32.248634+00:00"
+      }
+    },
+    {
+      "case": "PREF-001",
+      "testId": "138f2507-51c6-43ed-9a7c-c00bb2b1657e",
+      "name": "Restore a saved game after reload and continue with undo",
+      "sourcePath": "docs/testsprite/overrides/PREF-001.py",
+      "previousCodeVersion": "v-82ffdaea9f1c",
+      "previousSha256": "e3082e29ce071f45d6fc40e7757b007200436e3137a07800045abbf0939172c6",
+      "sha256": "3f86cfb81e358c4cd679f974b5175f8bc435e5a31a4e79682bbf36fd42387c28",
+      "sourceUncommittedAtUpload": true,
+      "idempotencyKey": "09840f0b-2bc8-4864-9a3e-6eb9707d43b8",
+      "putStartedAt": "2026-10-25T13:02:32.249653+00:00",
+      "putAttempted": true,
+      "readbackEqual": true,
+      "putCompletedAt": "2026-10-25T13:02:34.516300+00:00",
+      "receipt": {
+        "testId": "138f2507-51c6-43ed-9a7c-c00bb2b1657e",
+        "codeVersion": "v-1aab6bf6e084",
+        "updatedAt": "2026-10-25T13:02:33.671Z"
+      },
+      "codeVersion": "v-1aab6bf6e084",
+      "readback": {
+        "case": "PREF-001",
+        "testId": "138f2507-51c6-43ed-9a7c-c00bb2b1657e",
+        "codeVersion": "v-1aab6bf6e084",
+        "sha256": "3f86cfb81e358c4cd679f974b5175f8bc435e5a31a4e79682bbf36fd42387c28",
+        "readbackEqual": true,
+        "checkedAt": "2026-10-25T13:02:36.724373+00:00"
+      }
+    },
+    {
+      "case": "SOUN-001",
+      "testId": "06093f89-2095-4a14-b7db-101e715ae206",
+      "name": "Enable sound from the character guide",
+      "sourcePath": "docs/testsprite/overrides/SOUN-001.py",
+      "previousCodeVersion": "v-e749a68a45d3",
+      "previousSha256": "361cf1cdea2523f8c89d50e12900745ddbfd25ff3987d7945dc30f1f3713568d",
+      "sha256": "e31f96dc109b24e707213ea6af56d658c0384ece208193e164603ab6faf23531",
+      "sourceUncommittedAtUpload": true,
+      "idempotencyKey": "91d11c52-8661-438a-b07e-488fd57626ab",
+      "putStartedAt": "2026-10-25T13:02:36.725590+00:00",
+      "putAttempted": true,
+      "readbackEqual": true,
+      "putCompletedAt": "2026-10-25T13:02:38.925373+00:00",
+      "receipt": {
+        "testId": "06093f89-2095-4a14-b7db-101e715ae206",
+        "codeVersion": "v-a8d1553fd790",
+        "updatedAt": "2026-10-25T13:02:38.094Z"
+      },
+      "codeVersion": "v-a8d1553fd790",
+      "readback": {
+        "case": "SOUN-001",
+        "testId": "06093f89-2095-4a14-b7db-101e715ae206",
+        "codeVersion": "v-a8d1553fd790",
+        "sha256": "e31f96dc109b24e707213ea6af56d658c0384ece208193e164603ab6faf23531",
+        "readbackEqual": true,
+        "checkedAt": "2026-10-25T13:02:41.088403+00:00"
+      }
+    },
+    {
+      "case": "NOTE-001",
+      "testId": "4cb7d4df-04ae-4be5-8295-f69f0f115611",
+      "name": "Full notebook entry remains visible on first and repeat visits",
+      "sourcePath": "docs/testsprite/overrides/NOTE-001.py",
+      "previousCodeVersion": "v-0449b2eb6450",
+      "previousSha256": "2550712a7aa901736db7b52f5b880a61af886d43cfd3bd481c44f3efd7caefbe",
+      "sha256": "6567f8f6b6b376bbff52e046588af08a028fc961fbed9d808bac90be0cb996cf",
+      "sourceUncommittedAtUpload": true,
+      "idempotencyKey": "cf0fe11d-c489-4b0a-b404-ed18f29e587a",
+      "putStartedAt": "2026-10-25T13:02:41.089303+00:00",
+      "putAttempted": true,
+      "readbackEqual": true,
+      "putCompletedAt": "2026-10-25T13:02:43.297752+00:00",
+      "receipt": {
+        "testId": "4cb7d4df-04ae-4be5-8295-f69f0f115611",
+        "codeVersion": "v-a94a4ac88595",
+        "updatedAt": "2026-10-25T13:02:42.443Z"
+      },
+      "codeVersion": "v-a94a4ac88595",
+      "readback": {
+        "case": "NOTE-001",
+        "testId": "4cb7d4df-04ae-4be5-8295-f69f0f115611",
+        "codeVersion": "v-a94a4ac88595",
+        "sha256": "6567f8f6b6b376bbff52e046588af08a028fc961fbed9d808bac90be0cb996cf",
+        "readbackEqual": true,
+        "checkedAt": "2026-10-25T13:02:45.403517+00:00"
+      }
+    },
+    {
+      "case": "NOTE-002",
+      "testId": "43d65119-ddde-41e6-9a50-e99a370bb16b",
+      "name": "Saved manual pause keeps the notebook readable and resume restores living characters",
+      "sourcePath": "docs/testsprite/overrides/NOTE-002.py",
+      "previousCodeVersion": "v-c36ccbd7694c",
+      "previousSha256": "e930977fde055188ae73c6dd5a84d9a832a88a7e850318c6931ec074a5dd0d23",
+      "sha256": "bf9ff023f97d32fd2b7c26d500e4afab75d11dcbcdd94579eb4c0ebf254f9d19",
+      "sourceUncommittedAtUpload": true,
+      "idempotencyKey": "dc9d939a-4aad-4fd9-8240-9c8962630ba9",
+      "putStartedAt": "2026-10-25T13:02:45.404584+00:00",
+      "putAttempted": true,
+      "readbackEqual": true,
+      "putCompletedAt": "2026-10-25T13:02:47.540935+00:00",
+      "receipt": {
+        "testId": "43d65119-ddde-41e6-9a50-e99a370bb16b",
+        "codeVersion": "v-c878c8891df3",
+        "updatedAt": "2026-10-25T13:02:46.701Z"
+      },
+      "codeVersion": "v-c878c8891df3",
+      "readback": {
+        "case": "NOTE-002",
+        "testId": "43d65119-ddde-41e6-9a50-e99a370bb16b",
+        "codeVersion": "v-c878c8891df3",
+        "sha256": "bf9ff023f97d32fd2b7c26d500e4afab75d11dcbcdd94579eb4c0ebf254f9d19",
+        "readbackEqual": true,
+        "checkedAt": "2026-10-25T13:02:49.708949+00:00"
+      }
+    },
+    {
+      "case": "NOTE-003",
+      "testId": "7615508f-ec1e-4df0-9d67-3c4db951b18e",
+      "name": "Keyboard skip releases notebook entry without stale animation or computer replies",
+      "sourcePath": "docs/testsprite/overrides/NOTE-003.py",
+      "previousCodeVersion": "v-b680743801da",
+      "previousSha256": "e89ed185bcafc584c28e847e32dab708462f8752f3b65c6604621710f2bd078a",
+      "sha256": "9f30e8224acf7324c9bebb80c909d5f7242782cc5ea3da8e745754fa31031ccf",
+      "sourceUncommittedAtUpload": true,
+      "idempotencyKey": "29048819-b085-4ba7-8894-ae382b74504d",
+      "putStartedAt": "2026-10-25T13:02:49.709823+00:00",
+      "putAttempted": true,
+      "readbackEqual": true,
+      "putCompletedAt": "2026-10-25T13:02:52.001639+00:00",
+      "receipt": {
+        "testId": "7615508f-ec1e-4df0-9d67-3c4db951b18e",
+        "codeVersion": "v-eaf7ddbf7b21",
+        "updatedAt": "2026-10-25T13:02:51.168Z"
+      },
+      "codeVersion": "v-eaf7ddbf7b21",
+      "readback": {
+        "case": "NOTE-003",
+        "testId": "7615508f-ec1e-4df0-9d67-3c4db951b18e",
+        "codeVersion": "v-eaf7ddbf7b21",
+        "sha256": "9f30e8224acf7324c9bebb80c909d5f7242782cc5ea3da8e745754fa31031ccf",
+        "readbackEqual": true,
+        "checkedAt": "2026-10-25T13:02:54.161771+00:00"
+      }
+    },
+    {
+      "case": "NOTE-004",
+      "testId": "72d4f1a0-dd72-44e9-bf92-0ccbc9a4ea4d",
+      "name": "Completed game reload starts fresh while unfinished capture studies resume",
+      "sourcePath": "docs/testsprite/overrides/NOTE-004.py",
+      "previousCodeVersion": "v-6c4c15b0c6e4",
+      "previousSha256": "b1d782db0445730ab985893d9f2213f549654117dff4b9357231c13c916505ba",
+      "sha256": "21738967f3a4f93efabfcff0a639b858bd7ea9d4a966418b85149f9b4452c7b3",
+      "sourceUncommittedAtUpload": true,
+      "idempotencyKey": "3a78e03d-c9d9-4b73-90f4-bf1c575b1080",
+      "putStartedAt": "2026-10-25T13:02:54.162737+00:00",
+      "putAttempted": true,
+      "readbackEqual": true,
+      "putCompletedAt": "2026-10-25T13:02:56.295628+00:00",
+      "receipt": {
+        "testId": "72d4f1a0-dd72-44e9-bf92-0ccbc9a4ea4d",
+        "codeVersion": "v-4c3dc3c542c6",
+        "updatedAt": "2026-10-25T13:02:55.449Z"
+      },
+      "codeVersion": "v-4c3dc3c542c6",
+      "readback": {
+        "case": "NOTE-004",
+        "testId": "72d4f1a0-dd72-44e9-bf92-0ccbc9a4ea4d",
+        "codeVersion": "v-4c3dc3c542c6",
+        "sha256": "21738967f3a4f93efabfcff0a639b858bd7ea9d4a966418b85149f9b4452c7b3",
+        "readbackEqual": true,
+        "checkedAt": "2026-10-25T13:02:58.447547+00:00"
+      }
+    }
+  ],
+  "finalReadbacks": [
+    {
+      "case": "BOAR-001",
+      "testId": "9e34b635-85b9-427d-95b2-5584e55f5f7d",
+      "codeVersion": "v-5fcd564e6962",
+      "sha256": "e3b41a3d928aa70c23d983b1de2549bedc06f5b4ce0aacda025040baa5f297c7",
+      "readbackEqual": true,
+      "checkedAt": "2026-10-25T13:03:02.597851+00:00"
+    },
+    {
+      "case": "BOAR-002",
+      "testId": "0ad51a00-bdcc-49ab-a155-ad15de21a7a2",
+      "codeVersion": "v-c806c6b49336",
+      "sha256": "709247775c6b991d942c6c747364177617976c360afdad5c1a71ce38547cda62",
+      "readbackEqual": true,
+      "checkedAt": "2026-10-25T13:03:04.719648+00:00"
+    },
+    {
+      "case": "BOAR-003",
+      "testId": "6c39a736-f9b2-4731-8560-05df7dcd0449",
+      "codeVersion": "v-306e0fe02e27",
+      "sha256": "9572c4551b4fcf2ad4b0f0efbc5bddc76eb9c3a5929d39091a4109e807ad9386",
+      "readbackEqual": true,
+      "checkedAt": "2026-10-25T13:03:04.719987+00:00"
+    },
+    {
+      "case": "BOAR-004",
+      "testId": "2330c1ea-adda-4d16-a611-d8745fc4cc66",
+      "codeVersion": "v-b3ccf6c99eca",
+      "sha256": "0a0820f7ef9034bdf3e51f75e5f188f17059b3b806a1a02df9ea91661587d377",
+      "readbackEqual": true,
+      "checkedAt": "2026-10-25T13:03:04.728448+00:00"
+    },
+    {
+      "case": "BOAR-005",
+      "testId": "c48475e4-8ec0-4875-a5c9-e8b2981d4c87",
+      "codeVersion": "v-e5798c1048cf",
+      "sha256": "fca9ddd49ce8e062021239a95ee1333db45dc2142d9f42b794e93f4edc6b1c20",
+      "readbackEqual": true,
+      "checkedAt": "2026-10-25T13:03:06.857579+00:00"
+    },
+    {
+      "case": "BOAR-006",
+      "testId": "836e4d28-2b2a-468c-ba69-21bc358eb237",
+      "codeVersion": "v-12548a371ada",
+      "sha256": "651eb38a23b4917348c61a643ae42372789592a0763f7fbee66de06240166068",
+      "readbackEqual": true,
+      "checkedAt": "2026-10-25T13:03:06.843679+00:00"
+    },
+    {
+      "case": "BOAR-007",
+      "testId": "f52738b9-d0c5-46b4-b914-70d16c6d7e7b",
+      "codeVersion": "v-dc73353dc11d",
+      "sha256": "16c0c5c9df83fabbd81225aec5439676380efffe6e4b79d73fb5ef156ba73db9",
+      "readbackEqual": true,
+      "checkedAt": "2026-10-25T13:03:06.845558+00:00"
+    },
+    {
+      "case": "BOAR-008",
+      "testId": "ec570b6b-0423-40cd-a0a7-60e8a8cbb23c",
+      "codeVersion": "v-a856f7892283",
+      "sha256": "0bfe7b5fcefca98a28ac8b0e855f7f42abe04463555f998cce0e50028059d917",
+      "readbackEqual": true,
+      "checkedAt": "2026-10-25T13:03:08.972530+00:00"
+    },
+    {
+      "case": "NOTE-001",
+      "testId": "4cb7d4df-04ae-4be5-8295-f69f0f115611",
+      "codeVersion": "v-a94a4ac88595",
+      "sha256": "6567f8f6b6b376bbff52e046588af08a028fc961fbed9d808bac90be0cb996cf",
+      "readbackEqual": true,
+      "checkedAt": "2026-10-25T13:03:11.119447+00:00"
+    },
+    {
+      "case": "NOTE-002",
+      "testId": "43d65119-ddde-41e6-9a50-e99a370bb16b",
+      "codeVersion": "v-c878c8891df3",
+      "sha256": "bf9ff023f97d32fd2b7c26d500e4afab75d11dcbcdd94579eb4c0ebf254f9d19",
+      "readbackEqual": true,
+      "checkedAt": "2026-10-25T13:03:11.120816+00:00"
+    },
+    {
+      "case": "NOTE-003",
+      "testId": "7615508f-ec1e-4df0-9d67-3c4db951b18e",
+      "codeVersion": "v-eaf7ddbf7b21",
+      "sha256": "9f30e8224acf7324c9bebb80c909d5f7242782cc5ea3da8e745754fa31031ccf",
+      "readbackEqual": true,
+      "checkedAt": "2026-10-25T13:03:11.125245+00:00"
+    },
+    {
+      "case": "NOTE-004",
+      "testId": "72d4f1a0-dd72-44e9-bf92-0ccbc9a4ea4d",
+      "codeVersion": "v-4c3dc3c542c6",
+      "sha256": "21738967f3a4f93efabfcff0a639b858bd7ea9d4a966418b85149f9b4452c7b3",
+      "readbackEqual": true,
+      "checkedAt": "2026-10-25T13:03:13.283809+00:00"
+    },
+    {
+      "case": "ONBD-001",
+      "testId": "76e3011a-cb17-4be2-8d00-833670e8644e",
+      "codeVersion": "v-4b3f79e761dd",
+      "sha256": "ac6f8bdff0f334e75a4527cc53cf41cb8bd30d476fd0e4c0c560edae79cc0350",
+      "readbackEqual": true,
+      "checkedAt": "2026-10-25T13:03:02.604632+00:00"
+    },
+    {
+      "case": "ONBD-002",
+      "testId": "1dc27669-90de-470e-9681-c5f5026194cb",
+      "codeVersion": "v-168d89d5e20b",
+      "sha256": "f2efb14858b059c13157b680c371248d5a1752aaeb87b0c62ca7a7562dc468f3",
+      "readbackEqual": true,
+      "checkedAt": "2026-10-25T13:03:02.600754+00:00"
+    },
+    {
+      "case": "PREF-001",
+      "testId": "138f2507-51c6-43ed-9a7c-c00bb2b1657e",
+      "codeVersion": "v-1aab6bf6e084",
+      "sha256": "3f86cfb81e358c4cd679f974b5175f8bc435e5a31a4e79682bbf36fd42387c28",
+      "readbackEqual": true,
+      "checkedAt": "2026-10-25T13:03:08.972321+00:00"
+    },
+    {
+      "case": "SOUN-001",
+      "testId": "06093f89-2095-4a14-b7db-101e715ae206",
+      "codeVersion": "v-a8d1553fd790",
+      "sha256": "e31f96dc109b24e707213ea6af56d658c0384ece208193e164603ab6faf23531",
+      "readbackEqual": true,
+      "checkedAt": "2026-10-25T13:03:09.003254+00:00"
+    }
+  ],
+  "note": "This record proves hosted-code updates and exact readbacks only. Historical case statuses are not results for these new versions. CI tunnel replay remains to be executed and verified.",
+  "projectAfter": {
+    "checkedAt": "2026-10-25T13:03:00.434500+00:00",
+    "projectId": "dafdf75c-04a3-467f-acc2-4359af6b1d8e",
+    "completeMembershipVerified": true,
+    "idleStatusesVerified": true,
+    "cases": [
+      {
+        "testId": "06093f89-2095-4a14-b7db-101e715ae206",
+        "status": "passed",
+        "statusByEnvironment": [
+          {
+            "environmentId": "00780229-bad1-480e-b8ca-c2e881241893",
+            "environmentName": "default",
+            "status": "passed"
+          }
+        ]
+      },
+      {
+        "testId": "0ad51a00-bdcc-49ab-a155-ad15de21a7a2",
+        "status": "passed",
+        "statusByEnvironment": [
+          {
+            "environmentId": "00780229-bad1-480e-b8ca-c2e881241893",
+            "environmentName": "default",
+            "status": "passed"
+          }
+        ]
+      },
+      {
+        "testId": "138f2507-51c6-43ed-9a7c-c00bb2b1657e",
+        "status": "passed",
+        "statusByEnvironment": [
+          {
+            "environmentId": "00780229-bad1-480e-b8ca-c2e881241893",
+            "environmentName": "default",
+            "status": "passed"
+          }
+        ]
+      },
+      {
+        "testId": "1dc27669-90de-470e-9681-c5f5026194cb",
+        "status": "passed",
+        "statusByEnvironment": []
+      },
+      {
+        "testId": "2330c1ea-adda-4d16-a611-d8745fc4cc66",
+        "status": "passed",
+        "statusByEnvironment": [
+          {
+            "environmentId": "00780229-bad1-480e-b8ca-c2e881241893",
+            "environmentName": "default",
+            "status": "passed"
+          }
+        ]
+      },
+      {
+        "testId": "43d65119-ddde-41e6-9a50-e99a370bb16b",
+        "status": "passed",
+        "statusByEnvironment": []
+      },
+      {
+        "testId": "4cb7d4df-04ae-4be5-8295-f69f0f115611",
+        "status": "passed",
+        "statusByEnvironment": []
+      },
+      {
+        "testId": "6c39a736-f9b2-4731-8560-05df7dcd0449",
+        "status": "passed",
+        "statusByEnvironment": [
+          {
+            "environmentId": "00780229-bad1-480e-b8ca-c2e881241893",
+            "environmentName": "default",
+            "status": "passed"
+          }
+        ]
+      },
+      {
+        "testId": "72d4f1a0-dd72-44e9-bf92-0ccbc9a4ea4d",
+        "status": "passed",
+        "statusByEnvironment": []
+      },
+      {
+        "testId": "7615508f-ec1e-4df0-9d67-3c4db951b18e",
+        "status": "passed",
+        "statusByEnvironment": []
+      },
+      {
+        "testId": "76e3011a-cb17-4be2-8d00-833670e8644e",
+        "status": "passed",
+        "statusByEnvironment": []
+      },
+      {
+        "testId": "836e4d28-2b2a-468c-ba69-21bc358eb237",
+        "status": "passed",
+        "statusByEnvironment": [
+          {
+            "environmentId": "00780229-bad1-480e-b8ca-c2e881241893",
+            "environmentName": "default",
+            "status": "passed"
+          }
+        ]
+      },
+      {
+        "testId": "9e34b635-85b9-427d-95b2-5584e55f5f7d",
+        "status": "passed",
+        "statusByEnvironment": [
+          {
+            "environmentId": "00780229-bad1-480e-b8ca-c2e881241893",
+            "environmentName": "default",
+            "status": "passed"
+          }
+        ]
+      },
+      {
+        "testId": "c48475e4-8ec0-4875-a5c9-e8b2981d4c87",
+        "status": "passed",
+        "statusByEnvironment": [
+          {
+            "environmentId": "00780229-bad1-480e-b8ca-c2e881241893",
+            "environmentName": "default",
+            "status": "passed"
+          }
+        ]
+      },
+      {
+        "testId": "ec570b6b-0423-40cd-a0a7-60e8a8cbb23c",
+        "status": "passed",
+        "statusByEnvironment": [
+          {
+            "environmentId": "00780229-bad1-480e-b8ca-c2e881241893",
+            "environmentName": "default",
+            "status": "passed"
+          }
+        ]
+      },
+      {
+        "testId": "f52738b9-d0c5-46b4-b914-70d16c6d7e7b",
+        "status": "passed",
+        "statusByEnvironment": [
+          {
+            "environmentId": "00780229-bad1-480e-b8ca-c2e881241893",
+            "environmentName": "default",
+            "status": "passed"
+          }
+        ]
+      }
+    ]
+  },
+  "completedAt": "2026-10-25T13:03:13.288490+00:00",
+  "sourceTreeSha256": "1070ce5aa273bcd69e7e63851cacfdde2e13fa7b91f27571883aee276ec39a33",
+  "manifestSha256": "8c2b01c8926784e4a2b4c36627e9f0f4136c95a4160392a8b93e1008387b8c48",
+  "allSixteenFinalReadbacksEqual": true,
+  "projectMembershipUnchanged": true
+}

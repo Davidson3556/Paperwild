@@ -2,9 +2,24 @@
 
 Paperwild keeps computer and same-device play available without a backend. **Across the woods** adds an optional shared game through Convex while retaining the existing board, postcard, and room dialog.
 
-The implementation is published in [PR #5](https://github.com/Davidson3556/Paperwild/pull/5) on `feat/convex-multiplayer`. Acceptance source head `419fdef` passed all four hosted multiplayer cases and sixteen regression cases against the Cloud Development backend. Published `main` remains at merged PR #4 (`3240b0d`) with no production Convex configuration, and PR #5 is unmerged. Later documentation commits require their own CI checks; the identities below preserve the tested source.
+The implementation is merged through [PR #5](https://github.com/Davidson3556/Paperwild/pull/5) into `main` at `31e8b02e62d2095716624c173879ff1c902953b4`. **[The public game](https://paperwild.vercel.app/) supports online friend play** through a configured Convex Production deployment. The Development preview has its own backend and historical acceptance evidence.
 
-## Current cloud preview configuration
+## Current Production configuration
+
+| Binding | Value |
+| --- | --- |
+| Frontend origin | [paperwild.vercel.app](https://paperwild.vercel.app/) |
+| Application revision | `31e8b02e62d2095716624c173879ff1c902953b4` |
+| Public client URL | `https://grateful-cuttlefish-105.convex.cloud` |
+| Vercel variable | `VITE_CONVEX_URL`, Production environment |
+| Ready Vercel deployment | `dpl_5uZMUS4vArHxYwkdLs5T5zVjKohv` |
+| Frontend bundle | `assets/index-DRVksUc-.js` |
+
+The frontend was rebuilt after saving the Production URL without a trailing newline. An environment change does not update an already built Vite bundle. Use the public alias above: the unique deployment URL retains Vercel authentication protection.
+
+Three separate Production TestSprite executions passed invitation/shared-capture, consent, and reload/local-save checks with independent browsers. All 48 public payloads matched the reference build before dispatch, and stored source/version readback remained unchanged afterward. The complete post-run 48-file audit remains incomplete after download timeouts; the Production outage case was not executed. See the [October 25 Production record](PRODUCTION_VERIFICATION_2026-10-25.md) for exact runs and limits.
+
+## Development preview acceptance — October 24
 
 On October 24, the Paperwild project in team `awokoya-davidson` deployed its room functions and schema to the US East **Development** deployment `fast-starling-207` from `5633a86`. The application and Convex source are unchanged from `6f17355`.
 
@@ -16,9 +31,8 @@ On October 24, the Paperwild project in team `awokoya-davidson` deployed its roo
 | Acceptance source head | `419fdef2b848796fd909aa86656aef760583b07d` |
 | Acceptance Vercel deployment | `dpl_9DNGdtNoT7C1Ldwfo8UkWfY1Cs4W` |
 | Matching public frontend build | `index-EfeOJs9J.js`; all 48 application payloads verified |
-| Production | `main` at `3240b0d`; no Convex URL configured |
 
-The URL is public client configuration, not a deploy credential. Other previews and Production do not inherit this branch override. The [strict regression workflow](TESTSPRITE_PR_GATE.md) builds with the same URL and compares every public application payload before dispatching tests. [Run 40136980632](https://github.com/Davidson3556/Paperwild/actions/runs/40136980632) passed all sixteen frontend regression cases at acceptance source head `419fdef`; the separate four-case execution establishes its own multiplayer assertions.
+The URL is public client configuration, not a deploy credential. Other previews and Production do not inherit this branch override; Production has the separate binding above. The [strict regression workflow](TESTSPRITE_PR_GATE.md) used the matching Development URL and compared every public application payload for this recorded acceptance. [Run 40136980632](https://github.com/Davidson3556/Paperwild/actions/runs/40136980632) passed all sixteen frontend regression cases at acceptance source head `419fdef`; the separate four-case execution establishes its own multiplayer assertions.
 
 The [four hosted multiplayer scripts](testsprite/online-overrides/README.md) target separate TestSprite project `5ac48e78-b1a2-4509-ad73-0b3efe0c3343`. [Execution `5db8197c`](https://www.testsprite.com/dashboard-v3/o/f7454a95-e992-581a-98e0-4edd142a0891/projects/5ac48e78-b1a2-4509-ad73-0b3efe0c3343/execution/5db8197c-e6f9-4342-bc7d-5f98095166d7) at acceptance source head `419fdef` passed **4/4**, with no failed, skipped or timed-out case. All original invitation/capture, consent, reload/local-save and offline/no-queue/same-seat recovery assertions passed. The [summary](testsprite/online-cloud-acceptance-summary.json) and [completed audit](testsprite/online-cloud-acceptance-verification.json) verify committed source and hosted versions before/after, all 48 payloads and stable source/deployment identity. API run-version/auto-heal nulls remain null; replay and source checks are recorded separately.
 
@@ -114,7 +128,11 @@ The connection badge reports this browser's WebSocket. **Friend · seat taken** 
 
 ## Run the test layers
 
-At acceptance source head `419fdef`, [regular CI](https://github.com/Davidson3556/Paperwild/actions/runs/40136980700) passed **150 app/gate tests, 20 backend tests, TypeScript and build**. These are separate from hosted browser execution, and later commits need their own checks. The [October 24 chooser verification](NEW_GAME_VERIFICATION_2026-10-24.md) records 122 passing app tests, strict TypeScript/build, and browser checks before the first-visit guide and mandatory entry choice were added. The table below preserves the earlier local multiplayer verification date.
+[Merged-main CI](https://github.com/Davidson3556/Paperwild/actions/runs/40139506887) passed **150 app/gate tests, 20 backend tests, TypeScript and build**. The [PR #5 regression run](https://github.com/Davidson3556/Paperwild/actions/runs/40137927136) passed **16/16 strict TestSprite cases**. These are separate from the three Production multiplayer case passes and their [postflight evidence limit](PRODUCTION_VERIFICATION_2026-10-25.md#evidence-boundary). Later source changes require new checks.
+
+The proposed [general PR regression workflow](TESTSPRITE_PR_GATE.md) builds the exact PR head with the Development `VITE_CONVEX_URL`, serves it at `127.0.0.1:4173`, and opens TestSprite's native tunnel. It verifies all sixteen stored sources/versions, project membership, replay results, and all public build files before and after execution. This removes the fixed feature-preview dependency and needs no public Vercel preview exception. Its first execution and required-check activation are pending; it does not alter Production's separate Convex binding or establish new multiplayer acceptance.
+
+The [October 24 chooser verification](NEW_GAME_VERIFICATION_2026-10-24.md) records 122 passing app tests, strict TypeScript/build, and browser checks before the first-visit guide and mandatory entry choice were added. The table below preserves the earlier local multiplayer verification date.
 
 | Command | Scope | Recorded local result (October 22) |
 | --- | --- | --- |
@@ -138,7 +156,7 @@ The earlier **14/14 TestSprite** result belongs to the published startup correct
 
 Keep the backend and frontend on the same source revision. A hosted frontend must connect to its intended cloud deployment; a loopback URL points each visitor at their own machine.
 
-The accepted preview uses Development only. Merging the frontend alone does not configure Production: online play remains disabled there, while club and same-device play continue. A production multiplayer release requires the backend, public client URL, rebuild and verification below.
+The current Production binding is recorded above. For a new environment or later release, deploy the matching backend, save its public client URL, rebuild the frontend, and verify the resulting public origin. Merging frontend source alone cannot configure a backend or replace a URL already compiled into a bundle.
 
 1. Sign in to Convex and select or create the intended cloud project. For an anonymous local project, `npx convex login` starts account linking. Configure an existing cloud project with `npm run convex:dev -- --configure existing --dev-deployment cloud`, or use `--configure new --dev-deployment cloud` to create one. Confirm the project/deployment shown by the CLI before proceeding.
 2. Validate the source with `npm test`, `npm run test:convex`, and `npm run build`. Publish the intended production backend using `npm run convex:deploy`. This deploys functions, schema, and indexes to the selected project's production deployment; follow the CLI confirmation. Obtain that production deployment's public client URL from the Convex dashboard.

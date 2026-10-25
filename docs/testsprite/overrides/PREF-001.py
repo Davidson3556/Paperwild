@@ -1,4 +1,4 @@
-"""Strict TestSprite replay against the current Paperwild PR preview.
+"""Strict TestSprite replay of the exact PR build through its owned tunnel.
 
 Repairs test selectors and stage placement only. Uses actual controls, semantic
 board attributes and read-only DOM snapshots; no game/storage/timer injection.
@@ -11,9 +11,14 @@ from urllib.parse import urlsplit
 from playwright import async_api
 from playwright.async_api import expect
 
-TARGET = os.environ.get('TEST_TARGET_URL', 'https://paperwild-git-feat-convex-multiplayer-davidson3556s-projects.vercel.app/')
+TARGET = os.environ.get('TEST_TARGET_URL', 'http://127.0.0.1:4173/')
+_target = urlsplit(TARGET)
+if (_target.scheme != 'http' or _target.netloc != '127.0.0.1:4173'
+        or _target.path not in ('', '/') or _target.query or _target.fragment):
+    raise RuntimeError('This CI replay requires the owned 127.0.0.1:4173 PR-build tunnel.')
 ORIGIN = '{0.scheme}://{0.netloc}'.format(urlsplit(TARGET))
-EXPECTED_BUNDLE = os.environ.get('TEST_EXPECTED_BUNDLE', 'index-EfeOJs9J.js')
+EXPECTED_BUNDLE = os.environ.get('TEST_EXPECTED_BUNDLE')
+LOADED_BUNDLES = []
 BROWSER_ARGS = ['--window-size=1280,720', '--disable-dev-shm-usage', '--ipc=host', '--single-process']
 PHASE = 'module-loaded'
 
@@ -126,7 +131,15 @@ async def navigate(page, reload=False):
     check('{0.scheme}://{0.netloc}'.format(urlsplit(page.url))==ORIGIN,'Navigation left the configured target origin')
     await settled(page)
     snapshot=await page.evaluate(SNAPSHOT)
-    check(any(urlsplit(url).path.endswith('/assets/'+EXPECTED_BUNDLE) for url in snapshot['scripts']), 'Execution did not load the reviewed application bundle '+EXPECTED_BUNDLE)
+    # The CI gate hashes every served build file before and after replay.
+    # Bind this browser to that origin and one hashed application module too.
+    application_scripts = [urlsplit(url) for url in snapshot['scripts']
+                           if '{0.scheme}://{0.netloc}'.format(urlsplit(url)) == ORIGIN
+                           and re.fullmatch(r'/assets/index-[A-Za-z0-9_-]+\.js', urlsplit(url).path)]
+    check(len(application_scripts) == 1, 'Expected one same-origin hashed application module from the verified PR build')
+    loaded_bundle = application_scripts[0].path.rsplit('/', 1)[-1]
+    LOADED_BUNDLES.append(loaded_bundle)
+    check(EXPECTED_BUNDLE is None or loaded_bundle == EXPECTED_BUNDLE, 'Application bundle differs from the explicitly requested bundle')
     return snapshot
 
 
@@ -207,7 +220,7 @@ async def run_test():
                     await asyncio.wait_for(resource.stop() if name=='playwright' else resource.close(),timeout=5)
                 except Exception as error:
                     cleanup_errors.append({'operation':name+'.close','type':type(error).__name__,'message':str(error)[:1200]})
-        report={'case':CASE_ID,'target':TARGET,'bundle':EXPECTED_BUNDLE,'status':'passed' if original is None and not cleanup_errors else 'failed',
+        report={'case':CASE_ID,'target':TARGET,'bundle':LOADED_BUNDLES[-1] if LOADED_BUNDLES else None,'expectedBundle':EXPECTED_BUNDLE,'status':'passed' if original is None and not cleanup_errors else 'failed',
                 'originalException':None if original is None else {'phase':failure_phase,'type':type(original).__name__,'message':str(original)},
                 'cleanupErrors':cleanup_errors,'evidence':log}
         try:

@@ -1,8 +1,11 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { readFile } from 'node:fs/promises';
+import { mkdir, mkdtemp, readFile, rm, symlink, writeFile } from 'node:fs/promises';
 import { createHash } from 'node:crypto';
-import { compareBuildFiles, previewForBranch, selectVercelStatus, validateManifest, vercelDeploymentId, verifyPreviewIndex, verifyProjectCases, verifyRun, verifyStoredCode, verifySummary } from '../scripts/testsprite-ci.mjs';
+import { request } from 'node:http';
+import { tmpdir } from 'node:os';
+import { resolve } from 'node:path';
+import { compareBuildFiles, LOCAL_TARGET_URL, previewForBranch, selectVercelStatus, startBuildServer, strictLocalTarget, targetForPullRequest, validateManifest, vercelDeploymentId, verifyCheckoutState, verifyPreviewBuild, verifyPreviewIndex, verifyProjectCases, verifyRun, verifyStoredCode, verifySummary, verifyTunnelReceipt, withBuildServer } from '../scripts/testsprite-ci.mjs';
 
 const manifest = JSON.parse(await readFile(new URL('../docs/testsprite/pr5-stored-code-manifest.json', import.meta.url), 'utf8'));
 const scripts = validateManifest(manifest);
@@ -88,6 +91,140 @@ test('actual run facts must prove target and unqualified replay; supplied versio
   assert.throws(() => verifyRun(expected, { ...actual, testId: 'another-test' }, target), /test\/run pair/);
   assert.throws(() => verifyRun(expected, { ...actual, runId: 'another-run' }, target), /test\/run pair/);
   assert.throws(() => verifyRun(expected, { ...actual, source: 'portal' }, target), /CLI replay/);
+});
+
+test('the HTTP exception accepts only the literal owned loopback origin and root', () => {
+  assert.equal(strictLocalTarget('http://127.0.0.1:4173'), LOCAL_TARGET_URL);
+  assert.equal(strictLocalTarget(LOCAL_TARGET_URL), LOCAL_TARGET_URL);
+  for (const wrong of ['http://localhost:4173/', 'http://127.0.0.1:4174/', 'http://127.0.0.1/',
+    'http://0.0.0.0:4173/', 'http://2130706433:4173/', 'http://127.0.0.1:4173/other',
+    'http://127.0.0.1:4173/?token=x', 'http://127.0.0.1:4173/#fragment',
+    'http://user:secret@127.0.0.1:4173/', 'https://127.0.0.1:4173/', ' http://127.0.0.1:4173/']) {
+    assert.throws(() => strictLocalTarget(wrong), /exactly/);
+  }
+  const expected = { ...scripts[0], runId: 'fresh', dispatchedAfter: '2026-10-25T12:00:00Z' };
+  const actual = { runId: 'fresh', testId: expected.testId, projectId: manifest.projectId, status: 'passed', source: 'cli',
+    targetUrl: LOCAL_TARGET_URL.slice(0, -1), codeVersion: null,
+    startedAt: '2026-10-25T12:00:01Z', finishedAt: '2026-10-25T12:00:02Z',
+    replay: { path: 'replay', reason: null, caveat: null } };
+  assert.equal(verifyRun(expected, actual, LOCAL_TARGET_URL).targetUrl, LOCAL_TARGET_URL);
+  assert.throws(() => verifyRun(expected, { ...actual, targetUrl: 'http://another.example:4173/' }, LOCAL_TARGET_URL), /exactly/);
+  assert.throws(() => verifyRun(expected, { ...actual, startedAt: '2026-10-25T11:59:59Z' }, LOCAL_TARGET_URL), /timestamps/);
+  assert.throws(() => verifyRun(expected, { ...actual, startedAt: null }, LOCAL_TARGET_URL), /timestamps/);
+  assert.throws(() => verifyRun(expected, { ...actual, targetUrl: 'http://another.example/' }, 'http://another.example/'), /HTTPS/);
+});
+
+test('future branch names use the owned build while fork, stale and closed PRs fail', () => {
+  const pr = { state: 'open', head: { sha: head, ref: 'new/chess-improvement', repo: { full_name: 'Davidson3556/Paperwild' } } };
+  assert.equal(targetForPullRequest(pr, head, LOCAL_TARGET_URL), LOCAL_TARGET_URL);
+  assert.equal(targetForPullRequest({ ...pr, head: { ...pr.head, ref: 'fix/a-completely-different-branch' } }, head, LOCAL_TARGET_URL), LOCAL_TARGET_URL);
+  assert.throws(() => targetForPullRequest({ ...pr, head: { ...pr.head, repo: { full_name: 'someone/fork' } } }, head, LOCAL_TARGET_URL), /same-repository/);
+  assert.throws(() => targetForPullRequest(pr, 'b'.repeat(40), LOCAL_TARGET_URL), /head/);
+  assert.throws(() => targetForPullRequest({ ...pr, state: 'closed' }, head, LOCAL_TARGET_URL), /head/);
+  assert.throws(() => targetForPullRequest(pr, head, target), /exactly/);
+  verifyCheckoutState(head, head + '\n', '');
+  assert.throws(() => verifyCheckoutState(head, 'b'.repeat(40), ''), /Checkout/);
+  assert.throws(() => verifyCheckoutState(head, head, ' M src/main.ts\n'), /source changed/);
+  assert.throws(() => verifyCheckoutState(head, head, '?? src/untracked.ts\n'), /untracked/);
+});
+
+test('a native tunnel receipt must own the session and match every actual summary identity', () => {
+  const runs = summary().runs;
+  const receipt = { tunnel: { clientId: '07cb7ab5-3a1b-48e1-86cd-2a156218679e', adopted: false }, maxConcurrency: 3, results: runs };
+  assert.equal(verifyTunnelReceipt(receipt, runs).owned, true);
+  assert.throws(() => verifyTunnelReceipt({ ...receipt, tunnel: { ...receipt.tunnel, adopted: true } }, runs), /owned/);
+  assert.throws(() => verifyTunnelReceipt({ ...receipt, tunnel: undefined }, runs), /owned/);
+  assert.throws(() => verifyTunnelReceipt({ ...receipt, tunnel: { ...receipt.tunnel, clientId: 'not-a-client-id' } }, runs), /owned/);
+  assert.throws(() => verifyTunnelReceipt({ ...receipt, results: runs.slice(1) }, runs), /incomplete/);
+  assert.throws(() => verifyTunnelReceipt({ ...receipt, results: runs.map((r, i) => i ? r : { ...r, runId: 'old-run' }) }, runs), /disagrees/);
+});
+
+async function buildFixture(t) {
+  const parent = await mkdtemp(resolve(tmpdir(), 'paperwild-gate-test-'));
+  const directory = resolve(parent, 'dist');
+  t.after(() => rm(parent, { recursive: true, force: true }));
+  await mkdir(resolve(directory, 'assets'), { recursive: true });
+  await writeFile(resolve(directory, 'index.html'), '<!doctype html><html><body>Exact build</body></html>');
+  await writeFile(resolve(directory, 'assets/client.js'), 'export const game = "reviewed";\n');
+  return directory;
+}
+
+function rawRequest(targetUrl, path, method = 'GET') {
+  return new Promise((resolveRequest, reject) => {
+    const target = new URL(targetUrl);
+    const req = request({ hostname: target.hostname, port: target.port, method, path }, res => {
+      const chunks = [];
+      res.on('data', chunk => chunks.push(chunk));
+      res.on('end', () => resolveRequest({ status: res.statusCode, headers: res.headers, body: Buffer.concat(chunks).toString() }));
+      res.on('error', reject);
+    });
+    req.on('error', reject); req.end();
+  });
+}
+
+test('owned static server serves exact build bytes and rejects unsafe or unknown paths', async t => {
+  const directory = await buildFixture(t);
+  await writeFile(resolve(directory, '../outside-secret.txt'), 'outside build');
+  t.after(() => rm(resolve(directory, '../outside-secret.txt'), { force: true }));
+  const server = await startBuildServer(directory, { port: 0 });
+  t.after(() => server.close());
+  assert.equal(new URL(server.targetUrl).hostname, '127.0.0.1');
+  const proof = await verifyPreviewBuild(directory, server.targetUrl);
+  assert.deepEqual({ fileCount: proof.fileCount, treeSha256: proof.treeSha256 }, server.initialBuildProof);
+  assert.equal(proof.index.normalization, 'none');
+  assert.equal((await rawRequest(server.targetUrl, '/?invite=public-code')).status, 200);
+  const script = await rawRequest(server.targetUrl, '/assets/client.js');
+  assert.equal(script.body, 'export const game = "reviewed";\n');
+  assert.equal(script.headers['content-type'], 'application/javascript; charset=utf-8');
+  assert.equal((await rawRequest(server.targetUrl, '/assets/client.js', 'HEAD')).body, '');
+  assert.equal((await rawRequest(server.targetUrl, '/assets/client.js', 'POST')).status, 405);
+  for (const path of ['/../outside-secret.txt', '/%2e%2e/outside-secret.txt', '/assets/%2e%2e/%2e%2e/outside-secret.txt', '/%5c..%5coutside-secret.txt', '/%00', '/%ZZ', '//other.example/index.html']) {
+    const response = await rawRequest(server.targetUrl, path);
+    assert.equal(response.status, 400, path);
+    assert.ok(!response.body.includes('outside build'));
+  }
+  assert.equal((await rawRequest(server.targetUrl, '/missing')).status, 404);
+});
+
+test('an occupied port is refused without taking ownership of the other server', async t => {
+  const directory = await buildFixture(t), first = await startBuildServer(directory, { port: 0 });
+  t.after(() => first.close());
+  const port = Number(new URL(first.targetUrl).port);
+  await assert.rejects(startBuildServer(directory, { port }), { code: 'EADDRINUSE' });
+  assert.equal((await rawRequest(first.targetUrl, '/')).status, 200);
+});
+
+test('a failed operation closes the owned server and releases its port', async t => {
+  const directory = await buildFixture(t);
+  let owner;
+  await assert.rejects(withBuildServer(directory, async server => {
+    owner = server;
+    assert.equal((await rawRequest(server.targetUrl, '/')).status, 200);
+    throw new Error('simulated replay failure');
+  }, { port: 0 }), /simulated replay failure/);
+  assert.equal(owner.closed, true);
+  await owner.close();
+  const replacement = await startBuildServer(directory, { port: Number(new URL(owner.targetUrl).port) });
+  await replacement.close();
+});
+
+test('a frozen server rejects local build mutations instead of serving new bytes', async t => {
+  const directory = await buildFixture(t), server = await startBuildServer(directory, { port: 0 });
+  t.after(() => server.close());
+  await server.assertUnchanged();
+  await writeFile(resolve(directory, 'assets/client.js'), 'changed during replay');
+  assert.equal((await rawRequest(server.targetUrl, '/assets/client.js')).body, 'export const game = "reviewed";\n');
+  await assert.rejects(server.assertUnchanged(), /built files changed/);
+  await assert.rejects(verifyPreviewBuild(directory, server.targetUrl), /bytes differ/);
+});
+
+test('symlinks and absent application HTML are rejected before binding a server', async t => {
+  const directory = await buildFixture(t);
+  await symlink(resolve(directory, 'index.html'), resolve(directory, 'assets/leak.html'));
+  await assert.rejects(startBuildServer(directory, { port: 0 }), /symlink/);
+  await rm(resolve(directory, 'assets/leak.html'));
+  await rm(resolve(directory, 'index.html'));
+  await assert.rejects(startBuildServer(directory, { port: 0 }), /missing index/);
 });
 
 test('Vercel status selection binds its status to the exact head and project', () => {

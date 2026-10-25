@@ -2,23 +2,28 @@
 
 **Chess, drawn to life.** A woodland chess club in a pencil field notebook: watercolor characters blink, wave their team mittens, celebrate a good move, and turn every capture into a small cartoon story.
 
-[Play the published demo](https://paperwild.vercel.app/) · [Try the PR #5 preview](https://paperwild-git-feat-convex-multiplayer-davidson3556s-projects.vercel.app/) · [Review PR #5](https://github.com/Davidson3556/Paperwild/pull/5) · [TestSprite Hackathon Season 4](https://www.testsprite.com/hackathon-s4) · [Verification records](#testing-and-evidence)
+[Play Paperwild](https://paperwild.vercel.app/) · [Merged multiplayer PR #5](https://github.com/Davidson3556/Paperwild/pull/5) · [TestSprite Hackathon Season 4](https://www.testsprite.com/hackathon-s4) · [Verification records](#testing-and-evidence)
 
-**Published release:** [PR #4](https://github.com/Davidson3556/Paperwild/pull/4) is merged into `main` at `3240b0d`. Production has no Convex configuration. Historical startup results are preserved under [Testing and evidence](#testing-and-evidence).
+## For judges
 
-**PR #5 acceptance:** [Required onboarding and Convex friend rooms](https://github.com/Davidson3556/Paperwild/pull/5) passed **4/4 hosted multiplayer cases** and **16/16 strict frontend regression cases** at acceptance source head `419fdef`. [Regular CI](https://github.com/Davidson3556/Paperwild/actions/runs/40136980700) also passed **150 app/gate tests, 20 backend tests, TypeScript and build**. The preview uses Cloud Development backend `fast-starling-207`, scoped only to this branch. The PR is unmerged and Production remains unconfigured. See the [cloud verification record](docs/CONVEX_CLOUD_VERIFICATION_2026-10-24.md) for exact source/deployment identity and evidence limits; later documentation commits need their own CI checks.
+**[Open the live game](https://paperwild.vercel.app/). Online friend play is live.** PR #5 is merged into `main` at `31e8b02`; Production uses its own Convex backend, separate from the Development preview.
 
-[Local multiplayer verification and screenshots](docs/CONVEX_VERIFICATION_2026-10-22.md) record two synchronized browsers, captures, agreed Undo/rematch, reload, offline-save separation and phone-size controls against the local backend.
+A quick tour, about a minute with a second browser ready: finish the first-visit guide, choose **With a friend → Play together here**, and keep animations enabled. Turn **Sound on** to hear the cast.
 
-The [October 24 onboarding verification](docs/ONBOARDING_VERIFICATION_2026-10-24.md) records 131 passing app tests, the production build, and browser checks of mandatory first choice, guide replay, returning games and invitations. The earlier [optional chooser checks](docs/NEW_GAME_VERIFICATION_2026-10-24.md) retain their original scope. Follow the [entry and two-window testing walkthrough](docs/CONVEX_SETUP.md#first-visit-and-opponent-choice) to try the local flows yourself.
+1. Try **e2 → e5 twice**. The acorn refuses the illegal moves; the board stays unchanged, and the repeated attempt reveals its temperament.
+2. Open **Little chess stories** (in **Field kit** on smaller screens), then **One final move**. The queen on g6 is already selected: click **g7** directly for `Qg7#` and the checkmate finisher.
+3. Close the result, then open **Little chess stories → Tea on the sidelines**. The pawn on e4 is already selected: click **d5** for the scuffle, stretcher crew, and woodland send-off. Ring the bell or scatter petals beside the board. Opening a story replaces the current local position.
+4. Open **Across the woods → Write an invitation**. Open the invitation in a separate browser or private window, finish its guide, and explicitly choose **Take a seat**. Before White's first move, try moving a Black piece in the second browser: it is refused. Then White plays **e2 → e4**, Black **d7 → d5**, and White **e4 → d5**; both boards share the capture. No account is required.
 
-[Historical startup evidence and runner investigation](docs/STARTUP_VERIFICATION_2026-10-21.md)
+- **Main CI:** [150 app/gate tests, 20 backend tests, TypeScript and build passed](https://github.com/Davidson3556/Paperwild/actions/runs/40139506887).
+- **PR regression:** [16/16 strict TestSprite cases passed](https://github.com/Davidson3556/Paperwild/actions/runs/40137927136).
+- **Live multiplayer:** [three separate Production TestSprite cases passed](docs/PRODUCTION_VERIFICATION_2026-10-25.md#production-testsprite-results), using independent browsers for shared moves, consent, and saved-seat return. The record distinguishes these passes from the incomplete post-run artifact audit and the Development-only outage test.
 
-![Actual local field notebook with the woodland cast, team mittens, camp, and remembrance clearing](docs/media/paperwild-additions-desktop.jpg)
+![Production online game on October 25: Black's connected seat, with White on e4 and Black on d5 after shared play and agreed Undo](docs/media/paperwild-production-multiplayer-2026-10-25.jpg)
 
 ## Contents
 
-- [The game](#the-game) · [Run locally](#run-locally) · [Playing and controls](#playing-and-controls)
+- [For judges](#for-judges) · [The game](#the-game) · [Run locally](#run-locally) · [Playing and controls](#playing-and-controls)
 - [Gameplay flowchart](#game-flow) · [Online friend flow](#online-friend-flow) · [App architecture](#app-architecture) · [Project structure](#project-structure)
 - [Convex setup and deployment](docs/CONVEX_SETUP.md)
 - [Testing and evidence](#testing-and-evidence) · [Testing and release workflow](#testing-and-release-workflow)
@@ -26,7 +31,7 @@ The [October 24 onboarding verification](docs/ONBOARDING_VERIFICATION_2026-10-24
 
 ## The game
 
-- **Standard chess, curious company.** Play the computer at three bounded difficulty levels or take turns with a friend on one device. The PR also implements shared online games when a matching Convex backend is configured. Castling, en passant, four promotion choices, checkmate, and draw conditions follow `chess.js`.
+- **Standard chess, curious company.** Play the computer at three bounded difficulty levels, take turns with a friend on one device, or invite a friend online through the live Convex backend. Castling, en passant, four promotion choices, checkmate, and draw conditions follow `chess.js`.
 - **A little help before the first move.** A first-visit tour points out the board, Field kit, Journal, and optional sound. Then choose the club or a friend before a fresh game can begin. The first required choice has no preselected opponent. Returning unfinished games keep their history, and **How to play → Take a quick tour** reopens the guide without resetting them.
 - **Across the woods.** A small postcard opens a room dialog on the existing game page. Write an invitation to take Amber/White, then send its link or 12-character code to the friend who takes Indigo/Black. Both seats must be taken before play begins. The server authorizes each turn and publishes the shared board; both browsers present its moves through the existing characters and capture stories. Undo takes back one ply with the other player's agreement, and another game starts only after an accepted rematch. Rooms last 24 hours from creation. Your own connection is shown honestly; a taken friend seat does not claim that the friend is currently online.
 - **A cast with personality.** Acorn pawns, stump rooks, hare knights, moth bishops, fox queens, and badger kings breathe, blink, and move in their own ways. Hover brings a smile and wave; selection adds a delighted jump. Ask for an impossible move and the character scrunches its eyes into “> <”, shakes its head and wags a mitten (“nuh-uh!”, “certainly not!”) while the square is crossed out in red. Touching the other side's piece gets a “not yours!”, a piece with no moves says it's stuck, and the message explains when your king is in check. Keep insisting and the cast shows its temperament: stumps, foxes and badgers scowl with angry eyebrows, flush red, stomp and let off steam (“hmph!” then “GRRR!”), while acorns, hares and moths raise worried eyebrows, droop and cry, with a rain cloud on the third try (“aww…” then “waaah!”). A calm pause or a legal move resets them. Amber/White and Indigo/Black have matching mittens, scarves, and distinct ground washes.
@@ -38,7 +43,7 @@ The [October 24 onboarding verification](docs/ONBOARDING_VERIFICATION_2026-10-24
 - **The game comes out of a notebook.** While artwork and fonts load, an acorn sketches itself on the cover and a ribbon bookmark shows progress. The acorn hops, the band snaps, and the cover opens with fluttering pages before the game appears. On the visible board, pencil lines draw and residents rise row by row. Repeat visits retain the full choreography. **Skip introduction** works by keyboard and shortens the notebook opening; visible pencil drawing and pop-up still follow. Reduced motion keeps the cover readable and enters without spins or unfolding pieces.
 - **A place to return to.** Unfinished games resume with their history, captures, and study context. A completed game or study opens a fresh standard board on the next load while preserving the finished chapter separately. Before making a new move, use **Field kit → Revisit last finished game** to recover its history, captured friends, and remembrance garden. Valid settings remain; an ongoing game or study cannot be replaced by this shortcut.
 
-For a short walkthrough, follow the [90-second demo script](docs/DEMO_SCRIPT.md). Its standard-game capture sequence shows named residents, the remembrance garden, and a downloadable keepsake before the checkmate finale.
+The [judge tour above](#for-judges) covers the current live game. The earlier [90-second recording script](docs/DEMO_SCRIPT.md) offers a longer standard-game capture sequence with named residents, the remembrance garden, and a downloadable keepsake; its dated verification notes retain their original scope.
 
 ## Run locally
 
@@ -47,12 +52,11 @@ Requires **Node.js 22.18+** and npm. Computer and same-device play work without 
 ```sh
 git clone https://github.com/Davidson3556/Paperwild.git
 cd Paperwild
-git switch feat/convex-multiplayer
 npm ci
 npm run dev
 ```
 
-Open **http://127.0.0.1:4173**. A clone initially checks out the published `main`; the `git switch` above checks out the remote feature branch for PR #5, which contains onboarding and multiplayer.
+Open **http://127.0.0.1:4173**. The default `main` branch includes onboarding and Convex multiplayer from merged PR #5.
 
 For online play, start **`npm run convex:dev`** in another terminal and follow the CLI setup prompts. Choose a local deployment to develop on this machine. The CLI generates `.env.local`, including `VITE_CONVEX_URL`, and the generated API files. Keep it running, then restart Vite so the URL is loaded. Two tabs can take separate seats. See [Convex setup](docs/CONVEX_SETUP.md) for the complete local and cloud instructions.
 
@@ -288,9 +292,11 @@ The tree highlights the entry points; the implementation table above links the s
 
 Local test files cover chess integrity, deterministic gait/capture plans, resident histories and naming, ceremony queue reconciliation, procedural voice signals, mocked audio lifecycle, and online transport/history reconciliation. Backend tests exercise real Convex function handlers in `convex-test`; separate opt-in integration tests connect real WebSocket clients to a local backend. `npm run build` includes strict frontend and backend type checking. These checks are separate from actual browser observations and physical listening quality.
 
+- **October 25 Production release:** PR #5 is merged at `31e8b02`. [Main CI](https://github.com/Davidson3556/Paperwild/actions/runs/40139506887) passed **150 app/gate tests, 20 backend tests, TypeScript and build**; the [PR #5 strict regression run](https://github.com/Davidson3556/Paperwild/actions/runs/40137927136) passed **16/16**. Three independently dispatched Production TestSprite cases passed against the rebuilt public game. All 48 public payloads matched the reference build before testing, and stored scripts were unchanged afterward; a complete post-run 48-file audit remains incomplete because downloads timed out. The [Production verification record](docs/PRODUCTION_VERIFICATION_2026-10-25.md) links each actual run and identifies the remaining evidence boundary. The outage case was verified on Development, not Production.
+
 - **October 24 acceptance source head `419fdef2b848796fd909aa86656aef760583b07d`:** [CI](https://github.com/Davidson3556/Paperwild/actions/runs/40136980700) passed **150/150 app/gate tests, 20/20 backend tests, TypeScript and build**. The [strict TestSprite workflow](https://github.com/Davidson3556/Paperwild/actions/runs/40136980632) passed **16/16 frontend regression cases**. Vercel deployment `dpl_9DNGdtNoT7C1Ldwfo8UkWfY1Cs4W` serves `index-EfeOJs9J.js`, bound to `fast-starling-207`; the backend was deployed from `5633a86` with unchanged application/backend source from `6f17355`. These checks identify the acceptance source, not a later documentation commit.
 
-- **Hosted multiplayer: 4 passed / 0 failed / 0 skipped / 0 timed out.** [Execution `5db8197c`](https://www.testsprite.com/dashboard-v3/o/f7454a95-e992-581a-98e0-4edd142a0891/projects/5ac48e78-b1a2-4509-ad73-0b3efe0c3343/execution/5db8197c-e6f9-4342-bc7d-5f98095166d7) passed all four committed scripts at acceptance source head `419fdef`: invitations/shared capture, Undo/rematch consent, reload/local-save separation and genuine offline/no-queue/same-seat recovery. The [summary](docs/testsprite/online-cloud-acceptance-summary.json) and [completed audit](docs/testsprite/online-cloud-acceptance-verification.json) verify hosted source/versions before and after, unchanged head/deployment and all 48 public payloads. API run-version and auto-heal nulls remain null; explicit `--no-auto-heal`, unchanged sources and unqualified replay are verified separately.
+- **October 24 Development multiplayer: 4 passed / 0 failed / 0 skipped / 0 timed out.** [Execution `5db8197c`](https://www.testsprite.com/dashboard-v3/o/f7454a95-e992-581a-98e0-4edd142a0891/projects/5ac48e78-b1a2-4509-ad73-0b3efe0c3343/execution/5db8197c-e6f9-4342-bc7d-5f98095166d7) passed all four committed scripts at acceptance source head `419fdef`: invitations/shared capture, Undo/rematch consent, reload/local-save separation and genuine offline/no-queue/same-seat recovery. The [summary](docs/testsprite/online-cloud-acceptance-summary.json) and [completed audit](docs/testsprite/online-cloud-acceptance-verification.json) verify hosted source/versions before and after, unchanged head/deployment and all 48 public payloads. API run-version and auto-heal nulls remain null; explicit `--no-auto-heal`, unchanged sources and unqualified replay are verified separately.
 
 - The [cloud verification record](docs/CONVEX_CLOUD_VERIFICATION_2026-10-24.md) preserves earlier browser-start failures, the [first 3/1 acceptance result](docs/testsprite/online-cloud-first-acceptance-verification.json), the [failed event-order diagnostic](docs/testsprite/online-cloud-offline-probe-verification.json) and their source identities. Its supplementary same-Chrome-profile two-tab capture/Undo check was not independent-context evidence; it remains separate from the final four-case pass.
 
@@ -321,7 +327,7 @@ The [startup verification record](docs/STARTUP_VERIFICATION_2026-10-21.md) prese
 
 ## Testing and release workflow
 
-Local checks, direct visual observations, native TestSprite, and the Portal PR suite produce separate evidence. This chart shows the release path; a new correction needs new evidence even when its parent release was green.
+Local checks, direct visual observations, native TestSprite, and the Portal PR suite produce separate evidence. The proposed general PR gate below serves the exact checked-out PR build through TestSprite's native tunnel. Its first execution and required-check activation are pending; earlier preview passes remain the historical results linked above.
 
 ```mermaid
 flowchart TD
@@ -330,26 +336,29 @@ flowchart TD
     localPass -->|"No"| correction["Fix the proven app or test cause"]
     correction --> changes
     localPass -->|"Yes"| live["Local WebSocket tests and two-browser flow"]
-    live --> native["Matching frontend/backend preview and new TestSprite acceptance"]
+    live --> native["Matching frontend/backend multiplayer acceptance"]
     native --> audit["Inspect assertions and save audited evidence"]
     localPass -.->|"When published"| pullRequest["Push branch and open or update PR"]
-    pullRequest --> hosting["GitHub CI and Vercel preview"]
-    hosting --> portalReady{"Preview reachable and Portal dispatch ready?"}
-    portalReady -->|"No"| blocked["Resolve access or dispatch failure"]
-    portalReady -->|"Yes"| portal["Strict Actions job replays the 16 reviewed scripts"]
-    portal --> acceptance{"Required assertions pass?"}
+    pullRequest --> ci["Regular tests, backend checks, types and build"]
+    pullRequest --> exactBuild["Build exact PR head; serve 127.0.0.1:4173"]
+    exactBuild --> tunnel["Open native TestSprite tunnel"]
+    tunnel --> preflight["Pin 16 scripts, versions, membership and every build file"]
+    preflight --> portal["Replay all 16 reviewed scripts without auto-heal"]
+    portal --> postflight["Verify replay and repeat source, membership and file checks"]
+    postflight --> acceptance{"Both CI jobs and all audits pass?"}
+    ci --> acceptance
     acceptance -->|"No"| correction
     acceptance -->|"Yes"| release["Review PR and verify the published build"]
 
     classDef checked fill:#e6eddf,stroke:#7e916c,color:#2f3b29
-    classDef attention fill:#f6e0dc,stroke:#a55c53,color:#5a302c
     class localChecks,audit checked
-    class blocked attention
 ```
 
 The saved [Portal plan](docs/testsprite/portal-plan.yaml) describes sixteen cases, including onboarding and required opponent choice. All **16 reviewed scripts passed** the historical [October 24 pre-cloud replay](https://www.testsprite.com/dashboard-v3/o/f7454a95-e992-581a-98e0-4edd142a0891/projects/dafdf75c-04a3-467f-acc2-4359af6b1d8e/execution/625ffd76-0868-49a4-b6f2-f7f878e2e965), dispatched with `--no-auto-heal`. The [verification record](docs/TESTSPRITE_ONBOARDING_RUN_2026-10-24.md) preserves the initial shared-setup failure, correction, exact earlier build identity and [completed post-run audit](docs/testsprite/pr5-strict-verification.json). All sixteen replay/source checks and 48 public payloads matched that build. The API omits per-run `autoHeal` and returns null code versions; the evidence retains those nulls. The October 24 pre-cloud requirements were uploaded and processed in TestSprite Sources. That upload does not synchronize later repository edits automatically.
 
-The later [automatic App result and audit](docs/TESTSPRITE_AUTOMATIC_PR_AUDIT_2026-10-24.md) remain separate: **8 passed, 3 failed, 3 blocked, 2 cancelled**. The [strict Actions workflow](docs/TESTSPRITE_PR_GATE.md) is the approved replacement for that agent-driven trigger. The encrypted secret is configured and the trigger is disabled, while the App remains installed. The [current PR checks](https://github.com/Davidson3556/Paperwild/pull/5/checks) identify the actual latest-head CI job and its evidence; the earlier manual replay alone is not a green automatic gate.
+The later [automatic App result and audit](docs/TESTSPRITE_AUTOMATIC_PR_AUDIT_2026-10-24.md) remain separate: **8 passed, 3 failed, 3 blocked, 2 cancelled**. The [strict Actions workflow](docs/TESTSPRITE_PR_GATE.md) is the approved replacement for that agent-driven trigger. The encrypted secret is configured and the trigger is disabled, while the App remains installed. The [merged PR #5 checks](https://github.com/Davidson3556/Paperwild/pull/5/checks) preserve that PR's actual results.
+
+The proposed workflow removes the fixed feature-preview dependency: each trusted PR builds its own source, serves `dist/` at `127.0.0.1:4173`, and uses TestSprite's native tunnel. It pins all sixteen stored script bodies/versions, exact project membership, actual replay outcomes, and every public build file before and after execution. It uses the Development `VITE_CONVEX_URL` for this CI build; Production retains its separately configured backend. No public Vercel preview exception is required for the tunnel path. This revised path has not yet produced a passing execution. The planned `main` ruleset will require **Tests and production build** and **Verify all 16 stored TestSprite scripts** after verification; activation is not claimed here.
 
 The [four hosted multiplayer scripts](docs/testsprite/online-overrides/README.md) passed at acceptance source head `419fdef` in separate TestSprite project `5ac48e78-b1a2-4509-ad73-0b3efe0c3343`. All original gameplay and no-queue/recovery assertions passed, with actual reconnecting, isolated HTTP failure/success and no incoming-frame increase during the outage. Keeping that suite separate preserves the regression gate's exact sixteen-case membership. The original [ten-case online proposal](docs/testsprite/online-plan.yaml) remains **not executed or uploaded**. Recheck exact-head CI, matching frontend/backend deployment and stored-script evidence before release; later documentation commits do not inherit a new exact-head CI result from this acceptance run.
 
@@ -357,7 +366,9 @@ The [four hosted multiplayer scripts](docs/testsprite/online-overrides/README.md
 
 Computer and same-device play use a static frontend: install with **`npm ci`**, build with **`npm run build`**, and publish **`dist/`**. They need no environment variables.
 
-PR #5's acceptance source head `419fdef2b848796fd909aa86656aef760583b07d` passed against Convex Cloud **Development** backend `https://fast-starling-207.convex.cloud`. **`VITE_CONVEX_URL`** is scoped only to Preview branch `feat/convex-multiplayer`. Production `main` and other previews keep their existing configuration; no production Convex deployment or release is claimed. Merging the frontend alone leaves online play disabled in Production while club and same-device games remain available. [CONVEX_SETUP.md](docs/CONVEX_SETUP.md) records the binding and production setup, and the [cloud verification record](docs/CONVEX_CLOUD_VERIFICATION_2026-10-24.md) records the four-case preview acceptance. The PR is unmerged. Deployment/admin keys stay private and never belong in `VITE_*`, browser code or Git.
+PR #5 is merged into `main` at `31e8b02e62d2095716624c173879ff1c902953b4`. [Production](https://paperwild.vercel.app/) now uses Convex **Production** backend `https://grateful-cuttlefish-105.convex.cloud`, supplied through Production `VITE_CONVEX_URL` and included in a new Ready frontend build. The Development preview remains separate at `https://fast-starling-207.convex.cloud`; room codes do not transfer between them. [Convex setup](docs/CONVEX_SETUP.md) records both bindings, and the [October 25 Production record](docs/PRODUCTION_VERIFICATION_2026-10-25.md) identifies the deployed build, three actual multiplayer passes, and incomplete postflight audit. Deployment/admin keys stay private and never belong in `VITE_*`, browser code or Git.
+
+The proposed PR tunnel gate tests the runner's own build independently of Vercel deployment protection. Its pending execution does not replace the recorded Production checks or claim a new deployed release.
 
 The public source, merged game, successful automatic Portal execution, and GitHub integration evidence are available. Before a completed Season 4 submission:
 

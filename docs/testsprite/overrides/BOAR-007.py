@@ -12,7 +12,11 @@ from urllib.parse import urlsplit
 from playwright import async_api
 from playwright.async_api import expect
 
-TARGET = os.environ.get('TEST_TARGET_URL', 'https://paperwild-git-feat-convex-multiplayer-davidson3556s-projects.vercel.app/')
+TARGET = os.environ.get('TEST_TARGET_URL', 'http://127.0.0.1:4173/')
+_target = urlsplit(TARGET)
+if (_target.scheme != 'http' or _target.netloc != '127.0.0.1:4173'
+        or _target.path not in ('', '/') or _target.query or _target.fragment):
+    raise RuntimeError('This CI replay requires the owned 127.0.0.1:4173 PR-build tunnel.')
 ORIGIN = '{0.scheme}://{0.netloc}'.format(urlsplit(TARGET))
 BROWSER_ARGS = ['--window-size=1280,720', '--disable-dev-shm-usage', '--ipc=host', '--single-process']
 RUN_PHASE = 'module-loaded'

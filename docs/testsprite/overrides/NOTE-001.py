@@ -1,6 +1,6 @@
 """Stored-code TestSprite override. No app flags, timers, storage or game injection.
 
-TEST_TARGET_URL overrides the public PR-preview fallback. Use strict stored-code
+The target is the owned loopback PR-build tunnel. Use strict stored-code
 replay where supported. This file is self-contained for TestSprite's Python exec.
 The observer reads real rendered styles; it does not slow or alter application
 code. Missing temporal evidence raises an assertion rather than a fabricated pass.
@@ -12,7 +12,11 @@ from urllib.parse import urlsplit
 from playwright import async_api
 from playwright.async_api import expect
 
-TARGET = os.environ.get("TEST_TARGET_URL", "https://paperwild-git-feat-convex-multiplayer-davidson3556s-projects.vercel.app/")
+TARGET = os.environ.get('TEST_TARGET_URL', 'http://127.0.0.1:4173/')
+_target = urlsplit(TARGET)
+if (_target.scheme != 'http' or _target.netloc != '127.0.0.1:4173'
+        or _target.path not in ('', '/') or _target.query or _target.fragment):
+    raise RuntimeError('This CI replay requires the owned 127.0.0.1:4173 PR-build tunnel.')
 ORIGIN = "{0.scheme}://{0.netloc}".format(urlsplit(TARGET))
 
 RUN_PHASE = 'module-loaded'

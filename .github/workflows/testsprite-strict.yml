@@ -6,7 +6,6 @@ on:
 
 permissions:
   contents: read
-  statuses: read
   pull-requests: read
 
 concurrency:
@@ -17,10 +16,10 @@ jobs:
   strict-replay:
     name: Verify all 16 stored TestSprite scripts
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 45
     env:
-      # Public client configuration for this branch's preview, not a credential.
-      # Keep the strict build and verification report on the same backend URL.
+      # Public integration-test backend, not a credential. Each exact PR build
+      # is served on its own Actions runner through the native CLI tunnel.
       VITE_CONVEX_URL: https://fast-starling-207.convex.cloud
     steps:
       - name: Require a trusted same-repository PR and configured credential
@@ -61,7 +60,7 @@ jobs:
       - name: Install the verified official TestSprite CLI
         run: npm install --global @testsprite/testsprite-cli@0.15.0
 
-      - name: Run strict stored-code verification on the exact preview
+      - name: Run strict stored-code verification on the owned PR build
         env:
           GH_TOKEN: ${{ github.token }}
           TESTSPRITE_API_KEY: ${{ secrets.TESTSPRITE_API_KEY }}
