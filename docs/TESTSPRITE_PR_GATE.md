@@ -1,50 +1,74 @@
 # Strict TestSprite pull-request verification
 
-The GitHub App's automatic PR execution and a reviewed stored-code replay are separate results. The automatic run on PR #5 at `51db5fa` finished with **8 passed, 3 failed, 3 blocked and 2 cancelled**. Its GitHub check is a failure; a different passing execution does not make that App check pass. The [automatic-run audit](TESTSPRITE_AUTOMATIC_PR_AUDIT_2026-10-24.md) preserves the result and confirmed test-sequence defects.
+The [Actions workflow](../.github/workflows/testsprite-strict.yml) builds the exact head of each trusted same-repository PR and tests its unique deployment in the dedicated public **paperwild-ci** Vercel project. The main Paperwild project's deployment protection remains separate. Branch aliases and production URLs are not fallback targets.
 
-## Workflow in this PR
+The check context is **Verify all 16 stored TestSprite scripts**, under **TestSprite strict replay**. Its first full public-project execution [passed on PR6 head `6c727f4`](https://github.com/Davidson3556/Paperwild/actions/runs/40231487297). The [unaltered sanitized JSON](testsprite/public-ci-acceptance-2026-10-25.json) and [JUnit](testsprite/public-ci-acceptance-2026-10-25.xml) are exact copies of artifact `12613097685`. All sixteen independently read actual runs passed, used the exact discovered CI target, and confirmed unqualified stored-code replay. All sixteen canonical templates and bound source hashes/versions matched before and after; all 48 build files matched the same SHA-256 tree before and after, with the post-run audit complete.
 
-The [strict Actions workflow](../.github/workflows/testsprite-strict.yml) in this PR runs the sixteen reviewed scripts for `feat/convex-multiplayer`. It uses the official TestSprite CLI pinned to **0.15.0**, with `test run --all --project`, `--no-auto-heal`, `--wait`, and a checked summary. Before dispatch, the complete project test list must match exactly the sixteen IDs in the [current reviewed manifest](testsprite/pr5-stored-code-manifest.json). An extra or missing test fails the gate before execution. The CLI requires this project command for batches against public URLs; several explicit IDs require a local tunnel. View the [current PR checks](https://github.com/Davidson3556/Paperwild/pull/5/checks) for the result attached to the latest head.
+That evidence belongs to `6c727f4123b09602240ffa3f867ed4d2278708e9`, CI deployment `dpl_FQxpHrhj1m1KRkcwPbQs3M3hz8m7`, and its unique public origin. Later heads require their own successful checks; a configuration file or older result does not establish them.
 
-The suite contains the eight board cases, four notebook cases, preference and sound cases, and two onboarding cases in [the stored scripts](testsprite/overrides/README.md). Its scope is notebook entry, required opponent selection, club and same-device games, saved-state recovery, motion and sound scheduling. A pass does not establish remote multiplayer acceptance; that requires the deployed Convex functions and separate tests using two independent browser contexts.
+## Exact deployment discovery
 
-At acceptance source head `419fdef2b848796fd909aa86656aef760583b07d`, [strict run 40136980632](https://github.com/Davidson3556/Paperwild/actions/runs/40136980632) passed **16/16** with the preview bound to `fast-starling-207` and Vercel deployment `dpl_9DNGdtNoT7C1Ldwfo8UkWfY1Cs4W`. [Regular CI 40136980700](https://github.com/Davidson3556/Paperwild/actions/runs/40136980700) passed **150 app/gate tests, 20 backend tests, TypeScript and build**. These results belong to that acceptance source head; later documentation commits require their own checks.
+The gate uses read-only GitHub metadata rather than a Vercel token in Actions. It requires the current open same-repository PR head, complete paginated deployment records for that SHA, the observed Vercel bot identity (`35613825`), and a successful latest status in `Production – paperwild-ci` or `Preview – paperwild-ci`. A newer failure cannot fall back to an older success.
 
-The separate multiplayer [execution `5db8197c`](https://www.testsprite.com/dashboard-v3/o/f7454a95-e992-581a-98e0-4edd142a0891/projects/5ac48e78-b1a2-4509-ad73-0b3efe0c3343/execution/5db8197c-e6f9-4342-bc7d-5f98095166d7) passed **4/4 committed scripts**, with no failed, skipped or timed-out case, at the same acceptance source head. All original offline/no-queue/recovery assertions passed. The [summary](testsprite/online-cloud-acceptance-summary.json) and [completed audit](testsprite/online-cloud-acceptance-verification.json) verify hosted source/versions before and after, stable head/deployment, actual replay facts and all 48 public payloads. API run-version/auto-heal nulls remain null; explicit no-auto-heal dispatch, source integrity and replay are verified separately. This multiplayer result is independent of the sixteen-case regression gate. The [cloud verification record](CONVEX_CLOUD_VERIFICATION_2026-10-24.md) retains the [earlier 3/1 result](testsprite/online-cloud-first-acceptance-verification.json) and [failed event-order diagnostic](testsprite/online-cloud-offline-probe-verification.json) as historical failures.
+The project-specific `Vercel – paperwild-ci` commit status identifies the inspector and deployment ID. The authenticated Vercel bot comment must bind that same inspector to the stable CI project ID, `prj_K4XUFAg81KYU0YxfC0ISyU3JRhox`. The deployment status must provide consistent unique HTTPS origins in its environment, target and log URL fields. These are the actual observed GitHub response shapes; the deployment payload is empty and its optional GitHub App field is null.
 
-The workflow performs these checks:
+The approved unique-host namespaces are `paperwild-<nine-character-id>-davidson3556s-projects.vercel.app` and `paperwild-ci-<nine-character-id>-davidson3556s-projects.vercel.app`. The first real CI deployments used the former prefix, so hostname alone does not prove project identity. Credentials, ports, non-root paths, queries, fragments and mutable aliases are rejected. Discovery has a nine-minute bound; missing or inconsistent evidence fails before test dispatch.
 
-1. Reject fork PRs and missing credentials before checking out or building the branch. Trusted same-repository draft PRs run the suite too.
-2. Check out the exact PR head, validate the gate's failure handling, and build that source. GitHub Actions receives read-only repository, status and pull-request permissions; checkout does not persist its credential.
-3. Read the PR's current head and wait for the successful Vercel status belonging to that exact commit and Paperwild project.
-4. Compare **every local build file's SHA-256** with the reviewed public feature preview before testing, including JavaScript, CSS, workers, artwork and HTML. The branch alias is mutable, so it is not described as an immutable deployment.
-5. Verify that the complete project contains exactly the sixteen reviewed frontend test IDs. Verify all sixteen hosted source bodies, saved code versions and local script hashes against the reviewed manifest before dispatch. A missing or extra case, duplicate identity or source/version drift fails the job.
-6. Run the verified project using explicit `--no-auto-heal`. Require sixteen distinct passing run IDs and no failed, skipped, blocked, cancelled or timed-out result. Read each actual run to verify its project, test ID, target, CLI source and unqualified stored-code replay path. Recheck exact project membership after execution; concurrent membership changes cannot produce a passing gate.
-7. Read every stored source/version again, confirm that the PR head and Vercel deployment identity have not changed, and repeat the complete preview byte comparison. Recheck the PR head after that comparison.
-8. Retain a sanitized JSON report and JUnit result as Actions artifacts. Raw API responses, signed recordings, authorization values and raw CLI logs are excluded.
+## Reviewed templates and target-only binding
 
-Vercel can append its feedback script after the application HTML. The gate permits only the one exact observed tag whose deployment ID matches the successful Vercel status for this PR head. It records the raw and application HTML hashes separately. Changed application HTML, an extra script, a duplicate tag or a tag naming another deployment fails verification.
+Each [reviewed Python case](testsprite/overrides/README.md) contains exactly one canonical module-level line:
 
-The backend can return **`codeVersion: null` and `autoHeal: null`** in completed run facts. The report preserves those nulls. It records the requested `--no-auto-heal` behavior, rejects `autoHeal: true`, requires replay path `replay` with null reason/caveat, and verifies unchanged reviewed source/version before and after execution. It does not convert an unavailable individual attestation into a backend `false` or a supplied per-run version.
+```python
+TARGET = "__PAPERWILD_CI_TARGET_URL__"
+```
 
-## Authorized Actions setup
+The placeholder fails closed if the committed template is executed without binding. Before publishing a transport binding, the gate checks all sixteen current hosted bodies: replacing only their single canonical `TARGET` line with the placeholder must reproduce every byte of the committed template and its manifest hash. The prior literal must also be an approved unique CI origin. Any scenario, assertion, helper, formatting or other source difference fails verification.
 
-The user approved configuring the encrypted repository Actions secret **`TESTSPRITE_API_KEY`** and disabling the agent-driven TestSprite trigger while keeping the GitHub App installed. The encrypted secret was saved and verified through GitHub's secret metadata at **2026-10-24 17:10:49 UTC**. No credential value is included in source, documentation, logs or reports.
+For the discovered exact deployment, the gate changes only that line to its public URL. It publishes using explicit `--expected-version` optimistic guards and reads back the exact rendered bytes and resulting version. An already identical binding needs no write. Conflicts fail without force, regeneration or retry. The [manifest](testsprite/pr5-stored-code-manifest.json) records authoritative canonical template hashes; its seed versions and rendered hashes describe the historical initial binding. Each Actions artifact records the actual bound hashes and versions used for that execution and verifies those same values afterward.
 
-The Portal trigger was verified **Disabled**, with its enable control unchecked. The App remains installed. Disabling the agent-driven trigger prevents it from generating different stored scripts while the reviewed versions and final manifest are restored. The two remaining long-running automatic cases were explicitly cancelled after the sequence defects were established; they remain cancelled in the preserved result.
+All PRs share one project-wide workflow concurrency group with `cancel-in-progress: false`, covering discovery, binding, replay and postflight. An active or unknown status in any reported TestSprite environment stops rebinding. The older agent-driven App trigger remains disabled. Changes outside this serialized workflow are detected by the optimistic guards and final readbacks.
 
-The replacement job is **Verify all 16 stored TestSprite scripts** under **TestSprite strict replay**. Its actual job result and sanitized artifact on the [current PR checks](https://github.com/Davidson3556/Paperwild/pull/5/checks) establish whether a particular head passed. Trusted draft PRs run it as well. The earlier 16-pass hosted replay remains separate historical evidence; it is not substituted for an Actions result.
+## Required proof
 
-A workflow pass becomes an enforced merge requirement only when a branch rule requires its actual check context. No `main` ruleset change is requested or applied by this setup. Local gate tests verify failure handling, not a hosted TestSprite execution.
+1. Reject forks and missing credentials before checkout or build. Trusted same-repository drafts run too. Check out the exact PR SHA without persisting checkout credentials; reject changed commits, dirty source or untracked files.
+2. Build with the reviewed public integration backend, `https://fast-starling-207.convex.cloud`. Discover the authenticated exact-head public CI deployment and compare every file in `dist` against its served bytes before replay: currently 48 files, including HTML, JavaScript, CSS, workers and artwork. Only the exact observed appended Vercel feedback tag for that deployment may be normalized; its raw and normalized hashes are recorded.
+3. Require exactly the sixteen frontend IDs in the intended TestSprite project, without extra, missing, duplicate or foreign cases. Verify every canonical template and guarded target binding as described above.
+4. Invoke official CLI **0.15.0** with explicit `--no-auto-heal`, a 1200-second batch wait timeout, and polling concurrency three. The wrapper has a 25-minute command limit inside the 45-minute Actions job. Poll concurrency does not claim to limit hosted execution concurrency.
+5. Require sixteen distinct UUID run IDs, all passed, with zero failure, blockage, skip, cancellation or timeout. Require the public CLI receipt to contain those same terminal test/run identities with no conflicts, deferrals or skipped tests.
+6. Read every actual run independently. Require its expected project, CLI source, fresh dispatch timestamps, exact discovered target and unqualified stored-code replay. A contradictory failed actual result or missing actual lookup cannot be overridden by successful batch counts.
+7. Read back all sixteen exact rendered bodies and execution versions after replay. Recheck project membership, canonical local templates, clean checkout, unchanged current PR head, unchanged local build, the same authenticated deployment binding and every public build file. Failed or incomplete replay still attempts this read-only postflight; it never dispatches another test or heals a script. Incomplete proof keeps the job red.
+8. Publish sanitized JSON and JUnit artifacts. Retain safe UUID identities, statuses, known CLI error codes and fixed platform-error classifications on failures. Do not publish raw errors, CLI output, API responses, signed recordings or authorization values.
 
-## Local verification
+## Command and credentials
+
+After discovery and guarded binding, the wrapper invokes:
+
+```sh
+testsprite test run --all --project PROJECT_ID \
+  --target-url VERIFIED_UNIQUE_CI_ORIGIN --max-concurrency 3 \
+  --no-auto-heal --wait --timeout 1200 \
+  --report junit --report-file TEMP_JUNIT \
+  --summary-file TEMP_SUMMARY --output json
+```
+
+The encrypted `TESTSPRITE_API_KEY` is supplied only to trusted steps, never source, argv or reports. Its guarded code-write capability is used solely to bind the reviewed target literal. The GitHub job has read-only contents, pull-request, deployment and commit-status permissions. No Vercel token, deployment-protection bypass, tunnel or environment-variable injection is used by this flow.
+
+The backend can return `codeVersion: null` and omit `autoHeal` on completed runs. Reports retain those facts. They separately record explicit no-auto-heal dispatch, reject `autoHeal:true` or an invalid value, require replay path `replay` with null reason/caveat, and prove unchanged bound source/version before and after. They do not manufacture an individual backend version or `false` healing attestation.
+
+## Scope and merge enforcement
+
+The sixteen cases cover board play, notebook entry, required opponent selection, club and same-device games, save recovery, motion and sound scheduling. They supplement backend tests and separate independent-player multiplayer acceptance. The external Convex development service is not an ephemeral backend deployment of each PR's functions.
+
+The [active main ruleset](https://github.com/Davidson3556/Paperwild/rules/25836565) now requires both **Tests and production build** and **Verify all 16 stored TestSprite scripts**, each bound to the GitHub Actions integration (`15368`). It requires an up-to-date branch and a pull request, has no bypass actors, and requires zero separate approving reviews. The [ruleset and effective-main-rules readback](testsprite/main-required-checks-2026-10-25.json) records the verified enforcement state. A later head must pass both checks before merging. The installed TestSprite GitHub App and this reviewed CLI gate remain separate integrations.
+
+## Focused verification and historical evidence
 
 ```sh
 node --test tests/testsprite-ci.test.mjs
 ```
 
-The focused tests cover missing and duplicate cases/results, local and hosted source drift, wrong stored versions, misleading summary counters, failed/blocked/cancelled outcomes, wrong run/project/target identities, auto-heal and replay qualifications, exact Vercel commit/project binding, every build asset, and strict HTML normalization. Importing the gate in these tests makes no API call and triggers no hosted test.
+The focused tests make no TestSprite request. They cover authenticated deployment discovery, exact origins, stale and foreign metadata, canonical source drift, guarded binding conflicts and readback drift, unknown project activity, secret-safe diagnostics, incomplete results and contradictory actual responses. Historical local-server and HTTPS verification helper contracts remain tested but do not select or serve the current gate target.
 
-The strict job supplies the public client variable `VITE_CONVEX_URL=https://fast-starling-207.convex.cloud` to both its build and verification process. This is the Paperwild development backend selected for the `feat/convex-multiplayer` preview; it is not a deploy key or other credential. The Vercel Preview variable must be scoped to that branch and use the same URL. Production, other previews and the general verification workflow do not receive this binding from the strict workflow.
+PR6's first native-tunnel attempt [failed with sixteen blocked cases](https://github.com/Davidson3556/Paperwild/actions/runs/40196200559): the platform refused deterministic replay through a tunnel before gameplay assertions. A bare target override and a named-environment variable probe also failed to supply the custom Python environment variable. Those failures are preserved separately. The controlled direct-public literal-bound ONBD-001 probe passed, followed by the complete sixteen-case Actions run linked above. The earlier failed probes remain separate evidence.
 
-The runner's preview allowlist remains bound to `feat/convex-multiplayer`. A future branch or backend change requires an explicit update to the preview binding, build environment and reviewed script/bundle expectations together. A frontend/backend configuration mismatch fails the complete artifact comparison before tests are charged. Supplying the URL only selects the client backend; the separate four-case result establishes the recorded independent-context acceptance at source head `419fdef`. Production has no Convex configuration, and the PR remains unmerged; preview acceptance does not provision a production backend.
+PR5's [strict public-preview Actions run](https://github.com/Davidson3556/Paperwild/actions/runs/40136980632), [four-case multiplayer summary](testsprite/online-cloud-acceptance-summary.json) and [source/build audit](testsprite/online-cloud-acceptance-verification.json) remain evidence for their own historical heads and targets. They are not substituted for a future PR's result.

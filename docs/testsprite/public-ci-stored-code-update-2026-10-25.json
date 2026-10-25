@@ -1,0 +1,1315 @@
+{
+  "schemaVersion": 2,
+  "projectId": "dafdf75c-04a3-467f-acc2-4359af6b1d8e",
+  "startedAt": "2026-10-25T20:25:41.574163+00:00",
+  "status": "all-sixteen-rendered-seeds-readback-verified-full-suite-pending",
+  "baseSourceRevision": "31b60ee7d94cb312a0a365a002fcb036585faf8d",
+  "previousManifest": "docs/testsprite/history/pr5-stored-code-manifest-before-public-ci-2026-10-25.json",
+  "previousManifestSha256": "8c2b01c8926784e4a2b4c36627e9f0f4136c95a4160392a8b93e1008387b8c48",
+  "targetUrl": "https://paperwild-4s0pac2km-davidson3556s-projects.vercel.app/",
+  "convexUrl": "https://fast-starling-207.convex.cloud",
+  "bindingKind": "dedicated-public-ci-deployment",
+  "vercelProjectId": "prj_K4XUFAg81KYU0YxfC0ISyU3JRhox",
+  "sourceUncommittedAtUpload": true,
+  "testRunsStartedByThisUpdate": false,
+  "forceUsed": false,
+  "preflight": {
+    "projectBefore": {
+      "checkedAt": "2026-10-25T20:25:46.149244+00:00",
+      "projectId": "dafdf75c-04a3-467f-acc2-4359af6b1d8e",
+      "completeMembershipVerified": true,
+      "idleStatusesVerified": true,
+      "cases": [
+        {
+          "testId": "06093f89-2095-4a14-b7db-101e715ae206",
+          "status": "passed",
+          "statusByEnvironment": [
+            {
+              "environmentId": "00780229-bad1-480e-b8ca-c2e881241893",
+              "environmentName": "default",
+              "status": "passed"
+            }
+          ]
+        },
+        {
+          "testId": "0ad51a00-bdcc-49ab-a155-ad15de21a7a2",
+          "status": "passed",
+          "statusByEnvironment": [
+            {
+              "environmentId": "00780229-bad1-480e-b8ca-c2e881241893",
+              "environmentName": "default",
+              "status": "passed"
+            }
+          ]
+        },
+        {
+          "testId": "138f2507-51c6-43ed-9a7c-c00bb2b1657e",
+          "status": "passed",
+          "statusByEnvironment": [
+            {
+              "environmentId": "00780229-bad1-480e-b8ca-c2e881241893",
+              "environmentName": "default",
+              "status": "passed"
+            }
+          ]
+        },
+        {
+          "testId": "1dc27669-90de-470e-9681-c5f5026194cb",
+          "status": "blocked",
+          "statusByEnvironment": []
+        },
+        {
+          "testId": "2330c1ea-adda-4d16-a611-d8745fc4cc66",
+          "status": "passed",
+          "statusByEnvironment": [
+            {
+              "environmentId": "00780229-bad1-480e-b8ca-c2e881241893",
+              "environmentName": "default",
+              "status": "passed"
+            }
+          ]
+        },
+        {
+          "testId": "43d65119-ddde-41e6-9a50-e99a370bb16b",
+          "status": "blocked",
+          "statusByEnvironment": []
+        },
+        {
+          "testId": "4cb7d4df-04ae-4be5-8295-f69f0f115611",
+          "status": "blocked",
+          "statusByEnvironment": []
+        },
+        {
+          "testId": "6c39a736-f9b2-4731-8560-05df7dcd0449",
+          "status": "passed",
+          "statusByEnvironment": [
+            {
+              "environmentId": "00780229-bad1-480e-b8ca-c2e881241893",
+              "environmentName": "default",
+              "status": "passed"
+            }
+          ]
+        },
+        {
+          "testId": "72d4f1a0-dd72-44e9-bf92-0ccbc9a4ea4d",
+          "status": "blocked",
+          "statusByEnvironment": []
+        },
+        {
+          "testId": "7615508f-ec1e-4df0-9d67-3c4db951b18e",
+          "status": "blocked",
+          "statusByEnvironment": []
+        },
+        {
+          "testId": "76e3011a-cb17-4be2-8d00-833670e8644e",
+          "status": "passed",
+          "statusByEnvironment": [
+            {
+              "environmentId": "00780229-bad1-480e-b8ca-c2e881241893",
+              "environmentName": "default",
+              "status": "passed"
+            }
+          ]
+        },
+        {
+          "testId": "836e4d28-2b2a-468c-ba69-21bc358eb237",
+          "status": "passed",
+          "statusByEnvironment": [
+            {
+              "environmentId": "00780229-bad1-480e-b8ca-c2e881241893",
+              "environmentName": "default",
+              "status": "passed"
+            }
+          ]
+        },
+        {
+          "testId": "9e34b635-85b9-427d-95b2-5584e55f5f7d",
+          "status": "passed",
+          "statusByEnvironment": [
+            {
+              "environmentId": "00780229-bad1-480e-b8ca-c2e881241893",
+              "environmentName": "default",
+              "status": "passed"
+            }
+          ]
+        },
+        {
+          "testId": "c48475e4-8ec0-4875-a5c9-e8b2981d4c87",
+          "status": "passed",
+          "statusByEnvironment": [
+            {
+              "environmentId": "00780229-bad1-480e-b8ca-c2e881241893",
+              "environmentName": "default",
+              "status": "passed"
+            }
+          ]
+        },
+        {
+          "testId": "ec570b6b-0423-40cd-a0a7-60e8a8cbb23c",
+          "status": "passed",
+          "statusByEnvironment": [
+            {
+              "environmentId": "00780229-bad1-480e-b8ca-c2e881241893",
+              "environmentName": "default",
+              "status": "passed"
+            }
+          ]
+        },
+        {
+          "testId": "f52738b9-d0c5-46b4-b914-70d16c6d7e7b",
+          "status": "passed",
+          "statusByEnvironment": [
+            {
+              "environmentId": "00780229-bad1-480e-b8ca-c2e881241893",
+              "environmentName": "default",
+              "status": "passed"
+            }
+          ]
+        }
+      ]
+    },
+    "storedBefore": [
+      {
+        "case": "BOAR-001",
+        "testId": "9e34b635-85b9-427d-95b2-5584e55f5f7d",
+        "codeVersion": "v-5fcd564e6962",
+        "storedSha256": "e3b41a3d928aa70c23d983b1de2549bedc06f5b4ce0aacda025040baa5f297c7",
+        "readbackEqual": true,
+        "checkedAt": "2026-10-25T20:25:49.082526+00:00"
+      },
+      {
+        "case": "BOAR-002",
+        "testId": "0ad51a00-bdcc-49ab-a155-ad15de21a7a2",
+        "codeVersion": "v-c806c6b49336",
+        "storedSha256": "709247775c6b991d942c6c747364177617976c360afdad5c1a71ce38547cda62",
+        "readbackEqual": true,
+        "checkedAt": "2026-10-25T20:25:51.226243+00:00"
+      },
+      {
+        "case": "BOAR-003",
+        "testId": "6c39a736-f9b2-4731-8560-05df7dcd0449",
+        "codeVersion": "v-306e0fe02e27",
+        "storedSha256": "9572c4551b4fcf2ad4b0f0efbc5bddc76eb9c3a5929d39091a4109e807ad9386",
+        "readbackEqual": true,
+        "checkedAt": "2026-10-25T20:25:51.255504+00:00"
+      },
+      {
+        "case": "BOAR-004",
+        "testId": "2330c1ea-adda-4d16-a611-d8745fc4cc66",
+        "codeVersion": "v-b3ccf6c99eca",
+        "storedSha256": "0a0820f7ef9034bdf3e51f75e5f188f17059b3b806a1a02df9ea91661587d377",
+        "readbackEqual": true,
+        "checkedAt": "2026-10-25T20:25:51.588790+00:00"
+      },
+      {
+        "case": "BOAR-005",
+        "testId": "c48475e4-8ec0-4875-a5c9-e8b2981d4c87",
+        "codeVersion": "v-e5798c1048cf",
+        "storedSha256": "fca9ddd49ce8e062021239a95ee1333db45dc2142d9f42b794e93f4edc6b1c20",
+        "readbackEqual": true,
+        "checkedAt": "2026-10-25T20:25:53.640700+00:00"
+      },
+      {
+        "case": "BOAR-006",
+        "testId": "836e4d28-2b2a-468c-ba69-21bc358eb237",
+        "codeVersion": "v-12548a371ada",
+        "storedSha256": "651eb38a23b4917348c61a643ae42372789592a0763f7fbee66de06240166068",
+        "readbackEqual": true,
+        "checkedAt": "2026-10-25T20:25:53.481091+00:00"
+      },
+      {
+        "case": "BOAR-007",
+        "testId": "f52738b9-d0c5-46b4-b914-70d16c6d7e7b",
+        "codeVersion": "v-dc73353dc11d",
+        "storedSha256": "16c0c5c9df83fabbd81225aec5439676380efffe6e4b79d73fb5ef156ba73db9",
+        "readbackEqual": true,
+        "checkedAt": "2026-10-25T20:25:53.957275+00:00"
+      },
+      {
+        "case": "BOAR-008",
+        "testId": "ec570b6b-0423-40cd-a0a7-60e8a8cbb23c",
+        "codeVersion": "v-a856f7892283",
+        "storedSha256": "0bfe7b5fcefca98a28ac8b0e855f7f42abe04463555f998cce0e50028059d917",
+        "readbackEqual": true,
+        "checkedAt": "2026-10-25T20:25:55.929433+00:00"
+      },
+      {
+        "case": "NOTE-001",
+        "testId": "4cb7d4df-04ae-4be5-8295-f69f0f115611",
+        "codeVersion": "v-a94a4ac88595",
+        "storedSha256": "6567f8f6b6b376bbff52e046588af08a028fc961fbed9d808bac90be0cb996cf",
+        "readbackEqual": true,
+        "checkedAt": "2026-10-25T20:25:58.103394+00:00"
+      },
+      {
+        "case": "NOTE-002",
+        "testId": "43d65119-ddde-41e6-9a50-e99a370bb16b",
+        "codeVersion": "v-c878c8891df3",
+        "storedSha256": "bf9ff023f97d32fd2b7c26d500e4afab75d11dcbcdd94579eb4c0ebf254f9d19",
+        "readbackEqual": true,
+        "checkedAt": "2026-10-25T20:25:58.235266+00:00"
+      },
+      {
+        "case": "NOTE-003",
+        "testId": "7615508f-ec1e-4df0-9d67-3c4db951b18e",
+        "codeVersion": "v-eaf7ddbf7b21",
+        "storedSha256": "9f30e8224acf7324c9bebb80c909d5f7242782cc5ea3da8e745754fa31031ccf",
+        "readbackEqual": true,
+        "checkedAt": "2026-10-25T20:25:58.953047+00:00"
+      },
+      {
+        "case": "NOTE-004",
+        "testId": "72d4f1a0-dd72-44e9-bf92-0ccbc9a4ea4d",
+        "codeVersion": "v-4c3dc3c542c6",
+        "storedSha256": "21738967f3a4f93efabfcff0a639b858bd7ea9d4a966418b85149f9b4452c7b3",
+        "readbackEqual": true,
+        "checkedAt": "2026-10-25T20:26:00.296819+00:00"
+      },
+      {
+        "case": "ONBD-001",
+        "testId": "76e3011a-cb17-4be2-8d00-833670e8644e",
+        "codeVersion": "v-c921b57198b7",
+        "storedSha256": "9a037f300dc1f455059fd7c5abcafb928893a017b8b7947521130030371b6916",
+        "readbackEqual": true,
+        "checkedAt": "2026-10-25T20:25:49.084833+00:00"
+      },
+      {
+        "case": "ONBD-002",
+        "testId": "1dc27669-90de-470e-9681-c5f5026194cb",
+        "codeVersion": "v-168d89d5e20b",
+        "storedSha256": "f2efb14858b059c13157b680c371248d5a1752aaeb87b0c62ca7a7562dc468f3",
+        "readbackEqual": true,
+        "checkedAt": "2026-10-25T20:25:49.394190+00:00"
+      },
+      {
+        "case": "PREF-001",
+        "testId": "138f2507-51c6-43ed-9a7c-c00bb2b1657e",
+        "codeVersion": "v-1aab6bf6e084",
+        "storedSha256": "3f86cfb81e358c4cd679f974b5175f8bc435e5a31a4e79682bbf36fd42387c28",
+        "readbackEqual": true,
+        "checkedAt": "2026-10-25T20:25:56.075705+00:00"
+      },
+      {
+        "case": "SOUN-001",
+        "testId": "06093f89-2095-4a14-b7db-101e715ae206",
+        "codeVersion": "v-a8d1553fd790",
+        "storedSha256": "e31f96dc109b24e707213ea6af56d658c0384ece208193e164603ab6faf23531",
+        "readbackEqual": true,
+        "checkedAt": "2026-10-25T20:25:56.776712+00:00"
+      }
+    ],
+    "fifteenOldBodiesEqualBaseline": true,
+    "onboardingSeedMatchesControlledProbe": true,
+    "allTemplatesParseAndCompile": true,
+    "targetOnlyRenderingVerified": true,
+    "projectImmediatelyBeforeMutation": {
+      "checkedAt": "2026-10-25T20:26:02.305467+00:00",
+      "projectId": "dafdf75c-04a3-467f-acc2-4359af6b1d8e",
+      "completeMembershipVerified": true,
+      "idleStatusesVerified": true,
+      "cases": [
+        {
+          "testId": "06093f89-2095-4a14-b7db-101e715ae206",
+          "status": "passed",
+          "statusByEnvironment": [
+            {
+              "environmentId": "00780229-bad1-480e-b8ca-c2e881241893",
+              "environmentName": "default",
+              "status": "passed"
+            }
+          ]
+        },
+        {
+          "testId": "0ad51a00-bdcc-49ab-a155-ad15de21a7a2",
+          "status": "passed",
+          "statusByEnvironment": [
+            {
+              "environmentId": "00780229-bad1-480e-b8ca-c2e881241893",
+              "environmentName": "default",
+              "status": "passed"
+            }
+          ]
+        },
+        {
+          "testId": "138f2507-51c6-43ed-9a7c-c00bb2b1657e",
+          "status": "passed",
+          "statusByEnvironment": [
+            {
+              "environmentId": "00780229-bad1-480e-b8ca-c2e881241893",
+              "environmentName": "default",
+              "status": "passed"
+            }
+          ]
+        },
+        {
+          "testId": "1dc27669-90de-470e-9681-c5f5026194cb",
+          "status": "blocked",
+          "statusByEnvironment": []
+        },
+        {
+          "testId": "2330c1ea-adda-4d16-a611-d8745fc4cc66",
+          "status": "passed",
+          "statusByEnvironment": [
+            {
+              "environmentId": "00780229-bad1-480e-b8ca-c2e881241893",
+              "environmentName": "default",
+              "status": "passed"
+            }
+          ]
+        },
+        {
+          "testId": "43d65119-ddde-41e6-9a50-e99a370bb16b",
+          "status": "blocked",
+          "statusByEnvironment": []
+        },
+        {
+          "testId": "4cb7d4df-04ae-4be5-8295-f69f0f115611",
+          "status": "blocked",
+          "statusByEnvironment": []
+        },
+        {
+          "testId": "6c39a736-f9b2-4731-8560-05df7dcd0449",
+          "status": "passed",
+          "statusByEnvironment": [
+            {
+              "environmentId": "00780229-bad1-480e-b8ca-c2e881241893",
+              "environmentName": "default",
+              "status": "passed"
+            }
+          ]
+        },
+        {
+          "testId": "72d4f1a0-dd72-44e9-bf92-0ccbc9a4ea4d",
+          "status": "blocked",
+          "statusByEnvironment": []
+        },
+        {
+          "testId": "7615508f-ec1e-4df0-9d67-3c4db951b18e",
+          "status": "blocked",
+          "statusByEnvironment": []
+        },
+        {
+          "testId": "76e3011a-cb17-4be2-8d00-833670e8644e",
+          "status": "passed",
+          "statusByEnvironment": [
+            {
+              "environmentId": "00780229-bad1-480e-b8ca-c2e881241893",
+              "environmentName": "default",
+              "status": "passed"
+            }
+          ]
+        },
+        {
+          "testId": "836e4d28-2b2a-468c-ba69-21bc358eb237",
+          "status": "passed",
+          "statusByEnvironment": [
+            {
+              "environmentId": "00780229-bad1-480e-b8ca-c2e881241893",
+              "environmentName": "default",
+              "status": "passed"
+            }
+          ]
+        },
+        {
+          "testId": "9e34b635-85b9-427d-95b2-5584e55f5f7d",
+          "status": "passed",
+          "statusByEnvironment": [
+            {
+              "environmentId": "00780229-bad1-480e-b8ca-c2e881241893",
+              "environmentName": "default",
+              "status": "passed"
+            }
+          ]
+        },
+        {
+          "testId": "c48475e4-8ec0-4875-a5c9-e8b2981d4c87",
+          "status": "passed",
+          "statusByEnvironment": [
+            {
+              "environmentId": "00780229-bad1-480e-b8ca-c2e881241893",
+              "environmentName": "default",
+              "status": "passed"
+            }
+          ]
+        },
+        {
+          "testId": "ec570b6b-0423-40cd-a0a7-60e8a8cbb23c",
+          "status": "passed",
+          "statusByEnvironment": [
+            {
+              "environmentId": "00780229-bad1-480e-b8ca-c2e881241893",
+              "environmentName": "default",
+              "status": "passed"
+            }
+          ]
+        },
+        {
+          "testId": "f52738b9-d0c5-46b4-b914-70d16c6d7e7b",
+          "status": "passed",
+          "statusByEnvironment": [
+            {
+              "environmentId": "00780229-bad1-480e-b8ca-c2e881241893",
+              "environmentName": "default",
+              "status": "passed"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "updates": [
+    {
+      "case": "ONBD-002",
+      "testId": "1dc27669-90de-470e-9681-c5f5026194cb",
+      "name": "Club choice and replayable tour preserve a playable game",
+      "sourcePath": "docs/testsprite/overrides/ONBD-002.py",
+      "previousCodeVersion": "v-168d89d5e20b",
+      "previousStoredSha256": "f2efb14858b059c13157b680c371248d5a1752aaeb87b0c62ca7a7562dc468f3",
+      "sha256": "aebde9f89309ca015c4eefcbf89b1243c7be9154fc67eca60209089d688d361d",
+      "storedSha256": "dd576db0d5f3e2a15a57b20685b3263346cdbe72d6e9f25285cabc8c6477e56b",
+      "sourceUncommittedAtUpload": true,
+      "targetOnlyRenderingVerified": true,
+      "idempotencyKey": "12c4b817-2b76-426b-be0f-a756cda14d4e",
+      "putStartedAt": "2026-10-25T20:26:02.306974+00:00",
+      "putAttempted": true,
+      "readbackEqual": true,
+      "putCompletedAt": "2026-10-25T20:26:04.561069+00:00",
+      "receipt": {
+        "testId": "1dc27669-90de-470e-9681-c5f5026194cb",
+        "codeVersion": "v-35c61a6759af",
+        "updatedAt": "2026-10-25T20:26:03.692Z"
+      },
+      "codeVersion": "v-35c61a6759af",
+      "readback": {
+        "case": "ONBD-002",
+        "testId": "1dc27669-90de-470e-9681-c5f5026194cb",
+        "codeVersion": "v-35c61a6759af",
+        "storedSha256": "dd576db0d5f3e2a15a57b20685b3263346cdbe72d6e9f25285cabc8c6477e56b",
+        "readbackEqual": true,
+        "checkedAt": "2026-10-25T20:26:06.708134+00:00"
+      }
+    },
+    {
+      "case": "BOAR-001",
+      "testId": "9e34b635-85b9-427d-95b2-5584e55f5f7d",
+      "name": "Illegal moves leave the board unchanged",
+      "sourcePath": "docs/testsprite/overrides/BOAR-001.py",
+      "previousCodeVersion": "v-5fcd564e6962",
+      "previousStoredSha256": "e3b41a3d928aa70c23d983b1de2549bedc06f5b4ce0aacda025040baa5f297c7",
+      "sha256": "03cd8e676fbb7bf72a5c4c0e1d0dc61fd112d17d37d68ddfb40b54b665abe460",
+      "storedSha256": "5ed15c47dd7370168692013a0975d3325fa01e968933f91ff5ac796357ffebcf",
+      "sourceUncommittedAtUpload": true,
+      "targetOnlyRenderingVerified": true,
+      "idempotencyKey": "6713da00-81fd-41ae-a125-66e4b79f6582",
+      "putStartedAt": "2026-10-25T20:26:06.709085+00:00",
+      "putAttempted": true,
+      "readbackEqual": true,
+      "putCompletedAt": "2026-10-25T20:26:08.970956+00:00",
+      "receipt": {
+        "testId": "9e34b635-85b9-427d-95b2-5584e55f5f7d",
+        "codeVersion": "v-40667c7fbc0f",
+        "updatedAt": "2026-10-25T20:26:08.082Z"
+      },
+      "codeVersion": "v-40667c7fbc0f",
+      "readback": {
+        "case": "BOAR-001",
+        "testId": "9e34b635-85b9-427d-95b2-5584e55f5f7d",
+        "codeVersion": "v-40667c7fbc0f",
+        "storedSha256": "5ed15c47dd7370168692013a0975d3325fa01e968933f91ff5ac796357ffebcf",
+        "readbackEqual": true,
+        "checkedAt": "2026-10-25T20:26:11.155322+00:00"
+      }
+    },
+    {
+      "case": "BOAR-002",
+      "testId": "0ad51a00-bdcc-49ab-a155-ad15de21a7a2",
+      "name": "Simple opening advances update history and turn",
+      "sourcePath": "docs/testsprite/overrides/BOAR-002.py",
+      "previousCodeVersion": "v-c806c6b49336",
+      "previousStoredSha256": "709247775c6b991d942c6c747364177617976c360afdad5c1a71ce38547cda62",
+      "sha256": "463f0c0e6aa2083442635d353f62517a705272355ba3b1e04db33ae02aca43f0",
+      "storedSha256": "5ce010d308b8181c64122f0d2c546fc7a0856fcc8f67e5265c65f9c27eb59cd4",
+      "sourceUncommittedAtUpload": true,
+      "targetOnlyRenderingVerified": true,
+      "idempotencyKey": "1712fbb2-2cb9-4b14-b470-8ea03c780fc3",
+      "putStartedAt": "2026-10-25T20:26:11.156247+00:00",
+      "putAttempted": true,
+      "readbackEqual": true,
+      "putCompletedAt": "2026-10-25T20:26:13.195035+00:00",
+      "receipt": {
+        "testId": "0ad51a00-bdcc-49ab-a155-ad15de21a7a2",
+        "codeVersion": "v-d500f569ce65",
+        "updatedAt": "2026-10-25T20:26:12.317Z"
+      },
+      "codeVersion": "v-d500f569ce65",
+      "readback": {
+        "case": "BOAR-002",
+        "testId": "0ad51a00-bdcc-49ab-a155-ad15de21a7a2",
+        "codeVersion": "v-d500f569ce65",
+        "storedSha256": "5ce010d308b8181c64122f0d2c546fc7a0856fcc8f67e5265c65f9c27eb59cd4",
+        "readbackEqual": true,
+        "checkedAt": "2026-10-25T20:26:15.440955+00:00"
+      }
+    },
+    {
+      "case": "BOAR-003",
+      "testId": "6c39a736-f9b2-4731-8560-05df7dcd0449",
+      "name": "Undo restores a captured position atomically",
+      "sourcePath": "docs/testsprite/overrides/BOAR-003.py",
+      "previousCodeVersion": "v-306e0fe02e27",
+      "previousStoredSha256": "9572c4551b4fcf2ad4b0f0efbc5bddc76eb9c3a5929d39091a4109e807ad9386",
+      "sha256": "4491c39b59a364bfe6a21e27f944cd3c9d51749067ac35b9d633b6ba65180f0c",
+      "storedSha256": "08110b30aa38d8203e3e2001b6cf03bbcc32bc590705a467cb268e88145e3c4c",
+      "sourceUncommittedAtUpload": true,
+      "targetOnlyRenderingVerified": true,
+      "idempotencyKey": "73ae4ae0-2841-4fc1-afc3-97c5fc0af798",
+      "putStartedAt": "2026-10-25T20:26:15.442846+00:00",
+      "putAttempted": true,
+      "readbackEqual": true,
+      "putCompletedAt": "2026-10-25T20:26:17.996593+00:00",
+      "receipt": {
+        "testId": "6c39a736-f9b2-4731-8560-05df7dcd0449",
+        "codeVersion": "v-3cc53bc068fe",
+        "updatedAt": "2026-10-25T20:26:17.071Z"
+      },
+      "codeVersion": "v-3cc53bc068fe",
+      "readback": {
+        "case": "BOAR-003",
+        "testId": "6c39a736-f9b2-4731-8560-05df7dcd0449",
+        "codeVersion": "v-3cc53bc068fe",
+        "storedSha256": "08110b30aa38d8203e3e2001b6cf03bbcc32bc590705a467cb268e88145e3c4c",
+        "readbackEqual": true,
+        "checkedAt": "2026-10-25T20:26:20.264689+00:00"
+      }
+    },
+    {
+      "case": "BOAR-004",
+      "testId": "2330c1ea-adda-4d16-a611-d8745fc4cc66",
+      "name": "Promotion can be cancelled without committing a move",
+      "sourcePath": "docs/testsprite/overrides/BOAR-004.py",
+      "previousCodeVersion": "v-b3ccf6c99eca",
+      "previousStoredSha256": "0a0820f7ef9034bdf3e51f75e5f188f17059b3b806a1a02df9ea91661587d377",
+      "sha256": "9ecd75cfca270dba404b9812e33fdd9407365b6ad267e6ab331fe51d18231d53",
+      "storedSha256": "020915e668acbbe34944e3fb0d2880077e28ff17af5f478542dcbc34c6547478",
+      "sourceUncommittedAtUpload": true,
+      "targetOnlyRenderingVerified": true,
+      "idempotencyKey": "8cedf5e1-4bf4-40c7-a59c-bc7a3c072325",
+      "putStartedAt": "2026-10-25T20:26:20.266693+00:00",
+      "putAttempted": true,
+      "readbackEqual": true,
+      "putCompletedAt": "2026-10-25T20:26:22.654611+00:00",
+      "receipt": {
+        "testId": "2330c1ea-adda-4d16-a611-d8745fc4cc66",
+        "codeVersion": "v-94c9063b4ea7",
+        "updatedAt": "2026-10-25T20:26:21.743Z"
+      },
+      "codeVersion": "v-94c9063b4ea7",
+      "readback": {
+        "case": "BOAR-004",
+        "testId": "2330c1ea-adda-4d16-a611-d8745fc4cc66",
+        "codeVersion": "v-94c9063b4ea7",
+        "storedSha256": "020915e668acbbe34944e3fb0d2880077e28ff17af5f478542dcbc34c6547478",
+        "readbackEqual": true,
+        "checkedAt": "2026-10-25T20:26:24.800908+00:00"
+      }
+    },
+    {
+      "case": "BOAR-005",
+      "testId": "c48475e4-8ec0-4875-a5c9-e8b2981d4c87",
+      "name": "Queen promotion settles as a playable checking position",
+      "sourcePath": "docs/testsprite/overrides/BOAR-005.py",
+      "previousCodeVersion": "v-e5798c1048cf",
+      "previousStoredSha256": "fca9ddd49ce8e062021239a95ee1333db45dc2142d9f42b794e93f4edc6b1c20",
+      "sha256": "e5d352c62aa4cf339a78e86cc0a8fea044e1f5d9580176b655c09fe65366ffb2",
+      "storedSha256": "b51ca57733ffdbee8ea26f7a48ecb1c9598861679fbb320faf850354aeab438d",
+      "sourceUncommittedAtUpload": true,
+      "targetOnlyRenderingVerified": true,
+      "idempotencyKey": "fe24ef0b-d82d-4081-a6fe-998c422dc91a",
+      "putStartedAt": "2026-10-25T20:26:24.802675+00:00",
+      "putAttempted": true,
+      "readbackEqual": true,
+      "putCompletedAt": "2026-10-25T20:26:27.092999+00:00",
+      "receipt": {
+        "testId": "c48475e4-8ec0-4875-a5c9-e8b2981d4c87",
+        "codeVersion": "v-422b3ee19f8a",
+        "updatedAt": "2026-10-25T20:26:26.211Z"
+      },
+      "codeVersion": "v-422b3ee19f8a",
+      "readback": {
+        "case": "BOAR-005",
+        "testId": "c48475e4-8ec0-4875-a5c9-e8b2981d4c87",
+        "codeVersion": "v-422b3ee19f8a",
+        "storedSha256": "b51ca57733ffdbee8ea26f7a48ecb1c9598861679fbb320faf850354aeab438d",
+        "readbackEqual": true,
+        "checkedAt": "2026-10-25T20:26:30.040713+00:00"
+      }
+    },
+    {
+      "case": "BOAR-006",
+      "testId": "836e4d28-2b2a-468c-ba69-21bc358eb237",
+      "name": "Knight promotion ends in an insufficient material draw",
+      "sourcePath": "docs/testsprite/overrides/BOAR-006.py",
+      "previousCodeVersion": "v-12548a371ada",
+      "previousStoredSha256": "651eb38a23b4917348c61a643ae42372789592a0763f7fbee66de06240166068",
+      "sha256": "e004ebdae8a66ff2cef713ae7406c5bff78f741f3cd796d0216df5a87988b1cc",
+      "storedSha256": "f851a6fbc31f817befc9530111f381acd3d7f572cc4853622abc48a06b283c6f",
+      "sourceUncommittedAtUpload": true,
+      "targetOnlyRenderingVerified": true,
+      "idempotencyKey": "6b04ef99-1e4f-469c-8ece-4d57229a8d6a",
+      "putStartedAt": "2026-10-25T20:26:30.041718+00:00",
+      "putAttempted": true,
+      "readbackEqual": true,
+      "putCompletedAt": "2026-10-25T20:26:32.533064+00:00",
+      "receipt": {
+        "testId": "836e4d28-2b2a-468c-ba69-21bc358eb237",
+        "codeVersion": "v-112686cb3468",
+        "updatedAt": "2026-10-25T20:26:31.676Z"
+      },
+      "codeVersion": "v-112686cb3468",
+      "readback": {
+        "case": "BOAR-006",
+        "testId": "836e4d28-2b2a-468c-ba69-21bc358eb237",
+        "codeVersion": "v-112686cb3468",
+        "storedSha256": "f851a6fbc31f817befc9530111f381acd3d7f572cc4853622abc48a06b283c6f",
+        "readbackEqual": true,
+        "checkedAt": "2026-10-25T20:26:34.738852+00:00"
+      }
+    },
+    {
+      "case": "BOAR-007",
+      "testId": "f52738b9-d0c5-46b4-b914-70d16c6d7e7b",
+      "name": "Checkmate story blocks further play after the winning move",
+      "sourcePath": "docs/testsprite/overrides/BOAR-007.py",
+      "previousCodeVersion": "v-dc73353dc11d",
+      "previousStoredSha256": "16c0c5c9df83fabbd81225aec5439676380efffe6e4b79d73fb5ef156ba73db9",
+      "sha256": "a007956c1e2a8a8d5065c3a0a499e1d72317a52a188dc64c5d0638ff1c3a4a92",
+      "storedSha256": "273fe987b3572a8f5dff7982ec93af16de7d3cc606774f6095b9630331bfacc7",
+      "sourceUncommittedAtUpload": true,
+      "targetOnlyRenderingVerified": true,
+      "idempotencyKey": "57945a0a-9178-4018-b2ff-d8a2fe7ad0e6",
+      "putStartedAt": "2026-10-25T20:26:34.739849+00:00",
+      "putAttempted": true,
+      "readbackEqual": true,
+      "putCompletedAt": "2026-10-25T20:26:36.950555+00:00",
+      "receipt": {
+        "testId": "f52738b9-d0c5-46b4-b914-70d16c6d7e7b",
+        "codeVersion": "v-1a02895ab81e",
+        "updatedAt": "2026-10-25T20:26:36.092Z"
+      },
+      "codeVersion": "v-1a02895ab81e",
+      "readback": {
+        "case": "BOAR-007",
+        "testId": "f52738b9-d0c5-46b4-b914-70d16c6d7e7b",
+        "codeVersion": "v-1a02895ab81e",
+        "storedSha256": "273fe987b3572a8f5dff7982ec93af16de7d3cc606774f6095b9630331bfacc7",
+        "readbackEqual": true,
+        "checkedAt": "2026-10-25T20:26:39.364751+00:00"
+      }
+    },
+    {
+      "case": "BOAR-008",
+      "testId": "ec570b6b-0423-40cd-a0a7-60e8a8cbb23c",
+      "name": "Undo after a computer reply restores the starting position",
+      "sourcePath": "docs/testsprite/overrides/BOAR-008.py",
+      "previousCodeVersion": "v-a856f7892283",
+      "previousStoredSha256": "0bfe7b5fcefca98a28ac8b0e855f7f42abe04463555f998cce0e50028059d917",
+      "sha256": "38c60477625ab4566948354734baef84f99697a63e2135a9d026ee2d22c4f22f",
+      "storedSha256": "0cd251ba5040c5ae79149cb862e489553df507969a9821b6ea2b4855e2e765d6",
+      "sourceUncommittedAtUpload": true,
+      "targetOnlyRenderingVerified": true,
+      "idempotencyKey": "99520ea1-20d2-4b6d-81c7-c73fa9b44df6",
+      "putStartedAt": "2026-10-25T20:26:39.365580+00:00",
+      "putAttempted": true,
+      "readbackEqual": true,
+      "putCompletedAt": "2026-10-25T20:26:42.289841+00:00",
+      "receipt": {
+        "testId": "ec570b6b-0423-40cd-a0a7-60e8a8cbb23c",
+        "codeVersion": "v-1e6ad3f06334",
+        "updatedAt": "2026-10-25T20:26:40.705Z"
+      },
+      "codeVersion": "v-1e6ad3f06334",
+      "readback": {
+        "case": "BOAR-008",
+        "testId": "ec570b6b-0423-40cd-a0a7-60e8a8cbb23c",
+        "codeVersion": "v-1e6ad3f06334",
+        "storedSha256": "0cd251ba5040c5ae79149cb862e489553df507969a9821b6ea2b4855e2e765d6",
+        "readbackEqual": true,
+        "checkedAt": "2026-10-25T20:26:44.940791+00:00"
+      }
+    },
+    {
+      "case": "PREF-001",
+      "testId": "138f2507-51c6-43ed-9a7c-c00bb2b1657e",
+      "name": "Restore a saved game after reload and continue with undo",
+      "sourcePath": "docs/testsprite/overrides/PREF-001.py",
+      "previousCodeVersion": "v-1aab6bf6e084",
+      "previousStoredSha256": "3f86cfb81e358c4cd679f974b5175f8bc435e5a31a4e79682bbf36fd42387c28",
+      "sha256": "0da6c7b6dc04d6b922049d5400921e37d10ea810917f0196df9c8e44ff1bbe9d",
+      "storedSha256": "580fce957cd0f945d7c72d20dcda824a496e9904cb173c0276416026bd5d6913",
+      "sourceUncommittedAtUpload": true,
+      "targetOnlyRenderingVerified": true,
+      "idempotencyKey": "22821968-fe7f-415a-b292-ceccdcb45423",
+      "putStartedAt": "2026-10-25T20:26:44.941734+00:00",
+      "putAttempted": true,
+      "readbackEqual": true,
+      "putCompletedAt": "2026-10-25T20:26:47.226783+00:00",
+      "receipt": {
+        "testId": "138f2507-51c6-43ed-9a7c-c00bb2b1657e",
+        "codeVersion": "v-6095ae1c695c",
+        "updatedAt": "2026-10-25T20:26:46.348Z"
+      },
+      "codeVersion": "v-6095ae1c695c",
+      "readback": {
+        "case": "PREF-001",
+        "testId": "138f2507-51c6-43ed-9a7c-c00bb2b1657e",
+        "codeVersion": "v-6095ae1c695c",
+        "storedSha256": "580fce957cd0f945d7c72d20dcda824a496e9904cb173c0276416026bd5d6913",
+        "readbackEqual": true,
+        "checkedAt": "2026-10-25T20:26:49.403307+00:00"
+      }
+    },
+    {
+      "case": "SOUN-001",
+      "testId": "06093f89-2095-4a14-b7db-101e715ae206",
+      "name": "Enable sound from the character guide",
+      "sourcePath": "docs/testsprite/overrides/SOUN-001.py",
+      "previousCodeVersion": "v-a8d1553fd790",
+      "previousStoredSha256": "e31f96dc109b24e707213ea6af56d658c0384ece208193e164603ab6faf23531",
+      "sha256": "d78ef2501fc0c0e797d43a67c01e8c1754466625ed0cf6bff3e734f97d08e8eb",
+      "storedSha256": "09bcd00675feaec282a9d5e06acc39d131e3731a2aa2548f6df3d8c658c2ebae",
+      "sourceUncommittedAtUpload": true,
+      "targetOnlyRenderingVerified": true,
+      "idempotencyKey": "e5225ef7-1d99-4615-bed8-d53960f12150",
+      "putStartedAt": "2026-10-25T20:26:49.404362+00:00",
+      "putAttempted": true,
+      "readbackEqual": true,
+      "putCompletedAt": "2026-10-25T20:26:51.632330+00:00",
+      "receipt": {
+        "testId": "06093f89-2095-4a14-b7db-101e715ae206",
+        "codeVersion": "v-9d6ac902bb11",
+        "updatedAt": "2026-10-25T20:26:50.754Z"
+      },
+      "codeVersion": "v-9d6ac902bb11",
+      "readback": {
+        "case": "SOUN-001",
+        "testId": "06093f89-2095-4a14-b7db-101e715ae206",
+        "codeVersion": "v-9d6ac902bb11",
+        "storedSha256": "09bcd00675feaec282a9d5e06acc39d131e3731a2aa2548f6df3d8c658c2ebae",
+        "readbackEqual": true,
+        "checkedAt": "2026-10-25T20:26:53.844296+00:00"
+      }
+    },
+    {
+      "case": "NOTE-001",
+      "testId": "4cb7d4df-04ae-4be5-8295-f69f0f115611",
+      "name": "Full notebook entry remains visible on first and repeat visits",
+      "sourcePath": "docs/testsprite/overrides/NOTE-001.py",
+      "previousCodeVersion": "v-a94a4ac88595",
+      "previousStoredSha256": "6567f8f6b6b376bbff52e046588af08a028fc961fbed9d808bac90be0cb996cf",
+      "sha256": "d68d316367bbe5bfab952f1ceee5cf4651782fd1f2101eab8a698e02ba0b6646",
+      "storedSha256": "9ef8dbedab6ae5a6485a46c7fe1807b7ef322b6b1ae1429574a59f1bf9c8271b",
+      "sourceUncommittedAtUpload": true,
+      "targetOnlyRenderingVerified": true,
+      "idempotencyKey": "f9a38fbd-c2df-4498-9610-cc543f481f87",
+      "putStartedAt": "2026-10-25T20:26:53.846125+00:00",
+      "putAttempted": true,
+      "readbackEqual": true,
+      "putCompletedAt": "2026-10-25T20:26:56.025290+00:00",
+      "receipt": {
+        "testId": "4cb7d4df-04ae-4be5-8295-f69f0f115611",
+        "codeVersion": "v-5e7b7c0d0889",
+        "updatedAt": "2026-10-25T20:26:55.171Z"
+      },
+      "codeVersion": "v-5e7b7c0d0889",
+      "readback": {
+        "case": "NOTE-001",
+        "testId": "4cb7d4df-04ae-4be5-8295-f69f0f115611",
+        "codeVersion": "v-5e7b7c0d0889",
+        "storedSha256": "9ef8dbedab6ae5a6485a46c7fe1807b7ef322b6b1ae1429574a59f1bf9c8271b",
+        "readbackEqual": true,
+        "checkedAt": "2026-10-25T20:26:58.182953+00:00"
+      }
+    },
+    {
+      "case": "NOTE-002",
+      "testId": "43d65119-ddde-41e6-9a50-e99a370bb16b",
+      "name": "Saved manual pause keeps the notebook readable and resume restores living characters",
+      "sourcePath": "docs/testsprite/overrides/NOTE-002.py",
+      "previousCodeVersion": "v-c878c8891df3",
+      "previousStoredSha256": "bf9ff023f97d32fd2b7c26d500e4afab75d11dcbcdd94579eb4c0ebf254f9d19",
+      "sha256": "33a056a65806f69e63addc2ae87c629bf10e881c80376019208a8e0525d3043e",
+      "storedSha256": "ddc8862d04e93f938f635ac46e7a69f286cee63aac9e95052ad192c68ec6f733",
+      "sourceUncommittedAtUpload": true,
+      "targetOnlyRenderingVerified": true,
+      "idempotencyKey": "322f2b6b-3677-4e16-a5c0-a85a7a9bd98f",
+      "putStartedAt": "2026-10-25T20:26:58.184021+00:00",
+      "putAttempted": true,
+      "readbackEqual": true,
+      "putCompletedAt": "2026-10-25T20:27:00.933322+00:00",
+      "receipt": {
+        "testId": "43d65119-ddde-41e6-9a50-e99a370bb16b",
+        "codeVersion": "v-8648d5d4d44a",
+        "updatedAt": "2026-10-25T20:26:59.828Z"
+      },
+      "codeVersion": "v-8648d5d4d44a",
+      "readback": {
+        "case": "NOTE-002",
+        "testId": "43d65119-ddde-41e6-9a50-e99a370bb16b",
+        "codeVersion": "v-8648d5d4d44a",
+        "storedSha256": "ddc8862d04e93f938f635ac46e7a69f286cee63aac9e95052ad192c68ec6f733",
+        "readbackEqual": true,
+        "checkedAt": "2026-10-25T20:27:03.071886+00:00"
+      }
+    },
+    {
+      "case": "NOTE-003",
+      "testId": "7615508f-ec1e-4df0-9d67-3c4db951b18e",
+      "name": "Keyboard skip releases notebook entry without stale animation or computer replies",
+      "sourcePath": "docs/testsprite/overrides/NOTE-003.py",
+      "previousCodeVersion": "v-eaf7ddbf7b21",
+      "previousStoredSha256": "9f30e8224acf7324c9bebb80c909d5f7242782cc5ea3da8e745754fa31031ccf",
+      "sha256": "0c95c93984f8b0d27059e97bade02c0def1f23c06d0e761bf11eb2563a4819b7",
+      "storedSha256": "5cbdf97bd378ead89ff51e624f4049d9045568614aa4d60dd2a805ce97689e86",
+      "sourceUncommittedAtUpload": true,
+      "targetOnlyRenderingVerified": true,
+      "idempotencyKey": "cfcb1c50-5cca-4fe2-a7e3-9cfe2e6c2d8e",
+      "putStartedAt": "2026-10-25T20:27:03.072836+00:00",
+      "putAttempted": true,
+      "readbackEqual": true,
+      "putCompletedAt": "2026-10-25T20:27:05.280713+00:00",
+      "receipt": {
+        "testId": "7615508f-ec1e-4df0-9d67-3c4db951b18e",
+        "codeVersion": "v-e00666ab495d",
+        "updatedAt": "2026-10-25T20:27:04.411Z"
+      },
+      "codeVersion": "v-e00666ab495d",
+      "readback": {
+        "case": "NOTE-003",
+        "testId": "7615508f-ec1e-4df0-9d67-3c4db951b18e",
+        "codeVersion": "v-e00666ab495d",
+        "storedSha256": "5cbdf97bd378ead89ff51e624f4049d9045568614aa4d60dd2a805ce97689e86",
+        "readbackEqual": true,
+        "checkedAt": "2026-10-25T20:27:07.431262+00:00"
+      }
+    },
+    {
+      "case": "NOTE-004",
+      "testId": "72d4f1a0-dd72-44e9-bf92-0ccbc9a4ea4d",
+      "name": "Completed game reload starts fresh while unfinished capture studies resume",
+      "sourcePath": "docs/testsprite/overrides/NOTE-004.py",
+      "previousCodeVersion": "v-4c3dc3c542c6",
+      "previousStoredSha256": "21738967f3a4f93efabfcff0a639b858bd7ea9d4a966418b85149f9b4452c7b3",
+      "sha256": "388540e7ff11153c12a42e8e45293db5429f1fdbdf12280afceca01e0580a3f3",
+      "storedSha256": "1c839ed7cf0ad890f217e1aa6727933cf91a7d6419e8ecc95df910ea48199930",
+      "sourceUncommittedAtUpload": true,
+      "targetOnlyRenderingVerified": true,
+      "idempotencyKey": "eff4e8a3-56f0-476e-8701-ece368072ad5",
+      "putStartedAt": "2026-10-25T20:27:07.432374+00:00",
+      "putAttempted": true,
+      "readbackEqual": true,
+      "putCompletedAt": "2026-10-25T20:27:09.626196+00:00",
+      "receipt": {
+        "testId": "72d4f1a0-dd72-44e9-bf92-0ccbc9a4ea4d",
+        "codeVersion": "v-4b122ad3a252",
+        "updatedAt": "2026-10-25T20:27:08.743Z"
+      },
+      "codeVersion": "v-4b122ad3a252",
+      "readback": {
+        "case": "NOTE-004",
+        "testId": "72d4f1a0-dd72-44e9-bf92-0ccbc9a4ea4d",
+        "codeVersion": "v-4b122ad3a252",
+        "storedSha256": "1c839ed7cf0ad890f217e1aa6727933cf91a7d6419e8ecc95df910ea48199930",
+        "readbackEqual": true,
+        "checkedAt": "2026-10-25T20:27:11.809294+00:00"
+      }
+    }
+  ],
+  "finalReadbacks": [
+    {
+      "case": "BOAR-001",
+      "testId": "9e34b635-85b9-427d-95b2-5584e55f5f7d",
+      "codeVersion": "v-40667c7fbc0f",
+      "storedSha256": "5ed15c47dd7370168692013a0975d3325fa01e968933f91ff5ac796357ffebcf",
+      "readbackEqual": true,
+      "checkedAt": "2026-10-25T20:27:16.343282+00:00"
+    },
+    {
+      "case": "BOAR-002",
+      "testId": "0ad51a00-bdcc-49ab-a155-ad15de21a7a2",
+      "codeVersion": "v-d500f569ce65",
+      "storedSha256": "5ce010d308b8181c64122f0d2c546fc7a0856fcc8f67e5265c65f9c27eb59cd4",
+      "readbackEqual": true,
+      "checkedAt": "2026-10-25T20:27:18.622626+00:00"
+    },
+    {
+      "case": "BOAR-003",
+      "testId": "6c39a736-f9b2-4731-8560-05df7dcd0449",
+      "codeVersion": "v-3cc53bc068fe",
+      "storedSha256": "08110b30aa38d8203e3e2001b6cf03bbcc32bc590705a467cb268e88145e3c4c",
+      "readbackEqual": true,
+      "checkedAt": "2026-10-25T20:27:18.618817+00:00"
+    },
+    {
+      "case": "BOAR-004",
+      "testId": "2330c1ea-adda-4d16-a611-d8745fc4cc66",
+      "codeVersion": "v-94c9063b4ea7",
+      "storedSha256": "020915e668acbbe34944e3fb0d2880077e28ff17af5f478542dcbc34c6547478",
+      "readbackEqual": true,
+      "checkedAt": "2026-10-25T20:27:18.697412+00:00"
+    },
+    {
+      "case": "BOAR-005",
+      "testId": "c48475e4-8ec0-4875-a5c9-e8b2981d4c87",
+      "codeVersion": "v-422b3ee19f8a",
+      "storedSha256": "b51ca57733ffdbee8ea26f7a48ecb1c9598861679fbb320faf850354aeab438d",
+      "readbackEqual": true,
+      "checkedAt": "2026-10-25T20:27:21.288382+00:00"
+    },
+    {
+      "case": "BOAR-006",
+      "testId": "836e4d28-2b2a-468c-ba69-21bc358eb237",
+      "codeVersion": "v-112686cb3468",
+      "storedSha256": "f851a6fbc31f817befc9530111f381acd3d7f572cc4853622abc48a06b283c6f",
+      "readbackEqual": true,
+      "checkedAt": "2026-10-25T20:27:21.544946+00:00"
+    },
+    {
+      "case": "BOAR-007",
+      "testId": "f52738b9-d0c5-46b4-b914-70d16c6d7e7b",
+      "codeVersion": "v-1a02895ab81e",
+      "storedSha256": "273fe987b3572a8f5dff7982ec93af16de7d3cc606774f6095b9630331bfacc7",
+      "readbackEqual": true,
+      "checkedAt": "2026-10-25T20:27:20.880310+00:00"
+    },
+    {
+      "case": "BOAR-008",
+      "testId": "ec570b6b-0423-40cd-a0a7-60e8a8cbb23c",
+      "codeVersion": "v-1e6ad3f06334",
+      "storedSha256": "0cd251ba5040c5ae79149cb862e489553df507969a9821b6ea2b4855e2e765d6",
+      "readbackEqual": true,
+      "checkedAt": "2026-10-25T20:27:23.069305+00:00"
+    },
+    {
+      "case": "NOTE-001",
+      "testId": "4cb7d4df-04ae-4be5-8295-f69f0f115611",
+      "codeVersion": "v-5e7b7c0d0889",
+      "storedSha256": "9ef8dbedab6ae5a6485a46c7fe1807b7ef322b6b1ae1429574a59f1bf9c8271b",
+      "readbackEqual": true,
+      "checkedAt": "2026-10-25T20:27:25.267087+00:00"
+    },
+    {
+      "case": "NOTE-002",
+      "testId": "43d65119-ddde-41e6-9a50-e99a370bb16b",
+      "codeVersion": "v-8648d5d4d44a",
+      "storedSha256": "ddc8862d04e93f938f635ac46e7a69f286cee63aac9e95052ad192c68ec6f733",
+      "readbackEqual": true,
+      "checkedAt": "2026-10-25T20:27:25.802832+00:00"
+    },
+    {
+      "case": "NOTE-003",
+      "testId": "7615508f-ec1e-4df0-9d67-3c4db951b18e",
+      "codeVersion": "v-e00666ab495d",
+      "storedSha256": "5cbdf97bd378ead89ff51e624f4049d9045568614aa4d60dd2a805ce97689e86",
+      "readbackEqual": true,
+      "checkedAt": "2026-10-25T20:27:25.926545+00:00"
+    },
+    {
+      "case": "NOTE-004",
+      "testId": "72d4f1a0-dd72-44e9-bf92-0ccbc9a4ea4d",
+      "codeVersion": "v-4b122ad3a252",
+      "storedSha256": "1c839ed7cf0ad890f217e1aa6727933cf91a7d6419e8ecc95df910ea48199930",
+      "readbackEqual": true,
+      "checkedAt": "2026-10-25T20:27:27.607827+00:00"
+    },
+    {
+      "case": "ONBD-001",
+      "testId": "76e3011a-cb17-4be2-8d00-833670e8644e",
+      "codeVersion": "v-c921b57198b7",
+      "storedSha256": "9a037f300dc1f455059fd7c5abcafb928893a017b8b7947521130030371b6916",
+      "readbackEqual": true,
+      "checkedAt": "2026-10-25T20:27:16.347920+00:00"
+    },
+    {
+      "case": "ONBD-002",
+      "testId": "1dc27669-90de-470e-9681-c5f5026194cb",
+      "codeVersion": "v-35c61a6759af",
+      "storedSha256": "dd576db0d5f3e2a15a57b20685b3263346cdbe72d6e9f25285cabc8c6477e56b",
+      "readbackEqual": true,
+      "checkedAt": "2026-10-25T20:27:16.319644+00:00"
+    },
+    {
+      "case": "PREF-001",
+      "testId": "138f2507-51c6-43ed-9a7c-c00bb2b1657e",
+      "codeVersion": "v-6095ae1c695c",
+      "storedSha256": "580fce957cd0f945d7c72d20dcda824a496e9904cb173c0276416026bd5d6913",
+      "readbackEqual": true,
+      "checkedAt": "2026-10-25T20:27:23.642617+00:00"
+    },
+    {
+      "case": "SOUN-001",
+      "testId": "06093f89-2095-4a14-b7db-101e715ae206",
+      "codeVersion": "v-9d6ac902bb11",
+      "storedSha256": "09bcd00675feaec282a9d5e06acc39d131e3731a2aa2548f6df3d8c658c2ebae",
+      "readbackEqual": true,
+      "checkedAt": "2026-10-25T20:27:23.755362+00:00"
+    }
+  ],
+  "hashSemantics": {
+    "sha256": "Canonical repository template bytes, with the literal marker line; source was uncommitted at upload.",
+    "storedSha256": "Exact hosted seed bytes, with only the target line rendered to the verified CI URL."
+  },
+  "controlledOnboardingPublications": {
+    "case": "ONBD-001",
+    "testId": "76e3011a-cb17-4be2-8d00-833670e8644e",
+    "previousCodeVersion": "v-4b3f79e761dd",
+    "codeVersion": "v-c921b57198b7",
+    "previousSha256": "ac6f8bdff0f334e75a4527cc53cf41cb8bd30d476fd0e4c0c560edae79cc0350",
+    "sha256": "9a037f300dc1f455059fd7c5abcafb928893a017b8b7947521130030371b6916",
+    "readbackEqual": true,
+    "templateSha256": "0f598e33408b5fde83976dd596966687692e173460bc9bf779b800d4f96bdcc8",
+    "targetUrl": "https://paperwild-4s0pac2km-davidson3556s-projects.vercel.app/",
+    "uploadedAt": "2026-10-25T20:17:46.596530+00:00",
+    "sourceUncommittedAtUpload": true,
+    "forceUsed": false,
+    "intermediateUpdates": [
+      {
+        "case": "ONBD-001",
+        "testId": "76e3011a-cb17-4be2-8d00-833670e8644e",
+        "previousCodeVersion": "v-4b3f79e761dd",
+        "codeVersion": "v-e60f45551663",
+        "previousSha256": "ac6f8bdff0f334e75a4527cc53cf41cb8bd30d476fd0e4c0c560edae79cc0350",
+        "sha256": "4daa0d1914b7d75fae0085b306f80da22bbee3c98df2fb9417df4fde9e5ed4f8",
+        "readbackEqual": true,
+        "uploadedAt": "2026-10-25T20:11:51.545337+00:00",
+        "sourceUncommittedAtUpload": true,
+        "forceUsed": false,
+        "intermediateUpdates": [
+          {
+            "case": "ONBD-001",
+            "testId": "76e3011a-cb17-4be2-8d00-833670e8644e",
+            "previousCodeVersion": "v-4b3f79e761dd",
+            "codeVersion": "v-7e88ddec6504",
+            "previousSha256": "ac6f8bdff0f334e75a4527cc53cf41cb8bd30d476fd0e4c0c560edae79cc0350",
+            "sha256": "5f9ca7503bff9a4c78fb8f4b3b1361f67a6550231a7197874397b3a6acdadf8b",
+            "readbackEqual": true,
+            "uploadedAt": "2026-10-25T19:41:44.429828+00:00",
+            "sourceUncommittedAtUpload": true,
+            "forceUsed": false,
+            "purpose": "Controlled strict public-target injection proof before updating the remaining fifteen tests."
+          }
+        ],
+        "purpose": "Controlled strict public-target injection proof before updating the remaining fifteen tests."
+      }
+    ],
+    "purpose": "Controlled strict public-target injection proof before updating the remaining fifteen tests."
+  },
+  "controlledOnboardingPublicationNote": "Preserved verbatim from the controlled-probe receipt. Its nested previousCodeVersion fields identify the original tunnel baseline; they do not independently prove each intermediate CAS transition.",
+  "controlledProbes": [
+    {
+      "runId": "d2ae6a91-1217-405f-920e-bca6a1a264a4",
+      "status": "failed",
+      "purpose": "Bare TEST_TARGET_URL runtime environment injection probe",
+      "observedFailure": "Required TEST_TARGET_URL missing at module load."
+    },
+    {
+      "runId": "66843d6c-58ed-4712-85ba-bba73ab9e68d",
+      "status": "failed",
+      "purpose": "Explicit default environment and --var TEST_TARGET_URL injection probe",
+      "observedFailure": "Required TEST_TARGET_URL missing at module load."
+    },
+    {
+      "runId": "aa368162-4424-4908-9faa-c38f0a4caa6e",
+      "status": "passed",
+      "purpose": "Literal target-line binding strict replay proof",
+      "testId": "76e3011a-cb17-4be2-8d00-833670e8644e",
+      "source": "cli",
+      "targetUrl": "https://paperwild-4s0pac2km-davidson3556s-projects.vercel.app/",
+      "replay": {
+        "path": "replay",
+        "reason": null,
+        "caveat": null
+      },
+      "startedAt": "2026-10-25T20:18:01.086Z",
+      "finishedAt": "2026-10-25T20:18:39.208Z",
+      "runCodeVersion": null,
+      "versionEvidence": "Guarded stored-code publication and readbacks surround the probe; the run API does not provide a code version."
+    }
+  ],
+  "historicalNativeTunnelBlocker": {
+    "githubActionsRunId": 40196200559,
+    "sourceRevision": "31b60ee7d94cb312a0a365a002fcb036585faf8d",
+    "status": "blocked",
+    "message": "Deterministic replay cannot run through a tunnel.",
+    "previousUpdateRecord": "docs/testsprite/tunnel-stored-code-update-2026-10-25.json"
+  },
+  "note": "This update publishes rendered seed sources and verifies exact readbacks. Only the controlled ONBD-001 literal-target probe has passed; the full sixteen-case gate remains pending. Every future gate must verify the dedicated CI project and current PR head, render only the target line, guarded-update the hosted versions, and verify actual target, pre/post code, artifact bytes and strict replay results.",
+  "controlledProbeSummarySha256": "b20ccd62a018c0cfc42e6fdcf141afad59ff80430892a7590911d0786250d133",
+  "sourceAudit": {
+    "sha256": "b3ca6520dba5f0858c62d190413b7e9ea3ac146d51dc2e9a99c4f39ad9cc80ab",
+    "fileCount": 16,
+    "targetGuardChecks": 336,
+    "allScenarioASTUnchanged": true
+  },
+  "projectAfter": {
+    "checkedAt": "2026-10-25T20:27:14.009210+00:00",
+    "projectId": "dafdf75c-04a3-467f-acc2-4359af6b1d8e",
+    "completeMembershipVerified": true,
+    "idleStatusesVerified": true,
+    "cases": [
+      {
+        "testId": "06093f89-2095-4a14-b7db-101e715ae206",
+        "status": "passed",
+        "statusByEnvironment": [
+          {
+            "environmentId": "00780229-bad1-480e-b8ca-c2e881241893",
+            "environmentName": "default",
+            "status": "passed"
+          }
+        ]
+      },
+      {
+        "testId": "0ad51a00-bdcc-49ab-a155-ad15de21a7a2",
+        "status": "passed",
+        "statusByEnvironment": [
+          {
+            "environmentId": "00780229-bad1-480e-b8ca-c2e881241893",
+            "environmentName": "default",
+            "status": "passed"
+          }
+        ]
+      },
+      {
+        "testId": "138f2507-51c6-43ed-9a7c-c00bb2b1657e",
+        "status": "passed",
+        "statusByEnvironment": [
+          {
+            "environmentId": "00780229-bad1-480e-b8ca-c2e881241893",
+            "environmentName": "default",
+            "status": "passed"
+          }
+        ]
+      },
+      {
+        "testId": "1dc27669-90de-470e-9681-c5f5026194cb",
+        "status": "blocked",
+        "statusByEnvironment": []
+      },
+      {
+        "testId": "2330c1ea-adda-4d16-a611-d8745fc4cc66",
+        "status": "passed",
+        "statusByEnvironment": [
+          {
+            "environmentId": "00780229-bad1-480e-b8ca-c2e881241893",
+            "environmentName": "default",
+            "status": "passed"
+          }
+        ]
+      },
+      {
+        "testId": "43d65119-ddde-41e6-9a50-e99a370bb16b",
+        "status": "blocked",
+        "statusByEnvironment": []
+      },
+      {
+        "testId": "4cb7d4df-04ae-4be5-8295-f69f0f115611",
+        "status": "blocked",
+        "statusByEnvironment": []
+      },
+      {
+        "testId": "6c39a736-f9b2-4731-8560-05df7dcd0449",
+        "status": "passed",
+        "statusByEnvironment": [
+          {
+            "environmentId": "00780229-bad1-480e-b8ca-c2e881241893",
+            "environmentName": "default",
+            "status": "passed"
+          }
+        ]
+      },
+      {
+        "testId": "72d4f1a0-dd72-44e9-bf92-0ccbc9a4ea4d",
+        "status": "blocked",
+        "statusByEnvironment": []
+      },
+      {
+        "testId": "7615508f-ec1e-4df0-9d67-3c4db951b18e",
+        "status": "blocked",
+        "statusByEnvironment": []
+      },
+      {
+        "testId": "76e3011a-cb17-4be2-8d00-833670e8644e",
+        "status": "passed",
+        "statusByEnvironment": [
+          {
+            "environmentId": "00780229-bad1-480e-b8ca-c2e881241893",
+            "environmentName": "default",
+            "status": "passed"
+          }
+        ]
+      },
+      {
+        "testId": "836e4d28-2b2a-468c-ba69-21bc358eb237",
+        "status": "passed",
+        "statusByEnvironment": [
+          {
+            "environmentId": "00780229-bad1-480e-b8ca-c2e881241893",
+            "environmentName": "default",
+            "status": "passed"
+          }
+        ]
+      },
+      {
+        "testId": "9e34b635-85b9-427d-95b2-5584e55f5f7d",
+        "status": "passed",
+        "statusByEnvironment": [
+          {
+            "environmentId": "00780229-bad1-480e-b8ca-c2e881241893",
+            "environmentName": "default",
+            "status": "passed"
+          }
+        ]
+      },
+      {
+        "testId": "c48475e4-8ec0-4875-a5c9-e8b2981d4c87",
+        "status": "passed",
+        "statusByEnvironment": [
+          {
+            "environmentId": "00780229-bad1-480e-b8ca-c2e881241893",
+            "environmentName": "default",
+            "status": "passed"
+          }
+        ]
+      },
+      {
+        "testId": "ec570b6b-0423-40cd-a0a7-60e8a8cbb23c",
+        "status": "passed",
+        "statusByEnvironment": [
+          {
+            "environmentId": "00780229-bad1-480e-b8ca-c2e881241893",
+            "environmentName": "default",
+            "status": "passed"
+          }
+        ]
+      },
+      {
+        "testId": "f52738b9-d0c5-46b4-b914-70d16c6d7e7b",
+        "status": "passed",
+        "statusByEnvironment": [
+          {
+            "environmentId": "00780229-bad1-480e-b8ca-c2e881241893",
+            "environmentName": "default",
+            "status": "passed"
+          }
+        ]
+      }
+    ]
+  },
+  "completedAt": "2026-10-25T20:27:27.611825+00:00",
+  "sourceTreeSha256": "6939a75d97f1565bff62ed8409abc1e1ae6d7f4edcef3c5ad67dffcb2ac3480e",
+  "storedSeedTreeSha256": "8ee20df24e13dc38c9d3f3f49ac29a98bc2c528f35c280bb1492b7b4952692f9",
+  "manifestSha256": "5058b6443512adec654d3f95ad04079daa5a970e1d997dea978c39fbe410ba54",
+  "allSixteenFinalReadbacksEqual": true,
+  "projectMembershipUnchanged": true,
+  "updatesPerformedByThisUpdate": 15,
+  "fullSixteenCaseSuiteExecuted": false
+}

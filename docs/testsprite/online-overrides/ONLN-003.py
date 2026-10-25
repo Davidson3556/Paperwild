@@ -12,7 +12,7 @@ from urllib.parse import parse_qs, urlsplit
 from playwright import async_api
 from playwright.async_api import expect
 
-TARGET = os.environ.get('TEST_TARGET_URL', 'https://paperwild-git-feat-convex-multiplayer-davidson3556s-projects.vercel.app/')
+TARGET = "https://paperwild.vercel.app/"
 ORIGIN = '{0.scheme}://{0.netloc}'.format(urlsplit(TARGET))
 BROWSER_ARGS = ['--window-size=1280,720', '--disable-dev-shm-usage', '--ipc=host', '--single-process']
 PHASE = 'module-loaded'

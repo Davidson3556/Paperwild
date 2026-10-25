@@ -1,0 +1,1025 @@
+{
+  "verified": true,
+  "startedAt": "2026-10-25T20:36:19.023022+00:00",
+  "projectId": "5ac48e78-b1a2-4509-ad73-0b3efe0c3343",
+  "applicationHead": "31e8b02e62d2095716624c173879ff1c902953b4",
+  "targetUrl": "https://paperwild.vercel.app/",
+  "productionBinding": {
+    "projectId": "prj_Xc1W97LsvKKTS2BRyQZUoLBxYqBF",
+    "deploymentId": "dpl_5uZMUS4vArHxYwkdLs5T5zVjKohv",
+    "publicConvexUrl": "https://grateful-cuttlefish-105.convex.cloud"
+  },
+  "sourceScope": "Only TARGET assignment changed to a literal Production URL; every other source byte and gameplay AST is unchanged.",
+  "excludedCase": "ONLN-004 remains on its existing development outage target, source and version.",
+  "regressionProjectTouched": false,
+  "backendDeployments": false,
+  "settingsMutations": false,
+  "runAttestationLimit": "Null API codeVersion/autoHeal remain null. Exact pre/post stored code and literal-target binding independently prove the configured source; each run must also confirm target and unqualified strict replay.",
+  "updates": [
+    {
+      "case": "ONLN-001",
+      "testId": "9aa656fd-f946-4288-bb72-3cc622a01060",
+      "previousCodeVersion": "v-8c8f963a53be",
+      "previousSha256": "745e2bdcba98c33bd5881e7f0d00932e30587215f0203afefef8e6e3db8fc7a9",
+      "sha256": "6575363a2e73eb14f192948b5e65682ee06405038475b40378378cd89b6b4063",
+      "targetUrl": "https://paperwild.vercel.app/",
+      "gameplayASTUnchanged": true,
+      "targetLineOnlyChanged": true,
+      "sourceUncommittedAtUpload": true,
+      "putStartedAt": "2026-10-25T20:36:59.511745+00:00",
+      "readbackEqual": true,
+      "codeVersion": "v-11d29e749ff2",
+      "putCompletedAt": "2026-10-25T20:37:01.830734+00:00",
+      "readback": {
+        "case": "ONLN-001",
+        "testId": "9aa656fd-f946-4288-bb72-3cc622a01060",
+        "codeVersion": "v-11d29e749ff2",
+        "sha256": "6575363a2e73eb14f192948b5e65682ee06405038475b40378378cd89b6b4063",
+        "readbackEqual": true,
+        "checkedAt": "2026-10-25T20:37:04.107565+00:00"
+      }
+    },
+    {
+      "case": "ONLN-002",
+      "testId": "d832870e-f2c3-4be2-9b46-785b86c201f0",
+      "previousCodeVersion": "v-36829c66b6fc",
+      "previousSha256": "8122a2afb8894234e4b01d4e06861a5157cce9972c5c6e1592c9d4ae31333259",
+      "sha256": "d518fec9b694094410651b9765428c0b860fdc4face7de4ad7d2f28d5889b62f",
+      "targetUrl": "https://paperwild.vercel.app/",
+      "gameplayASTUnchanged": true,
+      "targetLineOnlyChanged": true,
+      "sourceUncommittedAtUpload": true,
+      "putStartedAt": "2026-10-25T20:37:04.108041+00:00",
+      "readbackEqual": true,
+      "codeVersion": "v-c96feb712dee",
+      "putCompletedAt": "2026-10-25T20:37:06.364883+00:00",
+      "readback": {
+        "case": "ONLN-002",
+        "testId": "d832870e-f2c3-4be2-9b46-785b86c201f0",
+        "codeVersion": "v-c96feb712dee",
+        "sha256": "d518fec9b694094410651b9765428c0b860fdc4face7de4ad7d2f28d5889b62f",
+        "readbackEqual": true,
+        "checkedAt": "2026-10-25T20:37:08.804380+00:00"
+      }
+    },
+    {
+      "case": "ONLN-003",
+      "testId": "7765f1f2-d88d-451c-ab1c-fe1ee4594925",
+      "previousCodeVersion": "v-36a7112662b4",
+      "previousSha256": "db596f3613055cbcec0f6e172c3616cc98dcb0ddd3fc31e1a5cad0007ec402b3",
+      "sha256": "bbf33bbfca8b402bfd2a0660f5be14bf80566ec9dd9805eb499a7ea1da519066",
+      "targetUrl": "https://paperwild.vercel.app/",
+      "gameplayASTUnchanged": true,
+      "targetLineOnlyChanged": true,
+      "sourceUncommittedAtUpload": true,
+      "putStartedAt": "2026-10-25T20:37:08.804866+00:00",
+      "readbackEqual": true,
+      "codeVersion": "v-2132d695ff06",
+      "putCompletedAt": "2026-10-25T20:37:11.056786+00:00",
+      "readback": {
+        "case": "ONLN-003",
+        "testId": "7765f1f2-d88d-451c-ab1c-fe1ee4594925",
+        "codeVersion": "v-2132d695ff06",
+        "sha256": "bbf33bbfca8b402bfd2a0660f5be14bf80566ec9dd9805eb499a7ea1da519066",
+        "readbackEqual": true,
+        "checkedAt": "2026-10-25T20:37:13.283869+00:00"
+      }
+    }
+  ],
+  "runs": [
+    {
+      "case": "ONLN-001",
+      "testId": "9aa656fd-f946-4288-bb72-3cc622a01060",
+      "runId": "6de6bb2c-c55e-4619-b860-90d6344bece0",
+      "status": "passed",
+      "summaryStatus": "passed",
+      "cliExitCode": 0,
+      "waitExitCode": 0,
+      "projectId": "5ac48e78-b1a2-4509-ad73-0b3efe0c3343",
+      "source": "cli",
+      "targetUrl": "https://paperwild.vercel.app/",
+      "literalStoredTarget": "https://paperwild.vercel.app/",
+      "reviewedCodeVersion": "v-11d29e749ff2",
+      "sha256": "6575363a2e73eb14f192948b5e65682ee06405038475b40378378cd89b6b4063",
+      "runCodeVersion": null,
+      "autoHeal": null,
+      "autoHealFieldPresent": false,
+      "replay": {
+        "path": "replay",
+        "reason": null,
+        "caveat": null
+      },
+      "unqualifiedReplay": true,
+      "dispatchedAt": "2026-10-25T20:37:15.334419+00:00",
+      "startedAt": "2026-10-25T20:37:17.319Z",
+      "finishedAt": "2026-10-25T20:38:36.242Z",
+      "verified": true,
+      "executionUrl": "https://www.testsprite.com/dashboard-v3/o/f7454a95-e992-581a-98e0-4edd142a0891/projects/5ac48e78-b1a2-4509-ad73-0b3efe0c3343/execution/9432bb36-0d50-4864-91f2-ef49f2402dfc/test/6de6bb2c-c55e-4619-b860-90d6344bece0"
+    },
+    {
+      "case": "ONLN-002",
+      "testId": "d832870e-f2c3-4be2-9b46-785b86c201f0",
+      "runId": "f599a052-26e7-4e4c-9363-e24772d646c3",
+      "status": "passed",
+      "summaryStatus": "passed",
+      "cliExitCode": 0,
+      "waitExitCode": 0,
+      "projectId": "5ac48e78-b1a2-4509-ad73-0b3efe0c3343",
+      "source": "cli",
+      "targetUrl": "https://paperwild.vercel.app/",
+      "literalStoredTarget": "https://paperwild.vercel.app/",
+      "reviewedCodeVersion": "v-c96feb712dee",
+      "sha256": "d518fec9b694094410651b9765428c0b860fdc4face7de4ad7d2f28d5889b62f",
+      "runCodeVersion": null,
+      "autoHeal": null,
+      "autoHealFieldPresent": false,
+      "replay": {
+        "path": "replay",
+        "reason": null,
+        "caveat": null
+      },
+      "unqualifiedReplay": true,
+      "dispatchedAt": "2026-10-25T20:38:40.632191+00:00",
+      "startedAt": "2026-10-25T20:38:42.268Z",
+      "finishedAt": "2026-10-25T20:39:45.529Z",
+      "verified": true,
+      "executionUrl": "https://www.testsprite.com/dashboard-v3/o/f7454a95-e992-581a-98e0-4edd142a0891/projects/5ac48e78-b1a2-4509-ad73-0b3efe0c3343/execution/c544f6dc-d991-43f3-9a49-f632eeb10499/test/f599a052-26e7-4e4c-9363-e24772d646c3"
+    },
+    {
+      "case": "ONLN-003",
+      "testId": "7765f1f2-d88d-451c-ab1c-fe1ee4594925",
+      "runId": "042d18eb-9078-4575-978e-2fafad454a65",
+      "status": "passed",
+      "summaryStatus": "passed",
+      "cliExitCode": 0,
+      "waitExitCode": 0,
+      "projectId": "5ac48e78-b1a2-4509-ad73-0b3efe0c3343",
+      "source": "cli",
+      "targetUrl": "https://paperwild.vercel.app/",
+      "literalStoredTarget": "https://paperwild.vercel.app/",
+      "reviewedCodeVersion": "v-2132d695ff06",
+      "sha256": "bbf33bbfca8b402bfd2a0660f5be14bf80566ec9dd9805eb499a7ea1da519066",
+      "runCodeVersion": null,
+      "autoHeal": null,
+      "autoHealFieldPresent": false,
+      "replay": {
+        "path": "replay",
+        "reason": null,
+        "caveat": null
+      },
+      "unqualifiedReplay": true,
+      "dispatchedAt": "2026-10-25T20:39:49.919167+00:00",
+      "startedAt": "2026-10-25T20:39:51.552Z",
+      "finishedAt": "2026-10-25T20:41:19.288Z",
+      "verified": true,
+      "executionUrl": "https://www.testsprite.com/dashboard-v3/o/f7454a95-e992-581a-98e0-4edd142a0891/projects/5ac48e78-b1a2-4509-ad73-0b3efe0c3343/execution/a4424c25-c078-45c0-b046-c4ddfa367618/test/042d18eb-9078-4575-978e-2fafad454a65"
+    }
+  ],
+  "storedBefore": [
+    {
+      "case": "ONLN-001",
+      "testId": "9aa656fd-f946-4288-bb72-3cc622a01060",
+      "codeVersion": "v-8c8f963a53be",
+      "sha256": "745e2bdcba98c33bd5881e7f0d00932e30587215f0203afefef8e6e3db8fc7a9",
+      "readbackEqual": true,
+      "checkedAt": "2026-10-25T20:36:52.653727+00:00"
+    },
+    {
+      "case": "ONLN-002",
+      "testId": "d832870e-f2c3-4be2-9b46-785b86c201f0",
+      "codeVersion": "v-36829c66b6fc",
+      "sha256": "8122a2afb8894234e4b01d4e06861a5157cce9972c5c6e1592c9d4ae31333259",
+      "readbackEqual": true,
+      "checkedAt": "2026-10-25T20:36:55.128733+00:00"
+    },
+    {
+      "case": "ONLN-003",
+      "testId": "7765f1f2-d88d-451c-ab1c-fe1ee4594925",
+      "codeVersion": "v-36a7112662b4",
+      "sha256": "db596f3613055cbcec0f6e172c3616cc98dcb0ddd3fc31e1a5cad0007ec402b3",
+      "readbackEqual": true,
+      "checkedAt": "2026-10-25T20:36:57.325454+00:00"
+    },
+    {
+      "case": "ONLN-004",
+      "testId": "a1eadd37-181c-4497-897a-fc3aa73d97e8",
+      "codeVersion": "v-b27cfd4d1cfa",
+      "sha256": "28bfc8308ca72de8418875c70762e6971485c7e4ac9a34e810c3ef254b9836ff",
+      "readbackEqual": true,
+      "checkedAt": "2026-10-25T20:36:59.511133+00:00"
+    }
+  ],
+  "storedBound": [
+    {
+      "case": "ONLN-001",
+      "testId": "9aa656fd-f946-4288-bb72-3cc622a01060",
+      "codeVersion": "v-11d29e749ff2",
+      "sha256": "6575363a2e73eb14f192948b5e65682ee06405038475b40378378cd89b6b4063",
+      "readbackEqual": true,
+      "checkedAt": "2026-10-25T20:37:04.107565+00:00"
+    },
+    {
+      "case": "ONLN-002",
+      "testId": "d832870e-f2c3-4be2-9b46-785b86c201f0",
+      "codeVersion": "v-c96feb712dee",
+      "sha256": "d518fec9b694094410651b9765428c0b860fdc4face7de4ad7d2f28d5889b62f",
+      "readbackEqual": true,
+      "checkedAt": "2026-10-25T20:37:08.804380+00:00"
+    },
+    {
+      "case": "ONLN-003",
+      "testId": "7765f1f2-d88d-451c-ab1c-fe1ee4594925",
+      "codeVersion": "v-2132d695ff06",
+      "sha256": "bbf33bbfca8b402bfd2a0660f5be14bf80566ec9dd9805eb499a7ea1da519066",
+      "readbackEqual": true,
+      "checkedAt": "2026-10-25T20:37:13.283869+00:00"
+    }
+  ],
+  "storedAfter": [
+    {
+      "case": "ONLN-001",
+      "testId": "9aa656fd-f946-4288-bb72-3cc622a01060",
+      "codeVersion": "v-11d29e749ff2",
+      "sha256": "6575363a2e73eb14f192948b5e65682ee06405038475b40378378cd89b6b4063",
+      "readbackEqual": true,
+      "checkedAt": "2026-10-25T20:41:24.932475+00:00"
+    },
+    {
+      "case": "ONLN-002",
+      "testId": "d832870e-f2c3-4be2-9b46-785b86c201f0",
+      "codeVersion": "v-c96feb712dee",
+      "sha256": "d518fec9b694094410651b9765428c0b860fdc4face7de4ad7d2f28d5889b62f",
+      "readbackEqual": true,
+      "checkedAt": "2026-10-25T20:41:31.536510+00:00"
+    },
+    {
+      "case": "ONLN-003",
+      "testId": "7765f1f2-d88d-451c-ab1c-fe1ee4594925",
+      "codeVersion": "v-2132d695ff06",
+      "sha256": "bbf33bbfca8b402bfd2a0660f5be14bf80566ec9dd9805eb499a7ea1da519066",
+      "readbackEqual": true,
+      "checkedAt": "2026-10-25T20:41:34.019179+00:00"
+    },
+    {
+      "case": "ONLN-004",
+      "testId": "a1eadd37-181c-4497-897a-fc3aa73d97e8",
+      "codeVersion": "v-b27cfd4d1cfa",
+      "sha256": "28bfc8308ca72de8418875c70762e6971485c7e4ac9a34e810c3ef254b9836ff",
+      "readbackEqual": true,
+      "checkedAt": "2026-10-25T20:41:36.706188+00:00"
+    }
+  ],
+  "previousManifestSha256": "cc8b8ddb62509cd372b0de340508b8d95e4f2f9309ecd7c56e7fa55bea011ea9",
+  "productionBefore": {
+    "checkedAt": "2026-10-25T20:36:24.800220+00:00",
+    "headSha": "31e8b02e62d2095716624c173879ff1c902953b4",
+    "projectId": "prj_Xc1W97LsvKKTS2BRyQZUoLBxYqBF",
+    "deploymentId": "dpl_5uZMUS4vArHxYwkdLs5T5zVjKohv",
+    "sourceSha": "31e8b02e62d2095716624c173879ff1c902953b4",
+    "targetUrl": "https://paperwild.vercel.app/",
+    "state": "READY"
+  },
+  "referenceBuild": {
+    "sourceRevision": "31e8b02e62d2095716624c173879ff1c902953b4",
+    "sameApplicationSourceAsPR6": true,
+    "publicConvexUrl": "https://grateful-cuttlefish-105.convex.cloud",
+    "buildSucceeded": true,
+    "fileCount": 48,
+    "applicationBundle": "index-DRVksUc-.js",
+    "sourceArchiveSha256": "4414ee3aab6a98506b89ea827ccc6503136829781b2433759c8d09ff1b8d500f",
+    "buildScope": "Isolated archive of the identified application source revision, with only the public Production Convex URL supplied to the build."
+  },
+  "buildBefore": {
+    "checkedAt": "2026-10-25T20:36:47.995124+00:00",
+    "fileCount": 48,
+    "treeSha256": "fb141612e7cbb85d89da5b5535219b3893d29ca8da97d639bd67551b55dc2f1c",
+    "files": [
+      {
+        "path": "art/marginwood-sprites-source.png",
+        "sha256": "7e3e3ce020902da830c0a5780aa386add7ca4fef2131540bf6a237a0292c0b04",
+        "remoteRawSha256": "7e3e3ce020902da830c0a5780aa386add7ca4fef2131540bf6a237a0292c0b04",
+        "normalization": "none",
+        "httpStatus": 200
+      },
+      {
+        "path": "art/marginwood-sprites.png",
+        "sha256": "b4541b1d52105b53e7e88d6afc89fb03364c02cbfe0432bbbf84638b27400969",
+        "remoteRawSha256": "b4541b1d52105b53e7e88d6afc89fb03364c02cbfe0432bbbf84638b27400969",
+        "normalization": "none",
+        "httpStatus": 200
+      },
+      {
+        "path": "art/pieces/bb.png",
+        "sha256": "8d1f3739da63fc5f9e5ad3f968d81260fd3b525778036fee859f6ecff61c53f1",
+        "remoteRawSha256": "8d1f3739da63fc5f9e5ad3f968d81260fd3b525778036fee859f6ecff61c53f1",
+        "normalization": "none",
+        "httpStatus": 200
+      },
+      {
+        "path": "art/pieces/bk.png",
+        "sha256": "3f10dbb234d5eaeb7f33bc82e84afc404e89baa60182d88473a0faa41f495ed7",
+        "remoteRawSha256": "3f10dbb234d5eaeb7f33bc82e84afc404e89baa60182d88473a0faa41f495ed7",
+        "normalization": "none",
+        "httpStatus": 200
+      },
+      {
+        "path": "art/pieces/bn.png",
+        "sha256": "690d572c2749bab94f100ed7144763c126693ec0c5509be2fbc437f4765b19a3",
+        "remoteRawSha256": "690d572c2749bab94f100ed7144763c126693ec0c5509be2fbc437f4765b19a3",
+        "normalization": "none",
+        "httpStatus": 200
+      },
+      {
+        "path": "art/pieces/bp.png",
+        "sha256": "d1e3455b49bbe524b271752af2bf8dddc91b565889b2ff1f741e0d50026020e2",
+        "remoteRawSha256": "d1e3455b49bbe524b271752af2bf8dddc91b565889b2ff1f741e0d50026020e2",
+        "normalization": "none",
+        "httpStatus": 200
+      },
+      {
+        "path": "art/pieces/bq.png",
+        "sha256": "7abd6d5b6e9cabba1fbab3b982d08302b9220122267fc25d932a50a12e46d049",
+        "remoteRawSha256": "7abd6d5b6e9cabba1fbab3b982d08302b9220122267fc25d932a50a12e46d049",
+        "normalization": "none",
+        "httpStatus": 200
+      },
+      {
+        "path": "art/pieces/br.png",
+        "sha256": "80824183777f615f3fc71b107409dbed3fdb05dcd3eb3a4a64a1d50b08d29d64",
+        "remoteRawSha256": "80824183777f615f3fc71b107409dbed3fdb05dcd3eb3a4a64a1d50b08d29d64",
+        "normalization": "none",
+        "httpStatus": 200
+      },
+      {
+        "path": "art/pieces/wb.png",
+        "sha256": "b252047f3d0cc56bb642fcf03b1f1c89c0bb60475a4adefee2003707c6f81c71",
+        "remoteRawSha256": "b252047f3d0cc56bb642fcf03b1f1c89c0bb60475a4adefee2003707c6f81c71",
+        "normalization": "none",
+        "httpStatus": 200
+      },
+      {
+        "path": "art/pieces/wk.png",
+        "sha256": "46662114f68b82f65386c3bb0e1e0eaa3b54b1f1528fc6737c505a5cf09eaea6",
+        "remoteRawSha256": "46662114f68b82f65386c3bb0e1e0eaa3b54b1f1528fc6737c505a5cf09eaea6",
+        "normalization": "none",
+        "httpStatus": 200
+      },
+      {
+        "path": "art/pieces/wn.png",
+        "sha256": "15915f22d2118be013ced321b5f2b3f62fc95da94c75faf642db9e1321a32bc5",
+        "remoteRawSha256": "15915f22d2118be013ced321b5f2b3f62fc95da94c75faf642db9e1321a32bc5",
+        "normalization": "none",
+        "httpStatus": 200
+      },
+      {
+        "path": "art/pieces/wp.png",
+        "sha256": "3852462e41d2ad4494ccffe97c134104e9e24f2228efa2eb6f8617c84b437086",
+        "remoteRawSha256": "3852462e41d2ad4494ccffe97c134104e9e24f2228efa2eb6f8617c84b437086",
+        "normalization": "none",
+        "httpStatus": 200
+      },
+      {
+        "path": "art/pieces/wq.png",
+        "sha256": "27d07637bf434a14ff01846e7068d360cb1465c0b273d4ca01d3b049ba077a74",
+        "remoteRawSha256": "27d07637bf434a14ff01846e7068d360cb1465c0b273d4ca01d3b049ba077a74",
+        "normalization": "none",
+        "httpStatus": 200
+      },
+      {
+        "path": "art/pieces/wr.png",
+        "sha256": "221bb117f01ac8d7e41e4c4eb52fc77a228566bea666f2f193e7cf52da376616",
+        "remoteRawSha256": "221bb117f01ac8d7e41e4c4eb52fc77a228566bea666f2f193e7cf52da376616",
+        "normalization": "none",
+        "httpStatus": 200
+      },
+      {
+        "path": "art/sketchbook-paper.jpg",
+        "sha256": "1b1893574fc8f097ce5c0cbceea27523395af6a0575994b3e0e504e50f0946f3",
+        "remoteRawSha256": "1b1893574fc8f097ce5c0cbceea27523395af6a0575994b3e0e504e50f0946f3",
+        "normalization": "none",
+        "httpStatus": 200
+      },
+      {
+        "path": "art/sketchbook-paper.png",
+        "sha256": "d4c027c572cbb944e7bb987f3ebe78656ceabb65fe581ef1b145b5f0cae57956",
+        "remoteRawSha256": "d4c027c572cbb944e7bb987f3ebe78656ceabb65fe581ef1b145b5f0cae57956",
+        "normalization": "none",
+        "httpStatus": 200
+      },
+      {
+        "path": "art/watercolor/bb.png",
+        "sha256": "45db972e7e48568a44dfaff020e89204ff3bfa302c8173e8297d439acb4548f6",
+        "remoteRawSha256": "45db972e7e48568a44dfaff020e89204ff3bfa302c8173e8297d439acb4548f6",
+        "normalization": "none",
+        "httpStatus": 200
+      },
+      {
+        "path": "art/watercolor/bk.png",
+        "sha256": "01ce59877bb82490071059edcd483548639ed3661aa91823c23e6a64ecd88797",
+        "remoteRawSha256": "01ce59877bb82490071059edcd483548639ed3661aa91823c23e6a64ecd88797",
+        "normalization": "none",
+        "httpStatus": 200
+      },
+      {
+        "path": "art/watercolor/bn.png",
+        "sha256": "30fe07bb755495da1b977d7fd7bd90d7c01809e1acbc4248d8605a6fda22630c",
+        "remoteRawSha256": "30fe07bb755495da1b977d7fd7bd90d7c01809e1acbc4248d8605a6fda22630c",
+        "normalization": "none",
+        "httpStatus": 200
+      },
+      {
+        "path": "art/watercolor/bp.png",
+        "sha256": "b5968f72f6dba6e5477ccd75048bbf9757a4c2ea3e93a55841100c36eee6cb2c",
+        "remoteRawSha256": "b5968f72f6dba6e5477ccd75048bbf9757a4c2ea3e93a55841100c36eee6cb2c",
+        "normalization": "none",
+        "httpStatus": 200
+      },
+      {
+        "path": "art/watercolor/bq.png",
+        "sha256": "feca87c84b726aff84039c1a073bced111073a25825064255e55c8fbd7d55b62",
+        "remoteRawSha256": "feca87c84b726aff84039c1a073bced111073a25825064255e55c8fbd7d55b62",
+        "normalization": "none",
+        "httpStatus": 200
+      },
+      {
+        "path": "art/watercolor/br.png",
+        "sha256": "0ef38e01d6d4b2f196b30aca62434e0042c843c6fee4c021bb344c6b459d074d",
+        "remoteRawSha256": "0ef38e01d6d4b2f196b30aca62434e0042c843c6fee4c021bb344c6b459d074d",
+        "normalization": "none",
+        "httpStatus": 200
+      },
+      {
+        "path": "art/watercolor/wb.png",
+        "sha256": "ae3cfc3ec806f962b922f53c386e41a1f469ab85f19b83b27f9a0492da9374ed",
+        "remoteRawSha256": "ae3cfc3ec806f962b922f53c386e41a1f469ab85f19b83b27f9a0492da9374ed",
+        "normalization": "none",
+        "httpStatus": 200
+      },
+      {
+        "path": "art/watercolor/web/bb.png",
+        "sha256": "567307453ed01ea420d696d83cce6df41b1562193f9b220b6a3993a79db81262",
+        "remoteRawSha256": "567307453ed01ea420d696d83cce6df41b1562193f9b220b6a3993a79db81262",
+        "normalization": "none",
+        "httpStatus": 200
+      },
+      {
+        "path": "art/watercolor/web/bk.png",
+        "sha256": "646ab7394d07b480f495f92e7c485bf655cdfe69e9f21caaa432e3486b9f1a36",
+        "remoteRawSha256": "646ab7394d07b480f495f92e7c485bf655cdfe69e9f21caaa432e3486b9f1a36",
+        "normalization": "none",
+        "httpStatus": 200
+      },
+      {
+        "path": "art/watercolor/web/bn.png",
+        "sha256": "1b12bf88194d16109e3fdfba6419d50f26383881079777ed16f707728088053b",
+        "remoteRawSha256": "1b12bf88194d16109e3fdfba6419d50f26383881079777ed16f707728088053b",
+        "normalization": "none",
+        "httpStatus": 200
+      },
+      {
+        "path": "art/watercolor/web/bp.png",
+        "sha256": "b59f106f9b6906b4dee9b7685634744d63c469fd787bcef483e767c3ae817d90",
+        "remoteRawSha256": "b59f106f9b6906b4dee9b7685634744d63c469fd787bcef483e767c3ae817d90",
+        "normalization": "none",
+        "httpStatus": 200
+      },
+      {
+        "path": "art/watercolor/web/bq.png",
+        "sha256": "3c26435ea8acbd1f2e0bad85f4bdfb1ee87e5d2e53003a6de21484ff1a7ac063",
+        "remoteRawSha256": "3c26435ea8acbd1f2e0bad85f4bdfb1ee87e5d2e53003a6de21484ff1a7ac063",
+        "normalization": "none",
+        "httpStatus": 200
+      },
+      {
+        "path": "art/watercolor/web/br.png",
+        "sha256": "f7699bf0394a2f6c4a95077a4e393b61d72ad63453e23cea2d8427a5f08d2c9e",
+        "remoteRawSha256": "f7699bf0394a2f6c4a95077a4e393b61d72ad63453e23cea2d8427a5f08d2c9e",
+        "normalization": "none",
+        "httpStatus": 200
+      },
+      {
+        "path": "art/watercolor/web/wb.png",
+        "sha256": "25ec1015b0507e2febafa1af692410f773edab509032d3bc786eef217db6c742",
+        "remoteRawSha256": "25ec1015b0507e2febafa1af692410f773edab509032d3bc786eef217db6c742",
+        "normalization": "none",
+        "httpStatus": 200
+      },
+      {
+        "path": "art/watercolor/web/wk.png",
+        "sha256": "f6b3d7274321c1c1aa56983810e78e273e31b14ecb309527a5c01357a8177bf3",
+        "remoteRawSha256": "f6b3d7274321c1c1aa56983810e78e273e31b14ecb309527a5c01357a8177bf3",
+        "normalization": "none",
+        "httpStatus": 200
+      },
+      {
+        "path": "art/watercolor/web/wn.png",
+        "sha256": "8bef1103b0ebb16854ae9a588a7266e20751273560c0f020388f16693ec44081",
+        "remoteRawSha256": "8bef1103b0ebb16854ae9a588a7266e20751273560c0f020388f16693ec44081",
+        "normalization": "none",
+        "httpStatus": 200
+      },
+      {
+        "path": "art/watercolor/web/wp.png",
+        "sha256": "6a938a551b6dbd56a41b6a105719d7cc35d1ebcd8f429155957f94449b7e3403",
+        "remoteRawSha256": "6a938a551b6dbd56a41b6a105719d7cc35d1ebcd8f429155957f94449b7e3403",
+        "normalization": "none",
+        "httpStatus": 200
+      },
+      {
+        "path": "art/watercolor/web/wq.png",
+        "sha256": "89d903af4d18a18fff3f806b3c233cb5ecd1bfd2dadc2245405d626494d5ba9a",
+        "remoteRawSha256": "89d903af4d18a18fff3f806b3c233cb5ecd1bfd2dadc2245405d626494d5ba9a",
+        "normalization": "none",
+        "httpStatus": 200
+      },
+      {
+        "path": "art/watercolor/web/wr.png",
+        "sha256": "a92e542a53b55a9ed1a84e4a41c0ac92b251c11969c1e33604b121e7dd1ba72f",
+        "remoteRawSha256": "a92e542a53b55a9ed1a84e4a41c0ac92b251c11969c1e33604b121e7dd1ba72f",
+        "normalization": "none",
+        "httpStatus": 200
+      },
+      {
+        "path": "art/watercolor/wk.png",
+        "sha256": "7b5c7d1111536be1a08777e88a267e44a24dd860e44475369ef123de2ad7e88a",
+        "remoteRawSha256": "7b5c7d1111536be1a08777e88a267e44a24dd860e44475369ef123de2ad7e88a",
+        "normalization": "none",
+        "httpStatus": 200
+      },
+      {
+        "path": "art/watercolor/wn.png",
+        "sha256": "8b99e710353645cf74e4a708866fb59465c4565a78bdd6571b2a35fbbf0ac63a",
+        "remoteRawSha256": "8b99e710353645cf74e4a708866fb59465c4565a78bdd6571b2a35fbbf0ac63a",
+        "normalization": "none",
+        "httpStatus": 200
+      },
+      {
+        "path": "art/watercolor/wp.png",
+        "sha256": "23c70a39c11b350ba471a2617c4cd8d46eefa097c412fe06fd46662657b7621c",
+        "remoteRawSha256": "23c70a39c11b350ba471a2617c4cd8d46eefa097c412fe06fd46662657b7621c",
+        "normalization": "none",
+        "httpStatus": 200
+      },
+      {
+        "path": "art/watercolor/wq.png",
+        "sha256": "ffb348a554d28b0a1e19f132923648676146383238e800621f664829f4b91a69",
+        "remoteRawSha256": "ffb348a554d28b0a1e19f132923648676146383238e800621f664829f4b91a69",
+        "normalization": "none",
+        "httpStatus": 200
+      },
+      {
+        "path": "art/watercolor/wr.png",
+        "sha256": "3e577099242ff8fc7976b05cb75553f3e76f4980b120c345c3c2013e7211cad5",
+        "remoteRawSha256": "3e577099242ff8fc7976b05cb75553f3e76f4980b120c345c3c2013e7211cad5",
+        "normalization": "none",
+        "httpStatus": 200
+      },
+      {
+        "path": "assets/ai.worker-BEeoXuMC.js",
+        "sha256": "759df681d5458f88517e096bd3a33904e0153ef1d6753687f2057ef85b54aa12",
+        "remoteRawSha256": "759df681d5458f88517e096bd3a33904e0153ef1d6753687f2057ef85b54aa12",
+        "normalization": "none",
+        "httpStatus": 200
+      },
+      {
+        "path": "assets/index-DCOXjeBT.css",
+        "sha256": "df9b8ee09c8a939dd7ab5983fadf483fcf86ff72a368a069b78fbaee502454fd",
+        "remoteRawSha256": "df9b8ee09c8a939dd7ab5983fadf483fcf86ff72a368a069b78fbaee502454fd",
+        "normalization": "none",
+        "httpStatus": 200
+      },
+      {
+        "path": "assets/index-DRVksUc-.js",
+        "sha256": "01a95b815166203fd14bc817e9c7097b2e156b5018dbfe3558bd292f7efc9ed1",
+        "remoteRawSha256": "01a95b815166203fd14bc817e9c7097b2e156b5018dbfe3558bd292f7efc9ed1",
+        "normalization": "none",
+        "httpStatus": 200
+      },
+      {
+        "path": "favicon.svg",
+        "sha256": "9e62e18dfca96e6228171d99e7a8a494ceb671c111b27bb7a17b627b1e12d446",
+        "remoteRawSha256": "9e62e18dfca96e6228171d99e7a8a494ceb671c111b27bb7a17b627b1e12d446",
+        "normalization": "none",
+        "httpStatus": 200
+      },
+      {
+        "path": "index.html",
+        "sha256": "da32b4b378e97087bd5e26edbbbae16a585774552c6d0e5e16809c4a1c85240f",
+        "remoteRawSha256": "da32b4b378e97087bd5e26edbbbae16a585774552c6d0e5e16809c4a1c85240f",
+        "normalization": "none",
+        "httpStatus": 200
+      },
+      {
+        "path": "ui/pencil-circle.svg",
+        "sha256": "0c5e8b24388ce30caf002ff0e8904c68e1dc66a597e0c39f0b26fb046f0e6756",
+        "remoteRawSha256": "0c5e8b24388ce30caf002ff0e8904c68e1dc66a597e0c39f0b26fb046f0e6756",
+        "normalization": "none",
+        "httpStatus": 200
+      },
+      {
+        "path": "ui/pencil-frame.svg",
+        "sha256": "82c896a8d9bf8824b0fe169ce28ef8daa1a23f16a35769459809af1b522a2582",
+        "remoteRawSha256": "82c896a8d9bf8824b0fe169ce28ef8daa1a23f16a35769459809af1b522a2582",
+        "normalization": "none",
+        "httpStatus": 200
+      },
+      {
+        "path": "ui/pencil-underline.svg",
+        "sha256": "a17c5bfedf7b618b5d5f229000681d0380c356555910086055f8a10624667ffc",
+        "remoteRawSha256": "a17c5bfedf7b618b5d5f229000681d0380c356555910086055f8a10624667ffc",
+        "normalization": "none",
+        "httpStatus": 200
+      }
+    ]
+  },
+  "projectBefore": {
+    "checkedAt": "2026-10-25T20:36:50.433058+00:00",
+    "projectId": "5ac48e78-b1a2-4509-ad73-0b3efe0c3343",
+    "testIds": [
+      "7765f1f2-d88d-451c-ab1c-fe1ee4594925",
+      "9aa656fd-f946-4288-bb72-3cc622a01060",
+      "a1eadd37-181c-4497-897a-fc3aa73d97e8",
+      "d832870e-f2c3-4be2-9b46-785b86c201f0"
+    ],
+    "allFourIdle": true
+  },
+  "projectBeforeRuns": {
+    "checkedAt": "2026-10-25T20:37:15.334305+00:00",
+    "projectId": "5ac48e78-b1a2-4509-ad73-0b3efe0c3343",
+    "testIds": [
+      "7765f1f2-d88d-451c-ab1c-fe1ee4594925",
+      "9aa656fd-f946-4288-bb72-3cc622a01060",
+      "a1eadd37-181c-4497-897a-fc3aa73d97e8",
+      "d832870e-f2c3-4be2-9b46-785b86c201f0"
+    ],
+    "allFourIdle": true
+  },
+  "projectAfter": {
+    "checkedAt": "2026-10-25T20:41:39.469285+00:00",
+    "projectId": "5ac48e78-b1a2-4509-ad73-0b3efe0c3343",
+    "testIds": [
+      "7765f1f2-d88d-451c-ab1c-fe1ee4594925",
+      "9aa656fd-f946-4288-bb72-3cc622a01060",
+      "a1eadd37-181c-4497-897a-fc3aa73d97e8",
+      "d832870e-f2c3-4be2-9b46-785b86c201f0"
+    ],
+    "allFourIdle": true
+  },
+  "buildAfter": {
+    "checkedAt": "2026-10-25T20:42:03.000337+00:00",
+    "fileCount": 48,
+    "treeSha256": "fb141612e7cbb85d89da5b5535219b3893d29ca8da97d639bd67551b55dc2f1c",
+    "files": [
+      {
+        "path": "art/marginwood-sprites-source.png",
+        "sha256": "7e3e3ce020902da830c0a5780aa386add7ca4fef2131540bf6a237a0292c0b04",
+        "remoteRawSha256": "7e3e3ce020902da830c0a5780aa386add7ca4fef2131540bf6a237a0292c0b04",
+        "normalization": "none",
+        "httpStatus": 200
+      },
+      {
+        "path": "art/marginwood-sprites.png",
+        "sha256": "b4541b1d52105b53e7e88d6afc89fb03364c02cbfe0432bbbf84638b27400969",
+        "remoteRawSha256": "b4541b1d52105b53e7e88d6afc89fb03364c02cbfe0432bbbf84638b27400969",
+        "normalization": "none",
+        "httpStatus": 200
+      },
+      {
+        "path": "art/pieces/bb.png",
+        "sha256": "8d1f3739da63fc5f9e5ad3f968d81260fd3b525778036fee859f6ecff61c53f1",
+        "remoteRawSha256": "8d1f3739da63fc5f9e5ad3f968d81260fd3b525778036fee859f6ecff61c53f1",
+        "normalization": "none",
+        "httpStatus": 200
+      },
+      {
+        "path": "art/pieces/bk.png",
+        "sha256": "3f10dbb234d5eaeb7f33bc82e84afc404e89baa60182d88473a0faa41f495ed7",
+        "remoteRawSha256": "3f10dbb234d5eaeb7f33bc82e84afc404e89baa60182d88473a0faa41f495ed7",
+        "normalization": "none",
+        "httpStatus": 200
+      },
+      {
+        "path": "art/pieces/bn.png",
+        "sha256": "690d572c2749bab94f100ed7144763c126693ec0c5509be2fbc437f4765b19a3",
+        "remoteRawSha256": "690d572c2749bab94f100ed7144763c126693ec0c5509be2fbc437f4765b19a3",
+        "normalization": "none",
+        "httpStatus": 200
+      },
+      {
+        "path": "art/pieces/bp.png",
+        "sha256": "d1e3455b49bbe524b271752af2bf8dddc91b565889b2ff1f741e0d50026020e2",
+        "remoteRawSha256": "d1e3455b49bbe524b271752af2bf8dddc91b565889b2ff1f741e0d50026020e2",
+        "normalization": "none",
+        "httpStatus": 200
+      },
+      {
+        "path": "art/pieces/bq.png",
+        "sha256": "7abd6d5b6e9cabba1fbab3b982d08302b9220122267fc25d932a50a12e46d049",
+        "remoteRawSha256": "7abd6d5b6e9cabba1fbab3b982d08302b9220122267fc25d932a50a12e46d049",
+        "normalization": "none",
+        "httpStatus": 200
+      },
+      {
+        "path": "art/pieces/br.png",
+        "sha256": "80824183777f615f3fc71b107409dbed3fdb05dcd3eb3a4a64a1d50b08d29d64",
+        "remoteRawSha256": "80824183777f615f3fc71b107409dbed3fdb05dcd3eb3a4a64a1d50b08d29d64",
+        "normalization": "none",
+        "httpStatus": 200
+      },
+      {
+        "path": "art/pieces/wb.png",
+        "sha256": "b252047f3d0cc56bb642fcf03b1f1c89c0bb60475a4adefee2003707c6f81c71",
+        "remoteRawSha256": "b252047f3d0cc56bb642fcf03b1f1c89c0bb60475a4adefee2003707c6f81c71",
+        "normalization": "none",
+        "httpStatus": 200
+      },
+      {
+        "path": "art/pieces/wk.png",
+        "sha256": "46662114f68b82f65386c3bb0e1e0eaa3b54b1f1528fc6737c505a5cf09eaea6",
+        "remoteRawSha256": "46662114f68b82f65386c3bb0e1e0eaa3b54b1f1528fc6737c505a5cf09eaea6",
+        "normalization": "none",
+        "httpStatus": 200
+      },
+      {
+        "path": "art/pieces/wn.png",
+        "sha256": "15915f22d2118be013ced321b5f2b3f62fc95da94c75faf642db9e1321a32bc5",
+        "remoteRawSha256": "15915f22d2118be013ced321b5f2b3f62fc95da94c75faf642db9e1321a32bc5",
+        "normalization": "none",
+        "httpStatus": 200
+      },
+      {
+        "path": "art/pieces/wp.png",
+        "sha256": "3852462e41d2ad4494ccffe97c134104e9e24f2228efa2eb6f8617c84b437086",
+        "remoteRawSha256": "3852462e41d2ad4494ccffe97c134104e9e24f2228efa2eb6f8617c84b437086",
+        "normalization": "none",
+        "httpStatus": 200
+      },
+      {
+        "path": "art/pieces/wq.png",
+        "sha256": "27d07637bf434a14ff01846e7068d360cb1465c0b273d4ca01d3b049ba077a74",
+        "remoteRawSha256": "27d07637bf434a14ff01846e7068d360cb1465c0b273d4ca01d3b049ba077a74",
+        "normalization": "none",
+        "httpStatus": 200
+      },
+      {
+        "path": "art/pieces/wr.png",
+        "sha256": "221bb117f01ac8d7e41e4c4eb52fc77a228566bea666f2f193e7cf52da376616",
+        "remoteRawSha256": "221bb117f01ac8d7e41e4c4eb52fc77a228566bea666f2f193e7cf52da376616",
+        "normalization": "none",
+        "httpStatus": 200
+      },
+      {
+        "path": "art/sketchbook-paper.jpg",
+        "sha256": "1b1893574fc8f097ce5c0cbceea27523395af6a0575994b3e0e504e50f0946f3",
+        "remoteRawSha256": "1b1893574fc8f097ce5c0cbceea27523395af6a0575994b3e0e504e50f0946f3",
+        "normalization": "none",
+        "httpStatus": 200
+      },
+      {
+        "path": "art/sketchbook-paper.png",
+        "sha256": "d4c027c572cbb944e7bb987f3ebe78656ceabb65fe581ef1b145b5f0cae57956",
+        "remoteRawSha256": "d4c027c572cbb944e7bb987f3ebe78656ceabb65fe581ef1b145b5f0cae57956",
+        "normalization": "none",
+        "httpStatus": 200
+      },
+      {
+        "path": "art/watercolor/bb.png",
+        "sha256": "45db972e7e48568a44dfaff020e89204ff3bfa302c8173e8297d439acb4548f6",
+        "remoteRawSha256": "45db972e7e48568a44dfaff020e89204ff3bfa302c8173e8297d439acb4548f6",
+        "normalization": "none",
+        "httpStatus": 200
+      },
+      {
+        "path": "art/watercolor/bk.png",
+        "sha256": "01ce59877bb82490071059edcd483548639ed3661aa91823c23e6a64ecd88797",
+        "remoteRawSha256": "01ce59877bb82490071059edcd483548639ed3661aa91823c23e6a64ecd88797",
+        "normalization": "none",
+        "httpStatus": 200
+      },
+      {
+        "path": "art/watercolor/bn.png",
+        "sha256": "30fe07bb755495da1b977d7fd7bd90d7c01809e1acbc4248d8605a6fda22630c",
+        "remoteRawSha256": "30fe07bb755495da1b977d7fd7bd90d7c01809e1acbc4248d8605a6fda22630c",
+        "normalization": "none",
+        "httpStatus": 200
+      },
+      {
+        "path": "art/watercolor/bp.png",
+        "sha256": "b5968f72f6dba6e5477ccd75048bbf9757a4c2ea3e93a55841100c36eee6cb2c",
+        "remoteRawSha256": "b5968f72f6dba6e5477ccd75048bbf9757a4c2ea3e93a55841100c36eee6cb2c",
+        "normalization": "none",
+        "httpStatus": 200
+      },
+      {
+        "path": "art/watercolor/bq.png",
+        "sha256": "feca87c84b726aff84039c1a073bced111073a25825064255e55c8fbd7d55b62",
+        "remoteRawSha256": "feca87c84b726aff84039c1a073bced111073a25825064255e55c8fbd7d55b62",
+        "normalization": "none",
+        "httpStatus": 200
+      },
+      {
+        "path": "art/watercolor/br.png",
+        "sha256": "0ef38e01d6d4b2f196b30aca62434e0042c843c6fee4c021bb344c6b459d074d",
+        "remoteRawSha256": "0ef38e01d6d4b2f196b30aca62434e0042c843c6fee4c021bb344c6b459d074d",
+        "normalization": "none",
+        "httpStatus": 200
+      },
+      {
+        "path": "art/watercolor/wb.png",
+        "sha256": "ae3cfc3ec806f962b922f53c386e41a1f469ab85f19b83b27f9a0492da9374ed",
+        "remoteRawSha256": "ae3cfc3ec806f962b922f53c386e41a1f469ab85f19b83b27f9a0492da9374ed",
+        "normalization": "none",
+        "httpStatus": 200
+      },
+      {
+        "path": "art/watercolor/web/bb.png",
+        "sha256": "567307453ed01ea420d696d83cce6df41b1562193f9b220b6a3993a79db81262",
+        "remoteRawSha256": "567307453ed01ea420d696d83cce6df41b1562193f9b220b6a3993a79db81262",
+        "normalization": "none",
+        "httpStatus": 200
+      },
+      {
+        "path": "art/watercolor/web/bk.png",
+        "sha256": "646ab7394d07b480f495f92e7c485bf655cdfe69e9f21caaa432e3486b9f1a36",
+        "remoteRawSha256": "646ab7394d07b480f495f92e7c485bf655cdfe69e9f21caaa432e3486b9f1a36",
+        "normalization": "none",
+        "httpStatus": 200
+      },
+      {
+        "path": "art/watercolor/web/bn.png",
+        "sha256": "1b12bf88194d16109e3fdfba6419d50f26383881079777ed16f707728088053b",
+        "remoteRawSha256": "1b12bf88194d16109e3fdfba6419d50f26383881079777ed16f707728088053b",
+        "normalization": "none",
+        "httpStatus": 200
+      },
+      {
+        "path": "art/watercolor/web/bp.png",
+        "sha256": "b59f106f9b6906b4dee9b7685634744d63c469fd787bcef483e767c3ae817d90",
+        "remoteRawSha256": "b59f106f9b6906b4dee9b7685634744d63c469fd787bcef483e767c3ae817d90",
+        "normalization": "none",
+        "httpStatus": 200
+      },
+      {
+        "path": "art/watercolor/web/bq.png",
+        "sha256": "3c26435ea8acbd1f2e0bad85f4bdfb1ee87e5d2e53003a6de21484ff1a7ac063",
+        "remoteRawSha256": "3c26435ea8acbd1f2e0bad85f4bdfb1ee87e5d2e53003a6de21484ff1a7ac063",
+        "normalization": "none",
+        "httpStatus": 200
+      },
+      {
+        "path": "art/watercolor/web/br.png",
+        "sha256": "f7699bf0394a2f6c4a95077a4e393b61d72ad63453e23cea2d8427a5f08d2c9e",
+        "remoteRawSha256": "f7699bf0394a2f6c4a95077a4e393b61d72ad63453e23cea2d8427a5f08d2c9e",
+        "normalization": "none",
+        "httpStatus": 200
+      },
+      {
+        "path": "art/watercolor/web/wb.png",
+        "sha256": "25ec1015b0507e2febafa1af692410f773edab509032d3bc786eef217db6c742",
+        "remoteRawSha256": "25ec1015b0507e2febafa1af692410f773edab509032d3bc786eef217db6c742",
+        "normalization": "none",
+        "httpStatus": 200
+      },
+      {
+        "path": "art/watercolor/web/wk.png",
+        "sha256": "f6b3d7274321c1c1aa56983810e78e273e31b14ecb309527a5c01357a8177bf3",
+        "remoteRawSha256": "f6b3d7274321c1c1aa56983810e78e273e31b14ecb309527a5c01357a8177bf3",
+        "normalization": "none",
+        "httpStatus": 200
+      },
+      {
+        "path": "art/watercolor/web/wn.png",
+        "sha256": "8bef1103b0ebb16854ae9a588a7266e20751273560c0f020388f16693ec44081",
+        "remoteRawSha256": "8bef1103b0ebb16854ae9a588a7266e20751273560c0f020388f16693ec44081",
+        "normalization": "none",
+        "httpStatus": 200
+      },
+      {
+        "path": "art/watercolor/web/wp.png",
+        "sha256": "6a938a551b6dbd56a41b6a105719d7cc35d1ebcd8f429155957f94449b7e3403",
+        "remoteRawSha256": "6a938a551b6dbd56a41b6a105719d7cc35d1ebcd8f429155957f94449b7e3403",
+        "normalization": "none",
+        "httpStatus": 200
+      },
+      {
+        "path": "art/watercolor/web/wq.png",
+        "sha256": "89d903af4d18a18fff3f806b3c233cb5ecd1bfd2dadc2245405d626494d5ba9a",
+        "remoteRawSha256": "89d903af4d18a18fff3f806b3c233cb5ecd1bfd2dadc2245405d626494d5ba9a",
+        "normalization": "none",
+        "httpStatus": 200
+      },
+      {
+        "path": "art/watercolor/web/wr.png",
+        "sha256": "a92e542a53b55a9ed1a84e4a41c0ac92b251c11969c1e33604b121e7dd1ba72f",
+        "remoteRawSha256": "a92e542a53b55a9ed1a84e4a41c0ac92b251c11969c1e33604b121e7dd1ba72f",
+        "normalization": "none",
+        "httpStatus": 200
+      },
+      {
+        "path": "art/watercolor/wk.png",
+        "sha256": "7b5c7d1111536be1a08777e88a267e44a24dd860e44475369ef123de2ad7e88a",
+        "remoteRawSha256": "7b5c7d1111536be1a08777e88a267e44a24dd860e44475369ef123de2ad7e88a",
+        "normalization": "none",
+        "httpStatus": 200
+      },
+      {
+        "path": "art/watercolor/wn.png",
+        "sha256": "8b99e710353645cf74e4a708866fb59465c4565a78bdd6571b2a35fbbf0ac63a",
+        "remoteRawSha256": "8b99e710353645cf74e4a708866fb59465c4565a78bdd6571b2a35fbbf0ac63a",
+        "normalization": "none",
+        "httpStatus": 200
+      },
+      {
+        "path": "art/watercolor/wp.png",
+        "sha256": "23c70a39c11b350ba471a2617c4cd8d46eefa097c412fe06fd46662657b7621c",
+        "remoteRawSha256": "23c70a39c11b350ba471a2617c4cd8d46eefa097c412fe06fd46662657b7621c",
+        "normalization": "none",
+        "httpStatus": 200
+      },
+      {
+        "path": "art/watercolor/wq.png",
+        "sha256": "ffb348a554d28b0a1e19f132923648676146383238e800621f664829f4b91a69",
+        "remoteRawSha256": "ffb348a554d28b0a1e19f132923648676146383238e800621f664829f4b91a69",
+        "normalization": "none",
+        "httpStatus": 200
+      },
+      {
+        "path": "art/watercolor/wr.png",
+        "sha256": "3e577099242ff8fc7976b05cb75553f3e76f4980b120c345c3c2013e7211cad5",
+        "remoteRawSha256": "3e577099242ff8fc7976b05cb75553f3e76f4980b120c345c3c2013e7211cad5",
+        "normalization": "none",
+        "httpStatus": 200
+      },
+      {
+        "path": "assets/ai.worker-BEeoXuMC.js",
+        "sha256": "759df681d5458f88517e096bd3a33904e0153ef1d6753687f2057ef85b54aa12",
+        "remoteRawSha256": "759df681d5458f88517e096bd3a33904e0153ef1d6753687f2057ef85b54aa12",
+        "normalization": "none",
+        "httpStatus": 200
+      },
+      {
+        "path": "assets/index-DCOXjeBT.css",
+        "sha256": "df9b8ee09c8a939dd7ab5983fadf483fcf86ff72a368a069b78fbaee502454fd",
+        "remoteRawSha256": "df9b8ee09c8a939dd7ab5983fadf483fcf86ff72a368a069b78fbaee502454fd",
+        "normalization": "none",
+        "httpStatus": 200
+      },
+      {
+        "path": "assets/index-DRVksUc-.js",
+        "sha256": "01a95b815166203fd14bc817e9c7097b2e156b5018dbfe3558bd292f7efc9ed1",
+        "remoteRawSha256": "01a95b815166203fd14bc817e9c7097b2e156b5018dbfe3558bd292f7efc9ed1",
+        "normalization": "none",
+        "httpStatus": 200
+      },
+      {
+        "path": "favicon.svg",
+        "sha256": "9e62e18dfca96e6228171d99e7a8a494ceb671c111b27bb7a17b627b1e12d446",
+        "remoteRawSha256": "9e62e18dfca96e6228171d99e7a8a494ceb671c111b27bb7a17b627b1e12d446",
+        "normalization": "none",
+        "httpStatus": 200
+      },
+      {
+        "path": "index.html",
+        "sha256": "da32b4b378e97087bd5e26edbbbae16a585774552c6d0e5e16809c4a1c85240f",
+        "remoteRawSha256": "da32b4b378e97087bd5e26edbbbae16a585774552c6d0e5e16809c4a1c85240f",
+        "normalization": "none",
+        "httpStatus": 200
+      },
+      {
+        "path": "ui/pencil-circle.svg",
+        "sha256": "0c5e8b24388ce30caf002ff0e8904c68e1dc66a597e0c39f0b26fb046f0e6756",
+        "remoteRawSha256": "0c5e8b24388ce30caf002ff0e8904c68e1dc66a597e0c39f0b26fb046f0e6756",
+        "normalization": "none",
+        "httpStatus": 200
+      },
+      {
+        "path": "ui/pencil-frame.svg",
+        "sha256": "82c896a8d9bf8824b0fe169ce28ef8daa1a23f16a35769459809af1b522a2582",
+        "remoteRawSha256": "82c896a8d9bf8824b0fe169ce28ef8daa1a23f16a35769459809af1b522a2582",
+        "normalization": "none",
+        "httpStatus": 200
+      },
+      {
+        "path": "ui/pencil-underline.svg",
+        "sha256": "a17c5bfedf7b618b5d5f229000681d0380c356555910086055f8a10624667ffc",
+        "remoteRawSha256": "a17c5bfedf7b618b5d5f229000681d0380c356555910086055f8a10624667ffc",
+        "normalization": "none",
+        "httpStatus": 200
+      }
+    ]
+  },
+  "productionAfter": {
+    "checkedAt": "2026-10-25T20:42:08.896848+00:00",
+    "headSha": "31e8b02e62d2095716624c173879ff1c902953b4",
+    "projectId": "prj_Xc1W97LsvKKTS2BRyQZUoLBxYqBF",
+    "deploymentId": "dpl_5uZMUS4vArHxYwkdLs5T5zVjKohv",
+    "sourceSha": "31e8b02e62d2095716624c173879ff1c902953b4",
+    "targetUrl": "https://paperwild.vercel.app/",
+    "state": "READY"
+  },
+  "postRunAuditCompleted": true,
+  "outageCaseSourceAndVersionUnchanged": true,
+  "finishedAt": "2026-10-25T20:42:08.896993+00:00",
+  "evidenceHandling": "Sanitized record: absolute temporary build path omitted; no hosted source bodies, private runner output, room-state logs, credentials or signed recording URLs included.",
+  "previousSourceManifest": "docs/testsprite/history/online-stored-code-manifest-before-production-literal-2026-10-25.json"
+}

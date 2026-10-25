@@ -1,0 +1,179 @@
+{
+  "projectId": "dafdf75c-04a3-467f-acc2-4359af6b1d8e",
+  "targetUrl": "http://127.0.0.1:4173/",
+  "convexUrl": "https://fast-starling-207.convex.cloud",
+  "binding": {
+    "kind": "exact-pr-build-over-testsprite-native-tunnel",
+    "targetUrl": "http://127.0.0.1:4173/",
+    "description": "CI owns the loopback server for the checked-out PR head, verifies all served build bytes before and after strict replay, and forwards it using the official TestSprite native tunnel. Each replay is still required to prove its actual target, versions and execution results."
+  },
+  "previousManifest": "docs/testsprite/history/pr5-stored-code-manifest-before-tunnel-2026-10-25.json",
+  "status": "all-sixteen-stored-and-readback-verified-not-yet-executed",
+  "updatedAt": "2026-10-25T13:03:13.288490+00:00",
+  "sourceUncommittedAtUpload": true,
+  "sourceTreeSha256": "1070ce5aa273bcd69e7e63851cacfdde2e13fa7b91f27571883aee276ec39a33",
+  "verification": "All 16 previous hosted bodies and versions matched the archived manifest and merged source 31e8b02 before guarded updates. All 16 replacements used explicit expected-version guards and were read back byte-for-byte both immediately and in a final complete-project audit. These versions have not yet executed; passing CI tunnel replay remains required.",
+  "updateRecord": "docs/testsprite/tunnel-stored-code-update-2026-10-25.json",
+  "scripts": [
+    {
+      "case": "ONBD-001",
+      "testId": "76e3011a-cb17-4be2-8d00-833670e8644e",
+      "name": "First visit requires an explicit opponent choice before play",
+      "codeVersion": "v-4b3f79e761dd",
+      "sha256": "ac6f8bdff0f334e75a4527cc53cf41cb8bd30d476fd0e4c0c560edae79cc0350",
+      "readbackEqual": true,
+      "previousCodeVersion": "v-62a4e86b577b",
+      "sourcePath": "docs/testsprite/overrides/ONBD-001.py"
+    },
+    {
+      "case": "ONBD-002",
+      "testId": "1dc27669-90de-470e-9681-c5f5026194cb",
+      "name": "Club choice and replayable tour preserve a playable game",
+      "codeVersion": "v-168d89d5e20b",
+      "sha256": "f2efb14858b059c13157b680c371248d5a1752aaeb87b0c62ca7a7562dc468f3",
+      "readbackEqual": true,
+      "previousCodeVersion": "v-c5fc38b322d6",
+      "sourcePath": "docs/testsprite/overrides/ONBD-002.py"
+    },
+    {
+      "case": "BOAR-001",
+      "testId": "9e34b635-85b9-427d-95b2-5584e55f5f7d",
+      "name": "Illegal moves leave the board unchanged",
+      "codeVersion": "v-5fcd564e6962",
+      "sha256": "e3b41a3d928aa70c23d983b1de2549bedc06f5b4ce0aacda025040baa5f297c7",
+      "readbackEqual": true,
+      "previousCodeVersion": "v-34c17b1132d7",
+      "sourcePath": "docs/testsprite/overrides/BOAR-001.py"
+    },
+    {
+      "case": "BOAR-002",
+      "testId": "0ad51a00-bdcc-49ab-a155-ad15de21a7a2",
+      "name": "Simple opening advances update history and turn",
+      "codeVersion": "v-c806c6b49336",
+      "sha256": "709247775c6b991d942c6c747364177617976c360afdad5c1a71ce38547cda62",
+      "readbackEqual": true,
+      "previousCodeVersion": "v-b4f39a6e001a",
+      "sourcePath": "docs/testsprite/overrides/BOAR-002.py"
+    },
+    {
+      "case": "BOAR-003",
+      "testId": "6c39a736-f9b2-4731-8560-05df7dcd0449",
+      "name": "Undo restores a captured position atomically",
+      "codeVersion": "v-306e0fe02e27",
+      "sha256": "9572c4551b4fcf2ad4b0f0efbc5bddc76eb9c3a5929d39091a4109e807ad9386",
+      "readbackEqual": true,
+      "previousCodeVersion": "v-11b7e8a6016c",
+      "sourcePath": "docs/testsprite/overrides/BOAR-003.py"
+    },
+    {
+      "case": "BOAR-004",
+      "testId": "2330c1ea-adda-4d16-a611-d8745fc4cc66",
+      "name": "Promotion can be cancelled without committing a move",
+      "codeVersion": "v-b3ccf6c99eca",
+      "sha256": "0a0820f7ef9034bdf3e51f75e5f188f17059b3b806a1a02df9ea91661587d377",
+      "readbackEqual": true,
+      "previousCodeVersion": "v-863f4dd45289",
+      "sourcePath": "docs/testsprite/overrides/BOAR-004.py"
+    },
+    {
+      "case": "BOAR-005",
+      "testId": "c48475e4-8ec0-4875-a5c9-e8b2981d4c87",
+      "name": "Queen promotion settles as a playable checking position",
+      "codeVersion": "v-e5798c1048cf",
+      "sha256": "fca9ddd49ce8e062021239a95ee1333db45dc2142d9f42b794e93f4edc6b1c20",
+      "readbackEqual": true,
+      "previousCodeVersion": "v-936581958af2",
+      "sourcePath": "docs/testsprite/overrides/BOAR-005.py"
+    },
+    {
+      "case": "BOAR-006",
+      "testId": "836e4d28-2b2a-468c-ba69-21bc358eb237",
+      "name": "Knight promotion ends in an insufficient material draw",
+      "codeVersion": "v-12548a371ada",
+      "sha256": "651eb38a23b4917348c61a643ae42372789592a0763f7fbee66de06240166068",
+      "readbackEqual": true,
+      "previousCodeVersion": "v-1958882ccab5",
+      "sourcePath": "docs/testsprite/overrides/BOAR-006.py"
+    },
+    {
+      "case": "BOAR-007",
+      "testId": "f52738b9-d0c5-46b4-b914-70d16c6d7e7b",
+      "name": "Checkmate story blocks further play after the winning move",
+      "codeVersion": "v-dc73353dc11d",
+      "sha256": "16c0c5c9df83fabbd81225aec5439676380efffe6e4b79d73fb5ef156ba73db9",
+      "readbackEqual": true,
+      "previousCodeVersion": "v-08b04ac7720c",
+      "sourcePath": "docs/testsprite/overrides/BOAR-007.py"
+    },
+    {
+      "case": "BOAR-008",
+      "testId": "ec570b6b-0423-40cd-a0a7-60e8a8cbb23c",
+      "name": "Undo after a computer reply restores the starting position",
+      "codeVersion": "v-a856f7892283",
+      "sha256": "0bfe7b5fcefca98a28ac8b0e855f7f42abe04463555f998cce0e50028059d917",
+      "readbackEqual": true,
+      "previousCodeVersion": "v-72de3f0ece1d",
+      "sourcePath": "docs/testsprite/overrides/BOAR-008.py"
+    },
+    {
+      "case": "PREF-001",
+      "testId": "138f2507-51c6-43ed-9a7c-c00bb2b1657e",
+      "name": "Restore a saved game after reload and continue with undo",
+      "codeVersion": "v-1aab6bf6e084",
+      "sha256": "3f86cfb81e358c4cd679f974b5175f8bc435e5a31a4e79682bbf36fd42387c28",
+      "readbackEqual": true,
+      "previousCodeVersion": "v-82ffdaea9f1c",
+      "sourcePath": "docs/testsprite/overrides/PREF-001.py"
+    },
+    {
+      "case": "SOUN-001",
+      "testId": "06093f89-2095-4a14-b7db-101e715ae206",
+      "name": "Enable sound from the character guide",
+      "codeVersion": "v-a8d1553fd790",
+      "sha256": "e31f96dc109b24e707213ea6af56d658c0384ece208193e164603ab6faf23531",
+      "readbackEqual": true,
+      "previousCodeVersion": "v-e749a68a45d3",
+      "sourcePath": "docs/testsprite/overrides/SOUN-001.py"
+    },
+    {
+      "case": "NOTE-001",
+      "testId": "4cb7d4df-04ae-4be5-8295-f69f0f115611",
+      "name": "Full notebook entry remains visible on first and repeat visits",
+      "codeVersion": "v-a94a4ac88595",
+      "sha256": "6567f8f6b6b376bbff52e046588af08a028fc961fbed9d808bac90be0cb996cf",
+      "readbackEqual": true,
+      "previousCodeVersion": "v-0449b2eb6450",
+      "sourcePath": "docs/testsprite/overrides/NOTE-001.py"
+    },
+    {
+      "case": "NOTE-002",
+      "testId": "43d65119-ddde-41e6-9a50-e99a370bb16b",
+      "name": "Saved manual pause keeps the notebook readable and resume restores living characters",
+      "codeVersion": "v-c878c8891df3",
+      "sha256": "bf9ff023f97d32fd2b7c26d500e4afab75d11dcbcdd94579eb4c0ebf254f9d19",
+      "readbackEqual": true,
+      "previousCodeVersion": "v-c36ccbd7694c",
+      "sourcePath": "docs/testsprite/overrides/NOTE-002.py"
+    },
+    {
+      "case": "NOTE-003",
+      "testId": "7615508f-ec1e-4df0-9d67-3c4db951b18e",
+      "name": "Keyboard skip releases notebook entry without stale animation or computer replies",
+      "codeVersion": "v-eaf7ddbf7b21",
+      "sha256": "9f30e8224acf7324c9bebb80c909d5f7242782cc5ea3da8e745754fa31031ccf",
+      "readbackEqual": true,
+      "previousCodeVersion": "v-b680743801da",
+      "sourcePath": "docs/testsprite/overrides/NOTE-003.py"
+    },
+    {
+      "case": "NOTE-004",
+      "testId": "72d4f1a0-dd72-44e9-bf92-0ccbc9a4ea4d",
+      "name": "Completed game reload starts fresh while unfinished capture studies resume",
+      "codeVersion": "v-4c3dc3c542c6",
+      "sha256": "21738967f3a4f93efabfcff0a639b858bd7ea9d4a966418b85149f9b4452c7b3",
+      "readbackEqual": true,
+      "previousCodeVersion": "v-6c4c15b0c6e4",
+      "sourcePath": "docs/testsprite/overrides/NOTE-004.py"
+    }
+  ]
+}

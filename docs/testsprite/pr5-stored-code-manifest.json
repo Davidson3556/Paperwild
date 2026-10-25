@@ -1,184 +1,212 @@
 {
   "projectId": "dafdf75c-04a3-467f-acc2-4359af6b1d8e",
-  "targetUrl": "https://paperwild-git-feat-convex-multiplayer-davidson3556s-projects.vercel.app/",
-  "applicationRevision": "6f173553c54ed3bee61a502d2d77183a07512913",
-  "status": "all-sixteen-stored-and-readback-verified",
-  "recordedAt": "2026-10-24T19:37:56.611488+00:00",
-  "completedAt": "2026-10-24T19:37:56.611488+00:00",
-  "applicationBundle": "index-EfeOJs9J.js",
-  "applicationStylesheet": "index-DCOXjeBT.css",
+  "targetUrl": "https://paperwild-4s0pac2km-davidson3556s-projects.vercel.app/",
   "convexUrl": "https://fast-starling-207.convex.cloud",
-  "verification": "All16 current stored Python bodies were read back byte-for-byte against reviewed local files. Only three hardcoded JS asset pins changed and were updated using explicit current-version guards. No tests were executed by this rebind.",
-  "preCloudManifest": "docs/testsprite/pr5-pre-cloud-stored-code-manifest.json",
-  "configurationProvenance": {
-    "applicationSourceRevision": "6f173553c54ed3bee61a502d2d77183a07512913",
-    "applicationSourceChanged": false,
-    "previousApplicationBundle": "index-B86TWJUu.js",
-    "newApplicationBundle": "index-EfeOJs9J.js",
-    "publicConvexUrl": "https://fast-starling-207.convex.cloud",
-    "configurationCommit": null,
-    "note": "Cloud configuration enabled the new frontend bundle; configuration commit is pending root publication. Earlier manual-run evidence remains tied to its pre-cloud build; these readbacks are not new cloud acceptance results."
+  "binding": {
+    "kind": "dedicated-public-ci-deployment",
+    "projectId": "prj_K4XUFAg81KYU0YxfC0ISyU3JRhox",
+    "projectName": "paperwild-ci",
+    "templateTargetLine": "TARGET = \"__PAPERWILD_CI_TARGET_URL__\"",
+    "referenceSeedTargetUrl": "https://paperwild-4s0pac2km-davidson3556s-projects.vercel.app/",
+    "referenceSeedSourceRevision": "31b60ee7d94cb312a0a365a002fcb036585faf8d",
+    "referenceSeedDeploymentId": "dpl_4wVgjgzzTd5gXZP5RoBvicsCn5EB",
+    "description": "Each gate verifies the dedicated Vercel CI project, fresh PR head and unique deployment URL, renders only the canonical TARGET marker line, then uses expected-version guarded hosted updates. A global project lock serializes rebinding and strict replay. The reference seed URL is historical evidence, never a fallback for a later PR head.",
+    "templateVersion": 1
   },
+  "previousManifest": "docs/testsprite/history/pr5-stored-code-manifest-before-public-ci-2026-10-25.json",
+  "status": "canonical-templates-and-rendered-seeds-readback-verified",
+  "updatedAt": "2026-10-25T20:27:27.611825+00:00",
+  "sourceUncommittedAtUpload": true,
+  "sourceTreeSha256": "6939a75d97f1565bff62ed8409abc1e1ae6d7f4edcef3c5ad67dffcb2ac3480e",
+  "storedSeedTreeSha256": "8ee20df24e13dc38c9d3f3f49ac29a98bc2c528f35c280bb1492b7b4952692f9",
+  "hashSemantics": {
+    "sha256": "Canonical template source bytes. A normalized hosted source must match these bytes after replacing exactly the one approved TARGET line with the template marker.",
+    "storedSha256": "Historical rendered seed bytes read back for the reference seed URL.",
+    "codeVersion": "Historical seed version observed at this publication. Future gates use live guarded versions for target-only rebinding; this seed version is not a permanent run pin.",
+    "readbackEqual": "The hosted seed body exactly equaled the rendered canonical template at publication."
+  },
+  "verification": "All fifteen unchanged hosted scripts first matched the previous manifest and exact PR6 baseline source. ONBD-001 matched its controlled literal-target probe publication. The remaining fifteen were uploaded sequentially with explicit expected-version guards and immediate exact rendered readbacks; a final complete-project audit verified all sixteen current versions and exact seed bodies. Canonical gameplay AST is unchanged in all sixteen templates. The full sixteen-case strict Actions gate subsequently passed at commit 6c727f4123b09602240ffa3f867ed4d2278708e9, with exact canonical/rendered source and version readbacks plus all 48 public build files verified before and after. The seed versions and hashes above remain historical publication facts; the execution evidence records its own actual bound versions and target.",
+  "updateRecord": "docs/testsprite/public-ci-stored-code-update-2026-10-25.json",
+  "controlledStrictProbeRunId": "aa368162-4424-4908-9faa-c38f0a4caa6e",
   "scripts": [
     {
       "case": "ONBD-001",
       "testId": "76e3011a-cb17-4be2-8d00-833670e8644e",
       "name": "First visit requires an explicit opponent choice before play",
-      "codeVersion": "v-62a4e86b577b",
-      "sha256": "1c4e8c8e99564c90b39e3ee431a7f1574866912600b00f56a8dd1a14df5ae205",
+      "codeVersion": "v-c921b57198b7",
+      "sha256": "0f598e33408b5fde83976dd596966687692e173460bc9bf779b800d4f96bdcc8",
+      "storedSha256": "9a037f300dc1f455059fd7c5abcafb928893a017b8b7947521130030371b6916",
       "readbackEqual": true,
-      "cloudBundleBindingUpdated": false,
-      "preCloudCodeVersion": "v-62a4e86b577b"
+      "previousCodeVersion": "v-4b3f79e761dd",
+      "sourcePath": "docs/testsprite/overrides/ONBD-001.py"
     },
     {
       "case": "ONBD-002",
       "testId": "1dc27669-90de-470e-9681-c5f5026194cb",
       "name": "Club choice and replayable tour preserve a playable game",
-      "codeVersion": "v-c5fc38b322d6",
-      "sha256": "4c37a6f1cbf99440062c8c49b5aa2e71327bb1cc79339fe4392a1639492a6286",
+      "codeVersion": "v-35c61a6759af",
+      "sha256": "aebde9f89309ca015c4eefcbf89b1243c7be9154fc67eca60209089d688d361d",
+      "storedSha256": "dd576db0d5f3e2a15a57b20685b3263346cdbe72d6e9f25285cabc8c6477e56b",
       "readbackEqual": true,
-      "cloudBundleBindingUpdated": false,
-      "preCloudCodeVersion": "v-c5fc38b322d6"
+      "previousCodeVersion": "v-168d89d5e20b",
+      "sourcePath": "docs/testsprite/overrides/ONBD-002.py"
     },
     {
       "case": "BOAR-001",
       "testId": "9e34b635-85b9-427d-95b2-5584e55f5f7d",
       "name": "Illegal moves leave the board unchanged",
-      "codeVersion": "v-34c17b1132d7",
-      "sha256": "eb1e048a9e9f3f57b3749d7b0abe46f49b894e2091a0c2919e4e5ac6c238aaf5",
+      "codeVersion": "v-40667c7fbc0f",
+      "sha256": "03cd8e676fbb7bf72a5c4c0e1d0dc61fd112d17d37d68ddfb40b54b665abe460",
+      "storedSha256": "5ed15c47dd7370168692013a0975d3325fa01e968933f91ff5ac796357ffebcf",
       "readbackEqual": true,
-      "cloudBundleBindingUpdated": false,
-      "preCloudCodeVersion": "v-34c17b1132d7"
+      "previousCodeVersion": "v-5fcd564e6962",
+      "sourcePath": "docs/testsprite/overrides/BOAR-001.py"
     },
     {
       "case": "BOAR-002",
       "testId": "0ad51a00-bdcc-49ab-a155-ad15de21a7a2",
       "name": "Simple opening advances update history and turn",
-      "codeVersion": "v-b4f39a6e001a",
-      "sha256": "3d4a0566a2fda9333590045eb98646ec3d7b882e24a4663be1940c98f5976c86",
+      "codeVersion": "v-d500f569ce65",
+      "sha256": "463f0c0e6aa2083442635d353f62517a705272355ba3b1e04db33ae02aca43f0",
+      "storedSha256": "5ce010d308b8181c64122f0d2c546fc7a0856fcc8f67e5265c65f9c27eb59cd4",
       "readbackEqual": true,
-      "cloudBundleBindingUpdated": false,
-      "preCloudCodeVersion": "v-b4f39a6e001a"
+      "previousCodeVersion": "v-c806c6b49336",
+      "sourcePath": "docs/testsprite/overrides/BOAR-002.py"
     },
     {
       "case": "BOAR-003",
       "testId": "6c39a736-f9b2-4731-8560-05df7dcd0449",
       "name": "Undo restores a captured position atomically",
-      "codeVersion": "v-11b7e8a6016c",
-      "sha256": "95c10e6ec231ccf18c392351412dc62ad7514f96285fc9d5b35dd7c9c8ae6582",
+      "codeVersion": "v-3cc53bc068fe",
+      "sha256": "4491c39b59a364bfe6a21e27f944cd3c9d51749067ac35b9d633b6ba65180f0c",
+      "storedSha256": "08110b30aa38d8203e3e2001b6cf03bbcc32bc590705a467cb268e88145e3c4c",
       "readbackEqual": true,
-      "cloudBundleBindingUpdated": false,
-      "preCloudCodeVersion": "v-11b7e8a6016c"
+      "previousCodeVersion": "v-306e0fe02e27",
+      "sourcePath": "docs/testsprite/overrides/BOAR-003.py"
     },
     {
       "case": "BOAR-004",
       "testId": "2330c1ea-adda-4d16-a611-d8745fc4cc66",
       "name": "Promotion can be cancelled without committing a move",
-      "codeVersion": "v-863f4dd45289",
-      "sha256": "fd44a896a491f9ddb791eadf7a22ffdd4bf91f44f79130229e7e0ef5a324aa89",
+      "codeVersion": "v-94c9063b4ea7",
+      "sha256": "9ecd75cfca270dba404b9812e33fdd9407365b6ad267e6ab331fe51d18231d53",
+      "storedSha256": "020915e668acbbe34944e3fb0d2880077e28ff17af5f478542dcbc34c6547478",
       "readbackEqual": true,
-      "cloudBundleBindingUpdated": true,
-      "preCloudCodeVersion": "v-7c5af6f4e014"
+      "previousCodeVersion": "v-b3ccf6c99eca",
+      "sourcePath": "docs/testsprite/overrides/BOAR-004.py"
     },
     {
       "case": "BOAR-005",
       "testId": "c48475e4-8ec0-4875-a5c9-e8b2981d4c87",
       "name": "Queen promotion settles as a playable checking position",
-      "codeVersion": "v-936581958af2",
-      "sha256": "43295cb556ce137bd4d57e44bbe97a8ae65136cc1d9e72732ecd0c156e64c263",
+      "codeVersion": "v-422b3ee19f8a",
+      "sha256": "e5d352c62aa4cf339a78e86cc0a8fea044e1f5d9580176b655c09fe65366ffb2",
+      "storedSha256": "b51ca57733ffdbee8ea26f7a48ecb1c9598861679fbb320faf850354aeab438d",
       "readbackEqual": true,
-      "cloudBundleBindingUpdated": false,
-      "preCloudCodeVersion": "v-936581958af2"
+      "previousCodeVersion": "v-e5798c1048cf",
+      "sourcePath": "docs/testsprite/overrides/BOAR-005.py"
     },
     {
       "case": "BOAR-006",
       "testId": "836e4d28-2b2a-468c-ba69-21bc358eb237",
       "name": "Knight promotion ends in an insufficient material draw",
-      "codeVersion": "v-1958882ccab5",
-      "sha256": "36526bd1bdf8216a4a21fa63ec2cf4df4ec7ecf9a6efc14e7bbb8afd32b6e290",
+      "codeVersion": "v-112686cb3468",
+      "sha256": "e004ebdae8a66ff2cef713ae7406c5bff78f741f3cd796d0216df5a87988b1cc",
+      "storedSha256": "f851a6fbc31f817befc9530111f381acd3d7f572cc4853622abc48a06b283c6f",
       "readbackEqual": true,
-      "cloudBundleBindingUpdated": false,
-      "preCloudCodeVersion": "v-1958882ccab5"
+      "previousCodeVersion": "v-12548a371ada",
+      "sourcePath": "docs/testsprite/overrides/BOAR-006.py"
     },
     {
       "case": "BOAR-007",
       "testId": "f52738b9-d0c5-46b4-b914-70d16c6d7e7b",
       "name": "Checkmate story blocks further play after the winning move",
-      "codeVersion": "v-08b04ac7720c",
-      "sha256": "9d8fdbd68a41a921e1e3737b10dabc3156ed7ed1dd74509a5966d88abfca0b12",
+      "codeVersion": "v-1a02895ab81e",
+      "sha256": "a007956c1e2a8a8d5065c3a0a499e1d72317a52a188dc64c5d0638ff1c3a4a92",
+      "storedSha256": "273fe987b3572a8f5dff7982ec93af16de7d3cc606774f6095b9630331bfacc7",
       "readbackEqual": true,
-      "cloudBundleBindingUpdated": false,
-      "preCloudCodeVersion": "v-08b04ac7720c"
+      "previousCodeVersion": "v-dc73353dc11d",
+      "sourcePath": "docs/testsprite/overrides/BOAR-007.py"
     },
     {
       "case": "BOAR-008",
       "testId": "ec570b6b-0423-40cd-a0a7-60e8a8cbb23c",
       "name": "Undo after a computer reply restores the starting position",
-      "codeVersion": "v-72de3f0ece1d",
-      "sha256": "2a45b47633ef2315122578a47d8ea53e56fe081580dfafca3d329c6cb7393208",
+      "codeVersion": "v-1e6ad3f06334",
+      "sha256": "38c60477625ab4566948354734baef84f99697a63e2135a9d026ee2d22c4f22f",
+      "storedSha256": "0cd251ba5040c5ae79149cb862e489553df507969a9821b6ea2b4855e2e765d6",
       "readbackEqual": true,
-      "cloudBundleBindingUpdated": true,
-      "preCloudCodeVersion": "v-d5b215879043"
+      "previousCodeVersion": "v-a856f7892283",
+      "sourcePath": "docs/testsprite/overrides/BOAR-008.py"
     },
     {
       "case": "PREF-001",
       "testId": "138f2507-51c6-43ed-9a7c-c00bb2b1657e",
       "name": "Restore a saved game after reload and continue with undo",
-      "codeVersion": "v-82ffdaea9f1c",
-      "sha256": "e3082e29ce071f45d6fc40e7757b007200436e3137a07800045abbf0939172c6",
+      "codeVersion": "v-6095ae1c695c",
+      "sha256": "0da6c7b6dc04d6b922049d5400921e37d10ea810917f0196df9c8e44ff1bbe9d",
+      "storedSha256": "580fce957cd0f945d7c72d20dcda824a496e9904cb173c0276416026bd5d6913",
       "readbackEqual": true,
-      "cloudBundleBindingUpdated": true,
-      "preCloudCodeVersion": "v-e46154e3e9ce"
+      "previousCodeVersion": "v-1aab6bf6e084",
+      "sourcePath": "docs/testsprite/overrides/PREF-001.py"
     },
     {
       "case": "SOUN-001",
       "testId": "06093f89-2095-4a14-b7db-101e715ae206",
       "name": "Enable sound from the character guide",
-      "codeVersion": "v-e749a68a45d3",
-      "sha256": "361cf1cdea2523f8c89d50e12900745ddbfd25ff3987d7945dc30f1f3713568d",
+      "codeVersion": "v-9d6ac902bb11",
+      "sha256": "d78ef2501fc0c0e797d43a67c01e8c1754466625ed0cf6bff3e734f97d08e8eb",
+      "storedSha256": "09bcd00675feaec282a9d5e06acc39d131e3731a2aa2548f6df3d8c658c2ebae",
       "readbackEqual": true,
-      "cloudBundleBindingUpdated": false,
-      "preCloudCodeVersion": "v-e749a68a45d3"
+      "previousCodeVersion": "v-a8d1553fd790",
+      "sourcePath": "docs/testsprite/overrides/SOUN-001.py"
     },
     {
       "case": "NOTE-001",
       "testId": "4cb7d4df-04ae-4be5-8295-f69f0f115611",
       "name": "Full notebook entry remains visible on first and repeat visits",
-      "codeVersion": "v-0449b2eb6450",
-      "sha256": "2550712a7aa901736db7b52f5b880a61af886d43cfd3bd481c44f3efd7caefbe",
+      "codeVersion": "v-5e7b7c0d0889",
+      "sha256": "d68d316367bbe5bfab952f1ceee5cf4651782fd1f2101eab8a698e02ba0b6646",
+      "storedSha256": "9ef8dbedab6ae5a6485a46c7fe1807b7ef322b6b1ae1429574a59f1bf9c8271b",
       "readbackEqual": true,
-      "cloudBundleBindingUpdated": false,
-      "preCloudCodeVersion": "v-0449b2eb6450"
+      "previousCodeVersion": "v-a94a4ac88595",
+      "sourcePath": "docs/testsprite/overrides/NOTE-001.py"
     },
     {
       "case": "NOTE-002",
       "testId": "43d65119-ddde-41e6-9a50-e99a370bb16b",
       "name": "Saved manual pause keeps the notebook readable and resume restores living characters",
-      "codeVersion": "v-c36ccbd7694c",
-      "sha256": "e930977fde055188ae73c6dd5a84d9a832a88a7e850318c6931ec074a5dd0d23",
+      "codeVersion": "v-8648d5d4d44a",
+      "sha256": "33a056a65806f69e63addc2ae87c629bf10e881c80376019208a8e0525d3043e",
+      "storedSha256": "ddc8862d04e93f938f635ac46e7a69f286cee63aac9e95052ad192c68ec6f733",
       "readbackEqual": true,
-      "cloudBundleBindingUpdated": false,
-      "preCloudCodeVersion": "v-c36ccbd7694c"
+      "previousCodeVersion": "v-c878c8891df3",
+      "sourcePath": "docs/testsprite/overrides/NOTE-002.py"
     },
     {
       "case": "NOTE-003",
       "testId": "7615508f-ec1e-4df0-9d67-3c4db951b18e",
       "name": "Keyboard skip releases notebook entry without stale animation or computer replies",
-      "codeVersion": "v-b680743801da",
-      "sha256": "e89ed185bcafc584c28e847e32dab708462f8752f3b65c6604621710f2bd078a",
+      "codeVersion": "v-e00666ab495d",
+      "sha256": "0c95c93984f8b0d27059e97bade02c0def1f23c06d0e761bf11eb2563a4819b7",
+      "storedSha256": "5cbdf97bd378ead89ff51e624f4049d9045568614aa4d60dd2a805ce97689e86",
       "readbackEqual": true,
-      "cloudBundleBindingUpdated": false,
-      "preCloudCodeVersion": "v-b680743801da"
+      "previousCodeVersion": "v-eaf7ddbf7b21",
+      "sourcePath": "docs/testsprite/overrides/NOTE-003.py"
     },
     {
       "case": "NOTE-004",
       "testId": "72d4f1a0-dd72-44e9-bf92-0ccbc9a4ea4d",
       "name": "Completed game reload starts fresh while unfinished capture studies resume",
-      "codeVersion": "v-6c4c15b0c6e4",
-      "sha256": "b1d782db0445730ab985893d9f2213f549654117dff4b9357231c13c916505ba",
+      "codeVersion": "v-4b122ad3a252",
+      "sha256": "388540e7ff11153c12a42e8e45293db5429f1fdbdf12280afceca01e0580a3f3",
+      "storedSha256": "1c839ed7cf0ad890f217e1aa6727933cf91a7d6419e8ecc95df910ea48199930",
       "readbackEqual": true,
-      "cloudBundleBindingUpdated": false,
-      "preCloudCodeVersion": "v-6c4c15b0c6e4"
+      "previousCodeVersion": "v-4c3dc3c542c6",
+      "sourcePath": "docs/testsprite/overrides/NOTE-004.py"
     }
-  ]
+  ],
+  "statusAtSeedPublication": "all-sixteen-rendered-seeds-readback-verified-full-suite-pending",
+  "verificationAtSeedPublication": "All fifteen unchanged hosted scripts first matched the previous manifest and exact PR6 baseline source. ONBD-001 matched its controlled literal-target probe publication. The remaining fifteen were uploaded sequentially with explicit expected-version guards and immediate exact rendered readbacks; a final complete-project audit verified all sixteen current versions and exact seed bodies. Canonical gameplay AST is unchanged in all sixteen templates. Only the controlled ONBD-001 strict replay has passed; the full new sixteen-case gate remains pending.",
+  "executionEvidence": "docs/testsprite/public-ci-acceptance-2026-10-25.json"
 }
